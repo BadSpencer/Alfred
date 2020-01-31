@@ -1,8 +1,11 @@
 require('dotenv').config();
 const { AkairoClient } = require('discord-akairo');
 
+
+
+
 const client = new AkairoClient({
-    ownerID: '291545597205544971', 
+    ownerID: process.env.OWNER_ID, 
     prefix: '!', 
     handleEdits: true,
     commandUtil: true,
@@ -13,5 +16,12 @@ const client = new AkairoClient({
 }, {
     disableEveryone: true
 });
+
+// Base de données
+const Enmap = require("enmap");
+
+client.settings = new Enmap({
+    name: "settings"
+  });
 
 client.login(process.env.DISCORD_TOKEN);
