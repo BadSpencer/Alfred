@@ -1,7 +1,17 @@
+const {
+    AkairoClient,
+    CommandHandler,
+    ListenerHandler,
+    ClientUtil,
+    Command,
+    SQLiteProvider
+} = require('discord-akairo');
 require('dotenv').config();
+/*
 const {
     AkairoClient
 } = require('discord-akairo');
+*/
 
 
 const client = new AkairoClient({
