@@ -11,7 +11,7 @@ class ReadyListener extends Listener {
     }
 
     exec() {
-        const pjson = require('../package.json');
+        const pjson = require('../../package.json');
     
         this.client.user.setActivity(`v${pjson.version}`, {
             type: "PLAYING"
