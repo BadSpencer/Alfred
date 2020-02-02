@@ -3,6 +3,7 @@ const {
 } = require('discord-akairo');
 const chalk = require('chalk');
 const moment = require('moment');
+const { errorMessage } = require('../../lib/messages');
 
 class CommandBlockedListener extends Listener {
     constructor() {
@@ -50,13 +51,14 @@ class CommandBlockedListener extends Listener {
         }
 
         // Log 
+        errorMessage(`Commande bloquée pour la raison: ***\`${raison}\`***`, message);
         console.log(`${timestamp} | ${guild} | ${blocked}`);
 
 
 
 
 
-        console.log(`Commande ${command.id} bloquée pour ${message.author.username} (raison: ${reason})`);
+
     }
 }
 
