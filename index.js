@@ -16,7 +16,12 @@ const {
 
 const client = new AkairoClient({
     ownerID: process.env.OWNER_ID,
-    prefix: '!',
+    prefix: process.env.PREFIX,
+
+    emitters: {
+        process
+    },
+
     handleEdits: true,
     commandUtilLifetime: 300000,
     commandDirectory: './commands/',
