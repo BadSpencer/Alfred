@@ -1,17 +1,8 @@
 const {
-    AkairoClient,
-    CommandHandler,
-    ListenerHandler,
-    ClientUtil,
-    Command,
-    SQLiteProvider
-} = require('discord-akairo');
-require('dotenv').config();
-/*
-const {
     AkairoClient
 } = require('discord-akairo');
-*/
+require('dotenv').config();
+
 
 
 const client = new AkairoClient({
@@ -22,12 +13,23 @@ const client = new AkairoClient({
         process
     },
 
+    defaultPrompt: {
+        timeout: message => 'Vous vaez mis trop de temps à répondre. Commande annulée',
+        ended: message => 'Trop de tentatives. Commandes annulée',
+        cancel: message => 'Commandes annulée',
+        cancelWord: 'annuler',
+        retries: 2,
+        time: 30000
+    },
+
+    allowMention: true,
     handleEdits: true,
+    fetchMembers: true,
     commandUtilLifetime: 300000,
     commandDirectory: './commands/',
     inhibitorDirectory: './inhibitors/',
     listenerDirectory: './events/',
-    // CommandRelated
+
     automateCategories: true,
     commandUtil: true
 }, {
