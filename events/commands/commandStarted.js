@@ -1,5 +1,6 @@
 const { Listener } = require('discord-akairo');
 const chalk = require('chalk');
+const moment = require('moment');
 
 
 class CommandStartedListener extends Listener {
@@ -12,10 +13,9 @@ class CommandStartedListener extends Listener {
 
     exec(message, command) {
         let commandUsed = command;
-        let timestamp = `${new Date()}`;
-        timestamp.setDate(timestamp.getDate());
+        let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
 
-        // Create the log itself with Chalk and Moment
+        // Préparation du log
         let guild;
         let used;
         let user;
@@ -40,7 +40,7 @@ class CommandStartedListener extends Listener {
             used = `Commande ${chalk.magenta(commandUsed)} lancée par ${user} dans #${message.channel.name}`;
         }
 
-        // Log it
+        // Log
         console.log(`${timestamp} | ${guild} | ${used}`);
     }
 };
