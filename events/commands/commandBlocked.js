@@ -3,7 +3,7 @@ const {
 } = require('discord-akairo');
 const chalk = require('chalk');
 const moment = require('moment');
-const { errorMessage } = require('../../lib/messages');
+const { errorMessage } = require('../../utils/messages');
 
 class CommandBlockedListener extends Listener {
     constructor() {
