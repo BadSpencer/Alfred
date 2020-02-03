@@ -103,7 +103,7 @@ class HelpCommand extends Command {
                 // Found a command
                 const cmd = this.handler.modules.get(key);
                 if (message.channel.type === 'text') {
-                    message.react('✅');hhhh
+                    message.react('✅');
                     message.awaitReactions(filter, { time: 5000 })
                         .catch(() => {
                             errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
