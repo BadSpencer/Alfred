@@ -2,7 +2,31 @@ const Discord = require('discord.js');
 const hexColorRegex = require('hex-color-regex');
 const colors = require('./colors');
 
+// Some useful additions to String prototypes
+// Capitalizes the first letter in a string, and if onlyFirst is not true, convert all other letters to lowercase
+String.prototype.toTitleCase = function (onlyFirst) {
+    const first = this.charAt(0).toUpperCase();
+    const rest = (onlyFirst) ? this.substr(1) : this.substr(1).toLowerCase();
+    return first + rest;
+};
+// Applies toTitleCase() to all words in a string, separated by a delimeter
+String.prototype.toTitleCaseAll = function (delim, onlyFirst) {
+    const d = delim || ' ';
+    return this.split(d).reduce((acc, cur) => {
+        if (acc == '') return cur.toTitleCase(onlyFirst);
+        return acc + d + cur.toTitleCase(onlyFirst);
+    }, '');
+};
+
 module.exports = {
+
+    emoji: {
+        enabled: {
+            true: '✅',
+            false: '❌',
+        },
+    },
+    
 
     random: function (array) {
         return array[Math.floor(Math.random() * array.length)];
@@ -47,7 +71,7 @@ module.exports = {
         const min = Math.floor((ms / (1000 * 60)) % 60).toString()
         const hrs = Math.floor((ms / (1000 * 60 * 60)) % 60).toString()
         const days = Math.floor((ms / (1000 * 60 * 60 * 24)) % 60).toString()
-          return `\`${days.padStart(1, '0')} days, ${hrs.padStart(2, '0')} hours, ${min.padStart(2, '0')} minutes, and ${sec.padStart(2, '0')} seconds\``
+          return `\`${days.padStart(1, '0')} jours, ${hrs.padStart(2, '0')} heures, ${min.padStart(2, '0')} minutes, et ${sec.padStart(2, '0')} secondes\``
     },
 
     generateKey: function() {
