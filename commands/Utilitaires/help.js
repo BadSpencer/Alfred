@@ -1,32 +1,39 @@
 // Some useful things I defined in a utility file (see CommonUtil.js in the next Gist file)
-const { CommonUtil: fonctions } = require('../../utils/functions');
+const {
+    CommonUtil: fonctions
+} = require('../../utils/functions');
 const colors = require('../../utils/colors');
 //const prettyMs = require('pretty-ms');
 
 // Mine
-const { errorMessage, warnMessage } = require('../../utils/messages');
+const {
+    errorMessage,
+    warnMessage
+} = require('../../utils/messages');
 
 // Translations
 const channels = require('../../localization/channels');
 const permissions = require('../../localization/permissions');
 
 // Required things for using Embeds and extending Akairo Command
-const { RichEmbed } = require('discord.js');
-const { Command } = require('discord-akairo');
+const {
+    RichEmbed
+} = require('discord.js');
+const {
+    Command
+} = require('discord-akairo');
 
 class HelpCommand extends Command {
     constructor() {
         super('help', {
             aliases: ['help', 'h'],
             // define arg properties
-            args: [
-                {
-                    id: 'key',
-                    type: 'string',
-                    match: 'content',
-                    default: null,
-                },
-            ],
+            args: [{
+                id: 'key',
+                type: 'string',
+                match: 'content',
+                default: null,
+            }, ],
             // command description
             description: 'Affiche les liste des commandes, ou donne des détails à propos d\'une commende spécifique.',
         });
@@ -104,18 +111,24 @@ class HelpCommand extends Command {
                 const cmd = this.handler.modules.get(key);
                 if (message.channel.type === 'text') {
                     message.react('✅');
-                    message.awaitReactions(filter, { time: 5000 })
+                    message.awaitReactions(filter, {
+                            time: 5000
+                        })
                         .catch(() => {
                             errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
                         });
 
-                    return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, { embed: this._getCmdInfo(message, cmd) })
+                    return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, {
+                            embed: this._getCmdInfo(message, cmd)
+                        })
                         .catch(() => {
                             return errorMessage('Je ne peux pas vous envoyer mes commandes, vérifiez vos options de confidentialité.', message);
                         });
 
                 } else if (message.channel.type === 'dm') {
-                    return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, { embed: this._getCmdInfo(message, cmd) })
+                    return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, {
+                            embed: this._getCmdInfo(message, cmd)
+                        })
                         .catch(() => O_o);
 
                 } else {
@@ -127,26 +140,26 @@ class HelpCommand extends Command {
         // List all categories if none was provided
         if (message.channel.type === 'text') {
             message.react('✅');
-            message.awaitReactions(filter, { time: 100 })
+            message.awaitReactions(filter, {
+                    time: 100
+                })
                 .catch(() => {
                     return errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
                 });
 
-            return message.author.send('**Voici une liste de toutes les commandes par catégorie:**', { embed: this._getFullList(message) })
+            return message.author.send('**Voici une liste de toutes les commandes par catégorie:**', {
+                    embed: this._getFullList(message)
+                })
                 .catch(() => {
                     errorMessage('Je ne peux pas vous envoyer mes commandes, vérifiez vos options de confidentialité.', message).then(m => m.delete(10000));
                 });
-                
+
         } else if (message.channel.type === 'dm') {
-            return message.author.send('**Voici une liste de toutes les commandes par catégorie:**', { embed: this._getFullList(message) })
+            return message.author.send('**Voici une liste de toutes les commandes par catégorie:**', {
+                    embed: this._getFullList(message)
+                })
                 .catch(() => O_o)
         };
-
-        // if (message.channel.type === 'text') message.react('✅');
-        // return await message.author.send('**Aquí hay una lista de todos los comandos por categoría:**', { embed: this._getFullList(message) })
-        //     .catch(msg => {
-        //         return errorMessage('No puedo enviarte mis comandos, revisa tus opciones de privacidad.', message).then(m => m.delete(10000));
-        //     });
     }
 }
 
