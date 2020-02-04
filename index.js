@@ -24,7 +24,6 @@ const client = new AkairoClient({
 
     allowMention: true,
     handleEdits: true,
-    fetchMembers: true,
     commandUtilLifetime: 300000,
     commandDirectory: './commands/',
     inhibitorDirectory: './inhibitors/',
