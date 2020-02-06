@@ -2,6 +2,7 @@ const {
     AkairoClient
 } = require('discord-akairo');
 require('dotenv').config();
+const Enmap = require("enmap");
 
 
 
@@ -35,5 +36,10 @@ const client = new AkairoClient({
 }, {
     disableEveryone: true
 });
+
+client.db_settings = new Enmap({
+    name: "settings"
+  });
+  
 
 client.login(process.env.DISCORD_TOKEN);
