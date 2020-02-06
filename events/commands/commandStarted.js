@@ -22,21 +22,21 @@ class CommandStartedListener extends Listener {
 
         if (message.channel === 'text') {
             if (message.author.id === message.guild.ownerID) {
-                user = `${chalk.red('[GUILD OWNER]')} ${message.author.tag} (${message.author.id})`
+                user = `${chalk.red('[Admin serveur]')} ${message.author.tag} (${message.author.id})`
             }
         }
 
         if (message.author.id === process.env.OWNER_ID) {
-            user = `${chalk.green('[OWNER]')} ${message.author.tag}`
+            user = `${chalk.green('[Admin Alfred]')} ${message.author.tag}`
         } else {
-            user = `${chalk.gray('[USER]')} ${message.author.tag} (${message.author.id})`
+            user = `${chalk.gray('[Utilsateur]')} ${message.author.tag} (${message.author.id})`
         }
 
         if (message.channel.type === 'dm') {
-            guild = `${chalk.red('DM')}: ${chalk.yellow(message.author.id)}`;
+            guild = `${chalk.red('MP')}: ${chalk.yellow(message.author.id)}`;
             used = `Commande ${chalk.magenta(commandUsed)} lancée par ${user}`;
         } else {
-            guild = `${chalk.red('GUILD')}: ${chalk.yellow(message.guild.id)}`;
+            guild = `${chalk.red('SERVEUR')}: ${chalk.yellow(message.guild.id)}`;
             used = `Commande ${chalk.magenta(commandUsed)} lancée par ${user} dans #${message.channel.name}`;
         }
 
