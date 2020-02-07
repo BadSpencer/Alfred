@@ -1,7 +1,7 @@
 // Some useful things I defined in a utility file (see CommonUtil.js in the next Gist file)
 const {
     CommonUtil: fonctions
-} = require('../../utils/functions');
+} = require('../../utils/fonctions');
 const colors = require('../../utils/colors');
 //const prettyMs = require('pretty-ms');
 
@@ -12,6 +12,7 @@ const {
 } = require('../../utils/messages');
 
 // Translations
+const { MESSAGES } = require('../../localization/fr');
 const channels = require('../../localization/channels');
 const permissions = require('../../localization/permissions');
 
@@ -35,7 +36,8 @@ class HelpCommand extends Command {
                 default: null,
             }, ],
             // command description
-            description: 'Affiche les liste des commandes, ou donne des détails à propos d\'une commende spécifique.',
+            description: MESSAGES.COMMANDS.HELP.DESCRIPTION,
+            //description: `Help`,
         });
     }
 
@@ -47,7 +49,7 @@ class HelpCommand extends Command {
 
         this.handler.categories.forEach((cmd, cat) => {
             const field = {
-                name: cat.toTitleCaseAll(),
+                name: cat,
                 value: '',
                 inline: false,
             };
@@ -151,7 +153,7 @@ class HelpCommand extends Command {
                     embed: this._getFullList(message)
                 })
                 .catch(() => {
-                    errorMessage('Je ne peux pas vous envoyer mes commandes, vérifiez vos options de confidentialité.', message).then(m => m.delete(10000));
+                    errorMessage('Je ne peux pas vous envoyer mes commandes par message privé, vérifiez vos options de confidentialité.', message).then(m => m.delete(10000));
                 });
 
         } else if (message.channel.type === 'dm') {

@@ -1,11 +1,10 @@
 const {
     AkairoClient
 } = require('discord-akairo');
-require('dotenv').config();
+//require('dotenv').config();
 const Enmap = require("enmap");
 
-
-
+const config = require('./config.json');
 const client = new AkairoClient({
     ownerID: process.env.OWNER_ID,
     prefix: process.env.PREFIX,
@@ -15,7 +14,7 @@ const client = new AkairoClient({
     },
 
     defaultPrompt: {
-        timeout: message => 'Vous vaez mis trop de temps à répondre. Commande annulée',
+        timeout: message => 'Vous avez mis trop de temps à répondre. Commande annulée',
         ended: message => 'Trop de tentatives. Commande annulée',
         cancel: message => 'Commandes annulée',
         cancelWord: 'annuler',
@@ -37,9 +36,12 @@ const client = new AkairoClient({
     disableEveryone: true
 });
 
+require("./utils/fonctions.js")(client);
 client.db_settings = new Enmap({
     name: "settings"
   });
-  
+client.db_userdata = new Enmap({
+    name: "userdata"
+  });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(config.token);

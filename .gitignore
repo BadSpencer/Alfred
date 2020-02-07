@@ -105,3 +105,4 @@ dist
 desktop.ini
 data/*
 media/*
+config.json

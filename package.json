@@ -13,6 +13,8 @@
     "enmap": "^5.2.4",
     "hex-color-regex": "^1.1.0",
     "moment": "^2.24.0",
+    "node-superfetch": "^0.1.10",
+    "path": "^0.12.7",
     "rcon": "^1.0.3",
     "sequelize": "^5.21.3",
     "sqlite": "^3.0.3"
