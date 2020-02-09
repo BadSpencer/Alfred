@@ -36,6 +36,9 @@ const client = new AkairoClient({
 });
 
 require("./utils/fonctions.js")(client);
+const DbUtils = require('./utils/dbutils');
+client.db = new DbUtils(client);
+
 
 client.db_settings = new Enmap({
     name: "settings"

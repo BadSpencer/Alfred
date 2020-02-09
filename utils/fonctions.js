@@ -2,7 +2,7 @@ const moment = require('moment');
 
 module.exports = (client) => {
 
-    client.userCreate = async (member) => {
+    client.memberCreate = async (member) => {
         let userJoinedDate = moment(member.joinedAt).format('DD.MM.YYYY') + " à " + moment(member.joinedAt).format('HH:mm');
         let userdata = {
           "id": member.id,
@@ -27,7 +27,7 @@ module.exports = (client) => {
           "description": "A rejoint le serveur le " + userJoinedDate
         });
     
-        client.userdata.ensure(member.id, userdata);
+        client.db_userdata.set(member.id, userdata);
       };
 
     process.on("uncaughtException", (err) => {

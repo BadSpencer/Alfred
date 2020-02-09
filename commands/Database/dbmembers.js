@@ -1,6 +1,7 @@
 const {
     Command
 } = require('discord-akairo');
+const utils = require("../../utils/fonctions.js");
 
 class dbMembersCommand extends Command {
     constructor() {
@@ -20,14 +21,13 @@ class dbMembersCommand extends Command {
             case 'liste': {
 
 
+
                 break;
             }
             case 'init': {
-
                 message.guild.members.forEach(async member => {
-                    await this.client.userCreate(member);
+                    await this.client.db.userdataCreate(member);
                   });
-
                 break;
             }
         }
