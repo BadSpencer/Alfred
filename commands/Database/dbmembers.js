@@ -25,7 +25,7 @@ class dbMembersCommand extends Command {
             case 'init': {
 
                 message.guild.members.forEach(async member => {
-                    await this.userCreate(member);
+                    await this.client.userCreate(member);
                   });
 
                 break;
