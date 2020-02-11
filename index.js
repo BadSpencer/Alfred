@@ -1,13 +1,15 @@
 const {
     AkairoClient
 } = require('discord-akairo');
-//require('dotenv').config();
+const {
+    owner, token, prefix
+} = require('./config.js');
 const Enmap = require("enmap");
 
-const config = require('./config.json');
+
 const client = new AkairoClient({
-    ownerID: process.env.OWNER_ID,
-    prefix: process.env.PREFIX,
+    ownerID: owner,
+    prefix: prefix,
 
     emitters: {
         process
@@ -35,16 +37,16 @@ const client = new AkairoClient({
     disableEveryone: true
 });
 
-require("./utils/fonctions.js")(client);
-const DbUtils = require('./utils/dbutils');
-client.db = new DbUtils(client);
+client.config = require("./config.js");
+client.logger = require("./utils/logger");
+client.db = require("./utils/db");
 
 
 client.db_settings = new Enmap({
     name: "settings"
-  });
+});
 client.db_userdata = new Enmap({
     name: "userdata"
-  });
+});
 
-client.login(config.token);
+client.login(token);

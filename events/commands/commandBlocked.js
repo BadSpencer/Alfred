@@ -52,7 +52,7 @@ class CommandBlockedListener extends Listener {
 
         // Log 
         errorMessage(`Commande bloquée pour la raison: ***\`${raison}\`***`, message);
-        console.log(`${timestamp} | ${guild} | ${blocked}`);
+        this.client.logger.warn(`${blocked}`);
 
 
 

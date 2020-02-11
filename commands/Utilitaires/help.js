@@ -1,7 +1,5 @@
 // Some useful things I defined in a utility file (see CommonUtil.js in the next Gist file)
-const {
-    CommonUtil: fonctions
-} = require('../../utils/fonctions');
+
 const colors = require('../../utils/colors');
 //const prettyMs = require('pretty-ms');
 

@@ -1,24 +1,3 @@
-// Some useful things I defined in a utility file (see CommonUtil.js in the next Gist file)
-const {
-    CommonUtil: fonctions
-} = require('../../utils/fonctions');
-const colors = require('../../utils/colors');
-//const prettyMs = require('pretty-ms');
-
-// Mine
-const {
-    errorMessage,
-    warnMessage
-} = require('../../utils/messages');
-
-// Translations
-const channels = require('../../localization/channels');
-const permissions = require('../../localization/permissions');
-
-// Required things for using Embeds and extending Akairo Command
-const {
-    RichEmbed
-} = require('discord.js');
 const {
     Command
 } = require('discord-akairo');

@@ -20,13 +20,12 @@ class ReadyListener extends Listener {
 
     exec() {
         const pjson = require('../../package.json');
-        let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
         let ready = `Alfred v${pjson.version} prêt !`;
 
         this.client.user.setActivity(`v${pjson.version}`, {
             type: "PLAYING"
           });
-        console.log(`${timestamp} | ${ready}`);
+          this.client.logger.log(`${ready}`, `ready`);
 
 
         //let guilds = this.db_userdata.fetchEverything();
@@ -36,14 +35,14 @@ class ReadyListener extends Listener {
             if (!guildSettings) {
                 let noguildsettings = `Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`;
                 guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !config`)
-                console.log(`${timestamp} | ${noguildsettings}`)
+                this.client.logger.log(`${noguildsettings}`)
                 guildSettings = datamodel.tables.settings;
 
                 guildSettings.id = guild.id;
                 guildSettings.guildName = guild.name;
                 this.client.db_settings.set(guild.id, guildSettings);
             } else {
-                console.log(`${timestamp} | Configuration serveur ${guild.name} (${guild.id}) chargée`)
+                this.client.logger.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
             }
         })
 

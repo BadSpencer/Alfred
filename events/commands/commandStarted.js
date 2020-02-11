@@ -16,7 +16,6 @@ class CommandStartedListener extends Listener {
         let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
 
         // Préparation du log
-        let guild;
         let used;
         let user;
 
@@ -26,7 +25,7 @@ class CommandStartedListener extends Listener {
             }
         }
 
-        if (message.author.id === process.env.OWNER_ID) {
+        if (message.author.id === this.client.config.owner) {
             user = `${chalk.green('[Admin Alfred]')} ${message.author.tag}`
         } else {
             user = `${chalk.gray('[Utilsateur]')} ${message.author.tag} (${message.author.id})`
@@ -41,7 +40,7 @@ class CommandStartedListener extends Listener {
         }
 
         // Log
-        console.log(`${timestamp} | ${guild} | ${used}`);
+        this.client.logger.log(`${used}`);
     }
 };
 

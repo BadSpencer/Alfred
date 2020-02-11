@@ -14,8 +14,7 @@ class ErrorListener extends Listener {
 
     async exec(error) {
         if (error) {
-            let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
-            console.log(`${timestamp} | ERROR:${error}`);
+            this.client.logger.error(`${JSON.stringify(error)}`);
         }
     }
 }

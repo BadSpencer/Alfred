@@ -1,7 +1,6 @@
 const {
     Command
 } = require('discord-akairo');
-const utils = require("../../utils/fonctions.js");
 
 class dbMembersCommand extends Command {
     constructor() {
