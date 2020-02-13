@@ -5,7 +5,7 @@ const {
 class dbMembersCommand extends Command {
     constructor() {
         super('dbmembers', {
-            aliases: ['dbmembers', 'm'],
+            aliases: ['dbmembers', 'members', 'm'],
             args: [{
                 id: 'action',
                 type: 'text',
@@ -25,7 +25,7 @@ class dbMembersCommand extends Command {
             }
             case 'init': {
                 message.guild.members.forEach(async member => {
-                    await this.client.db.userdataCreate(member);
+                    await this.client.db.userdataCreate(this.client, member);
                   });
                 break;
             }

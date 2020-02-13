@@ -1,12 +1,7 @@
 const {
     Listener
 } = require('discord-akairo');
-const chalk = require('chalk');
-const moment = require('moment');
-const {
-    errorMessage,
-    warnMessage
-} = require('../../utils/messages');
+const cron = require('cron');
 
 const datamodel = require('../../utils/datamodel');
 
@@ -24,13 +19,12 @@ class ReadyListener extends Listener {
 
         this.client.user.setActivity(`v${pjson.version}`, {
             type: "PLAYING"
-          });
-          this.client.logger.log(`${ready}`, `ready`);
+        });
+        this.client.logger.log(`${ready}`, `ready`);
 
 
-        //let guilds = this.db_userdata.fetchEverything();
-
-        this.client.guilds.forEach(guild  => {
+        // Contrôle configuration serveur présente
+        this.client.guilds.forEach(guild => {
             let guildSettings = this.client.db_settings.get(guild.id);
             if (!guildSettings) {
                 let noguildsettings = `Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`;
@@ -45,10 +39,13 @@ class ReadyListener extends Listener {
                 this.client.logger.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
             }
         })
-
         
+        let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
+            this.client.exp.activityCheck(this.client);
+        });
 
-
+        activityCheck.start();
+        
     }
 }
 

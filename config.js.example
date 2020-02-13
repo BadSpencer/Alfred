@@ -1,0 +1,10 @@
+const config = {
+  "token": "",
+  "owner": [
+      ""
+  ],
+  "guildID": "",
+  "prefix": [""]
+};
+
+module.exports = config;

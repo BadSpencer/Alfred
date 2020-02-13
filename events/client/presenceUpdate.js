@@ -1,6 +1,13 @@
 const {
-Listener
+    Listener
 } = require('discord-akairo');
+
+const statusTexts = {
+    'online': 'en ligne',
+    'offline': 'hors ligne',
+    'idle': 'inactif',
+    'dnd': 'en mode "Ne pas déranger"',
+};
 
 
 class presenceUpdateListener extends Listener {
@@ -12,8 +19,10 @@ class presenceUpdateListener extends Listener {
     }
 
     exec(oldMember, newMember) {
-        let memberUpdate = `Presence update pour ${newMember.displayName}` 
-        this.client.logger.log(`${memberUpdate}`);
+        // Log membre qui change de statut
+        if (oldMember.presence.status !== newMember.presence.status) {
+            this.client.logger.log(`${newMember.displayName} (${newMember.id}) est désormais ${statusTexts[newMember.presence.status]}`);
+        }
     }
 }
 

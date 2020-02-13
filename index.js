@@ -40,6 +40,8 @@ const client = new AkairoClient({
 client.config = require("./config.js");
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
+client.games =  require("./utils/games");
+client.exp =  require("./utils/exp");
 
 
 client.db_settings = new Enmap({
@@ -47,6 +49,12 @@ client.db_settings = new Enmap({
 });
 client.db_userdata = new Enmap({
     name: "userdata"
+});
+client.db_games = new Enmap({
+    name: "games"
+});
+client.db_usergame = new Enmap({
+    name: "usergame"
 });
 
 client.login(token);

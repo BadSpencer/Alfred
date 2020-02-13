@@ -28,7 +28,6 @@ class TirageCommand extends Command {
     }
 
     exec(message, args) {
-
         if (args.numFaces == null) message.reply("Utilisation: !tirage <nb faces du dé> <nombre de tirages>");
         if (isNaN(args.numFaces) || (args.numTirages != null && isNaN(args.numTirages))) {message.reply("Il me faut des nombres pour que ça marche bien"); return;}
         if (args.numTirages == null) args.numTirages=1; 

@@ -16,6 +16,7 @@ class CommandStartedListener extends Listener {
         let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
 
         // Préparation du log
+        let guild;
         let used;
         let user;
 
@@ -41,6 +42,15 @@ class CommandStartedListener extends Listener {
 
         // Log
         this.client.logger.log(`${used}`);
+
+        const filter = (reaction, client) => reaction.emoji.name === '✅' && client.id === this.client.id;
+        message.react('✅');
+        message.awaitReactions(filter, {
+            time: 5000
+        })
+            .catch(() => {
+                errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
+            });
     }
 };
 

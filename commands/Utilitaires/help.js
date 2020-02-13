@@ -1,9 +1,4 @@
-// Some useful things I defined in a utility file (see CommonUtil.js in the next Gist file)
-
 const colors = require('../../utils/colors');
-//const prettyMs = require('pretty-ms');
-
-// Mine
 const {
     errorMessage,
     warnMessage

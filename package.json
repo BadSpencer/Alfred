@@ -23,7 +23,7 @@
   "scripts": {
     "test": "echo \"Pas de test\"",
     "start": "pm2 start index.js && clear && pm2 logs && --watch && echo \"Alfred démarré avec succès\"",
-    "stop": "pm2 stop Akai.js && clear && echo \"Alfred arrêté\""
+    "stop": "pm2 stop index.js && clear && echo \"Alfred arrêté\""
   },
   "repository": {
     "type": "git",
