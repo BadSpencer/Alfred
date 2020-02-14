@@ -1,31 +1,71 @@
 const {
     Command
 } = require('discord-akairo');
+const {
+    inspect
+} = require("util");
+const {
+    successMessage,
+    errorMessage,
+    warnMessage
+} = require('../../utils/messages');
 
 class dbSettingsCommand extends Command {
     constructor() {
         super('dbsettings', {
-            aliases: ['dbsettings', 'settings', 's'],
+            aliases: ['dbsettings', 'set'],
+            split: 'quoted',
+
+            description: {
+                content: 'Gestion de la configuration d\'Alfred',
+                usage: '<method> <...arguments>',
+            },
+            category: 'config',
+
             args: [{
                 id: 'action',
-                type: 'text',
-                default: 'liste' 
+                default: 'check'
+            }, {
+                id: 'key',
+            }, {
+                id: 'value',
             }],
+
         });
     }
 
-    exec(message, args) {
-        
+
+    async exec(message, args) {
+
+        const guild = this.client.guilds.get(this.client.config.guildID);
+        const settings = this.client.db_settings.get(guild.id);
+
         switch (args.action) {
-            case 'liste': {
+            case 'check': {
 
-
-
+        
+                message.channel.send(`***__Configuration__***\n\`\`\`json\n${inspect(settings)}\n\`\`\``)
                 break;
             }
+
+            case 'edit': {
+
+                if (!args.key) return errorMessage('Veuillez spécifier une clé', message);
+                if (args.value.length < 1)  return errorMessage('Veuillez spécifier une valeur', message);
+                settings[args.key] = args.value;
+                this.client.db_settings.set(guild.id, settings);
+
+                successMessage(`${args.key} édité avec succès avec la valeur ${args.value}`, message);
+                break;
+            }
+
+
+
         }
+        
 
     }
+
 }
 
 module.exports = dbSettingsCommand;

@@ -2,28 +2,8 @@ const {
     Command
 } = require('discord-akairo');
 
-const defaultGames = {
-    "name": "",
-    "description": "",
-    "actif": "0",
-    "categorie": "",
-    "discordTag": "",
-    "roleID": "",
-    "modRoleID": "",
-    "playRoleID": "",
-    "categoryID": "",
-    "textChannelID": "",
-    "infosChannelID": "",
-    "statusChannelID": "",
-    "voiceChannelID": "",
-    "joinChannelID": "",
-    "joinMessageID": "",
-    "thumbnail": "",
-    "image": "",
-    "banner": "",
-    "url": "",
-    "reactEmoji": ""
-  };
+const datamodel = require('../../utils/datamodel');
+const defaultGames = datamodel.games;
 
 class dbGamesCommand extends Command {
     constructor() {

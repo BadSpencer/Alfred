@@ -35,19 +35,24 @@ exports.userdataAddXP = async (client, member, xp, reason) => {
     const settings = client.db_settings.get(guild.id);
     const userdata = client.db_userdata.get(member.id);
     const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
-    if (member.roles.has(roleMembers.id)) {
-        let xpAmount = parseInt(xp);
-        if (xpAmount > 0) {
-            userdata.xp += xpAmount;
-            client.logger.log(``)
-            let newLevel = await client.exp.xpGetLevel(userdata.xp);
-            if (newLevel > userdata.level) {
-                userdata.level = newLevel;
-                client.exp.userLevelUp(client, member, newLevel);
-            };
-            client.db_userdata.set(member.id, userdata);
+    if (roleMembers) {
+        if (member.roles.has(roleMembers.id)) {
+            let xpAmount = parseInt(xp);
+            if (xpAmount > 0) {
+                userdata.xp += xpAmount;
+                client.logger.log(`${member.displayName} à gagné ${xpAmount}xp (${reason})`)
+                let newLevel = await client.exp.xpGetLevel(userdata.xp);
+                if (newLevel > userdata.level) {
+                    userdata.level = newLevel;
+                    client.logger.log(`${member.displayName} à gagné un level. Il est désormais level ${newLevel})`)
+                    client.exp.userLevelUp(client, member, newLevel);
+                };
+                client.db_userdata.set(member.id, userdata);
+            }
         }
-    };
+    } else {
+        client.logger.error(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`)
+    }
 };
 
 // GAMES

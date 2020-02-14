@@ -2,7 +2,7 @@
 exports.activityCheck = async (client) => {
 
     const guild = client.guilds.get(client.config.guildID);
-    const games = client.db.gamesGetAll(client);
+    const games = await client.db.gamesGetAll(client);
 
     if(!games) return;
 
@@ -12,7 +12,7 @@ exports.activityCheck = async (client) => {
             games.forEach(game => {
                 if (member.presence.game.name == game.discordTag) {
                     if (member.roles.has(game.roleID)) {
-                        client.db.userdataAddXP(client, member, "1", `Joue à ${game.name}`);
+                        client.db.userdataAddXP(client, member, "1", `joue à ${game.name}`);
                         //client.updateTimePlayed(game.name, member);
                         //client.userAddGameXP(game.name, member);
                         if (member.voiceChannel) {
