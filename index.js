@@ -57,4 +57,8 @@ client.db_usergame = new Enmap({
     name: "usergame"
 });
 
+client.db_userlog = new Enmap({
+    name: "userlog"
+});
+
 client.login(token);

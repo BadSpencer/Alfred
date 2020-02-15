@@ -12,6 +12,7 @@ class MessageReactionAddListener extends Listener {
     }
 
     exec(messageReaction, user) {
+        if(user.bot) return;
         let reacted = `${user.id} à réagi sur le message ${messageReaction.message.id}` 
         this.client.logger.log(`${reacted}`);
     }

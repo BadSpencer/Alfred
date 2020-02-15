@@ -22,7 +22,10 @@ class ReadyListener extends Listener {
         });
         this.client.logger.log(`${ready}`, `ready`);
 
+        this.client.db.settingsCheck(this.client);
 
+
+        /*
         // Contrôle configuration serveur présente
         this.client.guilds.forEach(guild => {
             let guildSettings = this.client.db_settings.get(guild.id);
@@ -39,6 +42,7 @@ class ReadyListener extends Listener {
                 this.client.logger.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
             }
         })
+        */
         
         let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
             this.client.exp.activityCheck(this.client);

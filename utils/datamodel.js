@@ -16,7 +16,7 @@ exports.tables = {
         "welcomeMemberMessage": "",
         "welcomeMemberEnabled": "",  
         "freeVoiceChan": "🔈Salon libre",
-        "voiceChansCategory": "🔷Salons vocaux'",
+        "voiceChansCategory": "🔷Salons vocaux",
         "AFKChannel": "⌛AFK",
         "quietChannel": "🔈Au calme",
         "gameCategoryPrefix": "🟧",
@@ -47,5 +47,27 @@ exports.tables = {
         "banner": "",
         "url": "",
         "reactEmoji": ""
+    },
+    userdata: {
+        "id": "",
+        "name": "",
+        "level": "",
+        "xp": "",
+        "xpStartDate": "",
+        "nicknames": [],
+        "notes": [],
+        "avertissements": [],
+        "logs": []
+    },
+    userdataLogs: {
+        "date": "",
+        "type": "",
+        "commentaire+": "",
+        "xp": ""
+    },
+    userdataNicknames:{
+        "date": "",
+        "oldNickname": "",
+        "newNickname": ""
     }
 }
