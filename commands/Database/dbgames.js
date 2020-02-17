@@ -1,43 +1,56 @@
 const {
     Command
 } = require('discord-akairo');
-
+const {
+    inspect
+} = require("util");
 const datamodel = require('../../utils/datamodel');
-const defaultGames = datamodel.games;
+const defaultGames = datamodel.tables.games;
 
 class dbGamesCommand extends Command {
     constructor() {
         super('dbgames', {
-            aliases: ['dbgames', 'games', 'g'],
+            aliases: ['dbgames', 'games'],
+            split: 'quoted',
+
+            description: {
+                content: 'Gestion des jeux',
+                usage: '<method> <...arguments>',
+            },
+            category: 'config',
+
+            args: [{
+                id: 'action',
+                default: 'check'
+            }, {
+                id: 'key',
+            }, {
+                id: 'value',
+            }],
+
         });
     }
 
-    *args() {
-		const method = yield {
-			type: [
-				['dbgames-list', 'list'],
-				['dbgames-add', 'add'],
-			],
-			otherwise: (message) => {
-				const prefix = (this.handler.prefix)(message);
-				return "Return sub command dbgames";
-			},
-		}
-
-		return Flag.continue(method);
-	}
-
-    /*
+    
     exec(message, args) {
 
         switch (args.action) {
-            case 'liste': {
-
-
-
+            case 'check': {
+                this.client.db.enmapDisplay(this.client, this.client.db_games, message.channel);
                 break;
             }
-
+            case 'view': {
+                let game = this.client.db_games.get(args.key);
+                if(game) {
+                    message.channel.send(`***__Configuration__***\n\`\`\`json\n${inspect(game)}\n\`\`\``)
+                } else {
+                    game = this.client.db_games.get(args.join(" "));
+                    if(game) {
+                        message.channel.send(`***__Configuration__***\n\`\`\`json\n${inspect(game)}\n\`\`\``) 
+                    }
+                }
+                break;
+            }
             case 'add': {
                 let newgame = defaultGames;
                 newgame.name = args.gamename;
@@ -47,15 +60,14 @@ class dbGamesCommand extends Command {
                 break;
             }
 
-            case 'check': {
-                this.client.games.check();
-                break;
+            case 'active': {
+
             }
 
         }
 
     }
-    */
+    
 }
 
 module.exports = dbGamesCommand;

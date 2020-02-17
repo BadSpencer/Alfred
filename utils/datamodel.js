@@ -27,11 +27,12 @@ exports.tables = {
         "mediaPath": "/root/Alfred/media/"
     },
     games: {
-        "name": "",
+        "id": "",
+        "name": "default",
+        "createdAt": "",
         "description": "",
-        "actif": "0",
+        "actif": false,
         "categorie": "",
-        "discordTag": "",
         "roleID": "",
         "modRoleID": "",
         "playRoleID": "",
@@ -45,15 +46,16 @@ exports.tables = {
         "thumbnail": "",
         "image": "",
         "banner": "",
-        "url": "",
-        "reactEmoji": ""
+        "url": ""
     },
     userdata: {
         "id": "",
-        "name": "",
+        "name": "default",
+        "createdAt": "",
+        "joinedDate": "",
+        "joinedTime": "",
         "level": "",
         "xp": "",
-        "xpStartDate": "",
         "nicknames": [],
         "notes": [],
         "avertissements": [],
@@ -62,12 +64,31 @@ exports.tables = {
     userdataLogs: {
         "date": "",
         "type": "",
-        "commentaire+": "",
+        "commentaire": "",
         "xp": ""
     },
     userdataNicknames:{
         "date": "",
         "oldNickname": "",
         "newNickname": ""
+    },
+    usergame: {
+        "id": "",
+        "userid": "",
+        "gameid": "",
+        "joinedAt": "",
+        "joinedDate": "",
+        "joinedTime": "",
+        "level": "",
+        "lastPlayed": "",
+        "lastAction": ""
+    },
+    postedEmbeds: {
+        "id": "",
+        "name": "default",
+        "channelID": "",
+        "currentPage": 1,
+        "totalPages": "",
+        "pages": []
     }
 }

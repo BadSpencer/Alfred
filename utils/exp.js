@@ -1,8 +1,8 @@
-
+const constants = require('./constants');
 exports.activityCheck = async (client) => {
 
     const guild = client.guilds.get(client.config.guildID);
-    const games = await client.db.gamesGetAll(client);
+    const games = await client.db.gamesGetActive(client);
 
     if(!games) return;
 
@@ -51,8 +51,8 @@ exports.levelGetXP = async (level) => {
     let channel = guild.channels.find(c => c.name === settings.modNotifChannel);
 
     let embed = new Discord.RichEmbed();
-    let indexLevel = parseInt(level) - 1;
-    let avatar = levelImgs[indexLevel];
+    let indexLevel = parseInt(level);
+    let avatar = constants.images.levels[indexLevel];
 
     embed.setAuthor(member.displayName, member.user.avatarURL);
     embed.setTitle(`Niveau supérieur !`);

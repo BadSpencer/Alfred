@@ -13,42 +13,30 @@ class ReadyListener extends Listener {
         });
     }
 
-    exec() {
+    async exec() {
         const pjson = require('../../package.json');
-        let ready = `Alfred v${pjson.version} prêt !`;
-
         this.client.user.setActivity(`v${pjson.version}`, {
             type: "PLAYING"
         });
-        this.client.logger.log(`${ready}`, `ready`);
 
-        this.client.db.settingsCheck(this.client);
+        this.client.logger.log(`Vérification de l'intégrité de la base de données`);
 
+        await this.client.db.settingsCheck(this.client);
+        await this.client.db.userdataCheck(this.client);
+        await this.client.db.gamesCheck(this.client);
+        await this.client.db.usergameCheck(this.client);
+        await this.client.db.postedEmbedsCheck(this.client);
 
-        /*
-        // Contrôle configuration serveur présente
-        this.client.guilds.forEach(guild => {
-            let guildSettings = this.client.db_settings.get(guild.id);
-            if (!guildSettings) {
-                let noguildsettings = `Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`;
-                guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !config`)
-                this.client.logger.log(`${noguildsettings}`)
-                guildSettings = datamodel.tables.settings;
+        this.client.logger.log(`Fin des contrôles`);
 
-                guildSettings.id = guild.id;
-                guildSettings.guildName = guild.name;
-                this.client.db_settings.set(guild.id, guildSettings);
-            } else {
-                this.client.logger.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
-            }
-        })
-        */
         
         let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
             this.client.exp.activityCheck(this.client);
         });
 
         activityCheck.start();
+
+        this.client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
         
     }
 }

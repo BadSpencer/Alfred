@@ -61,4 +61,8 @@ client.db_userlog = new Enmap({
     name: "userlog"
 });
 
+client.db_postedEmbeds = new Enmap({
+    name: "postedEmbeds"
+});
+
 client.login(token);

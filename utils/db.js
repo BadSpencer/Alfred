@@ -1,14 +1,17 @@
+const Discord = require("discord.js");
 const moment = require("moment");
 const datamodel = require('./datamodel');
 
+
 // CONGIG
 exports.settingsCheck = async (client) => {
+    client.logger.log(`Vérification de la configuration serveur`);
     const guild = client.guilds.get(client.config.guildID);
 
-    if(!guild) return client.logger.error(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
+    if (!guild) return client.logger.error(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
 
     let settings = client.db_settings.get(guild.id);
-    
+
     if (!settings) {
         let noguildsettings = `Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`;
         guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`)
@@ -23,33 +26,83 @@ exports.settingsCheck = async (client) => {
     }
 };
 
+
+
 // USERDATA
+exports.userdataCheck = async (client) => {
+    client.logger.log(`Vérification de la base des membres`);
+    const guild = client.guilds.get(client.config.guildID);
+
+    await client.db_userdata.delete("default");
+    await client.db_userdata.set("default", datamodel.tables.userdata);
+
+
+
+    guild.members.forEach(async member => {
+        if (member.user.bot) return; // Ne pas enregistrer les bots
+        let userdata = client.db_userdata.get(member.id);
+
+        if (!userdata) {
+            await client.db.userdataCreate(client, member);
+        }
+    })
+};
+
+exports.usergameCheck = async (client) => {
+    client.logger.log(`Vérification des données de jeux des membres`);
+    const guild = client.guilds.get(client.config.guildID);
+    let games = await client.db.gamesGetActive(client);
+
+    if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
+
+    await client.db_usergame.delete("default");
+    await client.db_usergame.set("default", datamodel.tables.usergame);
+
+
+
+    guild.members.forEach(async member => {
+        if (member.user.bot) return; // Ne pas enregistrer les bots
+        let userdata = client.db_userdata.get(member.id);
+
+        if (!userdata) {
+            await client.db.usergameCreate(client, member, game);
+        }
+    })
+};
+
+
+
+
 exports.userdataCreate = async (client, member) => {
-    let userJoinedDate = moment(member.joinedAt).format('DD.MM.YYYY') + " à " + moment(member.joinedAt).format('HH:mm');
-    let userdata = datamodel.userdata;
-    let userdataLogs = datamodel.userdataLogs;
-    let userdataNicknames = datamodel.userdataNicknames;
+    let userdata = client.db_userdata.get("default");
+    let userdataLogs = datamodel.tables.userdataLogs;
+    let userdataNicknames = datamodel.tables.userdataNicknames;
+
+    let userJoinedDate = moment(member.joinedAt).format('DD.MM.YYYY');
+    let userJoinedTime = moment(member.joinedAt).format('HH:mm');
 
     userdata.id = member.id;
     userdata.name = member.displayName;
+    userdata.createdAt = +new Date;
+    userdata.joinedDate = userJoinedDate;
+    userdata.joinedTime = userJoinedTime;
     userdata.level = 0;
     userdata.xp = 0;
-    userdata.xpStartDate = +new Date;
 
-    userdataNicknames.date = member.joinedTimestamp;
+
+    userdataNicknames.date = userJoinedDate;
     userdataNicknames.oldNickname = member.user.username;
     userdataNicknames.newNickname = member.displayName;
     userdata.nicknames.push(userdataNicknames);
 
-    userdataLogs.date = member.joinedTimestamp;
-    userdataLogs.type = 
-    userdata.logs.push({
-        "date": member.joinedTimestamp,
-        "type": "JOIN",
-        "description": "A rejoint le serveur le " + userJoinedDate
-    });
+    userdataLogs.date = userJoinedDate;
+    userdataLogs.type = "Membre"
+    userdataLogs.commentaire = "Enregistrement initial";
+    userdataLogs.xp = 0;
+    userdata.logs.push(userdataLogs);
 
     client.db_userdata.set(member.id, userdata);
+    client.logger.log(`Membre ${member.displayName} à été ajouté à la base de données`)
 };
 
 exports.userdataAddXP = async (client, member, xp, reason) => {
@@ -66,7 +119,7 @@ exports.userdataAddXP = async (client, member, xp, reason) => {
                 let newLevel = await client.exp.xpGetLevel(userdata.xp);
                 if (newLevel > userdata.level) {
                     userdata.level = newLevel;
-                    client.logger.log(`${member.displayName} à gagné un level. Il est désormais level ${newLevel})`)
+                    client.logger.log(`Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
                     client.exp.userLevelUp(client, member, newLevel);
                 };
                 client.db_userdata.set(member.id, userdata);
@@ -90,11 +143,158 @@ exports.userlogAdd = async (client, member, type, xpgained, xpreason) => {
 
     }
 
-}
+};
 
 // GAMES
+exports.gamesCheck = async (client) => {
+    client.logger.log(`Vérification de la base de données des jeux`);
+    await client.db_games.delete("default");
+    await client.db_games.set("default", datamodel.tables.games);
 
-exports.gamesGetAll = async (client) => {
-    const games = client.db_games.fetchEverything() || {};
+    let games = await client.db.gamesGetActive(client);
+
+    if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
+};
+exports.gamesCreate = async (client, gamename) => {
+    let game = client.db_games.get("default");
+
+    game.id = gamename;
+    game.name = gamename;
+    game.createdAt = +new Date;
+
+    client.db_games.set(game.id, game);
+    client.logger.log(`Le jeu ${gamename} à été ajouté à la base de données`)
+
+
+};
+exports.gamesGetActive = async (client) => {
+    const games = client.db_games.find(game => game.actif === true);
     return games;
 };
+exports.gamesGetAll = async (client) => {
+    const games = client.db_games.find(game => game.name !== "default");
+    return games;
+};
+
+// POSTED EMBEDS
+exports.postedEmbedsCheck = async (client) => {
+    client.logger.log(`Vérification des Embeds postés`);
+    await client.db_postedEmbeds.delete("default");
+    await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
+
+    let postedEmbeds = await client.db.postedEmbedsGetAll(client);
+
+    if (!postedEmbeds) return client.logger.warn(`Aucun embeds postés trouvé. Vérification interrompue.`);
+
+    postedEmbeds.forEach(async postedEmbed => {
+        let channel = client.channels.get(postedEmbed.channelID);
+        if (channel) {
+            const message = await channel.fetchMessage(postedEmbed.id).then(d => client.logger.log(`Message ${d.id} dans salon ${channel.name} correctement chargé`))
+                .catch(d => {
+                    client.logger.log(`Message ${d.id} dans salon ${channel.name} non trouvé. Il a été retiré de la base`);
+                    client.db_postedEmbeds.delete(postedEmbed.id);
+                });
+        }
+    })
+
+};
+exports.postedEmbedsCreate = async (client, postedEmbeds) => {
+    await client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
+    client.logger.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)
+};
+exports.postedEmbedsGetAll = async (client) => {
+    const postedEmbeds = client.db_postedEmbeds.filter(postedEmbed => postedEmbed.name !== "default");
+    return postedEmbeds;
+};
+exports.enmapDisplay = async (client, enmap, channel) => {
+
+    if (enmap.size == 0) return client.logger.warn(`Aucun enregistrement trouvé`);
+
+    let postedEmbeds = client.db_postedEmbeds.get("default");
+    let pagesArray = [];
+    let nbPages = Math.ceil(enmap.size / 10);
+
+    let embeds = [];
+    for (i = 0; i < nbPages; i++) {
+        embeds.push(await client.db.enampCreateEmbed(client, enmap, enmap.name, i + 1))
+    }
+
+    let pageCount = 0;
+    embeds.forEach(embed => {
+        pageCount += 1;
+        let firstRow = pageCount * 10 - 9;
+        let lastRow = pageCount * 10;
+        if (lastRow > enmap.size) {
+            lastRow = enmap.size;
+        };
+
+        let pagesRecord = {
+            "page": pageCount,
+            "firstRow": firstRow,
+            "lastRow": lastRow,
+            "embed": embed
+        };
+        pagesArray.push(pagesRecord);
+    });
+
+    channel.send(embeds[0]).then(msgSent => {
+        postedEmbeds.id = msgSent.id;
+        postedEmbeds.channelID = msgSent.channel.id;
+        postedEmbeds.name = `Affichage Enmap ${enmap.name}`;
+        postedEmbeds.currentPage = 1;
+        postedEmbeds.totalPages = pagesArray.length;
+        postedEmbeds.pages = pagesArray;
+        client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
+        if (pageCount > 1) {
+            msgSent.react(`▶`);
+        }
+    });
+
+
+
+};
+
+exports.enampCreateEmbed = async (client, enmap, name, page) => {
+    let embed = new Discord.RichEmbed();
+    let nbPages = Math.ceil(enmap.size / 10);
+    let description = "";
+    let array = enmap.array();
+    let keysArray = enmap.keyArray();
+    let index = page - 1;
+    let pageRecords = await array.slice(index * 10, (index + 1) * 10);
+    let pageIndexes = await keysArray.slice(index * 10, (index + 1) * 10);
+    let row = index * 10 + 1;
+
+
+    async function showProps(obj) {
+
+        let fieldlist = [];
+        for (var i in obj) {
+            if (i !== "id") {
+                fieldlist.push(i);
+            }
+        }
+
+        var result = ``;
+        for (var i in obj) {
+            // obj.hasOwnProperty() is used to filter out properties from the object's prototype chain
+            if (obj.hasOwnProperty(i)) {
+                if (fieldlist.includes(i)) result += `${obj[i]},`;
+            }
+        }
+        return result;
+    }
+
+    for (var i in pageRecords) {
+        //let record = util.inspect(pageRecords[i], {compact: 10, breakLength: 180});
+        let record = await showProps(pageRecords[i]);
+        description += `**${pageIndexes[i]}**:\`${record.substring(0, 100)}\`\n`;
+        row += 1;
+    }
+
+    embed.setTitle(`${page * 10 - 9} - ${page * 10 - 10 + pageRecords.length} / ${enmap.size}`);
+    embed.setAuthor(`${name}`, "https://cdn.discordapp.com/attachments/599235210550181900/633576189822500874/SQLite_Database_Browser_icon.png");
+    embed.setDescription(description);
+    embed.setFooter(`Page: ${page}/${nbPages}`);
+    return embed;
+}
