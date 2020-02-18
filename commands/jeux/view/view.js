@@ -1,20 +1,26 @@
 const { Command } = require('discord-akairo');
+const { inspect } = require("util");
 class GamesViewCommand extends Command {
     constructor() {
         super('games-view', {
             aliases: ['games-view'],
             category: 'games',
             description: {
-                content: 'Display game data',
+                content: 'Affiche les données d\'un jeu',
                 usage: '!game view <gameid>',
             },
             args: [{
-                id: 'gameid',
+                id: 'gamename',
+                match: 'content',
             }],
         });
     }
     exec(message, args) {
-        console.log(`Commande !game view with id:${args.gameid}`);
+        let game = this.client.db_games.get(args.gamename);
+        if(game) {
+            message.channel.send(`***__Données du jeu__***\n\`\`\`json\n${inspect(game)}\n\`\`\``)
+        }
+        console.log(`Commande !game view with id:${args.gamename}`);
     }
 }
 module.exports = GamesViewCommand;

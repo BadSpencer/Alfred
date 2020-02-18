@@ -4,6 +4,12 @@ const datamodel = require('./datamodel');
 
 
 // CONGIG
+exports.getSettings = async (client) => {
+    const guild = client.guilds.get(client.config.guildID);
+    if (!guild) return client.logger.error(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
+    let settings = client.db_settings.get(guild.id);
+    return settings;
+}
 exports.settingsCheck = async (client) => {
     client.logger.log(`Vérification de la configuration serveur`);
     const guild = client.guilds.get(client.config.guildID);
