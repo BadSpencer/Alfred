@@ -10,7 +10,7 @@ const defaultGames = datamodel.tables.games;
 class dbGamesCommand extends Command {
     constructor() {
         super('dbgames', {
-            aliases: ['dbgames', 'games'],
+            aliases: ['dbgames'],
             split: 'quoted',
 
             description: {

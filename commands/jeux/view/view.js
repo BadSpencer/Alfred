@@ -1,12 +1,12 @@
 const { Command } = require('discord-akairo');
-class ViewJeuxCommand extends Command {
+class GamesViewCommand extends Command {
     constructor() {
-        super('jeux-view', {
-            aliases: ['jeux-view'],
-            category: 'jeux',
+        super('games-view', {
+            aliases: ['games-view'],
+            category: 'games',
             description: {
-                content: 'Affiche les données d\'un jeu',
-                usage: '<method> <...arguments>',
+                content: 'Display game data',
+                usage: '!game view <gameid>',
             },
             args: [{
                 id: 'gameid',
@@ -14,7 +14,7 @@ class ViewJeuxCommand extends Command {
         });
     }
     exec(message, args) {
-        console.log(`Commande !jeux view avec id:${args.gameid}`);
+        console.log(`Commande !game view with id:${args.gameid}`);
     }
 }
-module.exports = ViewJeuxCommand;
+module.exports = GamesViewCommand;

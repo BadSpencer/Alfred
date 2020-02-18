@@ -1,20 +1,19 @@
 const { Command, Flag } = require('discord-akairo');
-class JeuxCommand extends Command {
+class GamesCommand extends Command {
     constructor() {
-        super('jeux', {
-            aliases: ['jeux'],
+        super('games', {
+            aliases: ['games'],
             description: {
-                content: 'Gestion des jeux',
+                content: 'Manage games',
                 usage: '<action> <...arguments>',
             },
-            category: 'jeux',
+            category: 'games',
         });
     }
     *args() {
         const method = yield {
             type: [
-                ['jeux-view', 'view'],
-                ['jeux-set', 'set'],
+                ['games-view', 'view'],
             ],
             otherwise: () => {
             },
@@ -22,4 +21,4 @@ class JeuxCommand extends Command {
         return Flag.continue(method);
     }
 }
-module.exports = JeuxCommand;
+module.exports = GamesCommand;

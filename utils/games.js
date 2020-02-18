@@ -1,5 +1,9 @@
 const moment = require("moment");
 
+exports.CreateMainRole = async () => {
+
+    
+}
 exports.check = async () => {
     const guild = client.guilds.get(client.config.guildID);
     const games = client.gamesGetAll();
