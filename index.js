@@ -25,13 +25,14 @@ const client = new AkairoClient({
     },
 
     allowMention: true,
+    aliasReplacement: /-/g,
     handleEdits: true,
     commandUtilLifetime: 300000,
     commandDirectory: './commands/',
     inhibitorDirectory: './inhibitors/',
     listenerDirectory: './events/',
 
-    automateCategories: true,
+    //automateCategories: true,
     commandUtil: true
 }, {
     disableEveryone: true
