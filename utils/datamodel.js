@@ -33,7 +33,6 @@ exports.tables = {
         "id": "",
         "name": "default",
         "createdAt": "",
-        "description": "",
         "actif": false,
         "categorie": "",
         "roleID": "",
@@ -45,11 +44,7 @@ exports.tables = {
         "statusChannelID": "",
         "voiceChannelID": "",
         "joinChannelID": "",
-        "joinMessageID": "",
-        "thumbnail": "",
-        "image": "",
-        "banner": "",
-        "url": ""
+        "joinMessageID": ""
     },
     userdata: {
         "id": "",

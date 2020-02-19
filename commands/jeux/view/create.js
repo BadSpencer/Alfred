@@ -16,7 +16,7 @@ class GamesCreateCommand extends Command {
         });
     }
     async exec(message, args) {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = this.client.guilds.get(this.client.config.guildID);
         let game = this.client.db_games.get(args.gamename);
         let settings = await this.client.db.getSettings(this.client);
 
@@ -33,6 +33,7 @@ class GamesCreateCommand extends Command {
             hoist: false,
             mentionable: true
         }).then(mainRole => {
+            game.roleID = mainRole.id;
             successMessage(`Rôle principal ${mainRole.name} créé`, message);
         })
 
@@ -43,7 +44,7 @@ class GamesCreateCommand extends Command {
             hoist: true,
             mentionable: false
         }).then(mainRole => {
-            game.roleID = mainRole.id;
+            game.playRoleID = mainRole.id;
             successMessage(`Rôle "Joue à" ${mainRole.name} créé`, message);
         })
 
@@ -54,20 +55,7 @@ class GamesCreateCommand extends Command {
             game.categoryID = category.id;
             category.setPosition(99);
             successMessage(`Catégorie ${category.name} créée`, message);
-            // Création du salon informations du jeu 
-            await message.guild.createChannel(`${settings.gameInfosPrefix}informations`, {
-                type: 'text'
-            }).then(infochannel => {
-                game.infosChannelID = infochannel.id;
-                infochannel.setParent(category);
-                infochannel.overwritePermissions(roleEveryone, {
-                    'READ_MESSAGES': false,
-                  });
-                  infochannel.overwritePermissions(roleMembers, {
-                    'READ_MESSAGES': false,
-                  });
-                successMessage(`Salon ${infochannel.name} créé`, message);
-            })
+
             // Création du salon discussions du jeu 
             await message.guild.createChannel(`${settings.gameTextPrefix}discussions`, {
                 type: 'text'
@@ -75,6 +63,7 @@ class GamesCreateCommand extends Command {
                 game.textChannelID = textchannel.id;
                 textchannel.setParent(category);
                 textchannel.overwritePermissions(roleEveryone, {
+                    'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
                   });
                 textchannel.overwritePermissions(roleMembers, {
@@ -82,28 +71,8 @@ class GamesCreateCommand extends Command {
                   });
                 successMessage(`Salon ${textchannel.name} créé`, message);
             })
-            // Création du salon vocal du jeu 
-            /*
-            await message.guild.createChannel(`🔈 ${args.gamename}`, {
-                type: 'voice'
-            }).then(voicechannel => {
-                game.voiceChannelID = voicechannel.id;
-                voicechannel.setParent(category);
-                successMessage(`Salon vocal ${voicechannel.name} créé`, message);
-            })
-            */
         })
-
         await this.client.db_games.set(args.gamename, game);
-
-        // Création du salon discussions du jeu 
-
-
-
-        // Création du salon vocal du jeu
-
-
-
     }
 }
 module.exports = GamesCreateCommand;

@@ -9,6 +9,7 @@ exports.activityCheck = async (client) => {
     guild.members.forEach(member => {
         client.db.userdataAddXP(client, member, "1", "Joue à un jeu");
         if (member.presence.game) {
+            /*
             games.forEach(game => {
                 if (member.presence.game.name == game.discordTag) {
                     if (member.roles.has(game.roleID)) {
@@ -21,10 +22,13 @@ exports.activityCheck = async (client) => {
                     }
                 }
             });
+            */
         } else {
+            /*
             if (member.voiceChannel) {
                 //client.userAddXP(member, "1");
             }
+            */
         }
     });
     
