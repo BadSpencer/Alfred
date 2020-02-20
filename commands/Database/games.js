@@ -2,6 +2,9 @@ const {
     Command
 } = require('discord-akairo');
 const {
+    inspect
+} = require("util");
+const {
     successMessage,
     errorMessage,
     warnMessage
@@ -36,9 +39,7 @@ class GamesCommand extends Command {
         const roleEveryone = guild.roles.find(r => r.name == "@everyone");
         const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
         const roleMod = guild.roles.find(r => r.name == settings.modRole);
-
-
-
+        
         switch (args.action) {
             case 'list': {
                 this.client.db.enmapDisplay(this.client, this.client.db_games, message.channel);
@@ -49,7 +50,9 @@ class GamesCommand extends Command {
                 break;
             }
             case 'view': {
-
+                let game = this.client.db_games.get(args.arguments);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
+                message.channel.send(`Données de **${args.arguments}**\n\`\`\`json\n${inspect(game)}\n\`\`\``)
                 break;
             }
             case 'create': {
@@ -114,6 +117,9 @@ class GamesCommand extends Command {
                 const gameCategory = message.guild.channels.get(game.categoryID);
                 const gameTextChannel = message.guild.channels.get(game.textChannelID);
 
+                const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
+                const gameStatutChannel = message.guild.channels.get(game.statusChannelID);                
+
                 if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message);
                 if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message);
                 if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message);
@@ -121,6 +127,7 @@ class GamesCommand extends Command {
                 if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message);
 
                 await gameCategory.setName(`${settings.gameCategoryPrefix}${args.arguments}`);
+                await gameTextChannel.setName(`${settings.gameTextPrefix}discussions`);
                 await gameTextChannel.overwritePermissions(gameRole, {
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
@@ -155,7 +162,89 @@ class GamesCommand extends Command {
                     'USE_EXTERNAL_EMOJIS': true,
                     'ADD_REACTIONS': true,
                 });
+                if(gameInfosChannel) {
+                    await gameInfosChannel.setName(`${settings.gameInfosPrefix}informations`)
+                    gameInfosChannel.overwritePermissions(roleEveryone, {
+                        'VIEW_CHANNEL': false,
+                    });
+                    await gameInfosChannel.overwritePermissions(gameRole, {
+                        'READ_MESSAGES': true,
+                        'SEND_MESSAGES': false,
+                        'SEND_TTS_MESSAGES': false,
+                        'EMBED_LINKS': false,
+                        'ATTACH_FILES': false,
+                        'READ_MESSAGE_HISTORY': true,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': false,
+                        'ADD_REACTIONS': false,
+                    });
 
+                    await gameInfosChannel.overwritePermissions(roleMembers, {
+                        'READ_MESSAGES': false,
+                        'SEND_MESSAGES': false,
+                        'SEND_TTS_MESSAGES': false,
+                        'EMBED_LINKS': false,
+                        'ATTACH_FILES': false,
+                        'READ_MESSAGE_HISTORY': false,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': false,
+                        'ADD_REACTIONS': false,
+                    });
+                    await gameInfosChannel.overwritePermissions(roleMod, {
+                        'READ_MESSAGES': true,
+                        'SEND_MESSAGES': true,
+                        'MANAGE_MESSAGES': true,
+                        'SEND_TTS_MESSAGES': true,
+                        'EMBED_LINKS': true,
+                        'ATTACH_FILES': true,
+                        'READ_MESSAGE_HISTORY': true,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': true,
+                        'ADD_REACTIONS': true,
+                    });
+                }
+
+                if(gameStatutChannel) {
+                    await gameStatutChannel.setName(`${settings.gameStatusPrefix}statut`)
+                    await gameStatutChannel.overwritePermissions(roleEveryone, {
+                        'VIEW_CHANNEL': false,
+                    });
+                    await gameStatutChannel.overwritePermissions(gameRole, {
+                        'READ_MESSAGES': true,
+                        'SEND_MESSAGES': false,
+                        'SEND_TTS_MESSAGES': false,
+                        'EMBED_LINKS': false,
+                        'ATTACH_FILES': false,
+                        'READ_MESSAGE_HISTORY': true,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': false,
+                        'ADD_REACTIONS': false,
+                    });
+
+                    await gameStatutChannel.overwritePermissions(roleMembers, {
+                        'READ_MESSAGES': false,
+                        'SEND_MESSAGES': false,
+                        'SEND_TTS_MESSAGES': false,
+                        'EMBED_LINKS': false,
+                        'ATTACH_FILES': false,
+                        'READ_MESSAGE_HISTORY': false,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': false,
+                        'ADD_REACTIONS': false,
+                    });
+                    await gameStatutChannel.overwritePermissions(roleMod, {
+                        'READ_MESSAGES': true,
+                        'SEND_MESSAGES': true,
+                        'MANAGE_MESSAGES': true,
+                        'SEND_TTS_MESSAGES': true,
+                        'EMBED_LINKS': true,
+                        'ATTACH_FILES': true,
+                        'READ_MESSAGE_HISTORY': true,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': true,
+                        'ADD_REACTIONS': true,
+                    });
+                }
                 game.actif = true;
                 this.client.db_games.set(args.arguments, game);
                 break;
@@ -169,6 +258,9 @@ class GamesCommand extends Command {
                 const gameCategory = message.guild.channels.get(game.categoryID);
                 const gameTextChannel = message.guild.channels.get(game.textChannelID);
 
+                const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
+                const gameStatutChannel = message.guild.channels.get(game.statusChannelID);
+
                 if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message);
                 if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message);
                 if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message);
@@ -176,6 +268,7 @@ class GamesCommand extends Command {
                 if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message);
 
                 await gameCategory.setName(`🔒${settings.gameCategoryPrefix}${args.arguments}`);
+                await gameTextChannel.setName(`🔒${settings.gameTextPrefix}discussions`);
                 await gameTextChannel.overwritePermissions(gameRole, {
                     'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
@@ -188,6 +281,37 @@ class GamesCommand extends Command {
                     'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
                 });
+                if(gameInfosChannel) {
+                    await gameInfosChannel.setName(`🔒${settings.gameInfosPrefix}informations`)
+                    await gameInfosChannel.overwritePermissions(gameRole, {
+                        'VIEW_CHANNEL': false,
+                        'READ_MESSAGES': false,
+                    });
+                    await gameInfosChannel.overwritePermissions(roleMembers, {
+                        'VIEW_CHANNEL': false,
+                        'READ_MESSAGES': false,
+                    });
+                    await gameInfosChannel.overwritePermissions(roleMod, {
+                        'VIEW_CHANNEL': false,
+                        'READ_MESSAGES': false,
+                    });
+                }
+
+                if(gameStatutChannel) {
+                    await gameStatutChannel.setName(`🔒${settings.gameStatusPrefix}statut`)
+                    await gameStatutChannel.overwritePermissions(gameRole, {
+                        'VIEW_CHANNEL': false,
+                        'READ_MESSAGES': false,
+                    });
+                    await gameStatutChannel.overwritePermissions(roleMembers, {
+                        'VIEW_CHANNEL': false,
+                        'READ_MESSAGES': false,
+                    });
+                    await gameStatutChannel.overwritePermissions(roleMod, {
+                        'VIEW_CHANNEL': false,
+                        'READ_MESSAGES': false,
+                    });
+                }
 
                 game.actif = false;
                 this.client.db_games.set(args.arguments, game);
@@ -244,6 +368,61 @@ class GamesCommand extends Command {
                 break;
             }
             case 'statut': {
+                let game = this.client.db_games.get(args.arguments);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
+                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message);
+
+                const gameCategory = message.guild.channels.get(game.categoryID);
+                const gameRole = message.guild.roles.get(game.roleID);
+
+
+                await message.guild.createChannel(`${settings.gameStatusPrefix}statut`, {
+                    type: 'text'
+                }).then(gameStatusChannel => {
+                    game.statusChannelID = gameStatusChannel.id;
+                    gameStatusChannel.setParent(gameCategory);
+
+                    gameStatusChannel.overwritePermissions(roleEveryone, {
+                        'VIEW_CHANNEL': false,
+                    });
+                    gameStatusChannel.overwritePermissions(gameRole, {
+                        'READ_MESSAGES': true,
+                        'SEND_MESSAGES': false,
+                        'SEND_TTS_MESSAGES': false,
+                        'EMBED_LINKS': false,
+                        'ATTACH_FILES': false,
+                        'READ_MESSAGE_HISTORY': true,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': false,
+                        'ADD_REACTIONS': false,
+                    });
+
+                    gameStatusChannel.overwritePermissions(roleMembers, {
+                        'READ_MESSAGES': false,
+                        'SEND_MESSAGES': false,
+                        'SEND_TTS_MESSAGES': false,
+                        'EMBED_LINKS': false,
+                        'ATTACH_FILES': false,
+                        'READ_MESSAGE_HISTORY': false,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': false,
+                        'ADD_REACTIONS': false,
+                    });
+                    gameStatusChannel.overwritePermissions(roleMod, {
+                        'READ_MESSAGES': true,
+                        'SEND_MESSAGES': true,
+                        'MANAGE_MESSAGES': true,
+                        'SEND_TTS_MESSAGES': true,
+                        'EMBED_LINKS': true,
+                        'ATTACH_FILES': true,
+                        'READ_MESSAGE_HISTORY': true,
+                        'MENTION_EVERYONE': false,
+                        'USE_EXTERNAL_EMOJIS': true,
+                        'ADD_REACTIONS': true,
+                    });
+                    successMessage(`Salon ${gameStatusChannel.name} créé`, message);
+                })
+                this.client.db_games.set(args.arguments, game);
                 break;
             }
             case 'infos': {
@@ -301,6 +480,7 @@ class GamesCommand extends Command {
                     });
                     successMessage(`Salon ${gameInfosChannel.name} créé`, message);
                 })
+                this.client.db_games.set(args.arguments, game);
                 break;
             }
         }
