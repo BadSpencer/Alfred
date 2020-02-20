@@ -76,9 +76,6 @@ exports.usergameCheck = async (client) => {
     })
 };
 
-
-
-
 exports.userdataCreate = async (client, member) => {
     let userdata = client.db_userdata.get("default");
     let userdataLogs = datamodel.tables.userdataLogs;

@@ -34,7 +34,6 @@ exports.tables = {
         "name": "default",
         "createdAt": "",
         "actif": false,
-        "categorie": "",
         "roleID": "",
         "modRoleID": "",
         "playRoleID": "",
@@ -42,9 +41,7 @@ exports.tables = {
         "textChannelID": "",
         "infosChannelID": "",
         "statusChannelID": "",
-        "voiceChannelID": "",
-        "joinChannelID": "",
-        "joinMessageID": ""
+        "voiceChannelID": ""
     },
     userdata: {
         "id": "",
