@@ -58,6 +58,12 @@ class GamesCommand extends Command {
             case 'create': {
                 let game = this.client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
+
+                let statusMessage;
+
+                statusMessage = await response.reply(`Création des rôles et salons pour ${args.arguments}...`);
+
+
                 // Création du rôle principal
                 await message.guild.createRole({
                     name: args.arguments,
@@ -66,7 +72,7 @@ class GamesCommand extends Command {
                     mentionable: true
                 }).then(mainRole => {
                     game.roleID = mainRole.id;
-                    successMessage(`Rôle principal ${mainRole.name} créé`, message);
+                    statusMessage.edit(`Rôle principal ${mainRole.name} créé`);
                 })
 
                 // Création du rôle "Joue à"
@@ -75,9 +81,9 @@ class GamesCommand extends Command {
                     color: settings.gamePlayRoleColor,
                     hoist: true,
                     mentionable: false
-                }).then(mainRole => {
-                    game.playRoleID = mainRole.id;
-                    successMessage(`Rôle "Joue à" ${mainRole.name} créé`, message);
+                }).then(playRole => {
+                    game.playRoleID = playRole.id;
+                    statusMessage.edit(`Rôle "Joue à" ${playRole.name} créé`);
                 })
 
                 // Création categorie
@@ -86,10 +92,10 @@ class GamesCommand extends Command {
                 }).then(async category => {
                     game.categoryID = category.id;
                     category.setPosition(99);
-                    successMessage(`Catégorie ${category.name} créée`, message);
+                    statusMessage.edit(`Catégorie ${category.name} créée`);
 
                     // Création du salon discussions du jeu 
-                    await message.guild.createChannel(`${settings.gameTextPrefix}discussions`, {
+                    await message.guild.createChannel(`🔒${settings.gameTextPrefix}discussions`, {
                         type: 'text'
                     }).then(textchannel => {
                         game.textChannelID = textchannel.id;
@@ -101,10 +107,11 @@ class GamesCommand extends Command {
                         textchannel.overwritePermissions(roleMembers, {
                             'READ_MESSAGES': false,
                         });
-                        successMessage(`Salon ${textchannel.name} créé`, message);
+                        statusMessage.edit(`Salon ${textchannel.name} créé`);
                     })
                 })
                 await this.client.db_games.set(args.arguments, game);
+                statusMessage.edit(`Salons et rôles pour ${args.arguments} correctement créés`);
 
                 break;
             }
@@ -125,6 +132,29 @@ class GamesCommand extends Command {
                 if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message);
                 if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message);
                 if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message);
+
+                let statusMessage;
+                await message.util.send(`Quel est l'emoji qui doit être associé à ce jeu ?`);
+
+                const responses = await message.channel.awaitMessages(msg => msg.author.id === message.author.id, {
+                    max: 1,
+                    time: 10000,
+                });
+
+                if (responses.size !== 1) {
+                    message.reply('Activation du jeu annulée');
+                    return null;
+                }
+                const response = responses.first();
+
+                if (response.content) {
+                    game.emoji = response.content;
+                    statusMessage = await response.reply(`Activation du jeu ${args.arguments}...`);
+                } else {
+                    message.reply('Activation du jeu annulée');
+                    return null;
+                }
+
 
                 await gameCategory.setName(`${settings.gameCategoryPrefix}${args.arguments}`);
                 await gameTextChannel.setName(`${settings.gameTextPrefix}discussions`);
@@ -203,7 +233,6 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': true,
                     });
                 }
-
                 if (gameStatutChannel) {
                     await gameStatutChannel.setName(`${settings.gameStatusPrefix}statut`)
                     await gameStatutChannel.overwritePermissions(roleEveryone, {
@@ -247,6 +276,7 @@ class GamesCommand extends Command {
                 }
                 game.actif = true;
                 this.client.db_games.set(args.arguments, game);
+                statusMessage.edit(`${args.arguments} a été correctement activé`);
                 break;
             }
             case 'inactive': {
@@ -314,6 +344,7 @@ class GamesCommand extends Command {
                 }
 
                 game.actif = false;
+                game.emoji = "";
                 this.client.db_games.set(args.arguments, game);
                 break;
             }
@@ -345,6 +376,12 @@ class GamesCommand extends Command {
                     gameInfosChannel.delete("Suppression du jeu");
                 }
 
+                const gameStatusChannel = message.guild.channels.get(game.statusChannelID);
+                if (gameStatusChannel) {
+                    game.statusChannelID = "";
+                    gameStatusChannel.delete("Suppression du jeu");
+                }
+
                 const gameVoiceChannel = message.guild.channels.get(game.voiceChannelID);
                 if (gameVoiceChannel) {
                     game.voiceChannelID = "";
@@ -362,6 +399,9 @@ class GamesCommand extends Command {
                     game.categoryID = "";
                     gameCategory.delete("Suppression du jeu");
                 }
+                game.actif = false;
+                game.emoji = "";
+                this.client.db_games.set(args.arguments, game);
                 break;
             }
             case 'voice': {

@@ -20,27 +20,38 @@ exports.check = async () => {
 exports.PostRoleReaction = async (client) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
-    const games = client.db.gamesGetActive(client);
+    const games = await client.db.gamesGetActive(client);
     
     const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
+
+    let embed = new Discord.RichEmbed(await client.games.gameGetListEmbed(client));
+
     let gameJoinMessage = undefined;
     if (settings.gameJoinMessage !== "") {
-        gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage);
+        gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(d => client.logger.log(`Message ${d.id} dans salon ${channel.name} correctement chargé`))
+        .catch(d => {
+            gameJoinMessage = undefined;
+        });
+
     }
 
-    let embed = new Discord.RichEmbed(client.games.gameGetListEmbed(client));
-
+    
+    let gamesArray = games.array();
+    
+    gamesArray.sort(function (a, b) {
+        return a.name > b.name;
+    });
 
     if (!gameJoinMessage) {
         await gameJoinChannel.send(embed).then(async msgSent => {
             settings.gameJoinMessage = msgSent.id;
             client.db_settings.set(guild.id, settings);
 
-            games.forEach(async game => {
+            gamesArray.forEach(async game => {
                 if (game.name !== "" && game.actif == true) {
                     let gameRole = guild.roles.get(game.roleID);
                     if (gameRole) {
-                        await msgSent.react(game.reactEmoji);
+                        await msgSent.react(game.emoji);
                     }
                 }
             });
@@ -55,24 +66,26 @@ exports.gameGetListEmbed = async (client) => {
     const guild = client.guilds.get(client.config.guildID);
     const games = await client.db.gamesGetActive(client);
 
-    /*
-    let games = client.games.array();
-    games.sort(function (a, b) {
+    
+    let gamesArray = games.array();
+    
+    gamesArray.sort(function (a, b) {
         return a.name > b.name;
     });
-    */
 
-    if (games) {
+
+
+    if (gamesArray) {
         let embed = new Discord.RichEmbed();
         let description = ``;
         let footer = (`Liste générée le ${moment().format('DD.MM.YYYY')} à ${moment().format('HH:mm')}`);
 
-        games.forEach(game => {
+        gamesArray.forEach(game => {
             if (game.name !== "" && game.actif == true) {
                 let gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     let totalMembers = guild.roles.get(game.roleID).members.size;
-                    description += `${game.reactEmoji} : ${game.name} \`${totalMembers}👤\`\n`;
+                    description += `${game.emoji} : ${game.name} \`${totalMembers}👤\`\n`;
                 };
             }
         });

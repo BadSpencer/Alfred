@@ -34,6 +34,7 @@ exports.tables = {
     games: {
         "id": "",
         "name": "default",
+        "emoji": "",
         "createdAt": "",
         "actif": false,
         "roleID": "",
