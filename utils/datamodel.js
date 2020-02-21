@@ -19,6 +19,8 @@ exports.tables = {
         "voiceChansCategory": "🔷Salons vocaux",
         "AFKChannel": "⌛AFK",
         "quietChannel": "🔈Au calme",
+        "gameJoinChannel": "🎮vos-jeux",
+        "gameJoinMessage": "",
         "gameCategoryPrefix": "🟧",
         "gameTextPrefix": "💬",
         "gameInfosPrefix": "📌",

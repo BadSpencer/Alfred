@@ -20,7 +20,7 @@ class GamesCommand extends Command {
             category: 'config',
             args: [{
                     id: "action",
-                    type: ["list", "add", "view", "create", "active", "inactive", "delete", "voice", "statut", "infos"],
+                    type: ["list", "add", "view", "create", "active", "inactive", "delete", "voice", "statut", "infos", "postrr"],
                     default: "list",
                 },
                 {
@@ -39,7 +39,7 @@ class GamesCommand extends Command {
         const roleEveryone = guild.roles.find(r => r.name == "@everyone");
         const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
         const roleMod = guild.roles.find(r => r.name == settings.modRole);
-        
+
         switch (args.action) {
             case 'list': {
                 this.client.db.enmapDisplay(this.client, this.client.db_games, message.channel);
@@ -118,7 +118,7 @@ class GamesCommand extends Command {
                 const gameTextChannel = message.guild.channels.get(game.textChannelID);
 
                 const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
-                const gameStatutChannel = message.guild.channels.get(game.statusChannelID);                
+                const gameStatutChannel = message.guild.channels.get(game.statusChannelID);
 
                 if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message);
                 if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message);
@@ -162,7 +162,7 @@ class GamesCommand extends Command {
                     'USE_EXTERNAL_EMOJIS': true,
                     'ADD_REACTIONS': true,
                 });
-                if(gameInfosChannel) {
+                if (gameInfosChannel) {
                     await gameInfosChannel.setName(`${settings.gameInfosPrefix}informations`)
                     gameInfosChannel.overwritePermissions(roleEveryone, {
                         'VIEW_CHANNEL': false,
@@ -204,7 +204,7 @@ class GamesCommand extends Command {
                     });
                 }
 
-                if(gameStatutChannel) {
+                if (gameStatutChannel) {
                     await gameStatutChannel.setName(`${settings.gameStatusPrefix}statut`)
                     await gameStatutChannel.overwritePermissions(roleEveryone, {
                         'VIEW_CHANNEL': false,
@@ -281,7 +281,7 @@ class GamesCommand extends Command {
                     'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
                 });
-                if(gameInfosChannel) {
+                if (gameInfosChannel) {
                     await gameInfosChannel.setName(`🔒${settings.gameInfosPrefix}informations`)
                     await gameInfosChannel.overwritePermissions(gameRole, {
                         'VIEW_CHANNEL': false,
@@ -297,7 +297,7 @@ class GamesCommand extends Command {
                     });
                 }
 
-                if(gameStatutChannel) {
+                if (gameStatutChannel) {
                     await gameStatutChannel.setName(`🔒${settings.gameStatusPrefix}statut`)
                     await gameStatutChannel.overwritePermissions(gameRole, {
                         'VIEW_CHANNEL': false,
@@ -481,6 +481,10 @@ class GamesCommand extends Command {
                     successMessage(`Salon ${gameInfosChannel.name} créé`, message);
                 })
                 this.client.db_games.set(args.arguments, game);
+                break;
+            }
+            case 'postrr': {
+                this.client.games.PostRoleReaction(this.client);
                 break;
             }
         }
