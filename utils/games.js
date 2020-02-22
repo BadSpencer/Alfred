@@ -21,23 +21,17 @@ exports.PostRoleReaction = async (client) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const games = await client.db.gamesGetActive(client);
-    
+
     const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
 
     let embed = new Discord.RichEmbed(await client.games.gameGetListEmbed(client));
 
     let gameJoinMessage = undefined;
     if (settings.gameJoinMessage !== "") {
-        gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(d => client.logger.log(`Message ${d.id} dans salon ${channel.name} correctement chargé`))
-        .catch(d => {
-            gameJoinMessage = undefined;
-        });
-
+        gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).catch(err =>{client.logger.log(`Liste de jeux non trouvée. Une nouvelle liste est postée`)});
     }
 
-    
     let gamesArray = games.array();
-    
     gamesArray.sort(function (a, b) {
         return a.name > b.name;
     });
@@ -47,14 +41,9 @@ exports.PostRoleReaction = async (client) => {
             settings.gameJoinMessage = msgSent.id;
             client.db_settings.set(guild.id, settings);
 
-            gamesArray.forEach(async game => {
-                if (game.name !== "" && game.actif == true) {
-                    let gameRole = guild.roles.get(game.roleID);
-                    if (gameRole) {
-                        await msgSent.react(game.emoji);
-                    }
-                }
-            });
+            for (const game of gamesArray) {
+                await msgSent.react(game.emoji);
+            }
         });
     } else {
         gameJoinMessage.edit(embed);
@@ -66,9 +55,9 @@ exports.gameGetListEmbed = async (client) => {
     const guild = client.guilds.get(client.config.guildID);
     const games = await client.db.gamesGetActive(client);
 
-    
+
     let gamesArray = games.array();
-    
+
     gamesArray.sort(function (a, b) {
         return a.name > b.name;
     });

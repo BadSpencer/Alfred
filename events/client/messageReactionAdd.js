@@ -1,7 +1,13 @@
 const {
     Listener
 } = require('discord-akairo');
+const {
+    successMessage,
+    errorMessage,
+    warnMessage
+} = require('../../utils/messages');
 
+const textes = require('../../utils/textes');
 
 class MessageReactionAddListener extends Listener {
     constructor() {
@@ -11,11 +17,16 @@ class MessageReactionAddListener extends Listener {
         });
     }
 
-    exec(messageReaction, user) {
+    async exec(messageReaction, user) {
         if (user.bot) return;
-        let reacted = `${user.id} à réagi sur le message ${messageReaction.message.id}`
-        this.client.logger.log(`${reacted}`);
 
+        const guild = this.client.guilds.get(this.client.config.guildID);
+        const settings = await this.client.db.getSettings(this.client);
+        const member = guild.members.get(user.id);
+
+
+        let reacted = `${member.displayName} à réagi sur le message ${messageReaction.message.id}`
+        this.client.logger.log(`${reacted}`);
 
         let postedEmbed = this.client.db_postedEmbeds.get(messageReaction.message.id);
         if (postedEmbed) {
@@ -54,64 +65,26 @@ class MessageReactionAddListener extends Listener {
             }
 
         }
-        //
-        // Gestion de la pagination
-        //
 
-        /*
-        if (packet.t == 'MESSAGE_REACTION_ADD') {
-
-            if (packet.d.emoji.name == '▶') {
-                let dispMessage = client.dispMessage.get(packet.d.message_id);
-                let totalPages = dispMessage.pages.length;
-                let indexNewPage = dispMessage.currentPage;
-                let channel = client.channels.get(packet.d.channel_id);
-
-                channel.fetchMessage(packet.d.message_id).then(msg => {
-                    let newEmbed = dispMessage.pages[indexNewPage].embed;
-                    if (msg) {
-                        msg.edit(newEmbed);
-                        if (indexNewPage == totalPages - 1) {
-                            msg.clearReactions().then(() => msg.react('◀'));
-                        } else {
-                            msg.clearReactions().then(() => msg.react('◀')
-                                .then(() => msg.react('▶')));
-                        }
+        if (messageReaction.message.id == settings.gameJoinMessage) {
+            const game = this.client.db_games.find(game => game.emoji == messageReaction.emoji.name);
+            if (game) {
+                const gameRole = guild.roles.get(game.roleID);
+                if (gameRole) {
+                    if (member.roles.has(gameRole.id)) {
+                        warnMessage(textes.games.reactionRoles.dejaDansGroupe.random(), messageReaction.message);
+                    } else {
+                        member.addRole(gameRole);
+                        successMessage(`Vous faites désormais partie du groupe ${game.name}.`, messageReaction.message);
                     }
-                });
-                dispMessage.currentPage = indexNewPage + 1;
-                client.dispMessage.set(packet.d.message_id, dispMessage);
-            };
+                } else {
+                    // Erreur role principal jeu
+                }
 
-            if (packet.d.emoji.name == '◀') {
-                let dispMessage = client.dispMessage.get(packet.d.message_id);
-                let totalPages = dispMessage.pages.length;
-                let indexNewPage = dispMessage.currentPage - 2;
-                let channel = client.channels.get(packet.d.channel_id);
-
-                channel.fetchMessage(packet.d.message_id).then(msg => {
-                    let newEmbed = dispMessage.pages[indexNewPage].embed;
-                    if (msg) {
-                        msg.edit(newEmbed);
-
-                        if (indexNewPage == 0) {
-                            msg.clearReactions().then(() => msg.react('▶'));
-                        } else {
-                            msg.clearReactions().then(() => msg.react('◀')
-                                .then(() => msg.react('▶')));
-                        }
-                    }
-                });
-                dispMessage.currentPage = indexNewPage + 1;
-                client.dispMessage.set(packet.d.message_id, dispMessage);
-
+            } else {
+                // Jeu non trouvé avec emoji
             }
         }
-        */
-
-
-
-
 
 
 

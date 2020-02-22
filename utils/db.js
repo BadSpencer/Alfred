@@ -151,12 +151,16 @@ exports.userlogAdd = async (client, member, type, xpgained, xpreason) => {
 // GAMES
 exports.gamesCheck = async (client) => {
     client.logger.log(`Vérification de la base de données des jeux`);
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
     await client.db_games.delete("default");
     await client.db_games.set("default", datamodel.tables.games);
 
     let games = await client.db.gamesGetActive(client);
 
     if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
+
+    await client.games.PostRoleReaction(client);
 };
 exports.gamesCreate = async (client, gamename) => {
     let game = client.db_games.get("default");
@@ -182,13 +186,14 @@ exports.gamesGetAll = async (client) => {
 // POSTED EMBEDS
 exports.postedEmbedsCheck = async (client) => {
     client.logger.log(`Vérification des Embeds postés`);
-    await client.db_postedEmbeds.delete("default");
+    await client.db_postedEmbeds.deleteAll();
     await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
 
-    let postedEmbeds = await client.db.postedEmbedsGetAll(client);
+    //let postedEmbeds = await client.db.postedEmbedsGetAll(client);
 
-    if (!postedEmbeds) return client.logger.warn(`Aucun embeds postés trouvé. Vérification interrompue.`);
+    //if (!postedEmbeds) return client.logger.warn(`Aucun embeds postés trouvé. Vérification interrompue.`);
 
+    /*
     postedEmbeds.forEach(async postedEmbed => {
         let channel = client.channels.get(postedEmbed.channelID);
         if (channel) {
@@ -199,6 +204,7 @@ exports.postedEmbedsCheck = async (client) => {
                 });
         }
     })
+    */
 
 };
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {
@@ -301,3 +307,17 @@ exports.enampCreateEmbed = async (client, enmap, name, page) => {
     embed.setFooter(`Page: ${page}/${nbPages}`);
     return embed;
 }
+
+Object.defineProperty(String.prototype, "toProperCase", {
+    value: function () {
+        return this.replace(/([^\W_]+[^\s-]*) */g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    }
+});
+
+// <Array>.random() returns a single random element from an array
+// [1, 2, 3, 4, 5].random() can return 1, 2, 3, 4 or 5.
+Object.defineProperty(Array.prototype, "random", {
+    value: function () {
+        return this[Math.floor(Math.random() * this.length)];
+    }
+});

@@ -14,7 +14,7 @@ exports.tables = {
         "welcomeEnabled": "",
         "welcomeMemberChannel": "💬général",
         "welcomeMemberMessage": "",
-        "welcomeMemberEnabled": "",  
+        "welcomeMemberEnabled": "false",  
         "freeVoiceChan": "🔈Salon libre",
         "voiceChansCategory": "🔷Salons vocaux",
         "AFKChannel": "⌛AFK",
@@ -88,5 +88,8 @@ exports.tables = {
         "currentPage": 1,
         "totalPages": "",
         "pages": []
+    },
+    textes:{
+        "id": ""
     }
 }

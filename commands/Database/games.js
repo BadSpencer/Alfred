@@ -1,3 +1,7 @@
+const fs = require('fs');
+const {
+    MessageAttachment
+} = require('discord.js');
 const {
     Command
 } = require('discord-akairo');
@@ -20,7 +24,7 @@ class GamesCommand extends Command {
             category: 'config',
             args: [{
                     id: "action",
-                    type: ["list", "add", "view", "create", "active", "inactive", "delete", "voice", "statut", "infos", "postrr"],
+                    type: ["list", "add", "view", "create", "active", "inactive", "delete", "voice", "statut", "infos", "postrr", "export", "import"],
                     default: "list",
                 },
                 {
@@ -59,10 +63,7 @@ class GamesCommand extends Command {
                 let game = this.client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
 
-                let statusMessage;
-
-                statusMessage = await response.reply(`Création des rôles et salons pour ${args.arguments}...`);
-
+                let statusMessage = await message.channel.send(`Création des rôles et salons pour ${args.arguments}...`);
 
                 // Création du rôle principal
                 await message.guild.createRole({
@@ -525,6 +526,38 @@ class GamesCommand extends Command {
             }
             case 'postrr': {
                 this.client.games.PostRoleReaction(this.client);
+                break;
+            }
+            case 'export': {
+                let games = this.client.db_games.fetchEverything();
+                if (!games) return errorMessage(`Aucun jeu trouvé`, message);
+
+
+                let data = "";
+                games.forEach(game => {
+                    data += JSON.stringify(game) + `\n`;
+                })
+
+                //const buffer = new Buffer.allocUnsafe(exporteddata);
+
+                //const attachment = new MessageAttachment(exporteddata, 'games.txt');
+                //const attachment = new MessageAttachment(buffer, 'games.txt');
+
+                
+
+                //let data = JSON.stringify(data);
+                fs.writeFileSync('export.json', data);
+
+                //message.channel.send(`${message.author}, Voici la table des jeux`, attachment);
+                
+                message.channel.send({
+                    files: [{
+                      attachment: 'export.json',
+                      name: 'games.json'
+                    }]
+                  });
+ 
+
                 break;
             }
         }

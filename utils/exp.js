@@ -7,7 +7,7 @@ exports.activityCheck = async (client) => {
     if(!games) return;
 
     guild.members.forEach(member => {
-        client.db.userdataAddXP(client, member, "1", "Joue à un jeu");
+        //client.db.userdataAddXP(client, member, "1", "Joue à un jeu");
         if (member.presence.game) {
             /*
             games.forEach(game => {
