@@ -1,5 +1,5 @@
 const {
-Listener
+    Listener
 } = require('discord-akairo');
 const chalk = require('chalk');
 const moment = require('moment');
@@ -14,8 +14,10 @@ class guildMemberAddListener extends Listener {
     }
 
     exec(member) {
-        let newMember = `Nouvel utilisateur ${member.displayName} à rejoint le serveur` 
-        this.client.logger.log(`${newMember}`);
+        let client = this.client;
+
+        client.logger.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_SERVER", member));
+        client.members.serverJoinNotification(client, member);
     }
 }
 

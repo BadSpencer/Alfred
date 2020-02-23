@@ -29,17 +29,14 @@ class guildMemberUpdateListener extends Listener {
             newMember.roles.forEach(newRole => {
                 if (!oldMember.roles.has(newRole.id)) {
                     client.logger.log(client.textes.get("COM_MEMBER_ADD_ROLE", newMember, newRole));
-
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
-
-                      client.logger.log(client.textes.get("COM_MEMBER_ACCEPTED", newMember, newRole));
-                      const welcomeMemberMessage = client.textes.get("COM_MEMBER_ACCEPTED", newMember, newRole);
-
-                      
-
-
-                      newMember.guild.channels.find(c => c.name === settings.welcomeMemberChannel).send(welcomeMemberMessage).catch(console.error);
+                        client.members.welcomeNewMember(client, member);
+                    }
+                    // Annonce rejoindre jeu
+                    const game = client.db_games.find(game => game.roleID == newRole.id);
+                    if (game) {
+                        client.games.newPlayerNotification(client, game, newMember);
                     }
                 }
             });

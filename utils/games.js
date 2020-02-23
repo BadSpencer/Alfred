@@ -1,5 +1,8 @@
 const moment = require("moment");
 const Discord = require("discord.js");
+const {
+    RichEmbed
+} = require('discord.js');
 
 
 
@@ -108,3 +111,28 @@ exports.gameGetListEmbed = async (client) => {
         return embed;
     }
 };
+
+exports.newPlayerNotification = async (client, game, member) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+
+    const gameTextChannel = await guild.channels.get(game.textChannelID);
+
+    let avatar;
+    if (!member.user.avatarURL) {
+        avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
+    } else {
+        avatar = member.user.avatarURL;
+    }
+
+    if (gameTextChannel) {
+        const welcomeMessage = new RichEmbed()
+            .setColor(colors['darkviolet'])
+            .setThumbnail(avatar)
+            .setDescription(client.textes.get("GAMES_JOIN_NOTIFICATION", game, member));
+        welcomeChannel.send(welcomeMessage);
+    };
+
+
+}

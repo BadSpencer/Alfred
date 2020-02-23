@@ -14,8 +14,10 @@ class guildMemberRemoveListener extends Listener {
     }
 
     exec(member) {
-        let newMember = `Nouvel utilisateur ${member.name} à quitté le serveur` 
-        this.client.logger.log(`${newMember}`);
+        let client = this.client;
+        
+        client.logger.log(client.textes.get("LOG_EVENT_MEMBER_QUIT_SERVER", member));
+        client.members.serverQuitNotification(client, member);
     }
 }
 

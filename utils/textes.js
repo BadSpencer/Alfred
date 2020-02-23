@@ -11,29 +11,50 @@ module.exports = class {
             COM_MEMBER_ACCEPTED: (member) => {
                 return `${member.displayName} à rejoint Casual Effect !`;
             },
-            COM_MEMBER_ADD_ROLE:  (member, role) => {
+            COM_MEMBER_ADD_ROLE: (member, role) => {
                 return `${member.displayName} ajout du rôle "${role.name}"`;
             },
-            COM_MEMBER_REMOVE_ROLE:  (member, role) => {
+            COM_MEMBER_REMOVE_ROLE: (member, role) => {
                 return `${member.displayName} retrait du rôle "${role.name}"`;
             },
-            MESSAGES_BIENVENUE: [
-                "Z'ai cru voir passer un ro{{user}}minet !",
-                "Ah ! {{user}} nous a enfin rejoint ! Nous n'attendions plus que lui...",
-                "Tel qu'annoncé par la prophétie, {{user}} est apparu !",
-                "Oh my Bot ! {{user}} à rejoint le discord !",
-                "{{user}} est le 999.999ème visiteur de ce Discord ! Dommage, il aurait pu gagner un pin's...",
-                "{{user}} nous arrive tout droit... du néant !?!?",
-                "Et bah voilà, c'est malin, maintenant y'a {{user}} qui nous a rejoint",
-                "Chut, chut, chut ! Arrêtez vos conneries {{user}} vient de rejoindre le discord",
-                "AAAAaah ! J'ai eu peur ! Mais non c'est juste {{user}} qui à rejoint le discord... on a eu chaud !",
-                "Le petit {{user}} à été retrouvé seul dans le salon 'accueil' merci de venir le chercher",
-                "Bon alors pour ton premier jour {{user}} ce sera corvée de chiottes !",
-                "{{user}} vient d'arrriver. Ne bougez surtout pas! Sa vision est basée sur le mouvement...",
-                "Et puis t'as des mecs comme {{user}} qui débarquent, comme ça, sans prévenir...",
-                "Attention {{user}} vient d'arriver sur le discord. Je suis prêt à parier qu'il aime tuer des gens",
-                "Quelqu'un à laissé la porte ouverte et {{user}} est rentré !"
-            ],
+            MESSAGES_SERVER_JOIN: (member) => {
+                let textes = [
+                    `Z'ai cru voir passer un ro**${member.displayName}**minet !`,
+                    `Ah ! **${member.displayName}** nous a enfin rejoint ! Nous n'attendions plus que lui...`,
+                    `Tel qu'annoncé par la prophétie, **${member.displayName}** est apparu !`,
+                    `Oh my Bot ! **${member.displayName}** à rejoint le discord !`,
+                    `**${member.displayName}** est le 999.999ème visiteur de ce Discord ! Dommage, il aurait pu gagner un pin's...`,
+                    `**${member.displayName}** nous arrive tout droit... du néant !?!?`,
+                    `Et bah voilà, c'est malin, maintenant y'a **${member.displayName}** qui nous a rejoint`,
+                    `Chut, chut, chut ! Arrêtez vos conneries **${member.displayName}** vient de rejoindre le discord`,
+                    `AAAAaah ! J'ai eu peur ! Mais non c'est juste **${member.displayName}** qui à rejoint le discord... on a eu chaud !`,
+                    `Le petit **${member.displayName}** à été retrouvé seul dans le salon 'accueil' merci de venir le chercher`,
+                    `Bon alors pour ton premier jour **${member.displayName}** ce sera corvée de chiottes !`,
+                    `**${member.displayName}** vient d'arrriver. Ne bougez surtout pas! Sa vision est basée sur le mouvement...`,
+                    `Et puis t'as des mecs comme **${member.displayName}** qui débarquent, comme ça, sans prévenir...`,
+                    `Attention **${member.displayName}** vient d'arriver sur le discord. Je suis prêt à parier qu'il aime tuer des gens`,
+                    `Quelqu'un à laissé la porte ouverte et **${member.displayName}**est rentré !`
+                ]
+                return textes.random();
+            },
+            MESSAGES_SERVER_QUIT: (member) => {
+                let textes = [
+                    `Adieu **${member.displayName}** tu vas nous manquer... ou pas !`,
+                    `RIP **${member.displayName}** petit Ange parti trop tôt`,
+                    `Ah Enfin ! On est débarrassé de **${member.displayName}**`,
+                    `Ah bah voilà ! Vous avez fait peur à **${member.displayName}** et il est parti !`,
+                    `T'as raison **${member.displayName}** ! Casse-toi ! Et qu'on ne te revoit plus jamais par ici`,
+                    `T'as les vrai, et puis t'as les mecs comme **${member.displayName}** qui se barrent sans rien dire.`
+                ]
+                return textes.random();
+            },
+            MESSAGES_NEW_MEMBER: (member) => {
+                let textes = [
+                    `${member.displayName} a passé son épreuve d'initiation avec succès et fait désormais partie de Casual Effect`,
+                    `${member.displayName} a été intronisé (ça ne fait pas mal) et fait désormais partie de Casual Effect`
+                ]
+                return textes.random();
+            },
             WELCOME: (name) => {
                 let textes = [
                     `Z'ai cru voir passer un ro${name}minet !`,
@@ -59,6 +80,13 @@ module.exports = class {
                 ]
                 return textes.random();
             },
+            GAMES_JOIN_NOTIFICATION: (jeu, member) => {
+                let textes = [
+                    `${member.displayName} à rejoint le groupe ${jeu}`,
+                    `${member.displayName} vient complèter les rangs du groupe ${jeu}`
+                ]
+                return textes.random();
+            },
             GAMES_QUIT_SUCCESS: (jeu) => {
                 let textes = [
                     `Vous avez quitté le groupe ${jeu}. Vous allez nous manquer!`,
@@ -81,10 +109,22 @@ module.exports = class {
             LOG_EVENT_MEMBER_JOIN_SERVER: (member) => {
                 return `${member.displayName} à rejoint le serveur`;
             },
+            LOG_EVENT_MEMBER_QUIT_SERVER: (member) => {
+                return `${member.displayName} à quitté le serveur`;
+            },
             LOG_EVENT_MEMBER_JOIN_MEMBERS: (member) => {
                 return `${member.displayName} à rejoint Casual Effect`;
             },
             LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION: "Notification nouveau membre désactivée",
+            MOD_NOTIF_SERVER_JOIN: (member) => {
+                return `${member.displayName} à rejoint le serveur`;
+            },
+            MOD_NOTIF_SERVER_QUIT: (member) => {
+                return `${member.displayName} à quitté le serveur`;
+            },
+            MOD_NOTIF_NEW_MEMBER: (member) => {
+                return `${member.displayName} à été accepté et ajouté au groupe des membres`;
+            },
 
 
             // Utils
