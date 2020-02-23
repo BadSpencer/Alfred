@@ -1,26 +1,42 @@
-const { RichEmbed } = require('discord.js');
+const {
+    RichEmbed
+} = require('discord.js');
 const colors = require('./colors');
+const {
+    client
+} = require('discord-akairo');
 
-module.exports.errorMessage = (error, message) => {
+module.exports.errorMessage = (error, channel) => {
     const errorMsg = new RichEmbed()
         .setColor(colors['red'])
-        .setDescription(`**\`❌\`** ${error}`);
+        //.setThumbnail(`https://i.imgur.com/WgWfhEg.png?1`)
+        .setDescription(`❌ ${error}`);
 
-    return message.channel.send(errorMsg);
+    return channel.send(errorMsg).then(msgSent => {msgSent.delete(10000)});
 };
 
-module.exports.warnMessage = (warning, message) => {
+module.exports.warnMessage = (warning, channel) => {
     const warnMsg = new RichEmbed()
         .setColor(colors['orange'])
-        .setDescription(`**\`⚠\`** ${warning}`);
-
-    return message.channel.send(warnMsg);
+        //.setThumbnail(`https://i.imgur.com/jkxC5Am.png?1`)
+        .setDescription(`⚠️ ${warning}`);
+    return channel.send(warnMsg).then(msgSent => {msgSent.delete(10000)});
 };
 
-module.exports.successMessage = (content, message) => {
+module.exports.successMessage = (content, channel) => {
     const succMsg = new RichEmbed()
         .setColor(colors['green'])
-        .setDescription(`**\`✔\`** ${content}`);
+        //.setThumbnail(`https://i.imgur.com/PTDLRcr.png?1`)
+        .setDescription(`✅ ${content}`);
 
-    return message.channel.send(succMsg);
+    return channel.send(succMsg).then(msgSent => {msgSent.delete(10000)});
+};
+
+module.exports.questionMessage = (question, channel) => {
+    const questMsg = new RichEmbed()
+        .setColor(colors['blueviolet'])
+        //.setThumbnail(`https://i.imgur.com/jo6uOII.png?1`)
+        .setDescription(`❔ ${question}`);
+
+    return channel.send(questMsg).then(msgSent => {msgSent.delete(10000)});
 };

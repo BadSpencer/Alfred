@@ -55,13 +55,13 @@ class GamesCommand extends Command {
             }
             case 'view': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 message.channel.send(`Données de **${args.arguments}**\n\`\`\`json\n${inspect(game)}\n\`\`\``)
                 break;
             }
             case 'create': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
 
                 let statusMessage = await message.channel.send(`Création des rôles et salons pour ${args.arguments}...`);
 
@@ -118,8 +118,8 @@ class GamesCommand extends Command {
             }
             case 'active': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
-                if (game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà actif`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
+                if (game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà actif`, message.channel);
 
                 const gameRole = message.guild.roles.get(game.roleID);
                 const gameCategory = message.guild.channels.get(game.categoryID);
@@ -128,11 +128,11 @@ class GamesCommand extends Command {
                 const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
                 const gameStatutChannel = message.guild.channels.get(game.statusChannelID);
 
-                if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message);
-                if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message);
-                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message);
-                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message);
-                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message);
+                if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message.channel);
+                if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message.channel);
+                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message.channel);
+                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message.channel);
+                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message.channel);
 
                 let statusMessage;
                 await message.util.send(`Quel est l'emoji qui doit être associé à ce jeu ?`);
@@ -282,8 +282,8 @@ class GamesCommand extends Command {
             }
             case 'inactive': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà inactif`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
+                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà inactif`, message.channel);
 
                 const gameRole = message.guild.roles.get(game.roleID);
                 const gameCategory = message.guild.channels.get(game.categoryID);
@@ -292,11 +292,11 @@ class GamesCommand extends Command {
                 const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
                 const gameStatutChannel = message.guild.channels.get(game.statusChannelID);
 
-                if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message);
-                if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message);
-                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message);
-                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message);
-                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message);
+                if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message.channel);
+                if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message.channel);
+                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message.channel);
+                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message.channel);
+                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message.channel);
 
                 await gameCategory.setName(`🔒${settings.gameCategoryPrefix}${args.arguments}`);
                 await gameTextChannel.setName(`🔒${settings.gameTextPrefix}discussions`);
@@ -351,8 +351,8 @@ class GamesCommand extends Command {
             }
             case 'delete': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
-                if (game.actif) return errorMessage(`Le jeu ${args.arguments} est actif`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
+                if (game.actif) return errorMessage(`Le jeu ${args.arguments} est actif`, message.channel);
 
                 const gameRole = message.guild.roles.get(game.roleID);
                 if (gameRole) {
@@ -410,8 +410,8 @@ class GamesCommand extends Command {
             }
             case 'statut': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
+                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
 
                 const gameCategory = message.guild.channels.get(game.categoryID);
                 const gameRole = message.guild.roles.get(game.roleID);
@@ -461,15 +461,15 @@ class GamesCommand extends Command {
                         'USE_EXTERNAL_EMOJIS': true,
                         'ADD_REACTIONS': true,
                     });
-                    successMessage(`Salon ${gameStatusChannel.name} créé`, message);
+                    successMessage(`Salon ${gameStatusChannel.name} créé`, message.channel);
                 })
                 this.client.db_games.set(args.arguments, game);
                 break;
             }
             case 'infos': {
                 let game = this.client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
+                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
 
                 const gameCategory = message.guild.channels.get(game.categoryID);
                 const gameRole = message.guild.roles.get(game.roleID);
@@ -519,7 +519,7 @@ class GamesCommand extends Command {
                         'USE_EXTERNAL_EMOJIS': true,
                         'ADD_REACTIONS': true,
                     });
-                    successMessage(`Salon ${gameInfosChannel.name} créé`, message);
+                    successMessage(`Salon ${gameInfosChannel.name} créé`, message.channel);
                 })
                 this.client.db_games.set(args.arguments, game);
                 break;
@@ -530,7 +530,7 @@ class GamesCommand extends Command {
             }
             case 'export': {
                 let games = this.client.db_games.fetchEverything();
-                if (!games) return errorMessage(`Aucun jeu trouvé`, message);
+                if (!games) return errorMessage(`Aucun jeu trouvé`, message.channel);
 
 
                 let data = "";

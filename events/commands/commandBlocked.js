@@ -51,7 +51,7 @@ class CommandBlockedListener extends Listener {
         }
 
         // Log 
-        errorMessage(`Commande bloquée pour la raison: ***\`${raison}\`***`, message);
+        errorMessage(`Commande bloquée pour la raison: ***\`${raison}\`***`, message.channel);
         this.client.logger.warn(`${blocked}`);
 
 

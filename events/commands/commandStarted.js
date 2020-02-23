@@ -49,7 +49,7 @@ class CommandStartedListener extends Listener {
             time: 5000
         })
             .catch(() => {
-                errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
+                errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message.channel)
             });
     }
 };

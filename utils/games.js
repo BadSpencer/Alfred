@@ -1,23 +1,29 @@
 const moment = require("moment");
 const Discord = require("discord.js");
 
-exports.check = async () => {
+
+
+exports.removeRoleReaction = async (client) => {
     const guild = client.guilds.get(client.config.guildID);
-    const games = client.gamesGetAll();
+    const settings = await client.db.getSettings(client);
+    const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
 
-    if (!games) return;
+    if (!gameJoinChannel) return;
 
-    games.forEach(game => {
-        this.client.logger.log(`Vérifications pour le jeu ${game.name}`)
+    if (settings.gameJoinMessage !== "") {
+        gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
+            message.delete();
+            settings.gameJoinMessage == "";
+            client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_DELETED"));
+        }).catch(err => {
+            settings.gameJoinMessage == "";
+            client.logger.warn(client.textes.get("GAMES_LIST_WARN_NOTFOUND_DELETION"));
+        });
+    }
 
-        if (game.actif == "0") {
-            this.client.logger.log(`${game.name} n'est pas actif. Contrôles annulés.`)
-            return;
-        }
-    });
-};
-
-exports.PostRoleReaction = async (client) => {
+    client.db_settings.set(guild.id, settings);
+}
+exports.PostRoleReaction = async (client, clearReact = false) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const games = await client.db.gamesGetActive(client);
@@ -28,7 +34,12 @@ exports.PostRoleReaction = async (client) => {
 
     let gameJoinMessage = undefined;
     if (settings.gameJoinMessage !== "") {
-        gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).catch(err =>{client.logger.log(`Liste de jeux non trouvée. Une nouvelle liste est postée`)});
+        await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
+            gameJoinMessage = message;
+            client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_LOADED"));
+        }).catch(err => {
+            client.logger.warn(client.textes.get("GAMES_LIST_WARN_NOTFOUND"));
+        });
     }
 
     let gamesArray = games.array();
@@ -40,14 +51,23 @@ exports.PostRoleReaction = async (client) => {
         await gameJoinChannel.send(embed).then(async msgSent => {
             settings.gameJoinMessage = msgSent.id;
             client.db_settings.set(guild.id, settings);
-
             for (const game of gamesArray) {
                 await msgSent.react(game.emoji);
             }
         });
+        client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"))
     } else {
-        gameJoinMessage.edit(embed);
+        gameJoinMessage.edit(embed).then(async msgSent => {
+            if (clearReact) {
+                msgSent.clearReactions();
+                for (const game of gamesArray) {
+                    await msgSent.react(game.emoji);
+                }
+            }
+        });
+        client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
     }
+
 };
 
 exports.gameGetListEmbed = async (client) => {

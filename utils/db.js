@@ -160,7 +160,8 @@ exports.gamesCheck = async (client) => {
 
     if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
 
-    await client.games.PostRoleReaction(client);
+    //await client.games.removeRoleReaction(client);
+    await client.games.PostRoleReaction(client, true);
 };
 exports.gamesCreate = async (client, gamename) => {
     let game = client.db_games.get("default");

@@ -110,14 +110,14 @@ class HelpCommand extends Command {
                             time: 5000
                         })
                         .catch(() => {
-                            errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
+                            errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message.channel)
                         });
 
                     return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, {
                             embed: this._getCmdInfo(message, cmd)
                         })
                         .catch(() => {
-                            return errorMessage('Je ne peux pas vous envoyer mes commandes, vérifiez vos options de confidentialité.', message);
+                            return errorMessage('Je ne peux pas vous envoyer mes commandes, vérifiez vos options de confidentialité.', message.channel);
                         });
 
                 } else if (message.channel.type === 'dm') {
@@ -127,7 +127,7 @@ class HelpCommand extends Command {
                         .catch(() => O_o);
 
                 } else {
-                    return warnMessage(`Je n'ai pas trouvé de commandes appelées **${key}**`, message);
+                    return warnMessage(`Je n'ai pas trouvé de commandes appelées **${key}**`, message.channel);
                 }
             }
         }
@@ -146,7 +146,7 @@ class HelpCommand extends Command {
                     embed: this._getFullList(message)
                 })
                 .catch(() => {
-                    errorMessage('Je ne peux pas vous envoyer mes commandes par message privé, vérifiez vos options de confidentialité.', message).then(m => m.delete(10000));
+                    errorMessage('Je ne peux pas vous envoyer mes commandes par message privé, vérifiez vos options de confidentialité.', message.channel).then(m => m.delete(10000));
                 });
 
         } else if (message.channel.type === 'dm') {

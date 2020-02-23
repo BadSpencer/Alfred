@@ -6,7 +6,6 @@ const {
 } = require('./config.js');
 const Enmap = require("enmap");
 
-
 const client = new AkairoClient({
     ownerID: owner,
     prefix: prefix,
@@ -41,8 +40,11 @@ const client = new AkairoClient({
 client.config = require("./config.js");
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
+client.members =  require("./utils/members");
 client.games =  require("./utils/games");
 client.exp =  require("./utils/exp");
+
+client.textes = new(require(`./utils/textes.js`));
 
 
 client.db_settings = new Enmap({

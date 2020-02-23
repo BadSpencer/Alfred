@@ -50,12 +50,12 @@ class dbSettingsCommand extends Command {
 
             case 'edit': {
 
-                if (!args.key) return errorMessage('Veuillez spécifier une clé', message);
-                if (args.value.length < 1)  return errorMessage('Veuillez spécifier une valeur', message);
+                if (!args.key) return errorMessage('Veuillez spécifier une clé', message.channel);
+                if (args.value.length < 1)  return errorMessage('Veuillez spécifier une valeur', message.channel);
                 settings[args.key] = args.value;
                 this.client.db_settings.set(guild.id, settings);
 
-                successMessage(`${args.key} édité avec succès avec la valeur ${args.value}`, message);
+                successMessage(`${args.key} édité avec succès avec la valeur ${args.value}`, message.channel);
                 break;
             }
 

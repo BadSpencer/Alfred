@@ -4,7 +4,8 @@ const {
 const {
     successMessage,
     errorMessage,
-    warnMessage
+    warnMessage,
+    questionMessage
 } = require('../../utils/messages');
 
 const textes = require('../../utils/textes');
@@ -18,17 +19,17 @@ class MessageReactionAddListener extends Listener {
     }
 
     async exec(messageReaction, user) {
+        let client = this.client;
         if (user.bot) return;
 
-        const guild = this.client.guilds.get(this.client.config.guildID);
-        const settings = await this.client.db.getSettings(this.client);
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
         const member = guild.members.get(user.id);
 
+        client.logger.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
 
-        let reacted = `${member.displayName} à réagi sur le message ${messageReaction.message.id}`
-        this.client.logger.log(`${reacted}`);
 
-        let postedEmbed = this.client.db_postedEmbeds.get(messageReaction.message.id);
+        let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
         if (postedEmbed) {
             switch (messageReaction.emoji.name) {
                 case '▶': {
@@ -67,15 +68,38 @@ class MessageReactionAddListener extends Listener {
         }
 
         if (messageReaction.message.id == settings.gameJoinMessage) {
-            const game = this.client.db_games.find(game => game.emoji == messageReaction.emoji.name);
+            const game = client.db_games.find(game => game.emoji == messageReaction.emoji.name);
             if (game) {
                 const gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.has(gameRole.id)) {
-                        warnMessage(textes.games.reactionRoles.dejaDansGroupe.random(), messageReaction.message);
+                        warnMessage(client.textes.get(`GAMES_JOIN_ALREADY_IN`, game.name), messageReaction.message.channel);
+
+                        let statusMessage = await questionMessage(client.textes.get("GAMES_JOIN_WANT_TO_QUIT", game.name), messageReaction.message.channel);
+                        const responses = await messageReaction.message.channel.awaitMessages(msg => msg.author.id === member.id, {
+                            max: 1,
+                            time: 10000,
+                        });
+
+                        if (responses.size !== 1) {
+                            warnMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
+                            return null;
+                        }
+                        const response = responses.first();
+
+                        if (response.content == "oui") {
+                            response.delete();
+                            member.removeRole(gameRole);
+                            successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), messageReaction.message.channel);
+                        } else {
+                            response.delete();
+                            warnMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
+                            return null;
+                        }
+
                     } else {
                         member.addRole(gameRole);
-                        successMessage(`Vous faites désormais partie du groupe ${game.name}.`, messageReaction.message);
+                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
                     }
                 } else {
                     // Erreur role principal jeu

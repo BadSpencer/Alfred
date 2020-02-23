@@ -12,8 +12,9 @@ class guildMemberUpdateListener extends Listener {
     }
 
     async exec(oldMember, newMember) {
-        const guild = this.client.guilds.get(this.client.config.guildID);
-        const settings = await this.client.db.getSettings(this.client);
+        let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
         const roleMembers = newMember.guild.roles.find(r => r.name == settings.memberRole);
 
         let memberUpdate = `Member update pour ${newMember.displayName}`
@@ -23,21 +24,42 @@ class guildMemberUpdateListener extends Listener {
 
         // Role ajouté
         if (newMember.roles.size > oldMember.roles.size) {
-            this.client.games.PostRoleReaction(this.client);
+            client.games.PostRoleReaction(client);
+
+            newMember.roles.forEach(newRole => {
+                if (!oldMember.roles.has(newRole.id)) {
+                    client.logger.log(client.textes.get("COM_MEMBER_ADD_ROLE", newMember, newRole));
+
+                    // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
+                    if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
+
+                      client.logger.log(client.textes.get("COM_MEMBER_ACCEPTED", newMember, newRole));
+                      const welcomeMemberMessage = client.textes.get("COM_MEMBER_ACCEPTED", newMember, newRole);
+
+                      
+
+
+                      newMember.guild.channels.find(c => c.name === settings.welcomeMemberChannel).send(welcomeMemberMessage).catch(console.error);
+                    }
+                }
+            });
+
 
             /*
             if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
-                const welcomeMemberMessage = settings.welcomeMemberMessage.replace("{{user}}", `${newMember.toString()}`);
+                let welcomeMemberMessage = this.client.textes.get(`MESSAGES_BIENVENUE`, newMember.toString());
+                //const welcomeMemberMessage = settings.welcomeMemberMessage.replace("{{user}}", `${newMember.toString()}`);
                 newMember.guild.channels.find(c => c.name === settings.welcomeMemberChannel).send(welcomeMemberMessage).catch(console.error);
             }
             */
+
 
         }
 
 
         // Role retiré
         if (newMember.roles.size < oldMember.roles.size) {
-            this.client.games.PostRoleReaction(this.client);
+            client.games.PostRoleReaction(this.client);
 
         }
 
