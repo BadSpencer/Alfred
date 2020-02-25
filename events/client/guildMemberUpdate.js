@@ -36,21 +36,12 @@ class guildMemberUpdateListener extends Listener {
                     // Annonce rejoindre jeu
                     const game = client.db_games.find(game => game.roleID == newRole.id);
                     if (game) {
+                        client.games.createUsergame(client, game, newMember);
+                        client.games.updateJoinUsergame(client, game, newMember);
                         client.games.newPlayerNotification(client, game, newMember);
                     }
                 }
             });
-
-
-            /*
-            if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
-                let welcomeMemberMessage = this.client.textes.get(`MESSAGES_BIENVENUE`, newMember.toString());
-                //const welcomeMemberMessage = settings.welcomeMemberMessage.replace("{{user}}", `${newMember.toString()}`);
-                newMember.guild.channels.find(c => c.name === settings.welcomeMemberChannel).send(welcomeMemberMessage).catch(console.error);
-            }
-            */
-
-
         }
 
 
@@ -58,10 +49,20 @@ class guildMemberUpdateListener extends Listener {
         if (newMember.roles.size < oldMember.roles.size) {
             client.games.PostRoleReaction(this.client);
 
+            oldMember.roles.forEach(oldRole => {
+                if (!newMember.roles.has(oldRole.id)) {
+                    client.logger.log(client.textes.get("COM_MEMBER_REMOVE_ROLE", newMember, oldRole));
+
+                    const game = client.db_games.find(game => game.roleID == oldRole.id);
+                    if (game) {
+                        client.games.updateQuitUsergame(client, game, newMember);
+                        client.games.quitPlayerNotification(client, game, newMember);
+                    }
+                }
+            })
         }
 
-
-
+        
     }
 }
 

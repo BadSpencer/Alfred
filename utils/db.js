@@ -108,6 +108,26 @@ exports.userdataCreate = async (client, member) => {
     client.logger.log(`Membre ${member.displayName} à été ajouté à la base de données`)
 };
 
+exports.usergameAddXP = async (client, member, xpAmount, game) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = client.db_settings.get(guild.id);
+    const userdata = client.db_userdata.get(member.id);
+    const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
+
+    let usergame = client.db_usergame.get(`${member.presence.game.name}-${member.id}`);
+    if(usergame) {
+        usergame.xp += xpAmount;
+        usergame.lastPlayed = +new Date;
+        let newLevel = await client.exp.xpGetLevel(usergame.xp);
+        if (newLevel > usergame.level) {
+            usergame.level = newLevel;
+            client.logger.log(`Jeu ${game.name}:Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
+            //client.exp.userLevelUp(client, member, newLevel);
+        };
+        client.db_usergame.set(`${member.presence.game.name}-${member.id}`, usergame);
+    }
+};
+
 exports.userdataAddXP = async (client, member, xp, reason) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);

@@ -72,6 +72,13 @@ module.exports = class {
             GAMES_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
+            GAMES_ACTIVE_NOTIFICATION: (game, member, gameRole,  joinChannel) => {
+                return `Bonjour ${member.displayName},
+                
+                Je vois que vous jouez à ${game.name}.
+                Saviez-vous qu'il y a un espace dédié à ${game.name} sur Casual Effect ?
+                Je vous invite à vous rendre dans le salon ${joinChannel.toString()} et rejoignez les ${gameRole.members.size} joueurs qui y jouent.`;
+            },
             GAMES_JOIN_SUCCESS: (jeu) => {
                 let textes = [
                     `Félicitations ! Vous avez rejoint le groupe ${jeu}`,
@@ -80,10 +87,17 @@ module.exports = class {
                 ]
                 return textes.random();
             },
-            GAMES_JOIN_NOTIFICATION: (jeu, member) => {
+            GAMES_JOIN_NOTIFICATION: (game, member) => {
                 let textes = [
-                    `${member.displayName} à rejoint le groupe ${jeu}`,
-                    `${member.displayName} vient complèter les rangs du groupe ${jeu}`
+                    `${member.displayName} à rejoint le groupe ${game.name}`,
+                    `${member.displayName} vient complèter les rangs du groupe ${game.name}`
+                ]
+                return textes.random();
+            },
+            GAMES_QUIT_NOTIFICATION: (game, member) => {
+                let textes = [
+                    `${member.displayName} à quitté le groupe ${game.name}`,
+                    `${member.displayName} vient de quitter le groupe ${game.name}`
                 ]
                 return textes.random();
             },
@@ -94,11 +108,14 @@ module.exports = class {
                 ]
                 return textes.random();
             },
+            GAMES_QUIT_CANCEL: (jeu) => {
+                return `J'attendais une confirmation de votre part.\nAction annulée, il va falloir recommencer.`;
+            },
             GAMES_JOIN_ALREADY_IN: (jeu) => {
                 return `Vous êtes déjà dans le groupe ${jeu}.`;
             },
             GAMES_JOIN_WANT_TO_QUIT: (jeu) => {
-                return `Souhaitez vous quitter le groupe du jeu ${jeu} ? (oui/non)`;
+                return `Vous êtes déjà dans le groupe ${jeu}.\n\n**Souhaitez vous le quitter ?** (oui/non)`;
             },
             LOG_EVENT_REACTION_ADD: (messageReaction, member) => {
                 return `${member.displayName} à réagi avec ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
@@ -116,6 +133,9 @@ module.exports = class {
                 return `${member.displayName} à rejoint Casual Effect`;
             },
             LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION: "Notification nouveau membre désactivée",
+            LOG_EVENT_USERGAME_CREATED: (member, game) => {
+                return `Création des données de jeu pour ${member.displayName} sur ${game.name}`;
+            },
             MOD_NOTIF_SERVER_JOIN: (member) => {
                 return `${member.displayName} à rejoint le serveur`;
             },

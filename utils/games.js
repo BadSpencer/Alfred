@@ -3,6 +3,13 @@ const Discord = require("discord.js");
 const {
     RichEmbed
 } = require('discord.js');
+const colors = require('./colors');
+const {
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage
+} = require('./messages');
 
 
 
@@ -128,11 +135,118 @@ exports.newPlayerNotification = async (client, game, member) => {
 
     if (gameTextChannel) {
         const welcomeMessage = new RichEmbed()
-            .setColor(colors['darkviolet'])
+            .setColor(colors['darkgreen'])
             .setThumbnail(avatar)
             .setDescription(client.textes.get("GAMES_JOIN_NOTIFICATION", game, member));
-        welcomeChannel.send(welcomeMessage);
+        gameTextChannel.send(welcomeMessage);
     };
 
 
+}
+exports.quitPlayerNotification = async (client, game, member) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+
+    const gameTextChannel = await guild.channels.get(game.textChannelID);
+
+    let avatar;
+    if (!member.user.avatarURL) {
+        avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
+    } else {
+        avatar = member.user.avatarURL;
+    }
+
+    if (gameTextChannel) {
+        const welcomeMessage = new RichEmbed()
+            .setColor(colors['orange'])
+            .setThumbnail(avatar)
+            .setDescription(client.textes.get("GAMES_QUIT_NOTIFICATION", game, member));
+        gameTextChannel.send(welcomeMessage);
+    };
+
+
+}
+exports.notifyPlayerActiveGame = async (client, member, game) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    const gameRole = guild.roles.get(game.roleID);
+    const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
+
+    const notification = new RichEmbed()
+        .setColor(colors['darkviolet'])
+        .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
+    member.send(notification);
+
+}
+
+exports.createUsergame = async (client, game, member) => {
+
+    let usergameKey = `${game.name}-${member.id}`;
+    let usergame = client.db_usergame.get(usergameKey);
+    if (!usergame) {
+        usergame = client.db_usergame.get("default");
+        usergame.id = usergameKey;
+        usergame.userid = member.id;
+        usergame.gameid = member.presence.game.name;
+        client.logger.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
+        if (game.actif && !member.roles.has(game.roleID)) {
+            client.games.notifyPlayerActiveGame(client, member, game);
+        }
+    }
+    usergame.lastPlayed = +new Date;
+    client.db_usergame.set(usergameKey, usergame);
+}
+exports.updateJoinUsergame = async (client, game, member) => {
+
+    let usergameKey = `${game.name}-${member.id}`;
+    let usergame = client.db_usergame.get(usergameKey);
+
+    usergame.id = usergameKey;
+    usergame.userid = member.id;
+    usergame.gameid = game.name;
+    usergame.joinedAt = +new Date;
+    usergame.joinedDate = moment().format('DD.MM.YYYY');
+    usergame.joinedTime = moment().format('HH:mm');
+
+    client.db_usergame.set(usergameKey, usergame);
+}
+exports.updateQuitUsergame = async (client, game, member) => {
+
+    let usergameKey = `${game.name}-${member.id}`;
+    let usergame = client.db_usergame.get(usergameKey);
+
+    usergame.joinedAt = "";
+    usergame.joinedDate = "";
+    usergame.joinedTime = "";
+
+    client.db_usergame.set(usergameKey, usergame);
+}
+
+exports.quitConfirmation = async (client, messageReaction,  game, member) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+    const gameRole = guild.roles.get(game.roleID);
+    let statusMessage = await questionMessage(client.textes.get("GAMES_JOIN_WANT_TO_QUIT", game.name), messageReaction.message.channel);
+    const responses = await messageReaction.message.channel.awaitMessages(msg => msg.author.id === member.id, {
+        max: 1,
+        time: 10000,
+    });
+
+    if (responses.size !== 1) {
+        warnMessage(client.textes.get("GAMES_QUIT_CANCEL"), messageReaction.message.channel);
+        return null;
+    }
+    const response = responses.first();
+
+    if (response.content == "oui") {
+        response.delete();
+        member.removeRole(gameRole);
+        successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), messageReaction.message.channel);
+    } else {
+        response.delete();
+        warnMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
+        return null;
+    }
 }

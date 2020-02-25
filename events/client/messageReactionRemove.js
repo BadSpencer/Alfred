@@ -36,35 +36,12 @@ class MessageReactionRemoveListener extends Listener {
                 const gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.has(gameRole.id)) {
-                        warnMessage(client.textes.get(`GAMES_JOIN_ALREADY_IN`, game.name), messageReaction.message.channel);
-
-                        let statusMessage = await questionMessage(client.textes.get("GAMES_JOIN_WANT_TO_QUIT", game.name), messageReaction.message.channel);
-                        const responses = await messageReaction.message.channel.awaitMessages(msg => msg.author.id === member.id, {
-                            max: 1,
-                            time: 10000,
-                        });
-
-                        if (responses.size !== 1) {
-                            warnMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
-                            return null;
-                        }
-                        const response = responses.first();
-
-                        if (response.content == "oui") {
-                            response.delete();
-                            member.removeRole(gameRole);
-                            successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), messageReaction.message.channel);
-                        } else {
-                            response.delete();
-                            successMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
-                            return null;
-                        }
+                        client.games.quitConfirmation(client, messageReaction,  game, member);
                     } else {
+                        member.addRole(gameRole);
+                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
                     }
-                } else {
-                    
-                }
-
+                } 
             } else {
                 // Jeu non trouvé avec emoji
             }

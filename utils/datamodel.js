@@ -77,6 +77,7 @@ exports.tables = {
         "joinedAt": "",
         "joinedDate": "",
         "joinedTime": "",
+        "xp": 0,
         "level": "",
         "lastPlayed": "",
         "lastAction": ""
