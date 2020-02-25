@@ -189,7 +189,7 @@ exports.createUsergame = async (client, game, member) => {
         usergame = client.db_usergame.get("default");
         usergame.id = usergameKey;
         usergame.userid = member.id;
-        usergame.gameid = member.presence.game.name;
+        usergame.gameid = game.name;
         client.logger.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
         if (game.actif && !member.roles.has(game.roleID)) {
             client.games.notifyPlayerActiveGame(client, member, game);
@@ -216,15 +216,15 @@ exports.updateQuitUsergame = async (client, game, member) => {
 
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
-
-    usergame.joinedAt = "";
-    usergame.joinedDate = "";
-    usergame.joinedTime = "";
-
+    if (usergame) {
+        usergame.joinedAt = "";
+        usergame.joinedDate = "";
+        usergame.joinedTime = "";
+    }
     client.db_usergame.set(usergameKey, usergame);
 }
 
-exports.quitConfirmation = async (client, messageReaction,  game, member) => {
+exports.quitConfirmation = async (client, messageReaction, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const gameRole = guild.roles.get(game.roleID);
