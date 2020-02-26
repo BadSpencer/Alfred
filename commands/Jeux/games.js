@@ -406,6 +406,10 @@ class GamesCommand extends Command {
                 break;
             }
             case 'voice': {
+                let game = this.client.db_games.get(args.arguments);
+                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
+                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
+
                 break;
             }
             case 'statut': {
