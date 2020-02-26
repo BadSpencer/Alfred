@@ -123,10 +123,10 @@ module.exports = class {
             LOG_EVENT_REACTION_REMOVE: (messageReaction, member) => {
                 return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
             },
-            LOG_EVENT_MEMBER_JOIN_SERVER: (member) => {
+            LOG_EVENT_USER_JOIN_SERVER: (member) => {
                 return `${member.displayName} à rejoint le serveur`;
             },
-            LOG_EVENT_MEMBER_QUIT_SERVER: (member) => {
+            LOG_EVENT_USER_QUIT_SERVER: (member) => {
                 return `${member.displayName} à quitté le serveur`;
             },
             LOG_EVENT_MEMBER_JOIN_MEMBERS: (member) => {
@@ -144,16 +144,7 @@ module.exports = class {
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
                 return `${member.displayName} à été accepté et ajouté au groupe des membres`;
-            },
-
-
-            // Utils
-            PREFIX_INFO: (prefix) => `le préfixe de ce serveur est \`${prefix}\``,
-            /* DBL VOTES */
-            VOTE_THANKS: (user) => `:arrow_up: Bonjour ${user.toString()}, merci de voter !\nVotre récompense : 40 crédits !`,
-            VOTE_LOGS: (user) => `:arrow_up: **${user.tag}** (\`${user.id}\`) a voté pour **Atlanta** et a gagné **40** crédits, merci !\nhttps://discordbots.org/bot/557445719892688897/vote`,
-
-            ENABLE_MESSAGES: "Activer les messages"
+            }
         }
     }
 
