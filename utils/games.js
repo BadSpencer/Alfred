@@ -69,7 +69,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
     } else {
         gameJoinMessage.edit(embed).then(async msgSent => {
             if (clearReact) {
-                msgSent.clearReactions();
+                await msgSent.clearReactions();
                 for (const game of gamesArray) {
                     await msgSent.react(game.emoji);
                 }
@@ -79,7 +79,6 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
     }
 
 };
-
 exports.gameGetListEmbed = async (client) => {
     const Discord = require("discord.js");
     const guild = client.guilds.get(client.config.guildID);
@@ -118,7 +117,6 @@ exports.gameGetListEmbed = async (client) => {
         return embed;
     }
 };
-
 exports.newPlayerNotification = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
@@ -180,7 +178,6 @@ exports.notifyPlayerActiveGame = async (client, member, game) => {
     member.send(notification);
 
 }
-
 exports.createUsergame = async (client, game, member) => {
 
     let usergameKey = `${game.name}-${member.id}`;
@@ -223,7 +220,6 @@ exports.updateQuitUsergame = async (client, game, member) => {
     }
     client.db_usergame.set(usergameKey, usergame);
 }
-
 exports.quitConfirmation = async (client, messageReaction, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
