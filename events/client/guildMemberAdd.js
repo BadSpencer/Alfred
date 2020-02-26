@@ -16,7 +16,7 @@ class guildMemberAddListener extends Listener {
     exec(member) {
         let client = this.client;
 
-        client.logger.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_SERVER", member));
+        client.logger.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", member));
         client.members.serverJoinNotification(client, member);
     }
 }
