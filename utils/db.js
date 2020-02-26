@@ -75,7 +75,6 @@ exports.usergameCheck = async (client) => {
         }
     })
 };
-
 exports.userdataCreate = async (client, member) => {
     let userdata = client.db_userdata.get("default");
     let userdataLogs = datamodel.tables.userdataLogs;
@@ -107,7 +106,6 @@ exports.userdataCreate = async (client, member) => {
     client.db_userdata.set(member.id, userdata);
     client.logger.log(`Membre ${member.displayName} à été ajouté à la base de données`)
 };
-
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
@@ -127,7 +125,6 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
         client.db_usergame.set(`${member.presence.game.name}-${member.id}`, usergame);
     }
 };
-
 exports.userdataAddXP = async (client, member, xp, reason) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
@@ -152,7 +149,6 @@ exports.userdataAddXP = async (client, member, xp, reason) => {
         client.logger.error(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`)
     }
 };
-
 exports.userlogAdd = async (client, member, type, xpgained, xpreason) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
@@ -167,7 +163,6 @@ exports.userlogAdd = async (client, member, type, xpgained, xpreason) => {
     }
 
 };
-
 // GAMES
 exports.gamesCheck = async (client) => {
     client.logger.log(`Vérification de la base de données des jeux`);
@@ -209,7 +204,6 @@ exports.postedEmbedsCheck = async (client) => {
     await client.db_postedEmbeds.deleteAll();
     await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
 };
-
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {
     await client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
     client.logger.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)
@@ -265,7 +259,6 @@ exports.enmapDisplay = async (client, enmap, channel) => {
 
 
 };
-
 exports.enampCreateEmbed = async (client, enmap, name, page) => {
     let embed = new Discord.RichEmbed();
     let nbPages = Math.ceil(enmap.size / 10);
@@ -309,7 +302,7 @@ exports.enampCreateEmbed = async (client, enmap, name, page) => {
     embed.setDescription(description);
     embed.setFooter(`Page: ${page}/${nbPages}`);
     return embed;
-}
+};
 
 Object.defineProperty(String.prototype, "toProperCase", {
     value: function () {
