@@ -180,7 +180,6 @@ exports.gamesCheck = async (client) => {
 
     if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
 
-    //await client.games.removeRoleReaction(client);
     await client.games.PostRoleReaction(client, true);
 };
 exports.gamesCreate = async (client, gamename) => {
@@ -209,25 +208,8 @@ exports.postedEmbedsCheck = async (client) => {
     client.logger.log(`Vérification des Embeds postés`);
     await client.db_postedEmbeds.deleteAll();
     await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
-
-    //let postedEmbeds = await client.db.postedEmbedsGetAll(client);
-
-    //if (!postedEmbeds) return client.logger.warn(`Aucun embeds postés trouvé. Vérification interrompue.`);
-
-    /*
-    postedEmbeds.forEach(async postedEmbed => {
-        let channel = client.channels.get(postedEmbed.channelID);
-        if (channel) {
-            const message = await channel.fetchMessage(postedEmbed.id).then(d => client.logger.log(`Message ${d.id} dans salon ${channel.name} correctement chargé`))
-                .catch(d => {
-                    client.logger.log(`Message ${d.id} dans salon ${channel.name} non trouvé. Il a été retiré de la base`);
-                    client.db_postedEmbeds.delete(postedEmbed.id);
-                });
-        }
-    })
-    */
-
 };
+
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {
     await client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
     client.logger.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)
