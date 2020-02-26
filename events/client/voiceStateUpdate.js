@@ -59,7 +59,7 @@ class voiceStateUpdateListener extends Listener {
         // Quitte un salon vocal
         if (oldMember.voiceChannel && !newMember.voiceChannel) {
             if (oldMember.voiceChannel.members.size == "0") {
-                
+
                 const game = client.db_games.find(game => game.voiceChannelID == oldMember.voiceChannel.id);
                 if (game) {
                     let gameCategory = newMember.guild.channels.get(game.categoryID);
@@ -69,15 +69,34 @@ class voiceStateUpdateListener extends Listener {
                         'VIEW_CHANNEL': false,
                         'CONNECT': false,
                     });
+                } else {
+                    if (oldMember.voiceChannel.name == settings.quietChannel) return; 
+                    if (oldMember.voiceChannel.name == settings.AFKChannel) return;
+                    oldMember.voiceChannel.delete();
                 }
-
-
             }
-
         }
 
         // Change de salon
         if (oldMember.voiceChannel && newMember.voiceChannel) {
+            if (oldMember.voiceChannel.members.size == "0") {
+
+                const game = client.db_games.find(game => game.voiceChannelID == oldMember.voiceChannel.id);
+                if (game) {
+                    let gameCategory = newMember.guild.channels.get(game.categoryID);
+                    oldMember.voiceChannel.setParent(gameCategory);
+                    oldMember.voiceChannel.setName(`🔈${game.name}`);
+                    oldMember.voiceChannel.overwritePermissions(roleMembers, {
+                        'VIEW_CHANNEL': false,
+                        'CONNECT': false,
+                    });
+                } else {
+                    if (oldMember.voiceChannel.name == settings.quietChannel) return; 
+                    if (oldMember.voiceChannel.name == settings.AFKChannel) return;
+                    oldMember.voiceChannel.delete();
+                }
+            }
+
             if (newMember.voiceChannel.members.size == "1") {
                 const game = client.db_games.find(game => game.voiceChannelID == newMember.voiceChannel.id);
                 if (game) {
