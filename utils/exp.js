@@ -1,4 +1,5 @@
 const constants = require('./constants');
+
 exports.activityCheck = async (client) => {
 
     const guild = client.guilds.get(client.config.guildID);
@@ -12,20 +13,20 @@ exports.activityCheck = async (client) => {
 
     guild.members.forEach(member => {
         if (member.roles.has(roleMembers.id)) {
-            //client.db.userdataAddXP(client, member, "1", "Joue à un jeu");
             if (member.presence.game) {
-
                 const game = client.db_games.find(game => game.name == member.presence.game.name);
                 if (game) {
                     client.games.createUsergame(client, game, member);
                     client.db.usergameAddXP(client, member, 1, game);
+
+                    if (member.voiceChannel) {
+                        client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
+                    }
                 }
             } else {
-                /*
                 if (member.voiceChannel) {
-                    //client.userAddXP(member, "1");
+                    client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
                 }
-                */
             }
         }
     });
