@@ -13,9 +13,9 @@ class ErrorListener extends Listener {
     }
 
     async exec(error) {
+        let client = this.client;
         if (error) {
-            //this.client.logger.error(`${JSON.stringify(error)}`);
-            this.client.logger.error(`${error.message}\n${error.stack}`);
+            client.logger.error(`${error.message}\n${error.stack}`);
         }
     }
 }

@@ -11,12 +11,7 @@ module.exports = class {
             COM_MEMBER_ACCEPTED: (member) => {
                 return `${member.displayName} à rejoint Casual Effect !`;
             },
-            COM_MEMBER_ADD_ROLE: (member, role) => {
-                return `${member.displayName} ajout du rôle "${role.name}"`;
-            },
-            COM_MEMBER_REMOVE_ROLE: (member, role) => {
-                return `${member.displayName} retrait du rôle "${role.name}"`;
-            },
+
             MESSAGES_SERVER_JOIN: (member) => {
                 let textes = [
                     `Z'ai cru voir passer un ro**${member.displayName}**minet !`,
@@ -69,7 +64,7 @@ module.exports = class {
             GAMES_LIST_SUCCESS_CREATED: "Liste des jeux créée",
             GAMES_LIST_SUCCESS_UPDATED: "Liste des jeux mise à jour",
             GAMES_LIST_SUCCESS_DELETED: "Liste des jeux supprimée",
-            GAMES_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
+            GAME_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
             GAMES_ACTIVE_NOTIFICATION: (game, member, gameRole,  joinChannel) => {
@@ -117,6 +112,19 @@ module.exports = class {
             GAMES_JOIN_WANT_TO_QUIT: (jeu) => {
                 return `Vous êtes déjà dans le groupe ${jeu}.\n\n**Souhaitez vous le quitter ?** (oui/non)`;
             },
+
+
+            DEBUG_EVENT_GUILD_MEMBER_UPDATE: (member) => {
+                return `guildMemberUpdate (${member.displayName})`;
+            },
+            LOG_EVENT_USER_ADD_ROLE: (member, role) => {
+                return `${member.displayName} ajout du rôle "${role.name}"`;
+            },
+            LOG_EVENT_USER_REMOVE_ROLE: (member, role) => {
+                return `${member.displayName} retrait du rôle "${role.name}"`;
+            },
+
+
             LOG_EVENT_REACTION_ADD: (messageReaction, member) => {
                 return `${member.displayName} à réagi avec ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
             },

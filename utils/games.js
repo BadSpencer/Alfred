@@ -46,7 +46,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
     if (settings.gameJoinMessage !== "") {
         await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
             gameJoinMessage = message;
-            client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_LOADED"));
+            client.logger.debug(client.textes.get("GAME_LIST_SUCCESS_LOADED"));
         }).catch(err => {
             client.logger.warn(client.textes.get("GAMES_LIST_WARN_NOTFOUND"));
         });
@@ -65,7 +65,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
                 await msgSent.react(game.emoji);
             }
         });
-        client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"))
+        client.logger.debug(client.textes.get("GAMES_LIST_SUCCESS_CREATED"))
     } else {
         gameJoinMessage.edit(embed).then(async msgSent => {
             if (clearReact) {
@@ -75,7 +75,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
                 }
             }
         });
-        client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
+        client.logger.debug(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
     }
 
 };
