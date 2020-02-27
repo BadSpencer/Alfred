@@ -18,7 +18,7 @@ class guildMemberUpdateListener extends Listener {
         const roleMembers = newMember.guild.roles.find(r => r.name == settings.memberRole);
 
         let memberUpdate = `Member update pour ${newMember.displayName}`
-        this.client.logger.log(`${memberUpdate}`);
+        client.logger.log(`${memberUpdate}`);
 
 
 

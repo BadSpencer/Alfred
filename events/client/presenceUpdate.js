@@ -63,11 +63,11 @@ class presenceUpdateListener extends Listener {
                     let gamePlayRole = oldMember.guild.roles.get(gamePlayed.playRoleID);
                     if (oldMember.roles.has(gamePlayed.roleID)) {
                         await oldMember.removeRole(gamePlayRole);
-                        client.log(`${oldMember.displayName} retrait du rôle "Joue à ${oldMember.presence.game.name}"`, "debug");
+                        client.logger.log(`${oldMember.displayName} retrait du rôle "Joue à ${oldMember.presence.game.name}"`, "debug");
                     }
                 }
             } else {
-                client.log(`Discordtag ${oldMember.presence.game.name} non trouvé`, "debug");
+                client.logger.log(`Discordtag ${oldMember.presence.game.name} non trouvé`, "debug");
             }
 
         }
