@@ -14,29 +14,31 @@ class ReadyListener extends Listener {
     }
 
     async exec() {
+        let client = this.client;
         const pjson = require('../../package.json');
         this.client.user.setActivity(`v${pjson.version}`, {
             type: "PLAYING"
         });
 
-        this.client.logger.log(`Vérification de l'intégrité de la base de données`);
+        client.logger.log(`Vérification de l'intégrité de la base de données`);
 
-        await this.client.db.settingsCheck(this.client);
-        await this.client.db.userdataCheck(this.client);
-        await this.client.db.gamesCheck(this.client);
-        await this.client.db.usergameCheck(this.client);
-        await this.client.db.postedEmbedsCheck(this.client);
+        await client.db.settingsCheck(client);
+        await client.db.userdataCheck(client);
+        await client.db.userlogsCheck(client);
+        await client.db.gamesCheck(client);
+        await client.db.usergameCheck(client);
+        await client.db.postedEmbedsCheck(client);
 
-        this.client.logger.log(`Fin des contrôles`);
+        client.logger.log(`Fin des contrôles`);
 
         
         let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
-            this.client.exp.activityCheck(this.client);
+            client.exp.activityCheck(client);
         });
 
         activityCheck.start();
 
-        this.client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
+        client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
         
     }
 }

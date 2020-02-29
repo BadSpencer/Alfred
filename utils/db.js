@@ -53,7 +53,14 @@ exports.userdataCheck = async (client) => {
         }
     })
 };
+exports.userlogsCheck = async (client) => {
+    client.logger.log(`Vérification des données de jeux des membreslogs`);
+    const guild = client.guilds.get(client.config.guildID);
 
+
+    await client.db_userlogs.delete("default");
+    await client.db_userlogs.set("default", datamodel.tables.userlogs);
+};
 exports.usergameCheck = async (client) => {
     client.logger.log(`Vérification des données de jeux des membres`);
     const guild = client.guilds.get(client.config.guildID);
@@ -113,8 +120,9 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
 
     let usergame = client.db_usergame.get(`${member.presence.game.name}-${member.id}`);
-    if(usergame) {
+    if (usergame) {
         usergame.xp += xpAmount;
+        client.db.userlogAdd(client, member, "GAMEXP", xpAmount, "Joue", member.presence.game.name);
         usergame.lastPlayed = +new Date;
         let newLevel = await client.exp.xpGetLevel(usergame.xp);
         if (newLevel > usergame.level) {
@@ -134,11 +142,11 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
         if (member.roles.has(roleMembers.id)) {
             if (xpAmount > 0) {
                 userdata.xp += xpAmount;
-                client.logger.log(`${member.displayName} à gagné ${xpAmount}xp (${reason})`)
+                client.db.userlogAdd(client, member, "XP", xpAmount, reason);
+                client.logger.log(client.textes.get("EXP_LOG_ADDXP", member, xpAmount, reason));
                 let newLevel = await client.exp.xpGetLevel(userdata.xp);
                 if (newLevel > userdata.level) {
                     userdata.level = newLevel;
-                    client.logger.log(`Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
                     client.exp.userLevelUp(client, member, newLevel);
                 };
                 client.db_userdata.set(member.id, userdata);
@@ -148,19 +156,16 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
         client.logger.error(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`)
     }
 };
-exports.userlogAdd = async (client, member, type, xpgained, xpreason) => {
-    const guild = client.guilds.get(client.config.guildID);
-    const settings = client.db_settings.get(guild.id);
-    const date = moment(member.joinedAt).format('DD-MM-YYYY')
-    const logkey = (`${member.id}${date}`);
-
-    let userlog = client.db_userlogs.get(logkey);
-    if (userlog) {
-
-    } else {
-
-    }
-
+exports.userlogAdd = async (client, member, type, xpgained, xpreason, gamename = "n/a") => {
+    let userlogs = client.db_userlogs.get("default");
+    userlogs.timestamp = +new Date;
+    userlogs.type = type;
+    userlogs.date = moment().format('DD-MM-YYYY');
+    userlogs.userid = member.id;
+    userlogs.game = gamename;
+    userlogs.xp = xpgained;
+    userlogs.xpreason = xpreason;
+    client.db_userlogs.set(userlogs.timestamp, userlogs);
 };
 // GAMES
 exports.gamesCheck = async (client) => {

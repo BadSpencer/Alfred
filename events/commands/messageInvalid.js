@@ -15,11 +15,13 @@ class MessageInvalidListener extends Listener {
 
         if (message.author.bot) return;
 
-        if (message.content.length > 150) {
-            client.db.userdataAddXP(client, message.member, 10, `Message 150+`);
-          } else {
-            client.db.userdataAddXP(client, message.member, 5, `Message`);
-          }
+        if (message.channel.type === 'text') {
+            if (message.content.length > 150) {
+                client.db.userdataAddXP(client, message.member, 10, `Message 150+`);
+            } else {
+                client.db.userdataAddXP(client, message.member, 5, `Message`);
+            }
+        }
     }
 }
 

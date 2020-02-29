@@ -60,8 +60,8 @@ client.db_usergame = new Enmap({
     name: "usergame"
 });
 
-client.db_userlog = new Enmap({
-    name: "userlog"
+client.db_userlogs = new Enmap({
+    name: "userlogs"
 });
 
 client.db_postedEmbeds = new Enmap({

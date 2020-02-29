@@ -82,6 +82,15 @@ exports.tables = {
         "lastPlayed": "",
         "lastAction": ""
     },
+    userlogs: {
+        "timestamp": "",
+        "type": "",
+        "date": "",
+        "userid": "",
+        "game": "",
+        "xp": 0, 
+        "xpreason": ""
+    },
     postedEmbeds: {
         "id": "",
         "name": "default",

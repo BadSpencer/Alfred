@@ -1,3 +1,6 @@
+
+const Discord = require("discord.js");
+const colors = require('./colors');
 const constants = require('./constants');
 
 exports.activityCheck = async (client) => {
@@ -33,6 +36,7 @@ exports.activityCheck = async (client) => {
 
 };
 
+
 exports.xpGetLevel = async (xp) => {
     let coef = 600;
     // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
@@ -45,24 +49,33 @@ exports.levelGetXP = async (level) => {
     let xp = Math.floor((coef * (level * level)) - (coef * level));
     return xp;
 };
-
 exports.userLevelUp = async (client, member, level) => {
-    const Discord = require("discord.js");
+
     const guild = client.guilds.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
 
-    let channel = guild.channels.find(c => c.name === settings.modNotifChannel);
+    let channel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
 
     let embed = new Discord.RichEmbed();
     let indexLevel = parseInt(level);
-    let avatar = constants.images.levels[indexLevel];
 
-    embed.setAuthor(member.displayName, member.user.avatarURL);
-    embed.setTitle(`Niveau supérieur !`);
-    embed.setColor(`${member.displayHexColor}`);
-    embed.setDescription(`Félicitations ${member.displayName} ! Vous avez atteint le niveau ${level}`);
-    embed.setThumbnail(avatar);
+    client.logger.log(client.textes.get("EXP_LOG_LEVELUP", member, level));
 
-    channel.send(embed);
+    if (indexLevel == 1) {
+        embed.setTitle(client.textes.get("EXP_MESSAGE_INFORMATIONS_TITRE"));
+        embed.setDescription(client.textes.get("EXP_MESSAGE_INFORMATIONS_DESCRIPTION", member));
+        embed.setColor(colors['darkgreen']);
+        embed.setThumbnail(client.user.displayAvatarURL)
+        member.send(embed);
+    } else {
+        embed.setAuthor(member.displayName, member.user.avatarURL);
+        embed.setTitle(`Niveau supérieur !`);
+        embed.setDescription(`Félicitations ${member.displayName} ! Vous avez atteint le niveau ${level}`);
+        embed.setColor(colors['darkgreen']);
+        embed.setThumbnail(constants.images.levels[indexLevel]);
+        channel.send(embed);
+    }
+
+
 
 };

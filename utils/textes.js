@@ -60,6 +60,70 @@ module.exports = class {
             },
             MESSAGES_AUREVOIR: [],
 
+            USER_MESSAGE_ACCUEIL_TITRE: "Bienvenue sur Casual Effect",
+            USER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {
+                return `Bonjour ${member.displayName},
+                
+                Je me présente, Alfred, je suis le majordome de Casual Effect.
+                Je m'occupe du bon fonctionnement de ce serveur discord et j'apporte quelques services pour améliorer votre séjour parmis nous.
+
+                Pour en savoir plus sur ce que je peux faire pour vous, envoyez moi la commande \`!aide\`, ici par message privé et je vous donnerais la liste des commandes que je peux comprendre.
+                
+                Je vous souhaite de bien vous amuser sur Casual Effect !`;
+            },
+
+            MEMBER_MESSAGE_ACCUEIL_TITRE: "Bienvenue sur Casual Effect",
+            MEMBER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {
+                return `Bonjour ${member.displayName},
+                
+                Je me présente, Alfred, je suis le majordome de Casual Effect.
+                Je m'occupe du bon fonctionnement de ce serveur discord et j'apporte quelques services pour améliorer votre séjour parmis nous.
+
+                Pour en savoir plus sur ce que je peux faire pour vous, envoyez moi la commande \`!aide\`, ici par message privé et je vous donnerais la liste des commandes que je peux comprendre.
+                
+                Je vous souhaite de bien vous amuser sur Casual Effect !`;
+            },
+
+            // EXPERIENCE
+            EXP_MESSAGE_INFORMATIONS_TITRE: "Expérience et niveau sur Casual Effect",
+            EXP_MESSAGE_INFORMATIONS_DESCRIPTION: (member) => {
+                return `Bonjour ${member.displayName},
+                
+                En tant que membre de Casual Effect, votre participation sur le discord vous rapporte de l'expérience qui vous permet de progresser en niveau.
+                Vous débutez au niveau 1 et vous progresserez de niveau en niveau grâce au points d'expérience gagnés.
+
+                Vous gagnez de l'expérience lorsque vous:
+                - êtes connecté dans un salon vocal
+                - jouez à un jeu du serveur
+                - postez des messages
+                - réagissez ou recevez des réactions à vos messages
+
+                Je vous souhaite de bien vous amuser sur Casual Effect !`;
+            },
+            EXP_MESSAGE_LEVELUP_TITRE: "Niveau supérieur !",
+            EXP_MESSAGE_LEVELUP_DESCRIPTION: (member, level) => {
+                return `Félicitations ${member.displayName}, vous avez atteint le niveau ${level}`;
+            },
+            EXP_MESSAGE_LEVELUP_COMMENTAIRE: (member, level) => {
+                let msg = {
+                    2: [
+                        `Bravo ! c'est un bon début !`,
+                        `C'était facile, hein ?`,
+                        `Et c'est parti mon kiki !`,
+                        `Vers l'infini et plus encore ! Hein, quoi ?`
+                    ]
+                }
+
+                return `${member.displayName} à rejoint Casual Effect !`;
+            },
+            EXP_LOG_ADDXP:  (member, xp, reason) => {
+                return `${member.displayName} à gagné ${xp}xp (${reason})`;
+            },
+            EXP_LOG_LEVELUP:  (member, level) => {
+                return `Niveau supérieur pour ${member.displayName} qui est désormais level ${level}`;
+            },
+            // GAMES
+
             GAMES_LIST_UPDATED: "Liste des jeux mise à jour",
             GAMES_LIST_SUCCESS_CREATED: "Liste des jeux créée",
             GAMES_LIST_SUCCESS_UPDATED: "Liste des jeux mise à jour",
@@ -67,7 +131,7 @@ module.exports = class {
             GAME_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
-            GAMES_ACTIVE_NOTIFICATION: (game, member, gameRole,  joinChannel) => {
+            GAMES_ACTIVE_NOTIFICATION: (game, member, gameRole, joinChannel) => {
                 return `Bonjour ${member.displayName},
                 
                 Je vois que vous jouez à ${game.name}.

@@ -15,17 +15,15 @@ class dbMembersCommand extends Command {
     }
 
     exec(message, args) {
-        
+        let client = this.client;
         switch (args.action) {
             case 'liste': {
-
-
-
                 break;
             }
-            case 'init': {
+            case 'initxp': {
                 message.guild.members.forEach(async member => {
-                    await this.client.db.userdataCreate(this.client, member);
+                    client.db_userdata.set(member.id, "xp", 0);
+                    client.db_userdata.set(member.id, "level", 0)
                   });
                 break;
             }
