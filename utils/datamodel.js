@@ -10,11 +10,10 @@ exports.tables = {
         "memberRole": "Membres", 
         "modNotifChannel": "notifications-modération" ,
         "welcomeChannel": "accueil",
-        "welcomeMessage": "",
-        "welcomeEnabled": "",
+        "welcomeEnabled": "true",
         "welcomeMemberChannel": "💬général",
-        "welcomeMemberMessage": "",
-        "welcomeMemberEnabled": "false",  
+        "welcomeMemberEnabled": "true",
+        "newsChannel": "📢news",  
         "freeVoiceChan": "🔈Salon libre",
         "voiceChansCategory": "🔷Salons vocaux",
         "AFKChannel": "⌛AFK",
@@ -82,14 +81,12 @@ exports.tables = {
         "lastPlayed": "",
         "lastAction": ""
     },
-    userlogs: {
-        "timestamp": "",
-        "type": "",
+    userxplogs: {
+        "id": "",
         "date": "",
         "userid": "",
-        "game": "",
-        "xp": 0, 
-        "xpreason": ""
+        "xp": [],
+        "gamexp": []
     },
     postedEmbeds: {
         "id": "",
@@ -99,7 +96,16 @@ exports.tables = {
         "totalPages": "",
         "pages": []
     },
-    textes:{
-        "id": ""
+    embeds:{
+        "id": "",
+        "statut": "",
+        "auteur": "",
+        "titre": "",
+        "createdAt": "",
+        "changedAt": "",
+        "dateCreation": "",
+        "content": "",
+        "showTitle": true,
+        "showFooter": true
     }
 }

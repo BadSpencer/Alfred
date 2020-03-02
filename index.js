@@ -42,6 +42,7 @@ client.logger = require("./utils/logger");
 client.db = require("./utils/db");
 client.members =  require("./utils/members");
 client.games =  require("./utils/games");
+client.embeds =  require("./utils/embeds");
 client.exp =  require("./utils/exp");
 
 client.textes = new(require(`./utils/textes.js`));
@@ -59,11 +60,12 @@ client.db_games = new Enmap({
 client.db_usergame = new Enmap({
     name: "usergame"
 });
-
-client.db_userlogs = new Enmap({
-    name: "userlogs"
+client.db_embeds = new Enmap({
+    name: "embeds"
 });
-
+client.db_userxplogs = new Enmap({
+    name: "userxplogs"
+});
 client.db_postedEmbeds = new Enmap({
     name: "postedEmbeds"
 });

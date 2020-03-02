@@ -10,7 +10,14 @@ class CommandFinishedListener extends Listener {
         })
     }
 
-    exec(message, command) {
+    async exec(message, command) {
+        let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
+
+        let member = guild.members.get(message.author.id);
+
+        client.db.userdataAddXP(client, member, 20, `Commande`);
         if (message.channel.type === 'text') {
             message.delete(5000);
         }

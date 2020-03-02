@@ -38,12 +38,6 @@ class MessageReactionAddListener extends Listener {
 
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     messageReaction.message.edit(newEmbed);
-                    if (indexNewPage == totalPages - 1) {
-                        messageReaction.message.clearReactions().then(() => messageReaction.message.react('◀'));
-                    } else {
-                        messageReaction.message.clearReactions().then(() => messageReaction.message.react('◀')
-                            .then(() => messageReaction.message.react('▶')));
-                    }
                     postedEmbed.currentPage = indexNewPage + 1;
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;
@@ -53,12 +47,6 @@ class MessageReactionAddListener extends Listener {
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     messageReaction.message.edit(newEmbed);
-                    if (indexNewPage == 0) {
-                        messageReaction.message.clearReactions().then(() => messageReaction.message.react('▶'));
-                    } else {
-                        messageReaction.message.clearReactions().then(() => messageReaction.message.react('◀')
-                            .then(() => messageReaction.message.react('▶')));
-                    }
                     postedEmbed.currentPage = indexNewPage + 1;
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;

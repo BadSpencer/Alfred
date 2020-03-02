@@ -116,10 +116,10 @@ module.exports = class {
 
                 return `${member.displayName} à rejoint Casual Effect !`;
             },
-            EXP_LOG_ADDXP:  (member, xp, reason) => {
+            EXP_LOG_ADDXP: (member, xp, reason) => {
                 return `${member.displayName} à gagné ${xp}xp (${reason})`;
             },
-            EXP_LOG_LEVELUP:  (member, level) => {
+            EXP_LOG_LEVELUP: (member, level) => {
                 return `Niveau supérieur pour ${member.displayName} qui est désormais level ${level}`;
             },
             // GAMES
@@ -177,6 +177,53 @@ module.exports = class {
                 return `Vous êtes déjà dans le groupe ${jeu}.\n\n**Souhaitez vous le quitter ?** (oui/non)`;
             },
 
+            // EMBED
+            EMBED_CREATION_SUCCESS: (titre, id) => {
+                return `L'embed **${titre}** (${id}) à été correctement créé`;
+            },
+            EMBED_CREATION_EDIT_EXIST: (embed) => {
+                return `Votre embed **${embed.titre}** (${embed.id}) est en cours d'édition. Il va être archivé`;
+            },
+            EMBED_USERBOARD_TITLE: (name) => {
+                return `Gestion des embeds de ${name}`;
+            },
+            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds,editEmbed,) => {
+                let texte = `Total: **${totalEmbeds}** embeds\n`;
+                if (editEmbed) {
+                    texte += `En cours d'édition: **${editEmbed.titre}** (id:${editEmbed.id})\n\n`;
+                } else {
+                    texte += `Aucun embed en cours d'édition\n\n`;
+                }
+                texte += `Aide: \`!embed aide\``;
+                return texte;
+            },
+            EMBED_AIDE_TITLE: `Gestion des embeds: Aide`,
+            EMBED_AIDE_DESCRIPTION: () => {
+                return `Voici l'aide détaille de la fonction embed
+                
+                Vous ne pouvez avoir qu'un seul embed en cours d'édition pour simplifier les commandes d'édition. Voic les commandes qui vous permettrons de gérer les embeds: 
+                \`!embed liste\`: Affiche la liste de vos embeds (alias: list, ls)
+                \`!embed voir [id]\` Affiche l'embed spécifié ou celui en cours d'édition si aucun id fourni (alias: afficher, aff, view)
+                \`!embed ajouter <Titre>\` Créer un nouvel embed avec le titre spécifié (alias: ajout, add)
+                \`!embed editer <id>\` Active l'édition sur l'embed archivé spécifié (alias: edit)
+                \`!embed copier <id>\` Crée un nouvel embed par copie de l'embed spécifié (alias: copy, cp)
+                \`!embed archiver\` Archive l'embed en cours d'édition (alias: arch)
+
+                Voici les commandes qui vous permettrons d'éditer un embed en cours d'édition:
+                \`!embed titre <tire>\`: Modifier le titre
+                \`!embed desc <description>\`: Modifier la description
+                \`!embed showdesc\`: Afficher la commande "!embed desc" avec la description actuelle. Prête à être copiée, modifiée et lancée
+                \`!embed thumbnail <url>\`: Ajoute un thumbnail (vignette) à partir de l'url de l'image
+                \`!embed image <url>\`: Ajoute une image à partir de son url
+                \`!embed footer <footer>\`: Modifier le texte de bas de page
+                \`!embed url <url>\`: Assigne une adresse http à l'embed. Le titre de l'embed sera un lien clicable vers cet url
+                `;
+            },
+            EMBED_EDIT_NOEDITEMBED: "Vous n'avez aucun embed en cours d'édition",
+            EMBED_NOT_FOUND: (embedID) => {
+                return `L'embed **${embedID}** n'a pas été trouvé`;
+            },
+            // DEBUG
 
             DEBUG_EVENT_GUILD_MEMBER_UPDATE: (member) => {
                 return `guildMemberUpdate (${member.displayName})`;

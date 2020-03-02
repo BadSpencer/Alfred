@@ -123,6 +123,7 @@ exports.newPlayerNotification = async (client, game, member) => {
 
 
     const gameTextChannel = await guild.channels.get(game.textChannelID);
+    let gameInfosChannel = await guild.channels.get(game.infosChannelID);
 
     let avatar;
     if (!member.user.avatarURL) {
@@ -136,11 +137,12 @@ exports.newPlayerNotification = async (client, game, member) => {
             .setColor(colors['darkgreen'])
             .setThumbnail(avatar)
             .setDescription(client.textes.get("GAMES_JOIN_NOTIFICATION", game, member));
-        gameTextChannel.send(welcomeMessage);
-    };
-
-
-}
+        await gameTextChannel.send(welcomeMessage);
+        if (gameInfosChannel) {
+            await gameTextChannel.send(`${member.toString()} Vous trouverez toutes les informations utiles et nécessaires pour **${game.name}** dans le salon ${gameInfosChannel.toString()}.`)
+        };
+    }
+};
 exports.quitPlayerNotification = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);

@@ -28,7 +28,31 @@ class MessageReactionRemoveListener extends Listener {
 
         client.logger.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));
 
+        let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
+        if (postedEmbed) {
+            switch (messageReaction.emoji.name) {
+                case '▶': {
+                    let totalPages = postedEmbed.pages.length;
+                    let indexNewPage = postedEmbed.currentPage;
 
+                    let newEmbed = postedEmbed.pages[indexNewPage].embed;
+                    messageReaction.message.edit(newEmbed);
+                    postedEmbed.currentPage = indexNewPage + 1;
+                    this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
+                    break;
+                }
+                case '◀': {
+                    let totalPages = postedEmbed.pages.length;
+                    let indexNewPage = postedEmbed.currentPage - 2;
+                    let newEmbed = postedEmbed.pages[indexNewPage].embed;
+                    messageReaction.message.edit(newEmbed);
+                    postedEmbed.currentPage = indexNewPage + 1;
+                    this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
+                    break;
+                }
+            }
+
+        }
 
         if (messageReaction.message.id == settings.gameJoinMessage) {
             const game = this.client.db_games.find(game => game.emoji == messageReaction.emoji.name);

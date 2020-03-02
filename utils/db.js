@@ -54,12 +54,18 @@ exports.userdataCheck = async (client) => {
     })
 };
 exports.userlogsCheck = async (client) => {
-    client.logger.log(`Vérification des données de jeux des membreslogs`);
+    client.logger.debug(`Vérification des logs`);
     const guild = client.guilds.get(client.config.guildID);
 
 
-    await client.db_userlogs.delete("default");
-    await client.db_userlogs.set("default", datamodel.tables.userlogs);
+    await client.db_userxplogs.delete("default");
+    await client.db_userxplogs.set("default", datamodel.tables.userxplogs);
+};
+exports.embedsCheck = async (client) => {
+    client.logger.debug(`Vérification des embeds`);
+    const guild = client.guilds.get(client.config.guildID);
+    await client.db_embeds.delete("default");
+    await client.db_embeds.set("default", datamodel.tables.embeds);
 };
 exports.usergameCheck = async (client) => {
     client.logger.log(`Vérification des données de jeux des membres`);
@@ -122,7 +128,7 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
     let usergame = client.db_usergame.get(`${member.presence.game.name}-${member.id}`);
     if (usergame) {
         usergame.xp += xpAmount;
-        client.db.userlogAdd(client, member, "GAMEXP", xpAmount, "Joue", member.presence.game.name);
+        client.db.userxplogAdd(client, member, "GAMEXP", xpAmount, "Joue", member.presence.game.name);
         usergame.lastPlayed = +new Date;
         let newLevel = await client.exp.xpGetLevel(usergame.xp);
         if (newLevel > usergame.level) {
@@ -142,7 +148,7 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
         if (member.roles.has(roleMembers.id)) {
             if (xpAmount > 0) {
                 userdata.xp += xpAmount;
-                client.db.userlogAdd(client, member, "XP", xpAmount, reason);
+                client.db.userxplogAdd(client, member, "XP", xpAmount, reason);
                 client.logger.log(client.textes.get("EXP_LOG_ADDXP", member, xpAmount, reason));
                 let newLevel = await client.exp.xpGetLevel(userdata.xp);
                 if (newLevel > userdata.level) {
@@ -156,16 +162,50 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
         client.logger.error(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`)
     }
 };
-exports.userlogAdd = async (client, member, type, xpgained, xpreason, gamename = "n/a") => {
-    let userlogs = client.db_userlogs.get("default");
-    userlogs.timestamp = +new Date;
-    userlogs.type = type;
-    userlogs.date = moment().format('DD-MM-YYYY');
-    userlogs.userid = member.id;
-    userlogs.game = gamename;
-    userlogs.xp = xpgained;
-    userlogs.xpreason = xpreason;
-    client.db_userlogs.set(userlogs.timestamp, userlogs);
+exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename = "n/a") => {
+    let date = moment().format('DD.MM.YYYY');
+    let id = `${member.id}-${date}`;
+
+    let userxplogs;
+    if (client.db_userxplogs.has(id)) {
+        userxplogs = client.db_userxplogs.get(id);
+
+    } else {
+        userxplogs = client.db_userxplogs.get("default");
+        userxplogs.id = id;
+        userxplogs.date = date;
+        userxplogs.userid = member.id;
+    }
+
+    switch (type) {
+        case "XP": {
+            let xp = userxplogs.xp.find(r => r.reason == xpreason);
+            if (xp) {
+                xp.xp += xpgained;
+            } else {
+                xp = {
+                    "reason": xpreason,
+                    "xp": xpgained
+                };
+                userxplogs.xp.push(xp);
+            }
+            break;
+        }
+        case "GAMEXP": {
+            let gamexp = userxplogs.gamexp.find(r => r.gamename == gamename);
+            if (gamexp) {
+                gamexp.xp += xpgained;
+            } else {
+                gamexp = {
+                    "gamename": gamename,
+                    "xp": xpgained
+                };
+                userxplogs.gamexp.push(gamexp);
+            }
+            break;
+        }
+    }
+    client.db_userxplogs.set(id, userxplogs);
 };
 // GAMES
 exports.gamesCheck = async (client) => {
@@ -247,7 +287,7 @@ exports.enmapDisplay = async (client, enmap, channel) => {
         pagesArray.push(pagesRecord);
     });
 
-    channel.send(embeds[0]).then(msgSent => {
+    channel.send(embeds[0]).then(async msgSent => {
         postedEmbeds.id = msgSent.id;
         postedEmbeds.channelID = msgSent.channel.id;
         postedEmbeds.name = `Affichage Enmap ${enmap.name}`;
@@ -255,9 +295,8 @@ exports.enmapDisplay = async (client, enmap, channel) => {
         postedEmbeds.totalPages = pagesArray.length;
         postedEmbeds.pages = pagesArray;
         client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
-        if (pageCount > 1) {
-            msgSent.react(`▶`);
-        }
+       await msgSent.react(`◀`);
+       await msgSent.react(`▶`);
     });
 
 
