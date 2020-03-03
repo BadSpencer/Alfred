@@ -35,7 +35,8 @@ class MessageReactionAddListener extends Listener {
                 case '▶': {
                     let totalPages = postedEmbed.pages.length;
                     let indexNewPage = postedEmbed.currentPage;
-
+                    if (indexNewPage == totalPages) return;
+                    
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     messageReaction.message.edit(newEmbed);
                     postedEmbed.currentPage = indexNewPage + 1;
@@ -44,6 +45,7 @@ class MessageReactionAddListener extends Listener {
                 }
                 case '◀': {
                     let totalPages = postedEmbed.pages.length;
+                    if (postedEmbed.currentPage == 1) return;
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     messageReaction.message.edit(newEmbed);

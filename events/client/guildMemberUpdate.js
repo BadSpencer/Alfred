@@ -23,7 +23,6 @@ class guildMemberUpdateListener extends Listener {
 
         // Role ajouté
         if (newMember.roles.size > oldMember.roles.size) {
-            client.games.PostRoleReaction(client);
 
             newMember.roles.forEach(newRole => {
                 if (!oldMember.roles.has(newRole.id)) {
@@ -36,6 +35,7 @@ class guildMemberUpdateListener extends Listener {
                     // Annonce rejoindre jeu
                     const game = client.db_games.find(game => game.roleID == newRole.id);
                     if (game) {
+                        client.games.PostRoleReaction(client);
                         client.games.createUsergame(client, game, newMember);
                         client.games.updateJoinUsergame(client, game, newMember);
                         client.games.newPlayerNotification(client, game, newMember);
@@ -47,7 +47,7 @@ class guildMemberUpdateListener extends Listener {
 
         // Role retiré
         if (newMember.roles.size < oldMember.roles.size) {
-            client.games.PostRoleReaction(this.client);
+            
 
             oldMember.roles.forEach(oldRole => {
                 if (!newMember.roles.has(oldRole.id)) {
@@ -55,6 +55,7 @@ class guildMemberUpdateListener extends Listener {
 
                     const game = client.db_games.find(game => game.roleID == oldRole.id);
                     if (game) {
+                        client.games.PostRoleReaction(client);
                         client.games.updateQuitUsergame(client, game, newMember);
                         client.games.quitPlayerNotification(client, game, newMember);
                     }

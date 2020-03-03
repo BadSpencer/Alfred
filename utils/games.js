@@ -46,7 +46,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
     if (settings.gameJoinMessage !== "") {
         await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
             gameJoinMessage = message;
-            client.logger.debug(client.textes.get("GAME_LIST_SUCCESS_LOADED"));
+            client.logger.debug(client.textes.get("GAMES_LIST_SUCCESS_LOADED"));
         }).catch(err => {
             client.logger.warn(client.textes.get("GAMES_LIST_WARN_NOTFOUND"));
         });

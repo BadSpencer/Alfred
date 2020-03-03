@@ -6,6 +6,7 @@ class dbMembersCommand extends Command {
     constructor() {
         super('dbmembers', {
             aliases: ['dbmembers', 'members', 'm'],
+            category: 'config',
             args: [{
                 id: 'action',
                 type: 'text',

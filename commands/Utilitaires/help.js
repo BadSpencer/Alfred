@@ -21,6 +21,7 @@ class HelpCommand extends Command {
     constructor() {
         super('help', {
             aliases: ['help', 'h'],
+            category: 'Aide',
             // define arg properties
             args: [{
                 id: 'key',

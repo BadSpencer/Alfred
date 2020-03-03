@@ -6,6 +6,7 @@ class TestCommand extends Command {
     constructor() {
         super('test', {
             aliases: ['test'],
+            category: 'Utilitaires',
             description: 'Commande de test',
         });
     }

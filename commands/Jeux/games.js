@@ -21,7 +21,7 @@ class GamesCommand extends Command {
                 content: 'Gestion des jeux',
                 usage: '<action> <...arguments>',
             },
-            category: 'config',
+            category: 'Jeux',
             args: [{
                     id: "action",
                     type: ["list", "add", "view", "create", "active", "inactive", "delete", "voice", "statut", "infos", "postrr", "export", "import"],

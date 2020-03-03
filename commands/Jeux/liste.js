@@ -5,7 +5,8 @@ const {
 class ListeCommand extends Command {
     constructor() {
         super('liste', {
-            aliases: ['liste', 'list', 'ls']
+            aliases: ['liste', 'list', 'ls'],
+            category: 'Jeux',
         });
     }
 

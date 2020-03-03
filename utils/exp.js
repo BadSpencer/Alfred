@@ -28,7 +28,7 @@ exports.activityCheck = async (client) => {
                 }
             } else {
                 if (member.voiceChannel) {
-                    client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
+                    client.db.userdataAddXP(client, member, 1, `En vocal`);
                 }
             }
         }

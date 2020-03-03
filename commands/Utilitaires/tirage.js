@@ -6,6 +6,7 @@ class TirageCommand extends Command {
     constructor() {
         super('tirage', {
             aliases: ['tirage','random', 'rand', 'rnd', 'dés'],
+            category: 'Utilitaires',
             // define arg properties
             args: [{
                 id: 'numFaces',
