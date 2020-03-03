@@ -8,6 +8,9 @@ module.exports = class {
         this.textes = {
 
             COM_ACTION_ANNULLE: "Action annulée",
+            COM_USER_NEW_STATUS: (member, status) => {
+                return `${member.displayName} (${member.id}) est désormais ${status}`;
+            },
             COM_MEMBER_ACCEPTED: (member) => {
                 return `${member.displayName} à rejoint Casual Effect !`;
             },

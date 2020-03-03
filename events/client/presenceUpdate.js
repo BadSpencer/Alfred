@@ -23,7 +23,7 @@ class presenceUpdateListener extends Listener {
 
         // Log membre qui change de statut
         if (oldMember.presence.status !== newMember.presence.status) {
-            client.logger.log(`${newMember.displayName} (${newMember.id}) est désormais ${statusTexts[newMember.presence.status]}`);
+            client.logger.log(client.textes.get("COM_USER_NEW_STATUS", newMember, statusTexts[newMember.presence.status]))
         }
 
         // Ajout du jeu dans la base s'il n'ets pas trouvé
@@ -47,7 +47,6 @@ class presenceUpdateListener extends Listener {
                     let gamePlayRole = newMember.guild.roles.get(gamePlayed.playRoleID);
                     if (newMember.roles.has(gamePlayed.roleID)) {
                         await newMember.addRole(gamePlayRole);
-                        client.logger.log(`${newMember.displayName} ajout du rôle "${gamePlayRole.name}"`);
                     }
                 }
             }
@@ -63,13 +62,9 @@ class presenceUpdateListener extends Listener {
                     let gamePlayRole = oldMember.guild.roles.get(gamePlayed.playRoleID);
                     if (oldMember.roles.has(gamePlayed.roleID)) {
                         await oldMember.removeRole(gamePlayRole);
-                        client.logger.log(`${oldMember.displayName} retrait du rôle "Joue à ${oldMember.presence.game.name}"`, "debug");
                     }
                 }
-            } else {
-                client.logger.log(`Discordtag ${oldMember.presence.game.name} non trouvé`, "debug");
-            }
-
+            } 
         }
 
 
@@ -77,7 +72,6 @@ class presenceUpdateListener extends Listener {
         /*                                 Membre a changé de jeu                                      */
         /*---------------------------------------------------------------------------------------------*/
         if (oldMember.presence.game !== null && newMember.presence.game !== null) {
-
             let gamePlayedOld = client.db_games.get(oldMember.presence.game.name);
             if (gamePlayedOld) {
                 let gamePlayRole = oldMember.guild.roles.get(gamePlayedOld.playRoleID);
@@ -85,7 +79,6 @@ class presenceUpdateListener extends Listener {
                     await oldMember.removeRole(gamePlayRole);
                 }
             }
-
             let gamePlayedNew = client.db_games.get(newMember.presence.game.name);
             if (gamePlayedNew) {
                 let gamePlayRole = newMember.guild.roles.get(gamePlayedNew.playRoleID);
@@ -98,7 +91,5 @@ class presenceUpdateListener extends Listener {
 
     }
 }
-
-
 
 module.exports = presenceUpdateListener;
