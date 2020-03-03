@@ -433,7 +433,10 @@ class GamesCommand extends Command {
                         'CONNECT': true,
                     }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, gameRole), message.channel));
                     successMessage(`Salon ${gameVoiceChannel.name} créé`, message.channel);
+                    game.voiceChannelID = gameVoiceChannel.id;
+                    client.db_games.set(args.arguments, game);
                 })
+
                 break;
             }
             case 'statut': {

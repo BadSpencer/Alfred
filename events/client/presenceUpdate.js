@@ -21,6 +21,8 @@ class presenceUpdateListener extends Listener {
     async exec(oldMember, newMember) {
         let client = this.client;
 
+        if (newMember.bot) return;
+
         // Log membre qui change de statut
         if (oldMember.presence.status !== newMember.presence.status) {
             client.logger.log(client.textes.get("COM_USER_NEW_STATUS", newMember, statusTexts[newMember.presence.status]))

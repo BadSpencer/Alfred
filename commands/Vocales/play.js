@@ -14,7 +14,9 @@ class PlayCommand extends Command {
     }
 
     async exec(message, args) {
-
+      let client = this.client;
+      const guild = client.guilds.get(client.config.guildID);
+      const settings = await client.db.getSettings(client);
         const youtube = require("ytdl-core");
         let argument = args.id;
         const streamOptions = {
@@ -32,6 +34,7 @@ class PlayCommand extends Command {
             if (err) {
               //client.ShowError(err, message.channel);
             } else {
+              client.logger.log(client.textes.get("PLAY_LOG_YOUTUBE", message.member, argument, info.title));
               //client.ShowMessage(`**${message.member.displayName}** a lancé la lecture de **${info.title}**`, message.channel);
             }
           });
@@ -52,7 +55,7 @@ class PlayCommand extends Command {
       
         } else {
       
-          const file = message.settings.mediaPath + argument + ".mp3";
+          const file = settings.mediaPath + argument + ".mp3";
       
           if (message.member.voiceChannel) {
             message.member.voiceChannel.join()

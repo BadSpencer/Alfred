@@ -355,6 +355,11 @@ module.exports = class {
             EXP_LOG_LEVELUP: (member, level) => {
                 return `Niveau supérieur pour ${member.displayName} qui est désormais level ${level}`;
             },
+
+            // PLAY
+            PLAY_LOG_YOUTUBE: (member, url, titre) => {
+return `${member.displayName} à lancé la lecture de ${titre} (${url})`;
+            },
             // GAMES
 
             GAMES_LIST_UPDATED: "Liste des jeux mise à jour",

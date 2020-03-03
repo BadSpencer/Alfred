@@ -38,21 +38,24 @@ class voiceStateUpdateListener extends Listener {
                         'CONNECT': true,
                     });
                 }
-            }
 
-            if (newMember.voiceChannel.name == settings.freeVoiceChan) {
-                // Création d'un nouveau salon libre
-                await newMember.guild.createChannel(`${settings.freeVoiceChan}`, {
-                    type: 'voice'
-                }).then(freeVoiceChannel => {
-                    freeVoiceChannel.overwritePermissions(roleEveryone, {
-                        'CONNECT': false,
+                if (newMember.voiceChannel.name == settings.freeVoiceChan) {
+                    // Création d'un nouveau salon libre
+                    await newMember.guild.createChannel(`${settings.freeVoiceChan}`, {
+                        type: 'voice'
+                    }).then(freeVoiceChannel => {
+                        freeVoiceChannel.overwritePermissions(newMember, {
+                            'MANAGE_CHANNELS': true,
+                        });
+                        freeVoiceChannel.overwritePermissions(roleEveryone, {
+                            'CONNECT': false,
+                        });
+                        freeVoiceChannel.overwritePermissions(roleMembers, {
+                            'CONNECT': true,
+                        });
+                        freeVoiceChannel.setParent(voiceChannelsCategory);
                     });
-                    freeVoiceChannel.overwritePermissions(roleMembers, {
-                        'CONNECT': true,
-                    });
-                    freeVoiceChannel.setParent(voiceChannelsCategory);
-                });
+                }
             }
         }
 
@@ -70,7 +73,7 @@ class voiceStateUpdateListener extends Listener {
                         'CONNECT': false,
                     });
                 } else {
-                    if (oldMember.voiceChannel.name == settings.quietChannel) return; 
+                    if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
                     oldMember.voiceChannel.delete();
                 }
@@ -91,7 +94,7 @@ class voiceStateUpdateListener extends Listener {
                         'CONNECT': false,
                     });
                 } else {
-                    if (oldMember.voiceChannel.name == settings.quietChannel) return; 
+                    if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
                     oldMember.voiceChannel.delete();
                 }
@@ -107,22 +110,23 @@ class voiceStateUpdateListener extends Listener {
                         'CONNECT': true,
                     });
                 }
+                if (newMember.voiceChannel.name == settings.freeVoiceChan) {
+                    // Création d'un nouveau salon libre
+                    await newMember.guild.createChannel(`${settings.freeVoiceChan}`, {
+                        type: 'voice'
+                    }).then(freeVoiceChannel => {
+                        freeVoiceChannel.overwritePermissions(roleEveryone, {
+                            'CONNECT': false,
+                        });
+                        freeVoiceChannel.overwritePermissions(roleMembers, {
+                            'CONNECT': true,
+                        });
+                        freeVoiceChannel.setParent(voiceChannelsCategory);
+                    });
+                }
             }
 
-            if (newMember.voiceChannel.name == settings.freeVoiceChan) {
-                // Création d'un nouveau salon libre
-                await newMember.guild.createChannel(`${settings.freeVoiceChan}`, {
-                    type: 'voice'
-                }).then(freeVoiceChannel => {
-                    freeVoiceChannel.overwritePermissions(roleEveryone, {
-                        'CONNECT': false,
-                    });
-                    freeVoiceChannel.overwritePermissions(roleMembers, {
-                        'CONNECT': true,
-                    });
-                    freeVoiceChannel.setParent(voiceChannelsCategory);
-                });
-            }
+
 
         }
 
