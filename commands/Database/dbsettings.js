@@ -36,9 +36,10 @@ class dbSettingsCommand extends Command {
 
 
     async exec(message, args) {
+        let client = this.client;
 
-        const guild = this.client.guilds.get(this.client.config.guildID);
-        const settings = this.client.db_settings.get(guild.id);
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = client.db_settings.get(guild.id);
 
         switch (args.action) {
             case 'check': {
@@ -53,7 +54,7 @@ class dbSettingsCommand extends Command {
                 if (!args.key) return errorMessage('Veuillez spécifier une clé', message.channel);
                 if (args.value.length < 1)  return errorMessage('Veuillez spécifier une valeur', message.channel);
                 settings[args.key] = args.value;
-                this.client.db_settings.set(guild.id, settings);
+                client.db_settings.set(guild.id, settings);
 
                 successMessage(`${args.key} édité avec succès avec la valeur ${args.value}`, message.channel);
                 break;

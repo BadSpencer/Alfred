@@ -37,8 +37,9 @@ class GamesCommand extends Command {
         });
     }
     async exec(message, args) {
-        const guild = this.client.guilds.get(this.client.config.guildID);
-        const settings = await this.client.db.getSettings(this.client);
+        let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
 
         const roleEveryone = guild.roles.find(r => r.name == "@everyone");
         const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
@@ -46,21 +47,21 @@ class GamesCommand extends Command {
 
         switch (args.action) {
             case 'list': {
-                this.client.db.enmapDisplay(this.client, this.client.db_games, message.channel);
+                client.db.enmapDisplay(client, client.db_games, message.channel);
                 break;
             }
             case 'add': {
-                await this.client.db.gamesCreate(this.client, args.arguments)
+                await client.db.gamesCreate(client, args.arguments)
                 break;
             }
             case 'view': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 message.channel.send(`Données de **${args.arguments}**\n\`\`\`json\n${inspect(game)}\n\`\`\``)
                 break;
             }
             case 'create': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
 
                 let statusMessage = await message.channel.send(`Création des rôles et salons pour ${args.arguments}...`);
@@ -111,13 +112,13 @@ class GamesCommand extends Command {
                         statusMessage.edit(`Salon ${textchannel.name} créé`);
                     })
                 })
-                await this.client.db_games.set(args.arguments, game);
+                await client.db_games.set(args.arguments, game);
                 statusMessage.edit(`Salons et rôles pour ${args.arguments} correctement créés`);
 
                 break;
             }
             case 'active': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 if (game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà actif`, message.channel);
 
@@ -276,12 +277,12 @@ class GamesCommand extends Command {
                     });
                 }
                 game.actif = true;
-                this.client.db_games.set(args.arguments, game);
+                client.db_games.set(args.arguments, game);
                 statusMessage.edit(`${args.arguments} a été correctement activé`);
                 break;
             }
             case 'inactive': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 if (!game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà inactif`, message.channel);
 
@@ -346,11 +347,11 @@ class GamesCommand extends Command {
 
                 game.actif = false;
                 game.emoji = "";
-                this.client.db_games.set(args.arguments, game);
+                client.db_games.set(args.arguments, game);
                 break;
             }
             case 'delete': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 if (game.actif) return errorMessage(`Le jeu ${args.arguments} est actif`, message.channel);
 
@@ -402,18 +403,41 @@ class GamesCommand extends Command {
                 }
                 game.actif = false;
                 game.emoji = "";
-                this.client.db_games.set(args.arguments, game);
+                client.db_games.set(args.arguments, game);
                 break;
             }
             case 'voice': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
 
+                const gameCategory = message.guild.channels.get(game.categoryID);
+                const gameRole = message.guild.roles.get(game.roleID);
+
+                await message.guild.createChannel(`${game.name}`, {
+                    type: 'voice'
+                }).then( async gameVoiceChannel => {
+                    game.voiceChannelID = gameVoiceChannel.id;
+                    await gameVoiceChannel.setParent(gameCategory)
+                        .then(successMessage(client.textes.get("GAMES_CHANNEL_LINKED_TO_CATEGORY",gameVoiceChannel, gameCategory), message.channel));
+                    await gameVoiceChannel.overwritePermissions(roleEveryone, {
+                        'VIEW_CHANNEL': false,
+                        'CONNECT': false,
+                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, roleEveryone), message.channel));
+                    await gameVoiceChannel.overwritePermissions(roleMembers, {
+                        'VIEW_CHANNEL': false,
+                        'CONNECT': false,
+                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, roleMembers), message.channel));
+                    await gameVoiceChannel.overwritePermissions(gameRole, {
+                        'VIEW_CHANNEL': true,
+                        'CONNECT': true,
+                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, gameRole), message.channel));
+                    successMessage(`Salon ${gameVoiceChannel.name} créé`, message.channel);
+                })
                 break;
             }
             case 'statut': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
 
@@ -467,11 +491,11 @@ class GamesCommand extends Command {
                     });
                     successMessage(`Salon ${gameStatusChannel.name} créé`, message.channel);
                 })
-                this.client.db_games.set(args.arguments, game);
+                client.db_games.set(args.arguments, game);
                 break;
             }
             case 'infos': {
-                let game = this.client.db_games.get(args.arguments);
+                let game = client.db_games.get(args.arguments);
                 if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
                 if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
 
@@ -525,15 +549,15 @@ class GamesCommand extends Command {
                     });
                     successMessage(`Salon ${gameInfosChannel.name} créé`, message.channel);
                 })
-                this.client.db_games.set(args.arguments, game);
+                client.db_games.set(args.arguments, game);
                 break;
             }
             case 'postrr': {
-                this.client.games.PostRoleReaction(this.client);
+                client.games.PostRoleReaction(client);
                 break;
             }
             case 'export': {
-                let games = this.client.db_games.fetchEverything();
+                let games = client.db_games.fetchEverything();
                 if (!games) return errorMessage(`Aucun jeu trouvé`, message.channel);
 
 
@@ -547,20 +571,20 @@ class GamesCommand extends Command {
                 //const attachment = new MessageAttachment(exporteddata, 'games.txt');
                 //const attachment = new MessageAttachment(buffer, 'games.txt');
 
-                
+
 
                 //let data = JSON.stringify(data);
                 fs.writeFileSync('export.json', data);
 
                 //message.channel.send(`${message.author}, Voici la table des jeux`, attachment);
-                
+
                 message.channel.send({
                     files: [{
-                      attachment: 'export.json',
-                      name: 'games.json'
+                        attachment: 'export.json',
+                        name: 'games.json'
                     }]
-                  });
- 
+                });
+
 
                 break;
             }

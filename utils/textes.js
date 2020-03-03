@@ -15,7 +15,7 @@ module.exports = class {
                 return `${member.displayName} à rejoint Casual Effect !`;
             },
 
-            CITATIONS: [ 
+            CITATIONS: [
                 "C'est merveilleux la vieillesse, dommage que ça finisse si mal ! (François Mauriac)",
                 "Dieu a inventé le chat pour que l'homme ait un tigre à caresser chez lui. (Victor Hugo)",
                 "On n'est vieux que le jour où on le décide. (Jean Anouilh)",
@@ -364,6 +364,15 @@ module.exports = class {
             GAMES_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
+            GAMES_CHANNEL_LINKED_TO_CATEGORY: (channel, category) => {
+                return `Le salon ${channel.name} à été affecté à la catégorie ${category.name}`;
+            },
+            GAMES_CHANNEL_PERM_FOR_GROUP: (channel, group) => {
+                return `Le permissions pour de ${group.name} ont été appliquées sur le salon ${channel.name}`;
+            },
+            GAMES_CHANNEL_CREATED: (channel) => {
+                return `Le salon ${channel.name} à étét correctement créé`;
+            },
             GAMES_ACTIVE_NOTIFICATION: (game, member, gameRole, joinChannel) => {
                 return `Bonjour ${member.displayName},
                 
