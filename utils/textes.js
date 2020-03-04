@@ -245,6 +245,9 @@ module.exports = class {
                 "Vous n'êtes pas responsable de la tête que vous avez mais vous êtes responsable de la gueule que vous faites. (Coluche)",
                 "Vous pouvez vous construire un trône avec des baïonnettes, mais vous ne resterez pas assis longtemps dessus. (Boris Eltsine)"
             ],
+            LSV: [
+                ""
+            ],
             MESSAGES_SERVER_JOIN: (member) => {
                 let textes = [
                     `Z'ai cru voir passer un ro**${member.displayName}**minet !`,
@@ -292,6 +295,8 @@ module.exports = class {
 
             },
             MESSAGES_AUREVOIR: [],
+
+            VOICE_NEW_VOICE_CHANNEL: "🔊 Salon vocal",
 
             USER_MESSAGE_ACCUEIL_TITRE: "Bienvenue sur Casual Effect",
             USER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {

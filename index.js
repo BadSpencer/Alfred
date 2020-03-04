@@ -38,6 +38,7 @@ const client = new AkairoClient({
 });
 
 client.config = require("./config.js");
+client.core = require("./utils/core");
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
 client.members =  require("./utils/members");

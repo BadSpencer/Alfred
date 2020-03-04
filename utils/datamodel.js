@@ -14,7 +14,7 @@ exports.tables = {
         "welcomeMemberChannel": "💬général",
         "welcomeMemberEnabled": "true",
         "newsChannel": "📢news",  
-        "freeVoiceChan": "🔈Salon libre",
+        "freeVoiceChan": "➕ Créer salon",
         "voiceChansCategory": "🔷Salons vocaux",
         "AFKChannel": "⌛AFK",
         "quietChannel": "🔈Au calme",

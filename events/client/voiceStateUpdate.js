@@ -29,32 +29,16 @@ class voiceStateUpdateListener extends Listener {
         // Rejoint un salon vocal
         if (!oldMember.voiceChannel && newMember.voiceChannel) {
             if (newMember.voiceChannel.members.size == "1") {
+
                 const game = client.db_games.find(game => game.voiceChannelID == newMember.voiceChannel.id);
                 if (game) {
-                    newMember.voiceChannel.setParent(voiceChannelsCategory);
-                    newMember.voiceChannel.setName(`🔊${game.name}`);
-                    newMember.voiceChannel.overwritePermissions(roleMembers, {
-                        'VIEW_CHANNEL': true,
-                        'CONNECT': true,
-                    });
+                    await client.core.gameVoiceChannelJoin(client, game, newMember);
                 }
 
                 if (newMember.voiceChannel.name == settings.freeVoiceChan) {
-                    // Création d'un nouveau salon libre
-                    await newMember.guild.createChannel(`${settings.freeVoiceChan}`, {
-                        type: 'voice'
-                    }).then(freeVoiceChannel => {
-                        freeVoiceChannel.overwritePermissions(newMember, {
-                            'MANAGE_CHANNELS': true,
-                        });
-                        freeVoiceChannel.overwritePermissions(roleEveryone, {
-                            'CONNECT': false,
-                        });
-                        freeVoiceChannel.overwritePermissions(roleMembers, {
-                            'CONNECT': true,
-                        });
-                        freeVoiceChannel.setParent(voiceChannelsCategory);
-                    });
+                    await client.core.renameFreeVoiceChannel(client, newMember);
+                    // Création d'un nouveau salon "➕ Créer salon"
+                    await client.core.createFreeVoiceChannel(client);
                 }
             }
         }
@@ -65,13 +49,7 @@ class voiceStateUpdateListener extends Listener {
 
                 const game = client.db_games.find(game => game.voiceChannelID == oldMember.voiceChannel.id);
                 if (game) {
-                    let gameCategory = newMember.guild.channels.get(game.categoryID);
-                    oldMember.voiceChannel.setParent(gameCategory);
-                    oldMember.voiceChannel.setName(`🔈${game.name}`);
-                    oldMember.voiceChannel.overwritePermissions(roleMembers, {
-                        'VIEW_CHANNEL': false,
-                        'CONNECT': false,
-                    });
+                    await client.core.gameVoiceChannelQuit(client, game, oldMember);
                 } else {
                     if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
@@ -83,53 +61,28 @@ class voiceStateUpdateListener extends Listener {
         // Change de salon
         if (oldMember.voiceChannel && newMember.voiceChannel) {
             if (oldMember.voiceChannel.members.size == "0") {
-
                 const game = client.db_games.find(game => game.voiceChannelID == oldMember.voiceChannel.id);
                 if (game) {
-                    let gameCategory = newMember.guild.channels.get(game.categoryID);
-                    oldMember.voiceChannel.setParent(gameCategory);
-                    oldMember.voiceChannel.setName(`🔈${game.name}`);
-                    oldMember.voiceChannel.overwritePermissions(roleMembers, {
-                        'VIEW_CHANNEL': false,
-                        'CONNECT': false,
-                    });
+                    await client.core.gameVoiceChannelQuit(client, game, oldMember);
                 } else {
                     if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
                     oldMember.voiceChannel.delete();
                 }
             }
-
+            
             if (newMember.voiceChannel.members.size == "1") {
                 const game = client.db_games.find(game => game.voiceChannelID == newMember.voiceChannel.id);
                 if (game) {
-                    newMember.voiceChannel.setParent(voiceChannelsCategory);
-                    newMember.voiceChannel.setName(`🔊${game.name}`);
-                    newMember.voiceChannel.overwritePermissions(roleMembers, {
-                        'VIEW_CHANNEL': true,
-                        'CONNECT': true,
-                    });
+                    await client.core.gameVoiceChannelJoin(client, game, newMember);
                 }
                 if (newMember.voiceChannel.name == settings.freeVoiceChan) {
-                    // Création d'un nouveau salon libre
-                    await newMember.guild.createChannel(`${settings.freeVoiceChan}`, {
-                        type: 'voice'
-                    }).then(freeVoiceChannel => {
-                        freeVoiceChannel.overwritePermissions(roleEveryone, {
-                            'CONNECT': false,
-                        });
-                        freeVoiceChannel.overwritePermissions(roleMembers, {
-                            'CONNECT': true,
-                        });
-                        freeVoiceChannel.setParent(voiceChannelsCategory);
-                    });
+                    await client.core.renameFreeVoiceChannel(client, newMember);
+                    // Création d'un nouveau salon "➕ Créer salon"
+                    await client.core.createFreeVoiceChannel(client);
                 }
             }
-
-
-
         }
-
     }
 }
 
