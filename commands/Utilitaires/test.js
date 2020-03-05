@@ -12,8 +12,12 @@ class TestCommand extends Command {
     }
 
     async exec(message) {
+        let client = this.client;
 
-       // let games = {[ ]}
+        let astuces = client.textes.getAstuce(client);
+
+      // message.channel.send();
+
 
 
     }

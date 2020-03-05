@@ -27,7 +27,8 @@ exports.tables = {
         "gameMainRoleColor": "0xF1C40F",
         "gameModRoleColor": "0xCC7900",
         "gamePlayRoleColor": "0xC27C0E",
-        "gameIdleDays": "1",
+        "postedCitations": [],
+        "postedAstuces": [],
         "mediaPath": "/root/Alfred/media/"
     },
     games: {

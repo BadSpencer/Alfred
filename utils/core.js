@@ -36,7 +36,6 @@ exports.renameFreeVoiceChannel = async (client, member) => {
     });
 
 };
-
 exports.gameVoiceChannelJoin = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
@@ -50,7 +49,6 @@ exports.gameVoiceChannelJoin = async (client, game, member) => {
         'CONNECT': true,
     });
 };
-
 exports.gameVoiceChannelQuit = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
@@ -64,6 +62,8 @@ exports.gameVoiceChannelQuit = async (client, game, member) => {
         'CONNECT': false,
     });
 };
+
+
 
 exports.messageOfTheDay = async (client) => {
 

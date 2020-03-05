@@ -245,9 +245,21 @@ module.exports = class {
                 "Vous n'êtes pas responsable de la tête que vous avez mais vous êtes responsable de la gueule que vous faites. (Coluche)",
                 "Vous pouvez vous construire un trône avec des baïonnettes, mais vous ne resterez pas assis longtemps dessus. (Boris Eltsine)"
             ],
-            LSV: [
-                ""
-            ],
+            /*
+            ASTUCES: {
+                [
+                    "id" : 1,
+                    "texte" : `Si vous avez besoin d'aide ou que vous êtes perdus, lancez la commande \`!aide\` vous donnera toutes les informations`
+                ]
+            },
+
+                1: `Si vous avez besoin d'aide ou que vous êtes perdus, lancez la commande \`!aide\` vous donnera toutes les informations`,
+                2: `Lorsque vous créez un salon vocal, vous (et vous seul) pouvez modifier son nom. Faite un clic droit sur le salon puis "Modifier le salon".`,
+                3: `Si vous jouez à un jeu lorsque vous créez un salon vocal, le salon sera nommé avec le nom du jeu.`,
+                4: `Votre jeu préféré n'a pas encore sa place sur le Discord ? Proposez le ! Vous aurez ainsi une section dédiée pour partager des informations.`,
+                5: `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`
+            },
+            */
             MESSAGES_SERVER_JOIN: (member) => {
                 let textes = [
                     `Z'ai cru voir passer un ro**${member.displayName}**minet !`,
@@ -363,7 +375,7 @@ module.exports = class {
 
             // PLAY
             PLAY_LOG_YOUTUBE: (member, url, titre) => {
-return `${member.displayName} à lancé la lecture de ${titre} (${url})`;
+                return `${member.displayName} à lancé la lecture de ${titre} (${url})`;
             },
             // GAMES
 
@@ -544,6 +556,10 @@ return `${member.displayName} à lancé la lecture de ${titre} (${url})`;
 
 
 
+    }
+
+    getAstuce(c) {
+        return this.textes["ASTUCES"];
     }
 
 
