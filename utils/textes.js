@@ -318,25 +318,34 @@ module.exports = class {
 
             USER_MESSAGE_ACCUEIL_TITRE: "Bienvenue sur Casual Effect",
             USER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {
-                return `Bonjour ${member.displayName},
+                return `Bonjour ${member.toString()}, je vous souhaite la bienvenue sur le discord Casual Effect
                 
-                Je me présente, Alfred, je suis le majordome de Casual Effect.
-                Je m'occupe du bon fonctionnement de ce serveur discord et j'apporte quelques services pour améliorer votre séjour parmis nous.
+                Que nous vaut le plaisir de votre visite ?
+                
+                Dites moi en un peu plus sur vous pour que je sache qui annoncer.
+                Peut-être, êtes vous ici sur les recommandations de quelqu'un ? Pensez à le dire, ça peut avoir son importance.
 
-                Pour en savoir plus sur ce que je peux faire pour vous, envoyez moi la commande \`!aide\`, ici par message privé et je vous donnerais la liste des commandes que je peux comprendre.
-                
-                Je vous souhaite de bien vous amuser sur Casual Effect !`;
+                Si vous ne savez pas où vous êtes, je vous invite à consulter [notre site](https://www.casual-effect.org/) pour en savoir plus sur ce lieu.
+
+                N'oubliez pas qu'on a qu'une seule occasion de faire une première bonne impression ! En attendant, je vais prévenir mes Maîtres de votre arrivée.`;
+            },
+            MEMBER_NEW_MEMBER_NOTIFICATION: (member) => {
+                return `**${member.displayName}** à été accepté en tant que membre de Casual Effect`;
             },
 
-            MEMBER_MESSAGE_ACCUEIL_TITRE: "Bienvenue sur Casual Effect",
+            MEMBER_MESSAGE_ACCUEIL_TITRE: (member) => {
+                return `Nouveau membre ${member.displayName}`;
+            },
             MEMBER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {
-                return `Bonjour ${member.displayName},
+                return `Bonjour ${member.toString()},
                 
                 Je me présente, Alfred, je suis le majordome de Casual Effect.
                 Je m'occupe du bon fonctionnement de ce serveur discord et j'apporte quelques services pour améliorer votre séjour parmis nous.
 
-                Pour en savoir plus sur ce que je peux faire pour vous, envoyez moi la commande \`!aide\`, ici par message privé et je vous donnerais la liste des commandes que je peux comprendre.
+                Consultez le salon <#599537670699352074> pour en savoir plus sur le fonctionneemnt de ce discord.
                 
+                N'oubliez pas d'indiquer les jeux auxquels vous jouez dans le salon <#681080451938386005>
+
                 Je vous souhaite de bien vous amuser sur Casual Effect !`;
             },
 

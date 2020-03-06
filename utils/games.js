@@ -96,14 +96,14 @@ exports.gameGetListEmbed = async (client) => {
     if (gamesArray) {
         let embed = new Discord.RichEmbed();
         let description = ``;
-        let footer = (`Liste générée le ${moment().format('DD.MM.YYYY')} à ${moment().format('HH:mm')}`);
+        let footer = (`Dernière mise à jour`);
 
         gamesArray.forEach(game => {
             if (game.name !== "" && game.actif == true) {
                 let gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     let totalMembers = guild.roles.get(game.roleID).members.size;
-                    description += `${game.emoji} : ${game.name} \`${totalMembers}👤\`\n`;
+                    description += `${game.emoji} - ${game.name} \`${totalMembers}👤\`\n\n`;
                 };
             }
         });
@@ -112,6 +112,7 @@ exports.gameGetListEmbed = async (client) => {
         embed.setColor(0xF1C40F);
         embed.setDescription(description);
         embed.setFooter(footer);
+        embed.setTimestamp();
         embed.setImage(`https://media.discordapp.net/attachments/599235210550181900/645313787376697344/ligne_horizontale_2F3136.png`);
 
         return embed;

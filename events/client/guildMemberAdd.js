@@ -18,6 +18,7 @@ class guildMemberAddListener extends Listener {
 
         client.logger.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", member));
         client.members.serverJoinNotification(client, member);
+        client.members.serverJoinInformation(client, member);
     }
 }
 
