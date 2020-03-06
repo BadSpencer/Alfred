@@ -17,7 +17,7 @@ exports.serverJoinNotification = async (client, member) => {
     if (settings.welcomeEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
     let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
-    let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
+
 
     let avatar;
     if (!member.user.avatarURL) {
@@ -35,9 +35,7 @@ exports.serverJoinNotification = async (client, member) => {
         welcomeChannel.send(welcomeMessage);
     };
 
-    if (modNotifChannel) {
-        warnMessage(client.textes.get("MOD_NOTIF_SERVER_JOIN", member), modNotifChannel, false)
-    }
+    client.core.modLog(client, client.textes.get("MOD_NOTIF_SERVER_JOIN", member));
 
 };
 exports.serverJoinInformation = async (client, member) => {
@@ -63,7 +61,6 @@ exports.serverQuitNotification = async (client, member) => {
     const settings = await client.db.getSettings(client);
 
     let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
-    let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
 
     let avatar;
     if (!member.user.avatarURL) {
@@ -76,15 +73,13 @@ exports.serverQuitNotification = async (client, member) => {
 
         const welcomeMessage = new RichEmbed()
             .setTimestamp()
-            .setColor(colors['darkred'])
+            .setColor(colors['yellow'])
             .setDescription(client.textes.get("MESSAGES_SERVER_QUIT", member))
             .setFooter(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member), avatar);
         welcomeChannel.send(welcomeMessage);
     };
 
-    if (modNotifChannel) {
-        warnMessage(client.textes.get("MOD_NOTIF_SERVER_QUIT", member), modNotifChannel, false)
-    }
+    client.core.modLog(client, client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
 
 }
 exports.newMemberNotification = async (client, member) => {
@@ -96,8 +91,6 @@ exports.newMemberNotification = async (client, member) => {
     if (settings.welcomeMemberEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
     let welcomeMemberChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
-    let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
-
 
     if (welcomeMemberChannel) {
         const welcomeMessage = new RichEmbed()
@@ -107,11 +100,7 @@ exports.newMemberNotification = async (client, member) => {
             .setDescription(client.textes.get("MEMBER_NEW_MEMBER_NOTIFICATION", member));
         welcomeMemberChannel.send(welcomeMessage);
     };
-
-    if (modNotifChannel) {
-        warnMessage(client.textes.get("MOD_NOTIF_NEW_MEMBER", member), modNotifChannel, false)
-    }
-
+    client.core.modLog(client, client.textes.get("MOD_NOTIF_NEW_MEMBER", member));
 };
 exports.newMemberWelcome = async (client, member) => {
     const guild = client.guilds.get(client.config.guildID);
@@ -120,8 +109,6 @@ exports.newMemberWelcome = async (client, member) => {
     if (settings.welcomeMemberEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
     let welcomeMemberChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
-    let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
-
 
     if (welcomeMemberChannel) {
         const welcomeMessage = new RichEmbed()
@@ -131,9 +118,5 @@ exports.newMemberWelcome = async (client, member) => {
             .setDescription(client.textes.get("MEMBER_MESSAGE_ACCUEIL_DESCRIPTION", member));
         welcomeMemberChannel.send(welcomeMessage);
     };
-
-    if (modNotifChannel) {
-        warnMessage(client.textes.get("MOD_NOTIF_NEW_MEMBER", member), modNotifChannel, false)
-    }
 
 };

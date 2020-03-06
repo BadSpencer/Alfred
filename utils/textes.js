@@ -325,7 +325,7 @@ module.exports = class {
                 Dites moi en un peu plus sur vous pour que je sache qui annoncer.
                 Peut-être, êtes vous ici sur les recommandations de quelqu'un ? Pensez à le dire, ça peut avoir son importance.
 
-                Si vous ne savez pas où vous êtes, je vous invite à consulter [notre site](https://www.casual-effect.org/) pour en savoir plus sur ce lieu.
+                Si vous ne savez pas où vous êtes, je vous invite à consulter [notre site](https://www.casual-effect.org/) pour en savoir plus sur ce qu'on fait ici.
 
                 N'oubliez pas qu'on a qu'une seule occasion de faire une première bonne impression ! En attendant, je vais prévenir mes Maîtres de votre arrivée.`;
             },
@@ -432,6 +432,9 @@ module.exports = class {
                 ]
                 return textes.random();
             },
+            GAMES_JOIN_INFORMATION_CHANNEL_NOTIFICATION: (game, channel, member) => {
+                return `${member.toString()}\nVous trouverez toutes les informations utiles et nécessaires pour **${game.name}** dans le salon ${channel.toString()}.`;
+            },
             GAMES_QUIT_NOTIFICATION: (game, member) => {
                 let textes = [
                     `${member.displayName} à quitté le groupe ${game.name}`,
@@ -535,13 +538,19 @@ module.exports = class {
                 return `Création des données de jeu pour ${member.displayName} sur ${game.name}`;
             },
             MOD_NOTIF_SERVER_JOIN: (member) => {
-                return `${member.displayName} à rejoint le serveur`;
+                return `🟩 **${member.displayName}** à rejoint le serveur`;
             },
             MOD_NOTIF_SERVER_QUIT: (member) => {
-                return `${member.displayName} à quitté le serveur`;
+                return `🟨 **${member.displayName}** à quitté le serveur`;
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
-                return `${member.displayName} à été accepté et ajouté au groupe des membres`;
+                return `🟩 **${member.displayName}** à été accepté et ajouté au groupe des membres`;
+            },
+            MOD_NOTIF_MEMBER_JOIN_GAME: (member, game) => {
+                return `🟩🎮 **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;
+            },
+            MOD_NOTIF_MEMBER_QUIT_GAME: (member, game) => {
+                return `🟨🎮 **${member.displayName}** à quitté le groupe du jeu ${game.name}`;
             }
         }
     }

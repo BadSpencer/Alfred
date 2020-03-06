@@ -62,9 +62,6 @@ exports.gameVoiceChannelQuit = async (client, game, member) => {
         'CONNECT': false,
     });
 };
-
-
-
 exports.messageOfTheDay = async (client) => {
 
     const guild = client.guilds.get(client.config.guildID);
@@ -121,4 +118,14 @@ exports.messageOfTheDay = async (client) => {
 
 
 
+};
+exports.modLog = async (client, content) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
+
+    if (modNotifChannel) {
+        modNotifChannel.send(content);
+    }
 };
