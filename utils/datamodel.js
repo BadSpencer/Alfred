@@ -44,7 +44,8 @@ exports.tables = {
         "textChannelID": "",
         "infosChannelID": "",
         "statusChannelID": "",
-        "voiceChannelID": ""
+        "voiceChannelID": "",
+        "servers": []
     },
     userdata: {
         "id": "",
