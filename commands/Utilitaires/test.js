@@ -13,11 +13,10 @@ class TestCommand extends Command {
 
     async exec(message) {
         let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
 
-        let astuces = client.textes.getAstuce(client);
-
-      // message.channel.send();
-
+        client.core.messageOfTheDay(client);
 
 
     }

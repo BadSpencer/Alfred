@@ -108,5 +108,10 @@ exports.tables = {
         "content": "",
         "showTitle": true,
         "showFooter": true
+    },
+    astuces: {
+        "id": "",
+        "texte": "",
+        "count": 0
     }
 }

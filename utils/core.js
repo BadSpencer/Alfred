@@ -67,4 +67,58 @@ exports.gameVoiceChannelQuit = async (client, game, member) => {
 
 exports.messageOfTheDay = async (client) => {
 
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    let embed = new Discord.RichEmbed();
+    let description = "";
+
+    let generalChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
+
+    let astuces = client.db_astuces.array();
+    astuces.sort(function (a, b) {
+        return a.count - b.count;
+    });
+    let astuce = client.db_astuces.get(astuces[0].id);
+    astuce.count += 1;
+    client.db_astuces.set(astuces[0].id, astuce);
+
+
+    let citations = client.db_citations.array();
+
+    let sortedCitations = citations.sort(function (a, b) {
+        return a.count - b.count;
+    });
+
+    let citation = client.db_citations.get(sortedCitations[0].id);
+
+    citation.count += 1;
+    client.db_citations.set(sortedCitations[0].id, citation)
+
+    description += client.textes.get("MOTD_BONJOUR");
+    description += "\n";
+    description += "\n";
+    description += client.textes.get("MOTD_ASTUCE");
+    description += "\n";
+    description += astuce.texte;
+    description += "\n";
+    description += "\n";
+    description += client.textes.get("MOTD_CITATION");
+    description += "\n";
+    description += citation.texte;
+    description += "\n";
+    description += "\n";
+
+
+    embed.setTitle(client.textes.get("MOTD_TITRE"));
+    embed.setColor(`0xCC7900`);
+    embed.setDescription(description);
+    //embed.setThumbnail(thumbnail);
+    //embed.setImage(image);
+
+    generalChannel.send(embed);
+
+
+
+
 };

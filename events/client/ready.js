@@ -29,18 +29,23 @@ class ReadyListener extends Listener {
         await client.db.gamesCheck(client);
         await client.db.usergameCheck(client);
         await client.db.postedEmbedsCheck(client);
+        await client.db.textesCheck(client);
 
         client.logger.log(`Fin des contrôles`);
 
-        
+
         let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
             client.exp.activityCheck(client);
         });
+        let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
+            client.core.messageOfTheDay(client);
+        });
 
         activityCheck.start();
+        messageOfTheDay.start();
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
-        
+
     }
 }
 

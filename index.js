@@ -70,5 +70,11 @@ client.db_userxplogs = new Enmap({
 client.db_postedEmbeds = new Enmap({
     name: "postedEmbeds"
 });
+client.db_astuces = new Enmap({
+    name: "astuces"
+});
+client.db_citations = new Enmap({
+    name: "citations"
+});
 
 client.login(token);
