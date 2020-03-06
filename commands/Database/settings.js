@@ -12,8 +12,8 @@ const {
 
 class dbSettingsCommand extends Command {
     constructor() {
-        super('dbsettings', {
-            aliases: ['dbsettings', 'set'],
+        super('settings', {
+            aliases: ['settings', 'set'],
             split: 'quoted',
 
             description: {
@@ -29,6 +29,8 @@ class dbSettingsCommand extends Command {
                 id: 'key',
             }, {
                 id: 'value',
+                type: "content",
+                match: "rest",
             }],
 
         });
@@ -43,14 +45,11 @@ class dbSettingsCommand extends Command {
 
         switch (args.action) {
             case 'check': {
-
-        
                 message.channel.send(`***__Configuration__***\n\`\`\`json\n${inspect(settings)}\n\`\`\``)
                 break;
             }
 
             case 'edit': {
-
                 if (!args.key) return errorMessage('Veuillez spécifier une clé', message.channel);
                 if (args.value.length < 1)  return errorMessage('Veuillez spécifier une valeur', message.channel);
                 settings[args.key] = args.value;
