@@ -140,9 +140,14 @@ exports.newPlayerNotification = async (client, game, member) => {
             .setDescription(client.textes.get("GAMES_JOIN_NOTIFICATION", game, member));
         await gameTextChannel.send(welcomeMessage);
         if (gameInfosChannel) {
-            await gameTextChannel.send(`${member.toString()} Vous trouverez toutes les informations utiles et nécessaires pour **${game.name}** dans le salon ${gameInfosChannel.toString()}.`)
+            const informationsMessage = new RichEmbed()
+                .setColor(colors['darkorange'])
+                .setThumbnail(client.user.avatarURL)
+                .setDescription(client.textes.get("GAMES_JOIN_INFORMATION_CHANNEL_NOTIFICATION", game, gameInfosChannel, member));
+            await gameTextChannel.send(informationsMessage);
         };
     }
+    client.core.modLog(client, client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
 };
 exports.quitPlayerNotification = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
@@ -160,12 +165,12 @@ exports.quitPlayerNotification = async (client, game, member) => {
 
     if (gameTextChannel) {
         const welcomeMessage = new RichEmbed()
-            .setColor(colors['orange'])
+            .setColor(colors['yellow'])
             .setThumbnail(avatar)
             .setDescription(client.textes.get("GAMES_QUIT_NOTIFICATION", game, member));
         gameTextChannel.send(welcomeMessage);
     };
-
+    client.core.modLog(client, client.textes.get("MOD_NOTIF_MEMBER_QUIT_GAME", member, game));
 
 }
 exports.notifyPlayerActiveGame = async (client, member, game) => {
