@@ -9,11 +9,13 @@ const {
     errorMessage,
     warnMessage
 } = require('../../utils/messages');
+const { Permissions } = require('discord.js');
 
 class dbSettingsCommand extends Command {
     constructor() {
         super('settings', {
             aliases: ['settings', 'set'],
+            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             split: 'quoted',
 
             description: {
