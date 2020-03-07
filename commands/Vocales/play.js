@@ -7,6 +7,8 @@ class PlayCommand extends Command {
         super('play', {
             aliases: ['play'],
             category: 'Vocales',
+            cooldown: 30000,
+            ratelimit: 1,
             args: [{
                 id: "id"
             }, ]

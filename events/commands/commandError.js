@@ -13,6 +13,7 @@ class CommandErrorListener extends Listener {
         // Send the error then log it
         errorMessage(`Il y a eu une erreur avec cette commande: ***\`${error.message}\`***`, message.channel);
         this.client.logger.error(`Erreur dans la commande ${command}: ${error.message}\n${error.stack}`);
+        message.delete();
     }
 }
 

@@ -35,8 +35,6 @@ exports.activityCheck = async (client) => {
     });
 
 };
-
-
 exports.xpGetLevel = async (xp) => {
     let coef = 600;
     // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
@@ -67,16 +65,14 @@ exports.userLevelUp = async (client, member, level) => {
         embed.setDescription(client.textes.get("EXP_MESSAGE_INFORMATIONS_DESCRIPTION", member));
         embed.setColor(colors['darkgreen']);
         embed.setThumbnail(client.user.displayAvatarURL)
-        member.send(embed);
+        //member.send(embed);
+        channel.send(embed);
     } else {
         embed.setAuthor(member.displayName, member.user.avatarURL);
-        embed.setTitle(`Niveau supérieur !`);
-        embed.setDescription(`Félicitations ${member.displayName} ! Vous avez atteint le niveau ${level}`);
+        embed.setTitle(client.textes.get("EXP_MESSAGE_LEVELUP_TITRE"));
+        embed.setDescription(client.textes.get("EXP_MESSAGE_LEVELUP_DESCRIPTION", member, level));
         embed.setColor(colors['darkgreen']);
         embed.setThumbnail(constants.images.levels[indexLevel]);
         channel.send(embed);
     }
-
-
-
 };

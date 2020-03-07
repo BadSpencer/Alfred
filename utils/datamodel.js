@@ -16,6 +16,8 @@ exports.tables = {
         "newsChannel": "📢news",  
         "freeVoiceChan": "➕ Créer salon",
         "voiceChansCategory": "🔷Salons vocaux",
+        "commandsChannel": "❗alfred",
+        "commandsTestChannel": "tests-cmds",
         "AFKChannel": "⌛AFK",
         "quietChannel": "🔈Au calme",
         "gameJoinChannel": "🎮vos-jeux",

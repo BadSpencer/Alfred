@@ -1,11 +1,13 @@
 const {
     Command
 } = require('discord-akairo');
+const { Permissions } = require('discord.js');
 
 class dbMembersCommand extends Command {
     constructor() {
-        super('dbmembers', {
-            aliases: ['dbmembers', 'members', 'm'],
+        super('members', {
+            aliases: ['members', 'm'],
+            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             category: 'config',
             args: [{
                 id: 'action',

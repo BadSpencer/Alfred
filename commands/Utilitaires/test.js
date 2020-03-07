@@ -1,11 +1,13 @@
 const {
     Command
 } = require('discord-akairo');
+const { Permissions } = require('discord.js');
 
 class TestCommand extends Command {
     constructor() {
         super('test', {
             aliases: ['test'],
+            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             category: 'Utilitaires',
             cooldown: 30000,
             ratelimit: 1,

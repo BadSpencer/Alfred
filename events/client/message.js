@@ -10,10 +10,11 @@ class MessageListener extends Listener {
         });
     }
 
-    exec(message) {
+  async exec(message) {
         let client = this.client;
-
         if (message.author.bot) return;
+
+        message.settings = await client.db.getSettings(client);
     }
 }
 

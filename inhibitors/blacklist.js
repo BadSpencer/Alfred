@@ -1,6 +1,6 @@
 const { Inhibitor } = require('discord-akairo');
 
-class BlacklistInhibitor extends Inhibitor {
+class Blacklist extends Inhibitor {
     constructor() {
         super('blacklist', {
             reason: 'blacklist'
@@ -14,4 +14,4 @@ class BlacklistInhibitor extends Inhibitor {
     }
 }
 
-module.exports = BlacklistInhibitor;
+module.exports = Blacklist;

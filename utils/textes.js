@@ -18,10 +18,12 @@ module.exports = class {
                 return `Attendez encore ${this.convertMs(reste)} avant de pouvoir utiliser la commande "${commande}"`;
             },
             COMMAND_BLOCKED_MESSAGE: (commande, raison) => {
-                return `La commande "${commande}" à été bloquée pour la raison: ${raison}`;
+                return `La commande "${commande}" à été bloquée\nRaison: ${raison}`;
             },
             COMMAND_BLOCKED_REASON_BLACKLIST: "Vous êtes blacklisté",
             COMMAND_BLOCKED_REASON_USERPERMISSIONS: "Vous n'êtes pas autorisé à utiliser cette commande",
+            COMMAND_BLOCKED_REASON_CHANNELS: "Les commandes ne sont pas autorisées dans ce salon",
+
 
             CITATIONS: [
                 "C'est merveilleux la vieillesse, dommage que ça finisse si mal ! (François Mauriac)",

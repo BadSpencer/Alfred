@@ -6,17 +6,10 @@ const {
     questionMessage
 } = require('../../utils/messages');
 
-// Translations
-const {
-    MESSAGES
-} = require('../../localization/fr');
-const channels = require('../../localization/channels');
-const permissions = require('../../localization/permissions');
+
 
 // Required things for using Embeds and extending Akairo Command
-const {
-    RichEmbed
-} = require('discord.js');
+const { Permissions } = require('discord.js');
 const {
     Command
 } = require('discord-akairo');
@@ -25,6 +18,7 @@ class EmbedCommand extends Command {
     constructor() {
         super('embed', {
             aliases: ['embed', 'em'],
+            userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
             // define arg properties
             category: 'Modération',
             args: [{

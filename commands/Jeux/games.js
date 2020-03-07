@@ -1,6 +1,6 @@
 const fs = require('fs');
 const {
-    MessageAttachment
+    Permissions, MessageAttachment
 } = require('discord.js');
 const {
     Command
@@ -17,6 +17,7 @@ class GamesCommand extends Command {
     constructor() {
         super('games', {
             aliases: ['games'],
+            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             description: {
                 content: 'Gestion des jeux',
                 usage: '<action> <...arguments>',

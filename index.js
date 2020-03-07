@@ -17,7 +17,7 @@ const client = new AkairoClient({
     defaultPrompt: {
         timeout: message => 'Vous avez mis trop de temps à répondre. Commande annulée',
         ended: message => 'Trop de tentatives. Commande annulée',
-        cancel: message => 'Commandes annulée',
+        cancel: message => 'Commande annulée',
         cancelWord: 'annuler',
         retries: 2,
         time: 30000
