@@ -53,6 +53,7 @@ class voiceStateUpdateListener extends Listener {
                 } else {
                     if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
+                    if (oldMember.voiceChannel.name == "contact") return;
                     oldMember.voiceChannel.delete();
                 }
             }
@@ -67,6 +68,7 @@ class voiceStateUpdateListener extends Listener {
                 } else {
                     if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
+                    if (oldMember.voiceChannel.name == "contact") return;
                     oldMember.voiceChannel.delete();
                 }
             }
