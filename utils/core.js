@@ -124,13 +124,12 @@ exports.modLog = async (client, content) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
-    let timestamp = moment(member.joinedAt).format('DD.MM') + " " + moment(member.joinedAt).format('HH:mm');
-
-    let notification = timastamp + " " + content;
+    //let timestamp = moment().format('DD.MM') + " " + moment().format('HH:mm');
+    //let notification = timestamp + " " + content;
 
     let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
 
     if (modNotifChannel) {
-        modNotifChannel.send(notification);
+        modNotifChannel.send(content);
     }
 };
