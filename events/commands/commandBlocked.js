@@ -14,20 +14,20 @@ class CommandBlockedListener extends Listener {
     }
 
     exec(message, command, reason) {
-        let commandUsed = command;
-        let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
+        let client = this.client;
 
-        // Préparation du log
-        let guild;
         let blocked;
         let user;
         let raison;
 
         switch (reason) {
-            case 'blacklist': {
-                raison = `Utilisateur blacklisté`;
+            case 'blacklist': 
+                raison = client.textes.get("COMMAND_BLOCKED_REASON_BLACKLIST");
                 break;
-            }
+            case 'userPermissions':
+                raison = client.textes.get("COMMAND_BLOCKED_REASON_USERPERMISSIONS");
+                break;
+            default: raison = reason;
         }
 
         if (message.channel === 'text') {
@@ -44,14 +44,14 @@ class CommandBlockedListener extends Listener {
 
         if (message.channel.type === 'dm') {
             guild = `${chalk.red('DM')}: ${chalk.yellow(message.author.id)}`;
-            blocked = `Commande ${chalk.magenta(commandUsed)} bloquée pour ${user} raison: ${raison}`;
+            blocked = `Commande ${chalk.magenta(command)} bloquée pour ${user} raison: ${raison}`;
         } else {
             guild = `${chalk.red('GUILD')}: ${chalk.yellow(message.guild.id)}`;
-            blocked = `Commande ${chalk.magenta(commandUsed)} bloquée pour ${user} raison: ${raison} dans #${message.channel.name}`;
+            blocked = `Commande ${chalk.magenta(command)} bloquée pour ${user} raison: ${raison} dans #${message.channel.name}`;
         }
 
         // Log 
-        errorMessage(`Commande bloquée pour la raison: ***\`${raison}\`***`, message.channel);
+        errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
         this.client.logger.warn(`${blocked}`);
 
 

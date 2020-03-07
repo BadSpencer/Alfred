@@ -7,6 +7,8 @@ class TestCommand extends Command {
         super('test', {
             aliases: ['test'],
             category: 'Utilitaires',
+            cooldown: 30000,
+            ratelimit: 1,
             description: 'Commande de test',
         });
     }
