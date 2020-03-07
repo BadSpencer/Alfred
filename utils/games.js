@@ -124,7 +124,7 @@ exports.newPlayerNotification = async (client, game, member) => {
 
 
     const gameTextChannel = await guild.channels.get(game.textChannelID);
-    let gameInfosChannel = await guild.channels.get(game.infosChannelID);
+    const gameInfosChannel = await guild.channels.get(game.infosChannelID);
 
     let avatar;
     if (!member.user.avatarURL) {

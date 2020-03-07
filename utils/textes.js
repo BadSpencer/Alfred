@@ -14,6 +14,14 @@ module.exports = class {
             COM_MEMBER_ACCEPTED: (member) => {
                 return `${member.displayName} à rejoint Casual Effect !`;
             },
+            COMMAND_COOLDOWN_MESSAGE: (commande, reste) => {
+                return `Attendez encore ${this.convertMs(reste)} avant de pouvoir utiliser la commande "${commande}"`;
+            },
+            COMMAND_BLOCKED_MESSAGE: (commande, raison) => {
+                return `La commande "${commande}" à été bloquée pour la raison: ${raison}`;
+            },
+            COMMAND_BLOCKED_REASON_BLACKLIST: "Vous êtes blacklisté",
+            COMMAND_BLOCKED_REASON_USERPERMISSIONS: "Vous n'êtes pas autorisé à utiliser cette commande",
 
             CITATIONS: [
                 "C'est merveilleux la vieillesse, dommage que ça finisse si mal ! (François Mauriac)",
