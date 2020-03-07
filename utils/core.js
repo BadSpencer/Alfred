@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const moment = require("moment");
 const colors = require('./colors');
 const constants = require('./constants');
 
@@ -123,9 +124,13 @@ exports.modLog = async (client, content) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
+    let timestamp = moment(member.joinedAt).format('DD.MM') + " " + moment(member.joinedAt).format('HH:mm');
+
+    let notification = timastamp + " " + content;
+
     let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
 
     if (modNotifChannel) {
-        modNotifChannel.send(content);
+        modNotifChannel.send(notification);
     }
 };
