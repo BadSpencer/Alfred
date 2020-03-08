@@ -6,7 +6,7 @@ const { Permissions } = require('discord.js');
 class TestCommand extends Command {
     constructor() {
         super('test', {
-            aliases: ['test'],
+            aliases: ['test', 'tst', 'tt'],
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             category: 'Utilitaires',
             cooldown: 30000,
