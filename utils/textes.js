@@ -8,6 +8,7 @@ module.exports = class {
         this.textes = {
 
             COM_ACTION_ANNULLE: "Action annulée",
+            COM_REPLY_MESSAGE_SEND_BY_DM: "Je vous ai répondu par message privé",
             COM_USER_NEW_STATUS: (member, status) => {
                 return `${member.displayName} (${member.id}) est désormais ${status}`;
             },
@@ -24,6 +25,7 @@ module.exports = class {
             COMMAND_BLOCKED_REASON_USERPERMISSIONS: "Vous n'êtes pas autorisé à utiliser cette commande",
             COMMAND_BLOCKED_REASON_CHANNELS: "Les commandes ne sont pas autorisées dans ce salon",
 
+            
 
             CITATIONS: [
                 "C'est merveilleux la vieillesse, dommage que ça finisse si mal ! (François Mauriac)",

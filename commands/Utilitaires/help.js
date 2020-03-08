@@ -1,163 +1,131 @@
 const colors = require('../../utils/colors');
 const {
+    successMessage,
     errorMessage,
-    warnMessage
+    warnMessage,
+    questionMessage
 } = require('../../utils/messages');
-
-// Translations
-const { MESSAGES } = require('../../localization/fr');
-const channels = require('../../localization/channels');
-const permissions = require('../../localization/permissions');
-
-// Required things for using Embeds and extending Akairo Command
 const {
-    RichEmbed
+    Message,
+    RichEmbed,
+    Permissions
 } = require('discord.js');
 const {
-    Command
+    Command,
+    PrefixSupplier
 } = require('discord-akairo');
 
 class HelpCommand extends Command {
     constructor() {
         super('help', {
-            aliases: ['help', 'h'],
-            category: 'Aide',
-            // define arg properties
+            aliases: ['help', 'halp', 'h'],
+            category: 'Utilitaires',
+            clientPermissions: ['EMBED_LINKS'],
             args: [{
-                id: 'key',
-                type: 'string',
-                match: 'content',
-                default: null,
-            }, ],
-            // command description
-            description: MESSAGES.COMMANDS.HELP.DESCRIPTION,
-            //description: `Help`,
-        });
-    }
-
-    _getFullList(msg) {
-        const embed = new RichEmbed()
-            .setFooter('Alfred v' + process.env.VERSION)
-            .setThumbnail(this.client.user.displayAvatarURL)
-            .setTimestamp(new Date());
-
-        this.handler.categories.forEach((cmd, cat) => {
-            const field = {
-                name: cat,
-                value: '',
-                inline: false,
-            };
-
-            cmd.forEach((cmd2) => {
-                let cmdName = cmd2.aliases[0];
-                field.value += `\`${cmdName}\`\n`
-                field.inline = true;
-            });
-
-            field.value = `${field.value}`;
-            embed.fields.push(field);
-        });
-
-        embed.setColor(colors['magenta']);
-        return embed;
-    };
-
-    _getCmdInfo(msg, cmd) {
-        const embed = new RichEmbed()
-            .setFooter('Alfred v' + process.env.VERSION)
-            .setThumbnail(this.client.user.displayAvatarURL)
-            .setTimestamp(new Date());
-
-        embed.title = `Information sur la commande ${cmd.aliases[0]}`;
-        embed.description = cmd.description ? cmd.description : 'Il n\'y a pas de description pour cette commande.';
-
-        if (cmd.aliases) {
-            embed.addField('Alias', `\`${cmd.aliases.join(', ')}\``, true);
-        }
-
-        if (cmd.cooldown && cmd.ratelimit) {
-            embed.addField('Cooldown', `${cmd.ratelimit} utilisation(s) toutes les ${duration(cmd.cooldown)}`, true)
-        }
-
-        if (cmd.channelRestriction) {
-            embed.addField('Restrictions', `\`${channels[cmd.channelRestriction]}\``, true);
-        }
-
-        if (cmd.clientPermissions) {
-            embed.addField('Permissions', `\`${permissions[cmd.clientPermissions]}\``, true);
-        }
-
-        if (cmd.userPermissions) {
-            embed.addField('Permissions du membre', `\`${permissions[cmd.userPermissions]}\``, true);
-        }
-
-        embed.setColor(colors['mediumpurple']);
-        return embed;
-    }
-
-    exec(message, args) {
-        const filter = (reaction, client) => reaction.emoji.name === '✅' && client.id === this.client.id;
-
-        if (args.key) {
-            // Find command or category
-            const key = args.key.toLowerCase();
-
-            if (this.handler.modules.has(key)) {
-                // Found a command
-                const cmd = this.handler.modules.get(key);
-                if (message.channel.type === 'text') {
-                    message.react('✅');
-                    message.awaitReactions(filter, {
-                            time: 5000
-                        })
-                        .catch(() => {
-                            errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message.channel)
-                        });
-
-                    return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, {
-                            embed: this._getCmdInfo(message, cmd)
-                        })
-                        .catch(() => {
-                            return errorMessage('Je ne peux pas vous envoyer mes commandes, vérifiez vos options de confidentialité.', message.channel);
-                        });
-
-                } else if (message.channel.type === 'dm') {
-                    return message.author.send(`Voici des informations sur la commande **\`${key}\`**`, {
-                            embed: this._getCmdInfo(message, cmd)
-                        })
-                        .catch(() => O_o);
-
-                } else {
-                    return warnMessage(`Je n'ai pas trouvé de commandes appelées **${key}**`, message.channel);
-                }
+                id: 'command',
+                type: 'commandAlias',
+                prompt: {
+                    start: 'Which command do you need help with?',
+                    retry: 'Please provide a valid command.',
+                    optional: true
+                },
+                match: 'rest'
+            }],
+            description: {
+                content: 'Displays a list of commands or information about a command.',
+                usage: '[command]',
+                examples: ['', 'say', 'tag']
             }
+        });
+    }
+
+    exec(message, {
+        command
+    }) {
+        if (!command) return this.execCommandList(message);
+
+        const description = Object.assign({
+            content: 'No description available.',
+            usage: '',
+            examples: [],
+            fields: []
+        }, command.description);
+
+        const embed = this.client.util.embed()
+            .setColor(colors['darkorange'])
+            .setTitle(`\`${this.client.commandHandler.prefix[0]}${command.aliases[0]} ${description.usage}\``)
+            .addField('Description', description.content)
+            .setFooter(`All the available prefix: ${this.client.commandHandler.prefix.join(' | ')}`);
+
+        for (const field of description.fields) embed.addField(field.name, field.value);
+
+        if (description.examples.length) {
+            const text = `${this.client.commandHandler.prefix[0]}${command.aliases[0]}`;
+            embed.addField('Examples', `\`${text} ${description.examples.join(`\`\n\`${text} `)}\``, true);
         }
 
-        // List all categories if none was provided
-        if (message.channel.type === 'text') {
-            message.react('✅');
-            message.awaitReactions(filter, {
-                    time: 100
-                })
-                .catch(() => {
-                    return errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message)
-                });
+        if (command.aliases.length > 1) {
+            embed.addField('Aliases', `\`${command.aliases.join('` `')}\``, true);
+        }
 
-            return message.author.send('**Voici une liste de toutes les commandes par catégorie:**', {
-                    embed: this._getFullList(message)
-                })
-                .catch(() => {
-                    errorMessage('Je ne peux pas vous envoyer mes commandes par message privé, vérifiez vos options de confidentialité.', message.channel).then(m => m.delete(10000));
-                });
+        if (command.userPermissions) {
+            embed.addField('User permission', `\`${command.userPermissions.join('` `')}\``, true);
+        }
 
-        } else if (message.channel.type === 'dm') {
-            return message.author.send('**Voici une liste de toutes les commandes par catégorie:**', {
-                    embed: this._getFullList(message)
-                })
-                .catch(() => O_o)
-        };
+        if (command.clientPermissions) {
+            embed.addField('Bot permission', `\`${command.clientPermissions.join('` `')}\``, true);
+        }
+
+        return message.util.send({
+            embed
+        });
+    }
+
+    async execCommandList(message) {
+        const embed = this.client.util.embed()
+            .setColor(colors['darkorange'])
+            .addField('Command List',
+                [
+                    'This is a list of commands.',
+                    `To view details for a command, do \`${this.client.commandHandler.prefix[0]}help <command>\`.`
+                ])
+            .setFooter(`All the available prefix: ${this.client.commandHandler.prefix}`);
+
+        for (const category of this.handler.categories.values()) {
+            let title;
+            if (message.author.id == this.client.ownerID) {
+                title = {
+                    Vocales: '🔊\u2000Audio',
+                    Utilitaires: '🔩\u2000Utilitaires',
+                    Modération: '⚡\u2000Modération',
+                    config: '🛠️\u2000Configuration',
+                } [category.id];
+            } else {
+                title = {
+                    Vocales: '🔊\u2000Audio',
+                    Utilitaires: '🔩\u2000Utilitaires',
+                    Modération: '⚡\u2000Modération',
+                } [category.id];
+            }
+
+            if (title) embed.addField(title, `\`${category.map(cmd => cmd.aliases[0]).join('` `')}\``);
+        }
+
+        const shouldReply = message.guild && message.channel.permissionsFor(this.client.user).has('SEND_MESSAGES');
+
+        try {
+            await message.author.send({
+                embed
+            });
+            if (shouldReply) return successMessage(client.textes.get("COM_REPLY_MESSAGE_SEND_BY_DM"), message.channel);
+        } catch (err) {
+            if (shouldReply) return message.util.send({
+                embed
+            });
+        }
+
+        return undefined;
     }
 }
-
 
 module.exports = HelpCommand;
