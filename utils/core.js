@@ -3,14 +3,21 @@ const moment = require("moment");
 const colors = require('./colors');
 const constants = require('./constants');
 
-exports.createFreeVoiceChannel = async (client) => {
+exports.createVoiceChannel = async (client, name = "") => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const roleEveryone = guild.roles.find(r => r.name == "@everyone");
     const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
     const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
 
-    await guild.createChannel(`${settings.freeVoiceChan}`, {
+    let channelName = "";
+    if (!name) {
+        channelName = settings.freeVoiceChan;
+    } else {
+        channelName = name;
+    }
+
+    await guild.createChannel(channelName, {
         type: 'voice'
     }).then(freeVoiceChannel => {
         freeVoiceChannel.overwritePermissions(roleEveryone, {
@@ -54,7 +61,7 @@ exports.gameVoiceChannelQuit = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
-    const  gameCategory = guild.channels.get(game.categoryID);
+    const gameCategory = guild.channels.get(game.categoryID);
 
     member.voiceChannel.setParent(gameCategory);
     member.voiceChannel.setName(`🔈${game.name}`);

@@ -38,7 +38,7 @@ class voiceStateUpdateListener extends Listener {
                 if (newMember.voiceChannel.name == settings.freeVoiceChan) {
                     await client.core.renameFreeVoiceChannel(client, newMember);
                     // Création d'un nouveau salon "➕ Créer salon"
-                    await client.core.createFreeVoiceChannel(client);
+                    await client.core.createVoiceChannel(client);
                 }
             }
         }
@@ -81,7 +81,7 @@ class voiceStateUpdateListener extends Listener {
                 if (newMember.voiceChannel.name == settings.freeVoiceChan) {
                     await client.core.renameFreeVoiceChannel(client, newMember);
                     // Création d'un nouveau salon "➕ Créer salon"
-                    await client.core.createFreeVoiceChannel(client);
+                    await client.core.createVoiceChannel(client);
                 }
             }
         }
