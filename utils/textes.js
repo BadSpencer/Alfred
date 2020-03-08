@@ -354,9 +354,9 @@ module.exports = class {
                 Je me présente, Alfred, je suis le majordome de Casual Effect.
                 Je m'occupe du bon fonctionnement de ce serveur discord et j'apporte quelques services pour améliorer votre séjour parmis nous.
 
-                Consultez le salon <#599537670699352074> pour en savoir plus sur le fonctionneemnt de ce discord.
+                Consultez le salon <#562689816966463503> pour en savoir plus sur le fonctionneemnt de ce discord.
                 
-                N'oubliez pas d'indiquer les jeux auxquels vous jouez dans le salon <#681080451938386005>
+                N'oubliez pas d'indiquer les jeux auxquels vous jouez dans le salon <#601792379644805140>
 
                 Je vous souhaite de bien vous amuser sur Casual Effect !`;
             },
