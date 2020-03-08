@@ -9,7 +9,7 @@ class VocalCommand extends Command {
       category: 'Vocales',
       args: [
         {
-            id: 'nom'
+          id: 'nom'
         }]
     });
   }
@@ -18,20 +18,20 @@ class VocalCommand extends Command {
     let client = this.client;
 
     let channelName = "";
-
     if (message.util.alias === 'ce') {
-      channelName = "";
-
+      channelName = "🏰Casual Effect";
     };
     if (message.util.alias === 'edl') {
-      
+      channelName = "🌘 🎭 EDL-Rôle-Play";
     };
     if (message.util.alias === 'fj') {
-      
+      channelName = "🥶Tribu des Fjords";
     };
 
+    if(args.nom) channelName = args.nom;
 
-    await client.core.createVoiceChannel(client);
+
+    await client.core.createVoiceChannel(client, channelName);
 
 
   }
