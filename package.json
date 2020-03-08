@@ -1,7 +1,7 @@
 {
   "name": "alfred",
   "version": "2.0.0",
-  "description": "",
+  "description": "Bot du serveur discord Casual Effect",
   "main": "index.js",
   "dependencies": {
     "better-sqlite-pool": "^0.2.3",
