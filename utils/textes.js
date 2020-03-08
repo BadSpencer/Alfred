@@ -549,20 +549,26 @@ module.exports = class {
             LOG_EVENT_USERGAME_CREATED: (member, game) => {
                 return `Création des données de jeu pour ${member.displayName} sur ${game.name}`;
             },
+            MOD_NOTIF_NEW_GAME_ADDED: (member) => {
+                return `✅ Nouveau jeu détecté **${member.presence.game.name}** joué par ${member.displayName} a été ajouté à la base`;
+            },
+            MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST: (member, game) => {
+                return `⚠️ **${member.displayName}** joue à ${game.name} mais n'est pas dans le groupe. Il à été notifié par message privé de l'existence du groupe.`;
+            },
             MOD_NOTIF_SERVER_JOIN: (member) => {
-                return `🟩 **${member.displayName}** à rejoint le serveur`;
+                return `✅ **${member.displayName}** à rejoint le serveur`;
             },
             MOD_NOTIF_SERVER_QUIT: (member) => {
-                return `🟨 **${member.displayName}** à quitté le serveur`;
+                return `⚠️ **${member.displayName}** à quitté le serveur`;
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
-                return `🟩 **${member.displayName}** à été accepté et ajouté au groupe des membres`;
+                return `✅ **${member.displayName}** à été accepté et ajouté au groupe des membres`;
             },
             MOD_NOTIF_MEMBER_JOIN_GAME: (member, game) => {
-                return `🟩🎮 **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;
+                return `✅ **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;
             },
             MOD_NOTIF_MEMBER_QUIT_GAME: (member, game) => {
-                return `🟨🎮 **${member.displayName}** à quitté le groupe du jeu ${game.name}`;
+                return `⚠️ **${member.displayName}** à quitté le groupe du jeu ${game.name}`;
             }
         }
     }
