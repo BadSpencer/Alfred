@@ -493,24 +493,24 @@ module.exports = class {
             },
             EMBED_AIDE_TITLE: `Gestion des embeds: Aide`,
             EMBED_AIDE_DESCRIPTION: () => {
-                return `Voici l'aide détaille de la fonction embed
+                return `Voici l'aide détaillée de la fonction embed
                 
-                Vous ne pouvez avoir qu'un seul embed en cours d'édition pour simplifier les commandes d'édition. Voic les commandes qui vous permettrons de gérer les embeds: 
-                \`!embed liste\`: Affiche la liste de vos embeds (alias: list, ls)
-                \`!embed voir [id]\` Affiche l'embed spécifié ou celui en cours d'édition si aucun id fourni (alias: afficher, aff, view)
+                Vous ne pouvez avoir qu'un seul embed en cours d'édition pour simplifier les commandes d'édition. Voici les commandes qui vous permettrons de gérer les embeds: 
+                \`!embed liste\`: Liste de vos embeds (alias: list, ls)
+                \`!embed voir [id]\` Affiche l'embed spécifié ou celui en cours d'édition (alias: afficher, aff, view)
                 \`!embed ajouter <Titre>\` Créer un nouvel embed avec le titre spécifié (alias: ajout, add)
                 \`!embed editer <id>\` Active l'édition sur l'embed archivé spécifié (alias: edit)
                 \`!embed copier <id>\` Crée un nouvel embed par copie de l'embed spécifié (alias: copy, cp)
                 \`!embed archiver\` Archive l'embed en cours d'édition (alias: arch)
 
                 Voici les commandes qui vous permettrons d'éditer un embed en cours d'édition:
-                \`!embed titre <tire>\`: Modifier le titre
+                \`!embed titre <titre>\`: Modifier le titre
                 \`!embed desc <description>\`: Modifier la description
                 \`!embed showdesc\`: Afficher la commande "!embed desc" avec la description actuelle. Prête à être copiée, modifiée et lancée
                 \`!embed thumbnail <url>\`: Ajoute un thumbnail (vignette) à partir de l'url de l'image
                 \`!embed image <url>\`: Ajoute une image à partir de son url
                 \`!embed footer <footer>\`: Modifier le texte de bas de page
-                \`!embed url <url>\`: Assigne une adresse http à l'embed. Le titre de l'embed sera un lien clicable vers cet url
+                \`!embed url <url>\`: Assigne une url à l'embed. Le titre de l'embed sera un lien
                 `;
             },
             EMBED_EDIT_NOEDITEMBED: "Vous n'avez aucun embed en cours d'édition",
