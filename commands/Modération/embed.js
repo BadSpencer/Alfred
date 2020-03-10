@@ -26,15 +26,16 @@ class EmbedCommand extends Command {
                 type: [
                     "userboard", "board", "ub",
                     "aide",
-                    "liste", "list", "ls",
+                    "liste", "list", "ls", "listall",
                     "ajouter", "ajout", "aj", "add",
+                    "edit", "editer",
                     "titre",
                     "image", "img",
                     "thumb", "thumbnail",
                     "showdesc", "desc", "description",
                     "footer", "foot",
                     "url",
-                    "copier", "copy", "edit",
+                    "copier", "copy", 
                     "afficher", "aff", "view",
                     "arch", "archiver"
                 ],
@@ -77,6 +78,10 @@ class EmbedCommand extends Command {
                 client.db.enmapDisplay(client, client.db_embeds.filter(embed => embed.auteur == message.author.id), message.channel);
                 break;
             }
+            case "listall": {
+                client.db.enmapDisplay(client, client.db_embeds, message.channel);
+                break;
+            }
             case "ajouter":
             case "ajout":
             case "aj":
@@ -90,6 +95,11 @@ class EmbedCommand extends Command {
             case "edit":
             case "editer": {
                 await client.embeds.editEmbed(client, message, args.arguments);
+                break;
+            }
+            case "copy":
+            case "copier": {
+                await client.embeds.copyEmbed(client, message, args.arguments);
                 break;
             }
             case "titre": {

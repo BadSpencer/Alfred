@@ -13,16 +13,11 @@ const {
 exports.userboard = async (client, message) => {
     let embeds = client.db_embeds.filter(embed => embed.auteur == message.author.id);
     let embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
-
     let archivedEmbeds = client.db_embeds.filterArray(embed => embed.statut == "ARCH");
-
-
     let description = client.textes.get("EMBED_USERBOARD_DESCRIPTION", embeds.size, embedEdit);
-
-    description += "\n\n";
-    description += "\n\n";
+    description += "\n";
     archivedEmbeds.sort(function (a, b) {
-        return a.changedAt - b.changedAt;
+        return a.changedAt + b.changedAt;
     });
     let lastArchivedEmebeds = archivedEmbeds.slice(0, 5);
     for (const embed of lastArchivedEmebeds) {
@@ -70,6 +65,21 @@ exports.createEmbed = async (client, message, titre) => {
     embed.content = Embed;
     client.db_embeds.set(key, embed);
     return key;
+};
+exports.copyEmbed = async (client, message, id) => {
+    const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
+    if (embedEdit) {
+        warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
+        await client.embeds.archiveEmbed(client, embedEdit.id);
+    }
+
+    let embed = client.db_embeds.get(id);
+    let key = client.db_embeds.autonum;
+    embed.id = key;
+    embed.statut = "EDIT";
+    embed.createdAt = +new Date;
+    embed.changedAt = +new Date;
+    client.db_embeds.set(key, embed);
 };
 exports.showEmbed = async (client, embedID, channel, news = false) => {
     const guild = client.guilds.get(client.config.guildID);
