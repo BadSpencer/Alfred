@@ -15,7 +15,7 @@ class CommandBlockedListener extends Listener {
         });
     }
 
-  async exec(message, command, reason) {
+    async exec(message, command, reason) {
         let client = this.client;
 
         let guild;
@@ -32,6 +32,9 @@ class CommandBlockedListener extends Listener {
                 break;
             case 'channel':
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_CHANNELS");
+                break;
+            case 'dm':
+                raison = client.textes.get("COMMAND_BLOCKED_REASON_DM");
                 break;
             default:
                 raison = reason;
