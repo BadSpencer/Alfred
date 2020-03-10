@@ -475,7 +475,7 @@ module.exports = class {
             EMBED_CREATION_SUCCESS: (titre, id) => {
                 return `L'embed **${titre}** (${id}) à été correctement créé`;
             },
-            EMBED_CREATION_EDIT_EXIST: (embed) => {
+            EMBED_CURRENT_EDIT_ARCHIVED: (embed) => {
                 return `Votre embed **${embed.titre}** (${embed.id}) est en cours d'édition. Il va être archivé`;
             },
             EMBED_USERBOARD_TITLE: (name) => {
@@ -488,7 +488,7 @@ module.exports = class {
                 } else {
                     texte += `Aucun embed en cours d'édition\n\n`;
                 }
-                texte += `Aide: \`!embed aide\``;
+                texte += `Aide: \`!embed aide\`\n\nListe de vos derniers embeds:`;
                 return texte;
             },
             EMBED_AIDE_TITLE: `Gestion des embeds: Aide`,

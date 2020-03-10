@@ -22,30 +22,30 @@ class EmbedCommand extends Command {
             // define arg properties
             category: 'Modération',
             args: [{
-                    id: "action",
-                    type: [
-                        "userboard", "board", "ub",
-                        "aide",
-                        "liste", "list", "ls",
-                        "ajouter", "ajout", "aj", "add",
-                        "titre",
-                        "image", "img",
-                        "thumb", "thumbnail",
-                        "showdesc", "desc", "description",
-                        "footer", "foot",
-                        "url",
-                        "copier", "copy", "edit",
-                        "afficher", "aff", "view",
-                        "arch", "archiver"
-                    ],
-                    default: "userboard",
-                },
-                {
-                    id: "arguments",
-                    type: "content",
-                    match: "rest",
-                    default: null,
-                },
+                id: "action",
+                type: [
+                    "userboard", "board", "ub",
+                    "aide",
+                    "liste", "list", "ls",
+                    "ajouter", "ajout", "aj", "add",
+                    "titre",
+                    "image", "img",
+                    "thumb", "thumbnail",
+                    "showdesc", "desc", "description",
+                    "footer", "foot",
+                    "url",
+                    "copier", "copy", "edit",
+                    "afficher", "aff", "view",
+                    "arch", "archiver"
+                ],
+                default: "userboard",
+            },
+            {
+                id: "arguments",
+                type: "content",
+                match: "rest",
+                default: null,
+            },
             ]
         });
     }
@@ -85,6 +85,11 @@ class EmbedCommand extends Command {
                 let embedID = await client.embeds.createEmbed(client, message, titre);
                 successMessage(client.textes.get("EMBED_CREATION_SUCCESS", titre, embedID), message.channel);
                 await client.embeds.showEmbed(client, embedID, message.channel);
+                break;
+            }
+            case "edit":
+            case "editer": {
+                await client.embeds.editEmbed(client, message, args.arguments);
                 break;
             }
             case "titre": {

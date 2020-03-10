@@ -13,9 +13,25 @@ const {
 exports.userboard = async (client, message) => {
     let embeds = client.db_embeds.filter(embed => embed.auteur == message.author.id);
     let embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
+
+    let archivedEmbeds = client.db_embeds.filterArray(embed => embed.statut == "ARCH");
+
+
+    let description = client.textes.get("EMBED_USERBOARD_DESCRIPTION", embeds.size, embedEdit);
+
+    description += "\n\n";
+    description += "\n\n";
+    archivedEmbeds.sort(function (a, b) {
+        return a.changedAt - b.changedAt;
+    });
+    let lastArchivedEmebeds = archivedEmbeds.slice(0, 5);
+    for (const embed of lastArchivedEmebeds) {
+        description += `**${embed.id}** : ${embed.titre}\n`;
+    }
+
     let embed = new Discord.RichEmbed()
         .setTitle(client.textes.get("EMBED_USERBOARD_TITLE", message.author.username))
-        .setDescription(client.textes.get("EMBED_USERBOARD_DESCRIPTION", embeds.size, embedEdit));
+        .setDescription(description);
     message.channel.send(embed);
 };
 exports.aide = async (client, message) => {
@@ -24,10 +40,21 @@ exports.aide = async (client, message) => {
         .setDescription(client.textes.get("EMBED_AIDE_DESCRIPTION"));
     message.channel.send(embed);
 };
+exports.editEmbed = async (client, message, id) => {
+    const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
+    if (embedEdit) {
+        warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
+        await client.embeds.archiveEmbed(client, embedEdit.id);
+    }
+
+    let embed = client.db_embeds.get(id);
+    embed.statut = "EDIT";
+    client.db_embeds.set(embed.id, embed);
+}
 exports.createEmbed = async (client, message, titre) => {
     const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
     if (embedEdit) {
-        warnMessage(client.textes.get("EMBED_CREATION_EDIT_EXIST", embedEdit), message.channel);
+        warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
         await client.embeds.archiveEmbed(client, embedEdit.id);
     }
     let embed = client.db_embeds.get("default");
