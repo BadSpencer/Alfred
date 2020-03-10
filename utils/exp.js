@@ -23,12 +23,16 @@ exports.activityCheck = async (client) => {
                     client.db.usergameAddXP(client, member, 1, game);
 
                     if (member.voiceChannel) {
-                        client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
+                        if (member.voiceChannel.name !== settings.AFKChannel) {
+                            client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
+                        }
                     }
                 }
             } else {
                 if (member.voiceChannel) {
-                    client.db.userdataAddXP(client, member, 1, `En vocal`);
+                    if (member.voiceChannel.name !== settings.AFKChannel) {
+                        client.db.userdataAddXP(client, member, 1, `En vocal`);
+                    }
                 }
             }
         }
