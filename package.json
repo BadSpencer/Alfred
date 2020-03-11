@@ -1,6 +1,6 @@
 {
   "name": "alfred",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Bot du serveur discord Casual Effect",
   "main": "index.js",
   "dependencies": {
@@ -35,7 +35,7 @@
     "url": "git+https://github.com/BadSpencer/Alfred-2.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "BadSpencer",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/BadSpencer/Alfred-2/issues"
