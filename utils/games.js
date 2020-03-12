@@ -24,10 +24,10 @@ exports.removeRoleReaction = async (client) => {
         gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
             message.delete();
             settings.gameJoinMessage == "";
-            client.logger.log(client.textes.get("GAMES_LIST_SUCCESS_DELETED"));
+            client.log(client.textes.get("GAMES_LIST_SUCCESS_DELETED"));
         }).catch(err => {
             settings.gameJoinMessage == "";
-            client.logger.warn(client.textes.get("GAMES_LIST_WARN_NOTFOUND_DELETION"));
+            client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND_DELETION"),"warn");
         });
     }
 
@@ -46,9 +46,9 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
     if (settings.gameJoinMessage !== "") {
         await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
             gameJoinMessage = message;
-            client.logger.debug(client.textes.get("GAMES_LIST_SUCCESS_LOADED"));
+            client.log(client.textes.get("GAMES_LIST_SUCCESS_LOADED"),"debug");
         }).catch(err => {
-            client.logger.warn(client.textes.get("GAMES_LIST_WARN_NOTFOUND"));
+            client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND"),"warn");
         });
     }
 
@@ -65,7 +65,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
                 await msgSent.react(game.emoji);
             }
         });
-        client.logger.debug(client.textes.get("GAMES_LIST_SUCCESS_CREATED"))
+        client.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"),"debug")
     } else {
         gameJoinMessage.edit(embed).then(async msgSent => {
             if (clearReact) {
@@ -75,7 +75,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
                 }
             }
         });
-        client.logger.debug(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
+        client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"),"debug")
     }
 
 };
@@ -198,7 +198,7 @@ exports.createUsergame = async (client, game, member) => {
         usergame.id = usergameKey;
         usergame.userid = member.id;
         usergame.gameid = game.name;
-        client.logger.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
+        client.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
         if (game.actif && !member.roles.has(game.roleID)) {
             client.games.notifyPlayerActiveGame(client, member, game);
         }

@@ -10,8 +10,9 @@ class CommandLoadedListener extends Listener {
     }
 
     exec(command) {
+        let client = this.client;
         let text = `Chargement commande ${chalk.magenta.bold(command)}`
-        this.client.logger.log(text);
+        client.logger.log(text);
     }
 };
 

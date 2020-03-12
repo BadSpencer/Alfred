@@ -36,8 +36,7 @@ class PlayCommand extends Command {
             if (err) {
               //client.ShowError(err, message.channel);
             } else {
-              client.logger.log(client.textes.get("PLAY_LOG_YOUTUBE", message.member, argument, info.title));
-              //client.ShowMessage(`**${message.member.displayName}** a lancé la lecture de **${info.title}**`, message.channel);
+              client.log(client.textes.get("PLAY_LOG_YOUTUBE", message.member, argument, info.title), "debug");
             }
           });
       

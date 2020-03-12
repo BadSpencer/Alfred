@@ -25,7 +25,7 @@ class presenceUpdateListener extends Listener {
 
         // Log membre qui change de statut
         if (oldMember.presence.status !== newMember.presence.status) {
-            client.logger.log(client.textes.get("COM_USER_NEW_STATUS", newMember, statusTexts[newMember.presence.status]))
+            client.log(client.textes.get("COM_USER_NEW_STATUS", newMember, statusTexts[newMember.presence.status]), "debug")
         }
 
         // Ajout du jeu dans la base s'il n'ets pas trouvé

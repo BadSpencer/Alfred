@@ -20,9 +20,9 @@ class ReadyListener extends Listener {
             type: "PLAYING"
         });
 
-        client.logger.log(`Vérification de l'intégrité de la base de données`);
-
         await client.db.settingsCheck(client);
+
+        
         await client.db.userdataCheck(client);
         await client.db.userlogsCheck(client);
         await client.db.embedsCheck(client);
@@ -31,7 +31,7 @@ class ReadyListener extends Listener {
         await client.db.postedEmbedsCheck(client);
         await client.db.textesCheck(client);
 
-        client.logger.log(`Fin des contrôles`);
+
 
 
         let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes

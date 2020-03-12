@@ -14,7 +14,7 @@ exports.serverJoinNotification = async (client, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
-    if (settings.welcomeEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
+    if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"),"warn");
 
     let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
 
@@ -42,7 +42,7 @@ exports.serverJoinInformation = async (client, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
-    if (settings.welcomeEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
+    if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"),);
 
     let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
 
@@ -83,12 +83,12 @@ exports.serverQuitNotification = async (client, member) => {
 
 }
 exports.newMemberNotification = async (client, member) => {
-    client.logger.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_MEMBERS", member));
+    client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_MEMBERS", member));
 
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
-    if (settings.welcomeMemberEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
+    if (settings.welcomeMemberEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"),"warn");
 
     let welcomeMemberChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
 
@@ -106,7 +106,7 @@ exports.newMemberWelcome = async (client, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
-    if (settings.welcomeMemberEnabled !== "true") return client.logger.warn(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
+    if (settings.welcomeMemberEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"),"warn");
 
     let welcomeMemberChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
 

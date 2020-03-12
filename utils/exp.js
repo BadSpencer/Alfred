@@ -62,7 +62,7 @@ exports.userLevelUp = async (client, member, level) => {
     let embed = new Discord.RichEmbed();
     let indexLevel = parseInt(level);
 
-    client.logger.log(client.textes.get("EXP_LOG_LEVELUP", member, level));
+    client.log(client.textes.get("EXP_LOG_LEVELUP", member, level));
 
     if (indexLevel == 1) {
         embed.setTitle(client.textes.get("EXP_MESSAGE_INFORMATIONS_TITRE"));

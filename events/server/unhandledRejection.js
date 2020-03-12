@@ -9,7 +9,7 @@ class UnhandledRejectionListener extends Listener {
     }
 
     exec(error) {
-        this.client.logger.error(`${error.message}\n${error.stack}`);
+        this.client.log(`${error.message}\n${error.stack}`, "error");
     }
 }
 

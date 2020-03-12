@@ -12,6 +12,7 @@ class CommandStartedListener extends Listener {
     }
 
     exec(message, command) {
+        let client = this.client;
         let commandUsed = command;
         let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
 
@@ -41,7 +42,7 @@ class CommandStartedListener extends Listener {
         }
 
         // Log
-        this.client.logger.log(`${used}`);
+        client.log(`${used}`);
 
         const filter = (reaction, client) => reaction.emoji.name === '✅' && client.id === this.client.id;
         message.react('✅');

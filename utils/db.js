@@ -6,29 +6,27 @@ const datamodel = require('./datamodel');
 // CONGIG
 exports.getSettings = async (client) => {
     const guild = client.guilds.get(client.config.guildID);
-    if (!guild) return client.logger.error(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
+    if (!guild) return console.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
     let settings = client.db_settings.get(guild.id);
     return settings;
 }
 exports.settingsCheck = async (client) => {
-    client.logger.log(`Vérification de la configuration serveur`);
+    client.logger.debug(`Vérification de la configuration serveur`);
     const guild = client.guilds.get(client.config.guildID);
 
-    if (!guild) return client.logger.error(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
+    if (!guild) return client.logger.debug(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
 
     let settings = client.db_settings.get(guild.id);
 
     if (!settings) {
-        let noguildsettings = `Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`;
         guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`)
-        client.logger.log(`${noguildsettings}`)
+        client.logger.debug(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`)
         settings = datamodel.tables.settings;
-
         settings.id = guild.id;
         settings.guildName = guild.name;
         client.db_settings.set(guild.id, settings);
     } else {
-        client.logger.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
+        client.logger.debug(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
     }
 };
 
@@ -73,7 +71,7 @@ exports.textesCheck = async (client) => {
 
 // USERDATA
 exports.userdataCheck = async (client) => {
-    client.logger.log(`Vérification de la base des membres`);
+    client.log(`Vérification de la base des membres`,"debug");
     const guild = client.guilds.get(client.config.guildID);
 
     await client.db_userdata.delete("default");
@@ -91,7 +89,7 @@ exports.userdataCheck = async (client) => {
     })
 };
 exports.userlogsCheck = async (client) => {
-    client.logger.debug(`Vérification des logs`);
+    client.log(`Vérification des logs`,"debug");
     const guild = client.guilds.get(client.config.guildID);
 
 
@@ -99,17 +97,17 @@ exports.userlogsCheck = async (client) => {
     await client.db_userxplogs.set("default", datamodel.tables.userxplogs);
 };
 exports.embedsCheck = async (client) => {
-    client.logger.debug(`Vérification des embeds`);
+    client.log(`Vérification des embeds`,"debug");
     const guild = client.guilds.get(client.config.guildID);
     await client.db_embeds.delete("default");
     await client.db_embeds.set("default", datamodel.tables.embeds);
 };
 exports.usergameCheck = async (client) => {
-    client.logger.log(`Vérification des données de jeux des membres`);
+    client.log(`Vérification des données de jeux des membres`,"debug");
     const guild = client.guilds.get(client.config.guildID);
     let games = await client.db.gamesGetActive(client);
 
-    if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
+    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`,"warn");
 
     await client.db_usergame.delete("default");
     await client.db_usergame.set("default", datamodel.tables.usergame);
@@ -154,7 +152,7 @@ exports.userdataCreate = async (client, member) => {
     userdata.logs.push(userdataLogs);
 
     client.db_userdata.set(member.id, userdata);
-    client.logger.log(`Membre ${member.displayName} à été ajouté à la base de données`)
+    client.log(`Membre ${member.displayName} à été ajouté à la base de données`)
 };
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const guild = client.guilds.get(client.config.guildID);
@@ -170,7 +168,7 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
         let newLevel = await client.exp.xpGetLevel(usergame.xp);
         if (newLevel > usergame.level) {
             usergame.level = newLevel;
-            client.logger.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
+            client.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
             //client.exp.userLevelUp(client, member, newLevel);
         };
         client.db_usergame.set(`${member.presence.game.name}-${member.id}`, usergame);
@@ -186,7 +184,7 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
             if (xpAmount > 0) {
                 userdata.xp += xpAmount;
                 client.db.userxplogAdd(client, member, "XP", xpAmount, reason);
-                client.logger.log(client.textes.get("EXP_LOG_ADDXP", member, xpAmount, reason));
+                client.log(client.textes.get("EXP_LOG_ADDXP", member, xpAmount, reason), "debug");
                 let newLevel = await client.exp.xpGetLevel(userdata.xp);
                 if (newLevel > userdata.level) {
                     userdata.level = newLevel;
@@ -196,7 +194,7 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
             }
         }
     } else {
-        client.logger.error(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`)
+        client.log(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`, "error")
     }
 };
 exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename = "n/a") => {
@@ -246,7 +244,7 @@ exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename
 };
 // GAMES
 exports.gamesCheck = async (client) => {
-    client.logger.log(`Vérification de la base de données des jeux`);
+    client.log(`Vérification de la base de données des jeux`,"debug");
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     await client.db_games.delete("default");
@@ -254,7 +252,7 @@ exports.gamesCheck = async (client) => {
 
     let games = await client.db.gamesGetActive(client);
 
-    if (!games) return client.logger.warn(`Aucun jeu actif sur ce serveur. Vérification interrompue.`);
+    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`,"warn");
 
     await client.games.PostRoleReaction(client, true);
 };
@@ -266,7 +264,7 @@ exports.gamesCreate = async (client, gamename) => {
     game.createdAt = +new Date;
 
     client.db_games.set(game.id, game);
-    client.logger.log(`Le jeu ${gamename} à été ajouté à la base de données`)
+    client.log(`Le jeu ${gamename} à été ajouté à la base de données`)
 
 
 };
@@ -281,13 +279,13 @@ exports.gamesGetAll = async (client) => {
 
 // POSTED EMBEDS
 exports.postedEmbedsCheck = async (client) => {
-    client.logger.log(`Vérification des Embeds postés`);
+    client.log(`Vérification des Embeds postés`,"debug");
     await client.db_postedEmbeds.deleteAll();
     await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
 };
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {
     await client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
-    client.logger.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)
+    client.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)
 };
 exports.postedEmbedsGetAll = async (client) => {
     const postedEmbeds = client.db_postedEmbeds.filter(postedEmbed => postedEmbed.name !== "default");
@@ -295,7 +293,7 @@ exports.postedEmbedsGetAll = async (client) => {
 };
 exports.enmapDisplay = async (client, enmap, channel) => {
 
-    if (enmap.size == 0) return client.logger.warn(`Aucun enregistrement trouvé`);
+    if (enmap.size == 0) return client.logwarn(`Aucun enregistrement trouvé`, "warn");
 
     let postedEmbeds = client.db_postedEmbeds.get("default");
     let pagesArray = [];

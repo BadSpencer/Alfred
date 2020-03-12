@@ -26,7 +26,7 @@ class MessageReactionAddListener extends Listener {
         const settings = await client.db.getSettings(client);
         const member = guild.members.get(user.id);
 
-        client.logger.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
+        client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
 
 
         let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);

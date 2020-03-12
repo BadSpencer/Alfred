@@ -17,7 +17,7 @@ class guildMemberUpdateListener extends Listener {
         const settings = await client.db.getSettings(client);
         const roleMembers = newMember.guild.roles.find(r => r.name == settings.memberRole);
 
-        client.logger.debug(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember));
+        client.log(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember), "debug");
 
 
 
@@ -26,7 +26,7 @@ class guildMemberUpdateListener extends Listener {
 
             newMember.roles.forEach(newRole => {
                 if (!oldMember.roles.has(newRole.id)) {
-                    client.logger.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
+                    client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
@@ -52,7 +52,7 @@ class guildMemberUpdateListener extends Listener {
 
             oldMember.roles.forEach(oldRole => {
                 if (!newMember.roles.has(oldRole.id)) {
-                    client.logger.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
+                    client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
 
                     const game = client.db_games.find(game => game.roleID == oldRole.id);
                     if (game) {

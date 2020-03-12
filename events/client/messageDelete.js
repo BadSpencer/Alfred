@@ -16,7 +16,7 @@ class MessageDeleteListener extends Listener {
         if (message.author.bot) return;
 
         let deleted = `Le message ${message.id} à été supprimé dans le salon <#${message.channel.id}>`
-        client.logger.log(`${deleted}`);
+        client.log(`${deleted}`);
 
         if (client.db_postedEmbeds.has(message.id)) this.client.db_postedEmbeds.delete(message.id);
     }

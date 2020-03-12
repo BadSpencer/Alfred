@@ -46,6 +46,9 @@ client.games =  require("./utils/games");
 client.embeds =  require("./utils/embeds");
 client.exp =  require("./utils/exp");
 
+require("./utils/logs.js")(client);
+
+
 client.textes = new(require(`./utils/textes.js`));
 
 

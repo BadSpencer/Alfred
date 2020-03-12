@@ -40,6 +40,7 @@ class CommandBlockedListener extends Listener {
                 raison = reason;
         }
 
+        /*
         if (message.channel === 'text') {
             if (message.author.id === message.guild.ownerID) {
                 user = `${chalk.red('[GUILD OWNER]')} ${message.author.tag} (${message.author.id})`
@@ -59,10 +60,11 @@ class CommandBlockedListener extends Listener {
             guild = `${chalk.red('GUILD')}: ${chalk.yellow(message.guild.id)}`;
             blocked = `Commande ${chalk.magenta(command)} bloquée pour ${user} raison: ${raison} dans #${message.channel.name}`;
         }
+        */
 
         // Log 
         errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
-        this.client.logger.warn(`${blocked}`);
+        client.log(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), "warn");
         message.delete();
 
 
