@@ -143,7 +143,7 @@ class EmbedCommand extends Command {
             }
             case "showdesc": {
                 if (embedEdit) {
-                    await client.embeds.showEmbedDesc(client, embedID, message.channel);
+                    await client.embeds.showEmbedDesc(client, embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
