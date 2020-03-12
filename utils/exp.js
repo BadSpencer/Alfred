@@ -22,7 +22,7 @@ exports.activityCheck = async (client) => {
                     client.games.createUsergame(client, game, member);
                     client.db.usergameAddXP(client, member, 1, game);
 
-                    if (member.voiceChannel) {
+                    if (member.voiceChannel && member.roles.has(game.roleID)) {
                         if (member.voiceChannel.name !== settings.AFKChannel) {
                             client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
                         }
