@@ -83,6 +83,9 @@ exports.copyEmbed = async (client, message, id) => {
 };
 exports.showEmbed = async (client, embedID, channel, news = false) => {
     const guild = client.guilds.get(client.config.guildID);
+    const settings = client.db_settings.get(guild.id);
+
+
     let postedMessage;
     let embed = client.db_embeds.get(embedID);
     let member = guild.members.get(embed.auteur);

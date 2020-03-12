@@ -36,7 +36,9 @@ class EmbedNewsCommand extends Command {
         const guild = client.guilds.get(client.config.guildID);
         const settings = client.db_settings.get(guild.id);
         let newsChannel = guild.channels.find(c => c.name === settings.newsChannel);
-        await client.embeds.showEmbed(client, args.embedID, newsChannel, true);
+        let generalChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
+    
+        let news = await client.embeds.showEmbed(client, args.embedID, newsChannel, true);
     }
 }
 
