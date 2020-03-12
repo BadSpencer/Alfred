@@ -79,20 +79,20 @@ class MessageReactionAddListener extends Listener {
             client.db.userdataAddXP(client, member, 5, `Réaction à un message`);
 
 
-            if (emojis.positive.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 20, `Réaction "positive" reçue`);
-            if (emojis.positiveHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 20, `Réaction "positiveHand" reçue`);
-            if (emojis.positivePlus.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 30, `Réaction "positivePlus" reçue`);
-            if (emojis.neutral.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 10, `Réaction "neutral" reçue`);
-            if (emojis.neutralHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 10, `Réaction "neutralHand" reçue`);
-            if (emojis.bad.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 5, `Réaction "bad" reçue`);
-            if (emojis.badHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 5, `Réaction "badHand" reçue`);
-            if (emojis.sad.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 10, `Réaction "sad" reçue`);
-            if (emojis.love.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 50, `Réaction "love" reçue`);
-            if (emojis.sweet.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 25, `Réaction "sweet" reçue`);
-            if (emojis.drink.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 15, `Réaction "drink" reçue`);
-            if (emojis.flower.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 20, `Réaction "flower" reçue`);
-            if (emojis.event.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 10, `Réaction "event" reçue`);
-            if (emojis.medal.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, member, 100, `Réaction "medal" reçue`);
+            if (emojis.positive.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 20, `Réaction "positive" reçue`);
+            if (emojis.positiveHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 20, `Réaction "positiveHand" reçue`);
+            if (emojis.positivePlus.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 30, `Réaction "positivePlus" reçue`);
+            if (emojis.neutral.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "neutral" reçue`);
+            if (emojis.neutralHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "neutralHand" reçue`);
+            if (emojis.bad.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 5, `Réaction "bad" reçue`);
+            if (emojis.badHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 5, `Réaction "badHand" reçue`);
+            if (emojis.sad.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "sad" reçue`);
+            if (emojis.love.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 50, `Réaction "love" reçue`);
+            if (emojis.sweet.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 25, `Réaction "sweet" reçue`);
+            if (emojis.drink.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 15, `Réaction "drink" reçue`);
+            if (emojis.flower.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 20, `Réaction "flower" reçue`);
+            if (emojis.event.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "event" reçue`);
+            if (emojis.medal.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 100, `Réaction "medal" reçue`);
 
 
 
