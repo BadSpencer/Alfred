@@ -66,13 +66,14 @@ class voiceStateUpdateListener extends Listener {
                 if (game) {
                     await client.core.gameVoiceChannelQuit(client, game, oldMember);
                 } else {
-                    if (oldMember.voiceChannel.name == settings.quietChannel) return;
-                    if (oldMember.voiceChannel.name == settings.AFKChannel) return;
-                    if (oldMember.voiceChannel.name == "contact") return;
-                    oldMember.voiceChannel.delete();
+                    if (oldMember.voiceChannel.name !== settings.quietChannel &&
+                        oldMember.voiceChannel.name !== settings.AFKChannel &&
+                        oldMember.voiceChannel.name !== "contact") {
+                        oldMember.voiceChannel.delete();
+                    }
                 }
             }
-            
+
             if (newMember.voiceChannel.members.size == "1") {
                 const game = client.db_games.find(game => game.voiceChannelID == newMember.voiceChannel.id);
                 if (game) {
