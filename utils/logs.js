@@ -1,7 +1,6 @@
 module.exports = (client) => {
 
     client.log = async (msg, type = "log") => {
-        const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
         client.logger.log(msg, type);
         if (settings.logChannelID) {
