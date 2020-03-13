@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Discord = require("discord.js");
 const {
     Permissions, MessageAttachment
 } = require('discord.js');
@@ -573,11 +574,9 @@ class GamesCommand extends Command {
                 break;
             }
             case 'score': {
-                client.gameGetScore();
+                let embed = new Discord.RichEmbed(await client.gameGetScore());
+                message.channel.send(embed);
                 break;
-
-
-
             }
             case 'export': {
                 let games = client.db_games.fetchEverything();

@@ -419,6 +419,10 @@ module.exports = class {
             GAMES_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
+
+            GAMES_SCORE_TITLE:"Activité des jeux",
+
+
             GAMES_CHANNEL_LINKED_TO_CATEGORY: (channel, category) => {
                 return `Le salon ${channel.name} à été affecté à la catégorie ${category.name}`;
             },

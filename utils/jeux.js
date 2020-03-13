@@ -1,12 +1,16 @@
 const moment = require("moment");
+const Discord = require("discord.js");
 
 module.exports = (client) => {
 
   client.gameGetScore = async (nbDays = 5) => {
 
 
+    let activeGames = client.db_games.filterArray(game => game.actif === true);
 
-    let games = [];
+
+    let gamesXP = [];
+    let activeGamesXP = [];
     let days = [];
 
     for (var i = 1; i < 5; i++) {
@@ -19,7 +23,7 @@ module.exports = (client) => {
         if (xplog.gamexp) {
           for (const gamexp of xplog.gamexp) {
 
-            let game = games.find(r => r.name == gamexp.gamename)
+            let game = gamesXP.find(r => r.name == gamexp.gamename)
             if (game) {
               game.xp += gamexp.xp;
             } else {
@@ -27,14 +31,44 @@ module.exports = (client) => {
                 "name": gamexp.gamename,
                 "xp": gamexp.xp
               };
-              games.push(game);
+              gamesXP.push(game);
             }
           }
         }
       }
     }
 
-    console.log(games);
+    for (const game of activeGames) {
+      let gamexp = gamesXP.find(r => r.name == game.name)
+      if (gamexp) {
+        let activeGameXP = {
+          "name": gamexp.gamename,
+          "xp": gamexp.xp
+        };
+        activeGamesXP.push(activeGameXP);
+      }
+    }
+
+    activeGamesXP.sort(function (a, b) {
+      return a.xp - b.xp;
+    });
+
+
+    let description = "";
+    for (const activeGameXP of activeGamesXP) {
+      description += `**${activeGameXP.gamename}**: ${activeGameXP.xp}\n`
+    }
+
+    let embed = new Discord.RichEmbed();
+
+    embed.setTitle(client.textes.get("GAMES_SCORE_TITLE"));
+    //embed.setThumbnail("https://i.imgur.com/VQHvSKr.png");
+    embed.setDescription(description);
+    //embed.setFooter(client.textes.get("SUGG_NOTIF_PROPOSED_BY", member), avatar);
+    embed.setTimestamp();
+
+
+    return embed;
 
   };
 
