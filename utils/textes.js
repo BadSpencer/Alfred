@@ -26,6 +26,11 @@ module.exports = class {
             COMMAND_BLOCKED_REASON_CHANNELS: "Les commandes ne sont pas autorisées dans ce salon",
             COMMAND_BLOCKED_REASON_DM: "Cette commande n'est disponible que via message privé avec Alfred",
 
+            SUGG_NOTIF_TITLE: "Suggestion...",
+            SUGG_NOTIF_PROPOSED_BY: (member) => {
+                return `Proposée par ${member.displayName}`;
+            },
+
             
 
             CITATIONS: [

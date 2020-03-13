@@ -14,6 +14,7 @@ exports.tables = {
         "welcomeMemberChannel": "💬général",
         "welcomeMemberEnabled": "true",
         "newsChannel": "📢news",  
+        "suggChannel": "💡suggestions",
         "freeVoiceChan": "➕ Créer salon",
         "voiceChansCategory": "🔷Salons vocaux",
         "commandsChannel": "❗alfred",
