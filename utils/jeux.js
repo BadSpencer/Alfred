@@ -50,13 +50,13 @@ module.exports = (client) => {
     }
 
     activeGamesXP.sort(function (a, b) {
-      return a.xp + b.xp;
+      return b.xp - a.xp;
     });
 
 
     let description = "";
     for (const activeGameXP of activeGamesXP) {
-      description += `**${activeGameXP.gamename}**: ${activeGameXP.xp}\n`
+      description += `**${activeGameXP.name}**: ${activeGameXP.xp}\n`
     }
 
     let embed = new Discord.RichEmbed();
