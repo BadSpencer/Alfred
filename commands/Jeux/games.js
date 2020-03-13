@@ -25,7 +25,18 @@ class GamesCommand extends Command {
             category: 'Jeux',
             args: [{
                     id: "action",
-                    type: ["list", "add", "view", "create", "active", "inactive", "delete", "voice", "statut", "infos", "postrr", "export", "import"],
+                    type: [
+                        "list", 
+                        "add", 
+                        "view", 
+                        "create", 
+                        "active", 
+                        "inactive", 
+                        "delete", 
+                        "voice", 
+                        "statut", 
+                        "infos"
+                    ],
                     default: "list",
                 },
                 {
