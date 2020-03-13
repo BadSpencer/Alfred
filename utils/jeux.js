@@ -42,7 +42,7 @@ module.exports = (client) => {
       let gamexp = gamesXP.find(r => r.name == game.name)
       if (gamexp) {
         let activeGameXP = {
-          "name": gamexp.gamename,
+          "name": gamexp.name,
           "xp": gamexp.xp
         };
         activeGamesXP.push(activeGameXP);
@@ -50,7 +50,7 @@ module.exports = (client) => {
     }
 
     activeGamesXP.sort(function (a, b) {
-      return a.xp - b.xp;
+      return a.xp + b.xp;
     });
 
 
