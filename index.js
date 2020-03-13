@@ -47,6 +47,7 @@ client.embeds =  require("./utils/embeds");
 client.exp =  require("./utils/exp");
 
 require("./utils/logs.js")(client);
+require("./utils/jeux.js")(client);
 
 
 client.textes = new(require(`./utils/textes.js`));

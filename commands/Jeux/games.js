@@ -24,27 +24,28 @@ class GamesCommand extends Command {
             },
             category: 'Jeux',
             args: [{
-                    id: "action",
-                    type: [
-                        "list", 
-                        "add", 
-                        "view", 
-                        "create", 
-                        "active", 
-                        "inactive", 
-                        "delete", 
-                        "voice", 
-                        "statut", 
-                        "infos"
-                    ],
-                    default: "list",
-                },
-                {
-                    id: "arguments",
-                    type: "content",
-                    match: "rest",
-                    default: null,
-                },
+                id: "action",
+                type: [
+                    "list",
+                    "score",
+                    "add",
+                    "view",
+                    "create",
+                    "active",
+                    "inactive",
+                    "delete",
+                    "voice",
+                    "statut",
+                    "infos"
+                ],
+                default: "list",
+            },
+            {
+                id: "arguments",
+                type: "content",
+                match: "rest",
+                default: null,
+            },
             ]
         });
     }
@@ -428,22 +429,22 @@ class GamesCommand extends Command {
 
                 await message.guild.createChannel(`${game.name}`, {
                     type: 'voice'
-                }).then( async gameVoiceChannel => {
+                }).then(async gameVoiceChannel => {
                     game.voiceChannelID = gameVoiceChannel.id;
                     await gameVoiceChannel.setParent(gameCategory)
-                        .then(successMessage(client.textes.get("GAMES_CHANNEL_LINKED_TO_CATEGORY",gameVoiceChannel, gameCategory), message.channel));
+                        .then(successMessage(client.textes.get("GAMES_CHANNEL_LINKED_TO_CATEGORY", gameVoiceChannel, gameCategory), message.channel));
                     await gameVoiceChannel.overwritePermissions(roleEveryone, {
                         'VIEW_CHANNEL': false,
                         'CONNECT': false,
-                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, roleEveryone), message.channel));
+                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP", gameVoiceChannel, roleEveryone), message.channel));
                     await gameVoiceChannel.overwritePermissions(roleMembers, {
                         'VIEW_CHANNEL': false,
                         'CONNECT': false,
-                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, roleMembers), message.channel));
+                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP", gameVoiceChannel, roleMembers), message.channel));
                     await gameVoiceChannel.overwritePermissions(gameRole, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': true,
-                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP",gameVoiceChannel, gameRole), message.channel));
+                    }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP", gameVoiceChannel, gameRole), message.channel));
                     successMessage(`Salon ${gameVoiceChannel.name} créé`, message.channel);
                     game.voiceChannelID = gameVoiceChannel.id;
                     client.db_games.set(args.arguments, game);
@@ -570,6 +571,13 @@ class GamesCommand extends Command {
             case 'postrr': {
                 client.games.PostRoleReaction(client);
                 break;
+            }
+            case 'score': {
+                client.gameGetScore();
+                break;
+
+
+
             }
             case 'export': {
                 let games = client.db_games.fetchEverything();
