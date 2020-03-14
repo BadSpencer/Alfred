@@ -59,16 +59,25 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
 
     let description = "";
     for (const game of gamesXP) {
-        let score = Math.round(((game.xp * 100)/maxXP)/20);
+        let score = Math.round(((game.xp * 100) / maxXP) / 20);
 
+        /*
 if(score == 5)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🏆\n\n`;
 if(score == 4)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🥇\n\n`;
 if(score == 3)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🥈\n\n`;
 if(score == 2)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🥉\n\n`;
 if(score == 1)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🏅\n\n`;
 if(score == 0)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭕️\n\n`;
+*/
 
-       
+        if (score == 5) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n\n`;
+        if (score == 4) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️⭐️⭐️⭐️\n\n`;
+        if (score == 3) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️⭐️⭐️\n\n`;
+        if (score == 2) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️⭐️\n\n`;
+        if (score == 1) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️\n\n`;
+        if (score == 0) description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🌑\n\n`;
+
+
     }
     let footer = (`Dernière mise à jour`);
 
