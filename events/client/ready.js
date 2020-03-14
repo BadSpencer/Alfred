@@ -40,7 +40,7 @@ class ReadyListener extends Listener {
         let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
             client.core.messageOfTheDay(client);
         });
-        let gameList = new cron.CronJob('10 /5 * * * *', () => { // Tous les 5 minutes après 10sec
+        let gameList = new cron.CronJob('10 */5 * * * *', () => { // Tous les 5 minutes après 10sec
             client.games.PostRoleReaction(client);
         });
 
