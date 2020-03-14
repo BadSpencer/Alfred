@@ -527,6 +527,18 @@ module.exports = class {
             EMBED_NOT_FOUND: (embedID) => {
                 return `L'embed **${embedID}** n'a pas été trouvé`;
             },
+
+
+
+            AUTOREP_ALFRED_RESP_QUESTION_DEFAULT: [
+                "On parle de moi ?",
+                "Plaît-il ?",
+                "Vous m'avez demandé ?",
+                "Veuillez m'excuser, mais je n'ai pas compris votre question",
+                "Veuillez m'excuser, mais je ne comprends pas encore toutes les subtilités du langage humain",
+                "Veuillez m'excuser, mais je n'ai pas saisi le sens de votre question."
+            ],
+
             // DEBUG
 
             DEBUG_EVENT_GUILD_MEMBER_UPDATE: (member) => {
