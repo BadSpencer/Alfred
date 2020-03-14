@@ -574,8 +574,8 @@ class GamesCommand extends Command {
                 break;
             }
             case 'score': {
-                let embed = new Discord.RichEmbed(await client.gameGetScore());
-                message.channel.send(embed);
+                //let embed = new Discord.RichEmbed(await client.gameGetScore());
+                //message.channel.send(embed);
                 break;
             }
             case 'export': {

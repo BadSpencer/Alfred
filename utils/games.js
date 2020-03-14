@@ -27,7 +27,7 @@ exports.removeRoleReaction = async (client) => {
             client.log(client.textes.get("GAMES_LIST_SUCCESS_DELETED"));
         }).catch(err => {
             settings.gameJoinMessage == "";
-            client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND_DELETION"),"warn");
+            client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND_DELETION"), "warn");
         });
     }
 
@@ -37,45 +37,69 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const games = await client.db.gamesGetActive(client);
+    const gamesXP = await client.gameGetScore();
 
     const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
 
-    let embed = new Discord.RichEmbed(await client.games.gameGetListEmbed(client));
+    //let embed = new Discord.RichEmbed(await client.games.gameGetListEmbed(client));
+
+    let embed = new Discord.RichEmbed();
 
     let gameJoinMessage = undefined;
     if (settings.gameJoinMessage !== "") {
         await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
             gameJoinMessage = message;
-            client.log(client.textes.get("GAMES_LIST_SUCCESS_LOADED"),"debug");
+            client.log(client.textes.get("GAMES_LIST_SUCCESS_LOADED"), "debug");
         }).catch(err => {
-            client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND"),"warn");
+            client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND"), "warn");
         });
     }
 
-    let gamesArray = games.array();
-    gamesArray.sort(function (a, b) {
-        return a.name > b.name;
-    });
+    let maxXP = gamesXP[0].xp;
+
+    let description = "";
+    for (const game of gamesXP) {
+        let score = Math.round(((game.xp * 100)/maxXP)/20);
+
+if(score == 5)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🏆\n\n`;
+if(score == 4)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🥇\n\n`;
+if(score == 3)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🥈\n\n`;
+if(score == 2)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🥉\n\n`;
+if(score == 1)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🏅\n\n`;
+if(score == 0)  description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭕️\n\n`;
+
+       
+    }
+    let footer = (`Dernière mise à jour`);
+
+    embed.setTitle(`Liste des jeux`);
+    embed.setColor(0xF1C40F);
+    embed.setDescription(description);
+    embed.setFooter(footer);
+    embed.setTimestamp();
+    embed.setImage(`https://media.discordapp.net/attachments/599235210550181900/645313787376697344/ligne_horizontale_2F3136.png`);
+
+
 
     if (!gameJoinMessage) {
         await gameJoinChannel.send(embed).then(async msgSent => {
             settings.gameJoinMessage = msgSent.id;
             client.db_settings.set(guild.id, settings);
-            for (const game of gamesArray) {
+            for (const game of gamesXP) {
                 await msgSent.react(game.emoji);
             }
         });
-        client.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"),"debug")
+        client.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"), "debug")
     } else {
         gameJoinMessage.edit(embed).then(async msgSent => {
             if (clearReact) {
                 await msgSent.clearReactions();
-                for (const game of gamesArray) {
+                for (const game of gamesXP) {
                     await msgSent.react(game.emoji);
                 }
             }
         });
-        client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"),"debug")
+        client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"), "debug")
     }
 
 };

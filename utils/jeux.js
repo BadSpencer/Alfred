@@ -5,18 +5,19 @@ module.exports = (client) => {
 
   client.gameGetScore = async (nbDays = 5) => {
 
-
+    const guild = client.guilds.get(client.config.guildID);
     let activeGames = client.db_games.filterArray(game => game.actif === true);
 
+    let activeGamesScores = [];
 
-    let gamesXP = [];
-    let activeGamesXP = [];
+    
+
     let days = [];
-
     for (var i = 1; i < 5; i++) {
       days.push(moment().subtract(i, 'days').format('DD.MM.YYYY'));
     }
 
+    let gamesXP = [];
     for (const day of days) {
       let xplogs = client.db_userxplogs.filterArray(rec => rec.date == day)
       for (const xplog of xplogs) {
@@ -39,37 +40,32 @@ module.exports = (client) => {
     }
 
     for (const game of activeGames) {
+      let gameRole = guild.roles.get(game.roleID);
       let gamexp = gamesXP.find(r => r.name == game.name)
       if (gamexp) {
         let activeGameXP = {
-          "name": gamexp.name,
-          "xp": gamexp.xp
+          "name": game.name,
+          "emoji": game.emoji,
+          "xp": gamexp.xp,
+          "members": gameRole.members.size
         };
-        activeGamesXP.push(activeGameXP);
+        activeGamesScores.push(activeGameXP);
+      } else {
+        let activeGameXP = {
+          "name": game.name,
+          "emoji": game.emoji,
+          "xp": 0,
+          "members": gameRole.members.size
+        };
+        activeGamesScores.push(activeGameXP); 
       }
     }
 
-    activeGamesXP.sort(function (a, b) {
+    activeGamesScores.sort(function (a, b) {
       return b.xp - a.xp;
     });
 
-
-    let description = "";
-    for (const activeGameXP of activeGamesXP) {
-      description += `**${activeGameXP.name}**: ${activeGameXP.xp}\n`
-    }
-
-    let embed = new Discord.RichEmbed();
-
-    embed.setTitle(client.textes.get("GAMES_SCORE_TITLE"));
-    //embed.setThumbnail("https://i.imgur.com/VQHvSKr.png");
-    embed.setDescription(description);
-    //embed.setFooter(client.textes.get("SUGG_NOTIF_PROPOSED_BY", member), avatar);
-    embed.setTimestamp();
-
-
-    return embed;
-
+    return activeGamesScores;
   };
 
 
