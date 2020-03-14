@@ -75,7 +75,7 @@ if(score == 0)  description += `${game.emoji} - ${game.name} \`${game.members}�
         if (score == 3) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️⭐️⭐️\n\n`;
         if (score == 2) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️⭐️\n\n`;
         if (score == 1) description += `${game.emoji} - ${game.name} \`${game.members}👤\` ⭐️\n\n`;
-        if (score == 0) description += `${game.emoji} - ${game.name} \`${game.members}👤\` 🌑\n\n`;
+        if (score == 0) description += `${game.emoji} - ${game.name} \`${game.members}👤\` 👻\n\n`;
 
 
     }
