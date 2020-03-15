@@ -7,6 +7,7 @@ class SuggestionCommand extends Command {
     constructor() {
         super('suggestion', {
             aliases: ['suggestion', 'sug'],
+            category: 'Utilitaires',
             args: [
                 {
                     id: 'suggestion',
