@@ -480,6 +480,12 @@ module.exports = class {
             GAMES_JOIN_WANT_TO_QUIT: (jeu) => {
                 return `Vous êtes déjà dans le groupe ${jeu}.\n\n**Souhaitez vous le quitter ?** (oui/non)`;
             },
+            GAMES_INFOSJEU_DESCRIPTION: (game, role) => {
+                return `
+                Ajouté le ${moment(game.createdAt).format('DD.MM.YYYY')}
+                Nombre de joueurs: **${role.members.size}**
+                `;
+            },
 
             // EMBED
             EMBED_CREATION_SUCCESS: (titre, id) => {

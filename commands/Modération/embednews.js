@@ -18,7 +18,6 @@ class EmbedNewsCommand extends Command {
         super('embednews', {
             aliases: ['embednews', 'news'],
             userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
-            // define arg properties
             category: 'Modération',
             args: [{
                 id: "embedID",

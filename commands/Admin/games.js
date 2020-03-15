@@ -17,13 +17,13 @@ const {
 class GamesCommand extends Command {
     constructor() {
         super('games', {
-            aliases: ['games'],
+            category: 'Admin',
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             description: {
                 content: 'Gestion des jeux',
                 usage: '<action> <...arguments>',
             },
-            category: 'Jeux',
+            category: 'Admin',
             args: [{
                 id: "action",
                 type: [

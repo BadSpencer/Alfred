@@ -7,8 +7,8 @@ class TestCommand extends Command {
     constructor() {
         super('test', {
             aliases: ['test', 'tst', 'tt'],
+            category: 'Admin',
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
-            category: 'Utilitaires',
             cooldown: 30000,
             ratelimit: 1,
             description: 'Commande de test',

@@ -8,7 +8,7 @@ class LogsCommand extends Command {
         super('logs', {
             aliases: ['logs'],
             userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
-            category: 'Utilitaires',
+            category: 'Modération',
             cooldown: 30000,
             ratelimit: 1,
             description: 'Récupérer les logs',

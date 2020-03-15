@@ -20,7 +20,7 @@ class EmbedCommand extends Command {
             aliases: ['embed', 'em'],
             channelRestriction: 'dm',
             // define arg properties
-            category: 'Modération',
+            category: 'Utilitaires',
             args: [{
                 id: "action",
                 type: [

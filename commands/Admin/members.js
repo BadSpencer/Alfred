@@ -7,8 +7,8 @@ class dbMembersCommand extends Command {
     constructor() {
         super('members', {
             aliases: ['members', 'm'],
+            category: 'Admin',
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
-            category: 'config',
             args: [{
                 id: 'action',
                 type: 'text',
