@@ -483,7 +483,6 @@ module.exports = class {
             GAMES_INFOSJEU_DESCRIPTION: (game, role) => {
                 return `
                 Ajouté le ${moment(game.createdAt).format('DD.MM.YYYY')}
-                Nombre de joueurs: **${role.members.size}**
                 `;
             },
 

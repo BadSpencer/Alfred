@@ -39,9 +39,9 @@ class InfosJeuCommand extends Command {
 
             if (role.members.size > 0) {
                 if (role.members.size == 1) {
-                    embed.addField(`${role.members.size} joueur`, role.members.map(m => m.displayName).join(` `), true);
+                    embed.addField(`**${role.members.size}** joueur`, role.members.map(m => m.displayName).join(` `), true);
                 } else {
-                    embed.addField(`${role.members.size} joueurs`, role.members.map(m => m.displayName).join(`, `), true);
+                    embed.addField(`**${role.members.size}** joueurs`, role.members.map(m => m.displayName).join(`, `), true);
                 }
             }
 
