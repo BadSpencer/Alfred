@@ -18,7 +18,7 @@ const {
 class HelpCommand extends Command {
     constructor() {
         super('help', {
-            aliases: ['help', 'halp', 'h'],
+            aliases: ['help', 'halp', 'aide', 'h'],
             category: 'Utilitaires',
             clientPermissions: ['EMBED_LINKS'],
             args: [{
@@ -32,100 +32,50 @@ class HelpCommand extends Command {
                 match: 'rest'
             }],
             description: {
-                content: 'Displays a list of commands or information about a command.',
-                usage: '[command]',
-                examples: ['', 'say', 'tag']
+                content: 'Affiche l\'aide',
+                usage: '[commande]',
+                examples: ['', 'play', 'sugg']
             }
         });
     }
 
-    exec(message, {
-        command
-    }) {
-        if (!command) return this.execCommandList(message);
+    exec(message, { command }) {
+		if (!command) {
+            const embed = new RichEmbed()
+				.setColor(3447003)
+				.addField('❯ Commandes', `Liste des commandes disponibles.
+                Pour plus d'informations sur une commande, lancez \`!aide <commande>\`
+            `);
 
-        const description = Object.assign({
-            content: 'No description available.',
-            usage: '',
-            examples: [],
-            fields: []
-        }, command.description);
+			for (const category of this.handler.categories.values()) {
+				embed.addField(
+					`❯ ${category.id.replace(/(\b\w)/gi, lc => lc.toUpperCase())}`,
+					`${category
+						.filter(cmd => cmd.aliases.length > 0)
+						.map(cmd => `\`${cmd.aliases[0]}\``)
+						.join(' ')}`,
+				);
+			}
 
-        const embed = this.client.util.embed()
-            .setColor(colors['darkorange'])
-            .setTitle(`\`${this.client.commandHandler.prefix[0]}${command.aliases[0]} ${description.usage}\``)
-            .addField('Description', description.content)
-            .setFooter(`All the available prefix: ${this.client.commandHandler.prefix.join(' | ')}`);
+			return message.util.send(embed);
+		}
 
-        for (const field of description.fields) embed.addField(field.name, field.value);
+		const embed = new RichEmbed()
+			.setColor(3447003)
+			.setTitle(`\`${command.aliases[0]} ${command.description.usage || ''}\``)
+			.addField('❯ Description', command.description.content || '\u200b');
 
-        if (description.examples.length) {
-            const text = `${this.client.commandHandler.prefix[0]}${command.aliases[0]}`;
-            embed.addField('Examples', `\`${text} ${description.examples.join(`\`\n\`${text} `)}\``, true);
-        }
+		if (command.aliases.length > 1) embed.addField('❯ Aliases', `\`${command.aliases.join('` `')}\``, true);
+		if (command.description.examples.length)
+			embed.addField(
+				'❯ Examples',
+				`\`${command.aliases[0]} ${command.description.examples.join(`\`\n\`${command.aliases[0]} `)}\``,
+				true,
+			);
 
-        if (command.aliases.length > 1) {
-            embed.addField('Aliases', `\`${command.aliases.join('` `')}\``, true);
-        }
-
-        if (command.userPermissions) {
-            embed.addField('User permission', `\`${command.userPermissions.join('` `')}\``, true);
-        }
-
-        if (command.clientPermissions) {
-            embed.addField('Bot permission', `\`${command.clientPermissions.join('` `')}\``, true);
-        }
-
-        return message.util.send({
-            embed
-        });
+		return message.util.send(embed);
     }
 
-    async execCommandList(message) {
-        const embed = this.client.util.embed()
-            .setColor(colors['darkorange'])
-            .addField('Command List',
-                [
-                    'This is a list of commands.',
-                    `To view details for a command, do \`${this.client.commandHandler.prefix[0]}help <command>\`.`
-                ])
-            .setFooter(`All the available prefix: ${this.client.commandHandler.prefix}`);
-
-        for (const category of this.handler.categories.values()) {
-            let title;
-            if (message.author.id == this.client.ownerID) {
-                title = {
-                    Vocales: '🔊\u2000Audio',
-                    Utilitaires: '🔩\u2000Utilitaires',
-                    Modération: '⚡\u2000Modération',
-                    config: '🛠️\u2000Configuration',
-                } [category.id];
-            } else {
-                title = {
-                    Vocales: '🔊\u2000Audio',
-                    Utilitaires: '🔩\u2000Utilitaires',
-                    Modération: '⚡\u2000Modération',
-                } [category.id];
-            }
-
-            if (title) embed.addField(title, `\`${category.map(cmd => cmd.aliases[0]).join('` `')}\``);
-        }
-
-        const shouldReply = message.guild && message.channel.permissionsFor(this.client.user).has('SEND_MESSAGES');
-
-        try {
-            await message.author.send({
-                embed
-            });
-            if (shouldReply) return successMessage(client.textes.get("COM_REPLY_MESSAGE_SEND_BY_DM"), message.channel);
-        } catch (err) {
-            if (shouldReply) return message.util.send({
-                embed
-            });
-        }
-
-        return undefined;
-    }
 }
 
 module.exports = HelpCommand;
