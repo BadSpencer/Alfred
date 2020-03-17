@@ -17,6 +17,7 @@ const {
 class GamesCommand extends Command {
     constructor() {
         super('games', {
+            aliases: ['games'],
             category: 'Admin',
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             description: {
