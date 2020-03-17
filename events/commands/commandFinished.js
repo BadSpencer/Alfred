@@ -18,9 +18,11 @@ class CommandFinishedListener extends Listener {
         let member = guild.members.get(message.author.id);
 
         client.db.userdataAddXP(client, member, 20, `Commande`);
+        /*
         if (message.channel.type === 'text') {
             message.delete();
         }
+        */
     }
 };
 

@@ -544,6 +544,28 @@ module.exports = class {
                 "Veuillez m'excuser, mais je n'ai pas saisi le sens de votre question."
             ],
 
+            // PURGE
+            PURGE_DELETE_SUCCESS: (args, sizeDeleted) => {
+
+                if (args.purge == sizeDeleted) {
+                    if (sizeDeleted == 1) {
+                        return `${sizeDeleted} message a été correctement supprimé.`;
+                    } else {
+                        return `${sizeDeleted} messages ont été correctement supprimés.`;
+                    }
+                } else {
+                    if (sizeDeleted == 1) {
+                        return `${sizeDeleted} message a été supprimé sur les ${args.purge} demandés.`;
+                    } else {
+                        return `${sizeDeleted} messages ont été supprimés sur les ${args.purge} demandés.`;
+                    }
+                }
+                
+            },
+            PURGE_DELETE_ERROR: (error) => {
+                return `Je n'ai pas réussi à supprimer les messages pour la raison: ${error}`;
+            },
+
             // DEBUG
 
             DEBUG_EVENT_GUILD_MEMBER_UPDATE: (member) => {
