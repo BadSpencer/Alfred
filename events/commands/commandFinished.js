@@ -19,7 +19,7 @@ class CommandFinishedListener extends Listener {
 
         client.db.userdataAddXP(client, member, 20, `Commande`);
         if (message.channel.type === 'text') {
-            message.delete(5000);
+            message.delete();
         }
     }
 };

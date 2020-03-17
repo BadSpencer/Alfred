@@ -44,6 +44,7 @@ class CommandStartedListener extends Listener {
         // Log
         client.log(`${used}`);
 
+        /*
         const filter = (reaction, client) => reaction.emoji.name === '✅' && client.id === this.client.id;
         message.react('✅');
         message.awaitReactions(filter, {
@@ -52,6 +53,7 @@ class CommandStartedListener extends Listener {
             .catch(() => {
                 errorMessage('Le délai a été dépassé, veuillez réessayer plus tard.', message.channel)
             });
+        */
     }
 };
 
