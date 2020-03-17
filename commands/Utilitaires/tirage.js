@@ -38,6 +38,7 @@ class TirageCommand extends Command {
         }
         msg += (Math.floor(Math.random()*args.numFaces)+1).toString();
         message.reply(msg);
+        message.delete();
 
     }
 }

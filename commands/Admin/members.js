@@ -31,7 +31,7 @@ class dbMembersCommand extends Command {
                 break;
             }
         }
-
+        message.delete();
     }
 }
 

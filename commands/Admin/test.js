@@ -22,7 +22,7 @@ class TestCommand extends Command {
 
         client.core.messageOfTheDay(client);
 
-
+        message.delete();
     }
 }
 

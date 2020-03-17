@@ -31,6 +31,8 @@ class AutoCleanCommand extends Command {
     exec(message) {
         let client = this.client;
 
+        message.delete();
+
     }
 
 }

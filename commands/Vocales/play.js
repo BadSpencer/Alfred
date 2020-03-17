@@ -68,7 +68,7 @@ class PlayCommand extends Command {
               .catch(console.error);
           }
         }
-
+        message.delete();
     }
 }
 

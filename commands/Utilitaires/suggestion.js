@@ -51,6 +51,8 @@ class SuggestionCommand extends Command {
         embed.setFooter(client.textes.get("SUGG_NOTIF_PROPOSED_BY", member), avatar);
         embed.setTimestamp();
 
+        message.delete();
+        
         return suggChannel.send(embed).then(async msgSent => {
             await msgSent.react("✅");
             await msgSent.react("❌");

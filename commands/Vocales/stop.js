@@ -25,6 +25,7 @@ class StopCommand extends Command {
         })
         .catch(console.log);
     }
+    message.delete();
   }
 }
 

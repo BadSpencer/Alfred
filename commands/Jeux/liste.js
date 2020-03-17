@@ -13,6 +13,8 @@ class ListeCommand extends Command {
     exec(message) {
         let client = this.client;
         client.games.PostRoleReaction(client, true);
+
+        message.delete();
     }
 }
 

@@ -33,7 +33,7 @@ class VocalCommand extends Command {
 
     await client.core.createVoiceChannel(client, channelName);
 
-
+    message.delete();
   }
 
 };

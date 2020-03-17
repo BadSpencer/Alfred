@@ -78,6 +78,7 @@ class AideCommand extends Command {
                 true,
             );
 
+            message.delete();
         return message.util.send(embed);
     }
 

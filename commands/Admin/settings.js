@@ -64,7 +64,7 @@ class dbSettingsCommand extends Command {
 
         }
         
-
+        message.delete();
     }
 
 }

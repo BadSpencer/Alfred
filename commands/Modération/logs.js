@@ -20,7 +20,7 @@ class LogsCommand extends Command {
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-
+        message.delete();
         message.channel.send("Logs", {files: ["/root/.pm2/logs/index-out.log"]});
         //message.channel.send("Logs", {files: ["C:\\Users\\Bad\\Documents\\AlfredProd\\data\\enmap.sqlite"]});
 

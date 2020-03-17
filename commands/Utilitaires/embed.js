@@ -190,6 +190,7 @@ class EmbedCommand extends Command {
                 break;
             }
         }
+        message.delete();
     }
 }
 

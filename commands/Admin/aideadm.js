@@ -40,6 +40,7 @@ class AideAdmCommand extends Command {
     }
 
     exec(message, { command }) {
+
         if (!command) {
             const embed = new RichEmbed()
                 .setColor(3447003)
@@ -77,7 +78,9 @@ class AideAdmCommand extends Command {
                 true,
             );
 
+        message.delete();
         return message.util.send(embed);
+
     }
 
 }

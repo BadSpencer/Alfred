@@ -47,6 +47,7 @@ class InfosJeuCommand extends Command {
                 }
             }
 
+            message.delete();
             message.util.send(embed).then(msgSent => {
                 msgSent.delete(60000); // Suppression au bout de 1 minute
             });
