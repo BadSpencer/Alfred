@@ -41,6 +41,7 @@ class AideCommand extends Command {
 
     exec(message, { command }) {
         if (!command) {
+            
             const embed = new RichEmbed()
                 .setColor(3447003)
                 .addField('❯ Commandes', `Liste des commandes disponibles.
