@@ -1,6 +1,7 @@
 const {
     Command
 } = require('discord-akairo');
+const colors = require('../../utils/colors');
 const Discord = require("discord.js");
 
 class InfosJeuCommand extends Command {
@@ -35,6 +36,7 @@ class InfosJeuCommand extends Command {
             let description = client.textes.get("GAMES_INFOSJEU_DESCRIPTION", game, role)
             const embed = new Discord.RichEmbed();
             embed.setTitle(game.name);
+            embed.setColor(colors['darkorange']);
             embed.setDescription(description);
 
             if (role.members.size > 0) {
@@ -46,7 +48,7 @@ class InfosJeuCommand extends Command {
             }
 
             message.util.send(embed).then(msgSent => {
-                msgSent.delete(60000);
+                msgSent.delete(60000); // Suppression au bout de 1 minute
             });
 
         }
