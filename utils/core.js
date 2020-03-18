@@ -38,6 +38,7 @@ exports.renameFreeVoiceChannel = async (client, member) => {
             channelName = `🔊 ${game.name}`
         }
     }
+    if (member.id == "193822534196658176") channelName = `🔊 Confinement COVID-19`;
     await member.voiceChannel.setName(channelName);
     await member.voiceChannel.overwritePermissions(member, {
         'MANAGE_CHANNELS': true,
