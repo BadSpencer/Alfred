@@ -8,7 +8,7 @@ class ChannelRestriction extends Inhibitor {
     }
 
 
-exec(message) {
+exec(message, command) {
         let client = this.client;
 
         // Ne pas bloquer le propriétaire du serveur
@@ -20,6 +20,8 @@ exec(message) {
         if (message.channel.name === message.settings.commandsTestChannel) return false;
         if (message.channel.name === message.settings.gameJoinChannel) return false;
         if (message.channel.name === message.settings.suggChannel) return false;
+
+        if (command.id == "purge") return false;
 
         return true;
     }
