@@ -7,7 +7,7 @@ const Discord = require("discord.js");
 class AutoCleanCommand extends Command {
     constructor() {
         super('autoclean', {
-            category: 'Admin',
+            category: 'Auto',
         });
     }
     condition(message) {

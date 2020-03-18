@@ -13,6 +13,7 @@ class PurgeCommand extends Command {
     constructor() {
         super('purge', {
             aliases: ['purge', 'del', 'bulkdelete'],
+            userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
             category: 'Modération',
             args: [{
                 id: 'purge', type: 'number', default: 1,
@@ -23,9 +24,7 @@ class PurgeCommand extends Command {
                 description: 'Supprime un certain nombre de message dans un salon.'
             },
             cooldown: 6000,
-            ratelimit: 2,
-            userPermissions: ['MANAGE_MESSAGES'],
-            clientPermissions: ['MANAGE_MESSAGES']
+            ratelimit: 2
         })
     }
 

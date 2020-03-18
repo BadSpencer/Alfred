@@ -41,7 +41,22 @@ class AideCommand extends Command {
 
     exec(message, { command }) {
         if (!command) {
-            
+
+            const embed = new RichEmbed();
+            this.handler.categories.forEach((cm, category) => {
+                const dirSize = cm.filter(cmd => cmd.category === cm);
+                let mappedOut = cm.map(x => `\`${x}\``).join(', ')
+                if (category === 'Owner' && !this.client.ownerID.includes(message.author.id)
+                    ||
+                    category === 'Moderation' && !message.member.permissions.has('MANAGE_MESSAGES')
+                ) mappedOut = '`No commands available..`'
+
+                embed.addField(`${dirSize.size} | **${category} Commands**`, mappedOut)
+                    .setColor(colors['darkorange'])
+                    .setAuthor(`Help Menu | ${message.guild.name}`, message.guild.iconURL)
+
+            });
+            /*
             const embed = new RichEmbed()
                 .setColor(3447003)
                 .addField('❯ Commandes', `Liste des commandes disponibles.
@@ -61,8 +76,9 @@ class AideCommand extends Command {
                         .join('\n')}`,
                     true);
             }
-
+    */
             return message.util.send(embed);
+
         }
 
         const embed = new RichEmbed()
@@ -78,7 +94,7 @@ class AideCommand extends Command {
                 true,
             );
 
-            message.delete();
+        message.delete();
         return message.util.send(embed);
     }
 
