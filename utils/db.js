@@ -67,8 +67,6 @@ exports.textesCheck = async (client) => {
 
 };
 
-
-
 // USERDATA
 exports.userdataCheck = async (client) => {
     client.log(`Vérification de la base des membres`,"debug");

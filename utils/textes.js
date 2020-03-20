@@ -485,6 +485,9 @@ module.exports = class {
                 Ajouté le ${moment(game.createdAt).format('DD.MM.YYYY')}
                 `;
             },
+            GAMES_SERVER_ADD_SUCCESS: (serverID) => {
+                return `Le serveur à correctment été ajouté avec l\'id ${serverID}.`;
+            },
 
             // EMBED
             EMBED_CREATION_SUCCESS: (titre, id) => {

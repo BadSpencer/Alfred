@@ -62,6 +62,9 @@ client.db_userdata = new Enmap({
 client.db_games = new Enmap({
     name: "games"
 });
+client.db_gameservers = new Enmap({
+    name: "gameservers"
+});
 client.db_usergame = new Enmap({
     name: "usergame"
 });
@@ -80,5 +83,18 @@ client.db_astuces = new Enmap({
 client.db_citations = new Enmap({
     name: "citations"
 });
+
+client.build();
+client.commandHandler.resolver.addType('game', word => {
+    if (!word) return null;
+
+    const game = client.db_games.find(game => game.name == word);
+    if (game) {
+        return game;
+    }
+
+    return null;
+});
+
 
 client.login(token);

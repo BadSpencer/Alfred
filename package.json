@@ -1,6 +1,6 @@
 {
   "name": "alfred",
-  "version": "2.1.5",
+  "version": "2.2.0",
   "description": "Bot du serveur discord Casual Effect",
   "main": "index.js",
   "dependencies": {
@@ -21,6 +21,7 @@
     "path": "^0.12.7",
     "rcon": "^1.0.3",
     "sequelize": "^5.21.5",
+    "source-rcon-client": "0.0.10",
     "sqlite": "^3.0.3",
     "ytdl-core": "^2.0.0"
   },

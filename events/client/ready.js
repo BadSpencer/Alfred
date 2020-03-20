@@ -27,6 +27,7 @@ class ReadyListener extends Listener {
         await client.db.userlogsCheck(client);
         await client.db.embedsCheck(client);
         await client.db.gamesCheck(client);
+        await client.checkGameServers();
         await client.db.usergameCheck(client);
         await client.db.postedEmbedsCheck(client);
         await client.db.textesCheck(client);
@@ -36,6 +37,9 @@ class ReadyListener extends Listener {
 
         let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
             client.exp.activityCheck(client);
+        });
+        let serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
+            client.gameServersPostInfoMessages();
         });
         let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
             client.core.messageOfTheDay(client);
@@ -48,6 +52,7 @@ class ReadyListener extends Listener {
         activityCheck.start();
         messageOfTheDay.start();
         gameList.start();
+        serversInfos.start();
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
 

@@ -49,6 +49,19 @@ exports.tables = {
         "statusChannelID": "",
         "voiceChannelID": ""
     },
+    gameservers:{
+        "id": "default",
+        "gamename": "",
+        "name": "",
+        "ip": "",
+        "port": "",
+        "password": "",
+        "clientpwd": "",
+        "description": "",
+        "thumbnail": "",
+        "laststatus": "",
+        "infoMessage": ""
+    },
     userdata: {
         "id": "",
         "name": "default",
