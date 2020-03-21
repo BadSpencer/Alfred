@@ -22,7 +22,7 @@ class ReadyListener extends Listener {
 
         await client.db.settingsCheck(client);
 
-        
+
         await client.db.userdataCheck(client);
         await client.db.userlogsCheck(client);
         await client.db.embedsCheck(client);
@@ -46,6 +46,9 @@ class ReadyListener extends Listener {
         });
         let gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
             client.games.PostRoleReaction(client);
+        });
+        let ArkDWD = new cron.CronJob('00 05 05 * * *', () => { // Tous les jours à 5h05
+            client.gameServersArkDWD();
         });
 
 

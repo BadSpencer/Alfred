@@ -58,6 +58,12 @@ exports.tables = {
         "password": "",
         "clientpwd": "",
         "description": "",
+        "xpRate": "",
+        "recRate": "",
+        "apprRate": "",
+        "reproRate":"",
+        "ecloRate": "",
+        "matRate": "",
         "thumbnail": "",
         "laststatus": "",
         "infoMessage": ""

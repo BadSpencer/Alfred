@@ -138,11 +138,18 @@ module.exports = (client) => {
 
     let response = await client.gameRconQuery(server, "listplayers");
 
+    embed.addField('Paramètres',`Exp: **${server.xpRate}**x\nRécolte: **${server.recRate}**x\nAppriv.: **${server.apprRate}**x`, true);
+    embed.addField('\u200B',`Int. repro: **${server.reproRate}**x\nEclosion: **${server.ecloRate}**x\nMaturation: **${server.matRate}**x`, true);
+    embed.addField('Mods',server.description, true);
+
+
     if (response == undefined) {
       embed.addField("Statut", "🟥 Offline", true);
+      embed.addField('\u200B','\u200B', true);
       embed.addField("En ligne", "0", true);
     } else {
       embed.addField("Statut", "🟩 Online", true);
+      embed.addField('\u200B','\u200B', true);
 
       if (response.startsWith(`No Players Connected`)) {
         embed.addField("En ligne", "0", true);
@@ -168,7 +175,7 @@ module.exports = (client) => {
     description += `**Adresse**: ${server.ip}:${server.port}\n`;
     description += `**Mot de passe**: ${server.clientpwd}\n`;
     description += `\n`;
-    description += server.description;
+    //description += server.description;
 
 
     embed.setTitle(server.name);
@@ -179,19 +186,25 @@ module.exports = (client) => {
 
   };
 
+  client.gameServersArkDWD = async () => {
+    let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
+
+    for (const server of servers) {
+      client.gameRconQuery(server, "destroywilddinos");
+    }
+  };
+
   client.gameRconQuery = async (server, command) => {
     const RCON = require('source-rcon-client').default;
     let rcon = new RCON(server.ip, server.port, server.password);
     let returnResponse;
     await rcon.connect().then(() => {
-      client.log(`RCON connecté sur ${server.name}`, "debug");
+
       return rcon.send(command); // Assuming an ARK/ATLAS server...
     }).then(response => {
-      client.log(`RCON commande '${command}'`, "debug");
+      client.log(`RCON commande '${command}' sur '${server.name}'`, "debug");
       returnResponse = response;
       return rcon.disconnect();
-    }).then(() => {
-      client.log(`RCON déconnecté de ${server.name}`, "debug");
     }).catch(error => {
       client.log(`Erreur RCON: ${error}`, "error");
     });
