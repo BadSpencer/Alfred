@@ -607,6 +607,9 @@ module.exports = class {
             MOD_NOTIF_NEW_GAME_ADDED: (member) => {
                 return `✅ Nouveau jeu détecté **${member.presence.game.name}** joué par ${member.displayName} a été ajouté à la base`;
             },
+            MOD_NOTIF_USER_JOIN_CONTACT: (member) => {
+                return `⚠️ Membre **${member.displayName}** est dans le salon "contact". Il attend sûrement qu'un admin ou modo aille l'acceuillir !`;
+            },
             MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST: (member, game) => {
                 return `⚠️ **${member.displayName}** joue à ${game.name} mais n'est pas dans le groupe. Il à été notifié par message privé de l'existence du groupe.`;
             },

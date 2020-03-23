@@ -40,6 +40,12 @@ class voiceStateUpdateListener extends Listener {
                     // Création d'un nouveau salon "➕ Créer salon"
                     await client.core.createVoiceChannel(client);
                 }
+
+                if (newMember.voiceChannel.name == "contact") {
+                    client.core.modLog(client, client.textes.get("MOD_NOTIF_USER_JOIN_CONTACT", newMember));
+                }
+
+
             }
         }
 
