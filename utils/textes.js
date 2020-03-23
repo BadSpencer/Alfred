@@ -488,6 +488,9 @@ module.exports = class {
             GAMES_SERVER_ADD_SUCCESS: (serverID) => {
                 return `Le serveur à correctment été ajouté avec l\'id ${serverID}.`;
             },
+            GAMES_SERVER_EDIT_SUCCESS: (serverID) => {
+                return `Le serveur  ${serverID} à correctment modifié.`;
+            },
 
             // EMBED
             EMBED_CREATION_SUCCESS: (titre, id) => {

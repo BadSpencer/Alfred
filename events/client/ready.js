@@ -47,7 +47,7 @@ class ReadyListener extends Listener {
         let gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
             client.games.PostRoleReaction(client);
         });
-        let ArkDWD = new cron.CronJob('00 05 05 * * *', () => { // Tous les jours à 5h05
+        let ArkDWD = new cron.CronJob('00 05 06 * * *', () => { // Tous les jours à 6h05
             client.gameServersArkDWD();
         });
 

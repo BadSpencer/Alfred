@@ -13,7 +13,7 @@ const {
     successMessage,
     errorMessage,
     warnMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 class ServerAddCommand extends Command {
     constructor() {
         super('serveradd', {
