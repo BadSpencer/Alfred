@@ -126,6 +126,8 @@ module.exports = (client) => {
       const gameInfosChannel = await guild.channels.get(game.infosChannelID);
       let servers = await client.db_gameservers.filterArray(server => server.gamename == game.name);
 
+      if (servers.length == 0) continue;
+
       let description = "";
 
       let status = "";
