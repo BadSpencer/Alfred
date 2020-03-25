@@ -98,9 +98,6 @@ module.exports = (client) => {
 
     let servers = await client.db_gameservers.filterArray(server => server.id !== "default");
 
-
-
-
     for (const server of servers) {
       const game = await client.db_games.find(game => game.name == server.gamename);
 
@@ -108,27 +105,125 @@ module.exports = (client) => {
       const gameInfosChannel = await guild.channels.get(game.infosChannelID);
       let embed = new Discord.RichEmbed(await client.gameServerGetInfosEmbed(server));
 
-      let gameServerInfoMessage = undefined;
-      if (server.infoMessage) {
-        await gameInfosChannel.fetchMessage(server.infoMessage).then(message => {
-          gameServerInfoMessage = message;
+      let gameServerInfoMessage = await gameInfosChannel.send(embed);
+      server.infoMessage = gameServerInfoMessage.id;
+      client.db_gameservers.set(server.id, server);
+    };
+  };
+
+  client.gameServersPostStatusMessage = async () => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    let games = await client.db.gamesGetActiveArray(client);
+
+
+
+
+    for (const game of games) {
+      if (!game.infosChannelID) continue;
+      let embed = new Discord.RichEmbed();
+      const gameInfosChannel = await guild.channels.get(game.infosChannelID);
+      let servers = await client.db_gameservers.filterArray(server => server.gamename == game.name);
+
+      let description = "";
+
+      let status = "";
+
+      servers.sort(function (a, b) {
+        return a.id - b.id;
+      });
+
+
+      for (const server of servers) {
+        if (server.status == "online") {
+          status = "🟢";
+        } else {
+          status = "🔴";
+        }
+        if (server.connected == 0) {
+          description += `${status} ${server.name}\n\n`
+        } else[
+          description += `${status} ${server.name} 👤**${server.connected}**\n\n`
+        ]
+        //description += `${server.status} ${server.name} 👤**${server.connected}**\n\n`
+        //embed.addField(`${server.status} ${server.name} (${server.connected})`, '\u200B', false);
+      }
+      embed.setTimestamp();
+      embed.setTitle(game.name);
+      embed.setDescription(description)
+      embed.setFooter(`Dernière mise à jour`);
+
+      let gameServerStatusMessage = undefined;
+      if (game.serversStatusMessageID) {
+        await gameInfosChannel.fetchMessage(game.serversStatusMessageID).then(message => {
+          gameServerStatusMessage = message;
         });
       }
 
-      if (gameServerInfoMessage) {
-        gameServerInfoMessage.edit(embed);
+      if (gameServerStatusMessage) {
+        gameServerStatusMessage.edit(embed);
+      } else {
+        let message = await gameInfosChannel.send(embed);
+        game["serversStatusMessageID"] = message.id;
+        client.db_games.set(game.name, game);
+      }
+    }
+  };
+
+  client.gameServersStatus = async () => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+
+
+    let servers = await client.db_gameservers.filterArray(server => server.id !== "default");
+
+    for (const server of servers) {
+      let response = await client.gameRconQuery(server, "listplayers");
+      let playerlist = [];
+
+      let game = client.db_games.get(server.gamename);
+      const gameTextChannel = await guild.channels.get(game.textChannelID);
+
+      if (response == undefined) {
+        if (server.status == "online") {
+          // Annonce serveur est tombé
+
+          gameTextChannel.send(`Le serveur ${server.name} est tombé. Les admins ont déjà été prévenus`);
+
+        };
+        server.status = "offline";
+        server.connected = 0;
 
       } else {
-        gameServerInfoMessage = await gameInfosChannel.send(embed);
-        server.infoMessage = gameServerInfoMessage.id;
-        client.db_gameservers.set(server.id, server);
+        if (server.status == "offline") {
+          // Annonce serveur est revenu
+          gameTextChannel.send(`Le serveur ${server.name} est à nouveau en ligne !`);
+        };
+        server.status = "online";
 
+        if (response.startsWith(`No Players Connected`)) {
+          server.connected = 0;
+        } else {
+          let entries = response.split("\n");
+          const regex = /(?<=\.)(.*?)(?=\,)/;
+          let m;
+          entries.forEach(entry => {
+            if ((m = regex.exec(entry)) !== null) {
+              let user = m[1];
+              let id = entry.split(",")[1].trim();
+              playerlist.push([user, id]);
+            }
+          });
+          server.connected = playerlist.length;
+
+        }
       }
-
-    };
-
-
+      await client.db_gameservers.set(server.id, server);
+    }
   };
+
 
   client.gameServerGetInfosEmbed = async (server, details = false) => {
 
@@ -136,38 +231,9 @@ module.exports = (client) => {
     let playerlist = [];
     let description = "";
 
-    let response = await client.gameRconQuery(server, "listplayers");
-
-    embed.addField('Paramètres',`Exp: **${server.xpRate}**x\nRécolte: **${server.recRate}**x\nAppriv.: **${server.apprRate}**x`, true);
-    embed.addField('\u200B',`Int. repro: **${server.reproRate}**x\nEclosion: **${server.ecloRate}**x\nMaturation: **${server.matRate}**x`, true);
-    embed.addField('Mods',server.description, true);
-
-
-    if (response == undefined) {
-      embed.addField("Statut", "🟥 Offline", true);
-      embed.addField('\u200B','\u200B', true);
-      embed.addField("En ligne", "0", true);
-    } else {
-      embed.addField("Statut", "🟩 Online", true);
-      embed.addField('\u200B','\u200B', true);
-
-      if (response.startsWith(`No Players Connected`)) {
-        embed.addField("En ligne", "0", true);
-      } else {
-        let entries = response.split("\n");
-        const regex = /(?<=\.)(.*?)(?=\,)/;
-        let m;
-        entries.forEach(entry => {
-          if ((m = regex.exec(entry)) !== null) {
-            let user = m[1];
-            let id = entry.split(",")[1].trim();
-            playerlist.push([user, id]);
-          }
-        });
-        embed.addField("En ligne", playerlist.length, true);
-      }
-
-    }
+    embed.addField('Paramètres', `Exp: **${server.xpRate}**x\nRécolte: **${server.recRate}**x\nAppriv.: **${server.apprRate}**x`, true);
+    embed.addField('\u200B', `Int. repro: **${server.reproRate}**x\nEclosion: **${server.ecloRate}**x\nMaturation: **${server.matRate}**x`, true);
+    embed.addField('Mods', server.description, true);
 
     if (server.thumbnail) embed.setThumbnail(server.thumbnail);
 
@@ -175,12 +241,9 @@ module.exports = (client) => {
     description += `**Adresse**: ${server.ip}:${server.port}\n`;
     description += `**Mot de passe**: ${server.clientpwd}\n`;
     description += `\n`;
-    //description += server.description;
-
 
     embed.setTitle(server.name);
     embed.setDescription(description);
-    embed.setTimestamp();
 
     return embed;
 

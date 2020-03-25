@@ -47,7 +47,8 @@ exports.tables = {
         "textChannelID": "",
         "infosChannelID": "",
         "statusChannelID": "",
-        "voiceChannelID": ""
+        "voiceChannelID": "",
+        "serversStatusMessageID": ""
     },
     gameservers:{
         "id": "default",
@@ -65,7 +66,8 @@ exports.tables = {
         "ecloRate": "",
         "matRate": "",
         "thumbnail": "",
-        "laststatus": "",
+        "status": "",
+        "connected": 0,
         "infoMessage": ""
     },
     userdata: {

@@ -65,6 +65,9 @@ class ServersCommand extends Command {
                 if (!server) return errorMessage(`Le serveur ${args.arguments} n'a pas été trouvé`, message.channel);
                 message.channel.send(`Données de **${args.arguments}**\n\`\`\`json\n${inspect(server)}\n\`\`\``)
                 break;
+            case 'infos':
+                client.gameServersPostInfoMessages();
+                break;
         }
 
         message.delete();

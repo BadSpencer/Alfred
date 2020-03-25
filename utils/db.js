@@ -270,6 +270,10 @@ exports.gamesGetActive = async (client) => {
     const games = client.db_games.filter(game => game.actif === true);
     return games;
 };
+exports.gamesGetActiveArray = async (client) => {
+    const games = client.db_games.filterArray(game => game.actif === true);
+    return games;
+};
 exports.gamesGetAll = async (client) => {
     const games = client.db_games.find(game => game.name !== "default");
     return games;

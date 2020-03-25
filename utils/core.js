@@ -119,8 +119,6 @@ exports.messageOfTheDay = async (client) => {
     embed.setTitle(client.textes.get("MOTD_TITRE"));
     embed.setColor(`0xCC7900`);
     embed.setDescription(description);
-    //embed.setThumbnail(thumbnail);
-    //embed.setImage(image);
 
     generalChannel.send(embed);
 

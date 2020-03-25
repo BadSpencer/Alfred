@@ -12,7 +12,7 @@ class dbMembersCommand extends Command {
             args: [{
                 id: 'action',
                 type: 'text',
-                default: 'liste' 
+                default: 'liste'
             }],
         });
     }
@@ -20,16 +20,19 @@ class dbMembersCommand extends Command {
     exec(message, args) {
         let client = this.client;
         switch (args.action) {
-            case 'liste': {
+            case 'liste':
                 break;
-            }
-            case 'initxp': {
+            case 'top':
+
+
+            
+                break;
+            case 'initxp':
                 message.guild.members.forEach(async member => {
                     client.db_userdata.set(member.id, "xp", 0);
                     client.db_userdata.set(member.id, "level", 0)
-                  });
+                });
                 break;
-            }
         }
         message.delete();
     }
