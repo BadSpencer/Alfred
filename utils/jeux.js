@@ -128,6 +128,7 @@ module.exports = (client) => {
 
       if (servers.length == 0) continue;
 
+
       let description = "";
 
       let status = "";
