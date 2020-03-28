@@ -265,11 +265,12 @@ module.exports = class {
             ],
 
             ASTUCES: [
-                `Si vous avez besoin d'aide ou que vous êtes perdus, lancez la commande \`!aide\` vous donnera toutes les informations`,
+                `Si vous avez besoin d'aide ou que vous êtes perdus, lancez la commande \`!aide\``,
                 `Lorsque vous créez un salon vocal, vous (et vous seul) pouvez modifier son nom. Faite un clic droit sur le salon puis "Modifier le salon".`,
                 `Si vous jouez à un jeu lorsque vous créez un salon vocal, le salon sera nommé avec le nom du jeu.`,
                 `Votre jeu préféré n'a pas encore sa place sur le Discord ? Proposez le ! Vous aurez ainsi une section dédiée pour partager des informations.`,
-                `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`
+                `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`,
+                `Si le salon "+ Créer salon" est absent ou inacessible, il vous suffit de lancer la commande **!vocal** pour en créer un autre`
             ],
             MOTD_TITRE: "Bonne journée à tous sur Casual Effect",
             MOTD_BONJOUR: [
