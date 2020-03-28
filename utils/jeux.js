@@ -178,6 +178,8 @@ module.exports = (client) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
+    let heure = moment().format('HH');
+
 
 
     let servers = await client.db_gameservers.filterArray(server => server.id !== "default");
@@ -192,8 +194,7 @@ module.exports = (client) => {
       if (response == undefined) {
         if (server.status == "online") {
           // Annonce serveur est tombé
-
-          gameTextChannel.send(`Le serveur ${server.name} est tombé. Les admins ont déjà été prévenus`);
+          if (heure !== "05") gameTextChannel.send(`Le serveur ${server.name} est tombé. Les admins ont déjà été prévenus`);
 
         };
         server.status = "offline";
@@ -202,7 +203,7 @@ module.exports = (client) => {
       } else {
         if (server.status == "offline") {
           // Annonce serveur est revenu
-          gameTextChannel.send(`Le serveur ${server.name} est à nouveau en ligne !`);
+          if (heure !== "05") gameTextChannel.send(`Le serveur ${server.name} est à nouveau en ligne !`);
         };
         server.status = "online";
 
