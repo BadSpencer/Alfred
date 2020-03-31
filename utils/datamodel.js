@@ -68,6 +68,7 @@ exports.tables = {
         "thumbnail": "",
         "status": "",
         "connected": 0,
+        "playerlist": [],
         "infoMessage": ""
     },
     userdata: {

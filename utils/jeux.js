@@ -123,13 +123,16 @@ module.exports = (client) => {
     for (const game of games) {
       if (!game.infosChannelID) continue;
       let embed = new Discord.RichEmbed();
+      let embedmod = new Discord.RichEmbed();
       const gameInfosChannel = await guild.channels.get(game.infosChannelID);
+      const modNotifChannel = await guild.channels.find(c => c.name === "🟪ark-admin");
       let servers = await client.db_gameservers.filterArray(server => server.gamename == game.name);
 
       if (servers.length == 0) continue;
 
 
       let description = "";
+      let descriptionmod = "";
 
       let status = "";
 
@@ -145,10 +148,16 @@ module.exports = (client) => {
           status = "🔴";
         }
         if (server.connected == 0) {
-          description += `${status} ${server.name}\n\n`
-        } else[
-          description += `${status} ${server.name} 👤**${server.connected}**\n\n`
-        ]
+          description += `${status} ${server.name}\n\n`;
+          descriptionmod += `${status} ${server.name}\n\n`;
+        } else {
+          description += `${status} ${server.name} 👤**${server.connected}**\n\n`;
+          descriptionmod += `${status} ${server.name} 👤**${server.connected}**\n\n`;
+          for (const player of server.playerlist) {
+            descriptionmod += `◽️ ${player[0]} (${player[1]})\n`;
+          }
+          descriptionmod += `\n`;
+        }
         //description += `${server.status} ${server.name} 👤**${server.connected}**\n\n`
         //embed.addField(`${server.status} ${server.name} (${server.connected})`, '\u200B', false);
       }
@@ -156,6 +165,11 @@ module.exports = (client) => {
       embed.setTitle(game.name);
       embed.setDescription(description)
       embed.setFooter(`Dernière mise à jour`);
+
+      embedmod.setTimestamp();
+      embedmod.setTitle(game.name);
+      embedmod.setDescription(descriptionmod)
+      embedmod.setFooter(`Dernière mise à jour`);
 
       let gameServerStatusMessage = undefined;
       if (game.serversStatusMessageID) {
@@ -169,6 +183,22 @@ module.exports = (client) => {
       } else {
         let message = await gameInfosChannel.send(embed);
         game["serversStatusMessageID"] = message.id;
+        client.db_games.set(game.name, game);
+      }
+
+
+      let gameServerStatusMessageMod = undefined;
+      if (game.serversStatusMessageModID) {
+        await modNotifChannel.fetchMessage(game.serversStatusMessageModID).then(message => {
+          gameServerStatusMessageMod = message;
+        });
+      }
+
+      if (gameServerStatusMessageMod) {
+        gameServerStatusMessageMod.edit(embedmod);
+      } else {
+        let message = await modNotifChannel.send(embedmod);
+        game["serversStatusMessageModID"] = message.id;
         client.db_games.set(game.name, game);
       }
     }
@@ -195,7 +225,6 @@ module.exports = (client) => {
         if (server.status == "online") {
           // Annonce serveur est tombé
           if (heure !== "05") gameTextChannel.send(`Le serveur ${server.name} est tombé. Les admins ont déjà été prévenus`);
-
         };
         server.status = "offline";
         server.connected = 0;
@@ -221,6 +250,7 @@ module.exports = (client) => {
             }
           });
           server.connected = playerlist.length;
+          server.playerlist = playerlist;
 
         }
       }
