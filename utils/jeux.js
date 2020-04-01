@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const moment = require("moment");
 const datamodel = require('./datamodel');
+const colors = require('../utils/colors');
 
 module.exports = (client) => {
 
@@ -308,4 +309,81 @@ module.exports = (client) => {
     return returnResponse;
   };
 
+  client.gamesPlayersDetail = async (gamename, message) => {
+
+    const game = await client.db_games.get(gamename);
+    const gameRole = await message.guild.roles.get(game.roleID);
+
+    let description = "";
+
+
+    const embed = new Discord.RichEmbed();
+    embed.setTitle(gamename);
+    embed.setColor(colors['darkorange']);
+
+    for (const member of gameRole.members) {
+      let key = `${gamename}-${member[1].id}`
+      let usergame = client.db_usergame.get(key);
+      let now = +new Date;
+      let milliseconds = now - usergame.lastPlayed;
+
+      let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
+      let days = roundTowardsZero(milliseconds / 86400000),
+          hours = roundTowardsZero(milliseconds / 3600000) % 24,
+          minutes = roundTowardsZero(milliseconds / 60000) % 60,
+          seconds = roundTowardsZero(milliseconds / 1000) % 60;
+      if (seconds === 0) {
+          seconds++;
+      }
+      let isDays = days > 0,
+          isHours = hours > 0,
+          isMinutes = minutes > 0;
+      let pattern =
+          (!isDays ? "" : (isMinutes || isHours) ? "{days} jours, " : "{days} jours et ") +
+          (!isHours ? "" : (isMinutes) ? "{hours} heures, " : "{hours} heures et ") +
+          (!isMinutes ? "" : "{minutes} minutes et ") +
+          ("{seconds} secondes");
+      let sentence = pattern
+          .replace("{duration}", pattern)
+          .replace("{days}", days)
+          .replace("{hours}", hours)
+          .replace("{minutes}", minutes)
+          .replace("{seconds}", seconds);
+
+          /*
+      let jours = Math.floor(duration / 1000 / 60 / 60 / 24);
+      duration -= jours * 1000 * 60 * 60 * 24
+      let heures = Math.floor(duration / 1000 / 60 / 60);
+      duration -= heures * 1000 * 60 * 60
+      let minutes = Math.floor(duration / 1000 / 60);
+      duration -= minutes * 1000 * 60
+      let secondes = Math.floor(duration / 1000);
+      */
+    
+
+      /*
+      let duree = `A joué il y a `;
+      if(jours > 0) {
+        duree += `${jours} jours`;
+      }
+      if(heures > 0) {
+        duree += `, ${heures} heures`;
+      }  
+      if(minutes > 0) {
+        duree += `, ${minutes} minutes`;
+      }  
+      if(secondes > 0) {
+        duree += `, ${secondes} secondes`;
+      }    
+      duree += `...`;
+      */
+
+      description += `**${member[1].displayName}**\n${sentence}\n`;
+    }
+
+    embed.setDescription(description);
+
+    message.channel.send(embed);
+
+  };
 }

@@ -38,7 +38,8 @@ class GamesCommand extends Command {
                     "delete",
                     "voice",
                     "statut",
-                    "infos"
+                    "infos",
+                    "players"
                 ],
                 default: "list",
             },
@@ -66,6 +67,9 @@ class GamesCommand extends Command {
                 client.db.enmapDisplay(client, client.db_games, message.channel);
                 break;
             }
+            case 'players':
+                client.gamesPlayersDetail(args.arguments, message);
+                break;
             case 'add': {
                 await client.db.gamesCreate(client, args.arguments)
                 break;
