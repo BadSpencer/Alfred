@@ -352,6 +352,8 @@ module.exports = (client) => {
           .replace("{seconds}", seconds);
 
         description += `**${member[1].displayName}**\n${sentence}\n`;
+      } else {
+        description += `**${member[1].displayName}**\nAucune donnée de jeu\n`;
       }
     }
 
