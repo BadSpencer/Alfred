@@ -31,7 +31,7 @@ class VocalCommand extends Command {
     if(args.nom) channelName = args.nom;
 
 
-    await client.core.createVoiceChannel(client, channelName);
+    await client.createVoiceChannel(channelName);
 
     message.delete();
   }

@@ -295,12 +295,14 @@ module.exports = (client) => {
   client.gameRconQuery = async (server, command) => {
     const RCON = require('source-rcon-client').default;
     let rcon = new RCON(server.ip, server.port, server.password);
+
+    client.log(`RCON commande '${command}' sur '${server.name}' (${server.ip}:${server.port})`, "debug");
+
     let returnResponse;
     await rcon.connect().then(() => {
 
       return rcon.send(command); // Assuming an ARK/ATLAS server...
     }).then(response => {
-      client.log(`RCON commande '${command}' sur '${server.name}'`, "debug");
       returnResponse = response;
       return rcon.disconnect();
     }).catch(error => {

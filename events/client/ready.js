@@ -45,7 +45,7 @@ class ReadyListener extends Listener {
             client.gameServersPostStatusMessage();
         });
         let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
-            client.core.messageOfTheDay(client);
+            client.messageOfTheDay();
         });
         let gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
             client.games.PostRoleReaction(client);

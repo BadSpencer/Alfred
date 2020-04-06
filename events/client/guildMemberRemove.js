@@ -17,7 +17,7 @@ class guildMemberRemoveListener extends Listener {
         let client = this.client;
         
         client.log(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member));
-        client.members.serverQuitNotification(client, member);
+        client.serverQuitNotification(member);
     }
 }
 

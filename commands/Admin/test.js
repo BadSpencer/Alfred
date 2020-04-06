@@ -17,10 +17,8 @@ class TestCommand extends Command {
 
     async exec(message) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
 
-        client.core.messageOfTheDay(client);
+        client.messageOfTheDay();
 
         message.delete();
     }

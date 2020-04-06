@@ -30,8 +30,8 @@ class guildMemberUpdateListener extends Listener {
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
-                        client.members.newMemberNotification(client, newMember);
-                        client.members.newMemberWelcome(client, newMember);
+                        client.newMemberNotification(newMember);
+                        client.newMemberWelcome(newMember);
                     }
                     // Annonce rejoindre jeu
                     const game = client.db_games.find(game => game.roleID == newRole.id);

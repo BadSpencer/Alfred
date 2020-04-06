@@ -172,7 +172,7 @@ exports.newPlayerNotification = async (client, game, member) => {
             await gameTextChannel.send(informationsMessage);
         };
     }
-    client.core.modLog(client, client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
+    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
 };
 exports.quitPlayerNotification = async (client, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
@@ -196,7 +196,7 @@ exports.quitPlayerNotification = async (client, game, member) => {
             .setDescription(client.textes.get("GAMES_QUIT_NOTIFICATION", game, member));
         gameTextChannel.send(welcomeMessage);
     };
-    client.core.modLog(client, client.textes.get("MOD_NOTIF_MEMBER_QUIT_GAME", member, game));
+    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_QUIT_GAME", member, game));
 
 }
 exports.notifyPlayerActiveGame = async (client, member, game) => {
@@ -210,7 +210,7 @@ exports.notifyPlayerActiveGame = async (client, member, game) => {
         .setColor(colors['darkviolet'])
         .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
     member.send(notification);
-    client.core.modLog(client, client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
+    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
 
 }
 exports.createUsergame = async (client, game, member) => {

@@ -39,7 +39,7 @@ class ServerEditCommand extends Command {
                 },
                 {
                     id: "value",
-                    matching: "rest",
+                    matching: "sticky",
                 }
             ]
         });

@@ -32,17 +32,17 @@ class voiceStateUpdateListener extends Listener {
 
                 const game = client.db_games.find(game => game.voiceChannelID == newMember.voiceChannel.id);
                 if (game) {
-                    await client.core.gameVoiceChannelJoin(client, game, newMember);
+                    await client.gameVoiceChannelJoin(game, newMember);
                 }
 
                 if (newMember.voiceChannel.name == settings.freeVoiceChan) {
-                    await client.core.renameFreeVoiceChannel(client, newMember);
+                    await client.renameFreeVoiceChannel(newMember);
                     // Création d'un nouveau salon "➕ Créer salon"
-                    await client.core.createVoiceChannel(client);
+                    await client.createVoiceChannel();
                 }
 
                 if (newMember.voiceChannel.name == "contact") {
-                    client.core.modLog(client, client.textes.get("MOD_NOTIF_USER_JOIN_CONTACT", newMember));
+                    client.modLog(client.textes.get("MOD_NOTIF_USER_JOIN_CONTACT", newMember));
                 }
 
 
@@ -55,7 +55,7 @@ class voiceStateUpdateListener extends Listener {
 
                 const game = client.db_games.find(game => game.voiceChannelID == oldMember.voiceChannel.id);
                 if (game) {
-                    await client.core.gameVoiceChannelQuit(client, game, oldMember);
+                    await client.gameVoiceChannelQuit(game, oldMember);
                 } else {
                     if (oldMember.voiceChannel.name == settings.quietChannel) return;
                     if (oldMember.voiceChannel.name == settings.AFKChannel) return;
@@ -70,7 +70,7 @@ class voiceStateUpdateListener extends Listener {
             if (oldMember.voiceChannel.members.size == "0") {
                 const game = client.db_games.find(game => game.voiceChannelID == oldMember.voiceChannel.id);
                 if (game) {
-                    await client.core.gameVoiceChannelQuit(client, game, oldMember);
+                    await client.gameVoiceChannelQuit(game, oldMember);
                 } else {
                     if (oldMember.voiceChannel.name !== settings.quietChannel &&
                         oldMember.voiceChannel.name !== settings.AFKChannel &&
@@ -83,12 +83,12 @@ class voiceStateUpdateListener extends Listener {
             if (newMember.voiceChannel.members.size == "1") {
                 const game = client.db_games.find(game => game.voiceChannelID == newMember.voiceChannel.id);
                 if (game) {
-                    await client.core.gameVoiceChannelJoin(client, game, newMember);
+                    await client.gameVoiceChannelJoin(game, newMember);
                 }
                 if (newMember.voiceChannel.name == settings.freeVoiceChan) {
-                    await client.core.renameFreeVoiceChannel(client, newMember);
+                    await client.renameFreeVoiceChannel(newMember);
                     // Création d'un nouveau salon "➕ Créer salon"
-                    await client.core.createVoiceChannel(client);
+                    await client.createVoiceChannel();
                 }
             }
         }

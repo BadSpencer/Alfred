@@ -38,16 +38,18 @@ const client = new AkairoClient({
 });
 
 client.config = require("./config.js");
-client.core = require("./utils/core");
+
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
-client.members =  require("./utils/members");
 client.games =  require("./utils/games");
 client.embeds =  require("./utils/embeds");
 client.exp =  require("./utils/exp");
 
+require("./utils/core.js")(client);
 require("./utils/logs.js")(client);
 require("./utils/jeux.js")(client);
+require("./utils/members.js")(client);
+
 
 
 client.textes = new(require(`./utils/textes.js`));
