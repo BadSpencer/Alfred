@@ -301,7 +301,7 @@ module.exports = class {
                     `**${member.displayName}** vient d'arrriver. Ne bougez surtout pas! Sa vision est basée sur le mouvement...`,
                     `Et puis t'as des mecs comme **${member.displayName}** qui débarquent, comme ça, sans prévenir...`,
                     `Attention **${member.displayName}** vient d'arriver sur le discord. Je suis prêt à parier qu'il aime tuer des gens`,
-                    `Quelqu'un à laissé la porte ouverte et **${member.displayName}**est rentré !`
+                    `Quelqu'un à laissé la porte ouverte et **${member.displayName}** est rentré !`
                 ]
                 return textes.random();
             },
