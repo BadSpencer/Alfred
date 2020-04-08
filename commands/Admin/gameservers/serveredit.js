@@ -53,7 +53,11 @@ class ServerEditCommand extends Command {
         if (!server[args.field]) return errorMessage(`Le champs ${server.field} n'existe pas`, message.channel);
 
 
-        server[args.field] = args.value;
+        if (args.field == "port") {
+            server[args.field] = parseInt(args.value);
+        } else {
+            server[args.field] = args.value;
+        }
         client.db_gameservers.set(args.id, server);
 
 
