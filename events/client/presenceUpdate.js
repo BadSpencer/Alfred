@@ -20,6 +20,8 @@ class presenceUpdateListener extends Listener {
 
     async exec(oldMember, newMember) {
         let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
 
         if (newMember.bot) return;
 
@@ -50,6 +52,13 @@ class presenceUpdateListener extends Listener {
                     let gamePlayRole = newMember.guild.roles.get(gamePlayed.playRoleID);
                     if (newMember.roles.has(gamePlayed.roleID)) {
                         await newMember.addRole(gamePlayRole);
+
+                        let voicechannel = client.channels.get(newMember.voiceChannelID);
+                        if (voicechannel) {
+                          if (voicechannel.name == "🔊 Salon vocal") {
+                            voicechannel.setName("🔊" + gamePlayed.name);
+                          }
+                        }
                     }
                 }
             }
