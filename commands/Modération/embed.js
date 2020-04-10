@@ -18,9 +18,10 @@ class EmbedCommand extends Command {
     constructor() {
         super('embed', {
             aliases: ['embed', 'em'],
+            userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
             channelRestriction: 'dm',
             // define arg properties
-            category: 'Utilitaires',
+            category: 'Modérations',
             args: [{
                 id: "action",
                 type: [
@@ -33,9 +34,11 @@ class EmbedCommand extends Command {
                     "image", "img",
                     "thumb", "thumbnail",
                     "showdesc", "desc", "description",
+                    "addfield", "af",
+                    "clearfields", "cf",
                     "footer", "foot",
                     "url",
-                    "copier", "copy", 
+                    "copier", "copy",
                     "afficher", "aff", "view",
                     "arch", "archiver"
                 ],
@@ -149,6 +152,24 @@ class EmbedCommand extends Command {
                 }
                 break;
             }
+            case "af":
+            case "addfield":
+                if (embedEdit) {
+                    await client.embeds.updateEmbed(client, embedEdit.id, "addfield", args.arguments);
+                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                } else {
+                    errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
+                }
+                break;
+            case "cf":
+            case "clearfields":
+                if (embedEdit) {
+                    await client.embeds.updateEmbed(client, embedEdit.id, "clearfields", args.arguments);
+                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                } else {
+                    errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
+                }
+                break;
             case "foot":
             case "footer": {
                 if (embedEdit) {

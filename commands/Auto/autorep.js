@@ -12,12 +12,35 @@ class AutoRepCommand extends Command {
     }
     condition(message) {
         let client = this.client;
+
+        let regexp = new RegExp("[A,a]lfred");
+        if (regexp.test(message.content) == true) {
+            return true;
+        }
         return false;
     }
 
 
     exec(message) {
         let client = this.client;
+        let regs = [];
+        let regexp;
+
+        regs.push([{
+            "pattern": "^[A,a]lfred(.*)crois tu que*",
+            "texte": "MAGICBALL"
+        }]);
+
+        regs.forEach(reg => {
+            console.log(reg)
+            regexp = new RegExp(reg.pattern);
+            if (regexp.test(message.content) == true) {
+                message.channel.send(client.textes.get(reg.texte));
+            }
+        });
+
+
+
     }
 
 }
