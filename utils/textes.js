@@ -30,8 +30,30 @@ module.exports = class {
             SUGG_NOTIF_PROPOSED_BY: (member) => {
                 return `Proposée par ${member.displayName}`;
             },
+            MAGICBALL: [
+                "Essaye plus tard",
+                "Essaye encore",
+                "Pas d'avis",
+                "C'est ton destin",
+                "Le sort en est jeté",
+                "Une chance sur deux",
+                "Repose ta question",
+                "D'après moi oui",
+                "C'est certain",
+                "Oui absolument",
+                "Tu peux compter dessus",
+                "Sans aucun doute",
+                "Très probable",
+                "Oui",
+                "C'est bien parti",
+                "C'est non",
+                "Peu probable",
+                "Faut pas rêver",
+                "N'y compte pas",
+                "Impossible",
+            ],
 
-            
+
 
             CITATIONS: [
                 "C'est merveilleux la vieillesse, dommage que ça finisse si mal ! (François Mauriac)",
@@ -421,7 +443,7 @@ module.exports = class {
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
 
-            GAMES_SCORE_TITLE:"Activité des jeux",
+            GAMES_SCORE_TITLE: "Activité des jeux",
 
 
             GAMES_CHANNEL_LINKED_TO_CATEGORY: (channel, category) => {
@@ -567,7 +589,7 @@ module.exports = class {
                         return `${sizeDeleted} messages ont été supprimés sur les ${args.purge} demandés.`;
                     }
                 }
-                
+
             },
             PURGE_DELETE_ERROR: (error) => {
                 return `Je n'ai pas réussi à supprimer les messages pour la raison: ${error}`;
