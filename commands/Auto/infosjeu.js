@@ -12,6 +12,8 @@ class InfosJeuCommand extends Command {
     }
     condition(message) {
         let client = this.client;
+        if (message.channel.type == "dm") return false;
+        
         const gameJoinChannel = message.guild.channels.find(c => c.name === message.settings.gameJoinChannel);
 
         if (message.channel.id == gameJoinChannel.id) {

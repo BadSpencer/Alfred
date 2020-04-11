@@ -12,6 +12,7 @@ class AutoRepCommand extends Command {
     }
     condition(message) {
         let client = this.client;
+        if (message.channel.type == "dm") return false;
 
         let regexp = new RegExp("[A,a]lfred");
         if (regexp.test(message.content) == true) {
