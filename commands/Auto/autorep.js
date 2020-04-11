@@ -14,6 +14,10 @@ class AutoRepCommand extends Command {
         let client = this.client;
         if (message.channel.type == "dm") return false;
 
+        if (message.author.id !== "291545597205544971") return false;
+
+
+
         let regexp = new RegExp("[A,a]lfred");
         if (regexp.test(message.content) == true) {
             return true;
