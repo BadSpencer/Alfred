@@ -40,6 +40,10 @@ class EmbedCommand extends Command {
                     "url",
                     "copier", "copy",
                     "afficher", "aff", "view",
+                    "notitle", "titleoff",
+                    "titleon",
+                    "nofooter", "footeroff",
+                    "footeron",
                     "arch", "archiver"
                 ],
                 default: "userboard",
@@ -201,6 +205,36 @@ class EmbedCommand extends Command {
                 }
                 break;
             }
+            case "notitle":
+            case "titleoff":
+                if (embedEdit) {
+                    embedEdit.showTitle = false;
+                    client.db_embeds.set(embedEdit.id, embedEdit);
+                }
+                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                break;
+            case "titleon":
+                if (embedEdit) {
+                    embedEdit.showTitle = true;
+                    client.db_embeds.set(embedEdit.id, embedEdit);
+                }
+                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                break;
+            case "nofooter":
+            case "footeroff":
+                if (embedEdit) {
+                    embedEdit.showFooter = false;
+                    client.db_embeds.set(embedEdit.id, embedEdit);
+                }
+                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                break;
+            case "footeron":
+                if (embedEdit) {
+                    embedEdit.showFooter = true;
+                    client.db_embeds.set(embedEdit.id, embedEdit);
+                }
+                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                break;
             case "arch":
             case "archiver": {
                 if (embedEdit) {
