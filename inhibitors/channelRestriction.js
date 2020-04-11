@@ -22,6 +22,7 @@ exec(message, command) {
         if (message.channel.name === message.settings.suggChannel) return false;
 
         if (command.id == "purge") return false;
+        if (command.id == "embedpost") return false;
 
         return true;
     }
