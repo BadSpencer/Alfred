@@ -57,7 +57,7 @@ exports.userLevelUp = async (client, member, level) => {
     const settings = client.db_settings.get(guild.id);
 
     //let channel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
-    let channel = guild.channels.find(c => c.name === settings.modNotifChannel);
+    let channel = guild.channels.find(c => c.name === settings.commandsTestChannel);
 
     let embed = new Discord.RichEmbed();
     let indexLevel = parseInt(level);
