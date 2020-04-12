@@ -35,7 +35,7 @@ class EmbedPostCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         message.delete();
-        await client.embeds.showEmbed(client, args.embedID, message.channel);
+        await client.embedShow(args.embedID, message);
     }
 }
 

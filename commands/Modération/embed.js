@@ -71,11 +71,11 @@ class EmbedCommand extends Command {
             case "ub":
             case "board":
             case "userboard": {
-                client.embeds.userboard(client, message);
+                client.embedUserboard(message);
                 break;
             }
             case "aide": {
-                client.embeds.aide(client, message);
+                client.embedAide(message);
                 break;
             }
             case "liste":
@@ -94,25 +94,25 @@ class EmbedCommand extends Command {
             case "aj":
             case "add": {
                 const titre = args.arguments;
-                let embedID = await client.embeds.createEmbed(client, message, titre);
+                let embedID = await client.embedCreate(message, titre);
                 successMessage(client.textes.get("EMBED_CREATION_SUCCESS", titre, embedID), message.channel);
-                await client.embeds.showEmbed(client, embedID, message.channel);
+                await client.embedShow(embedID, message);
                 break;
             }
             case "edit":
             case "editer": {
-                await client.embeds.editEmbed(client, message, args.arguments);
+                await client.embedEdit(message, args.arguments);
                 break;
             }
             case "copy":
             case "copier": {
-                await client.embeds.copyEmbed(client, message, args.arguments);
+                await client.embedCopy(message, args.arguments);
                 break;
             }
             case "titre": {
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "titre", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "titre", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -121,8 +121,8 @@ class EmbedCommand extends Command {
             case "img":
             case "image": {
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "image", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "image", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -131,8 +131,8 @@ class EmbedCommand extends Command {
             case "thumb":
             case "thumbnail": {
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "thumbnail", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "thumbnail", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -141,8 +141,8 @@ class EmbedCommand extends Command {
             case "desc":
             case "description": {
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "description", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "description", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -150,7 +150,7 @@ class EmbedCommand extends Command {
             }
             case "showdesc": {
                 if (embedEdit) {
-                    await client.embeds.showEmbedDesc(client, embedEdit.id, message);
+                    await client.embedShowDesc(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -159,8 +159,8 @@ class EmbedCommand extends Command {
             case "af":
             case "addfield":
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "addfield", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "addfield", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -168,8 +168,8 @@ class EmbedCommand extends Command {
             case "cf":
             case "clearfields":
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "clearfields", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "clearfields", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -177,8 +177,8 @@ class EmbedCommand extends Command {
             case "foot":
             case "footer": {
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "footer", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "footer", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -186,8 +186,8 @@ class EmbedCommand extends Command {
             }
             case "url": {
                 if (embedEdit) {
-                    await client.embeds.updateEmbed(client, embedEdit.id, "url", args.arguments);
-                    await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                    await client.embedUpdate(embedEdit.id, "url", args.arguments);
+                    await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }
@@ -197,10 +197,10 @@ class EmbedCommand extends Command {
             case "afficher":
             case "view": {
                 if (args.arguments) {
-                    await client.embeds.showEmbed(client, args.arguments, message.channel);
+                    await client.embedShow(args.arguments, message);
                 } else {
                     if (embedEdit) {
-                        await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                        await client.embedShow(embedEdit.id, message);
                     }
                 }
                 break;
@@ -212,7 +212,7 @@ class EmbedCommand extends Command {
                     embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
-                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                await client.embedShow(embedEdit.id, message);
                 break;
             case "titleon":
                 if (embedEdit) {
@@ -220,7 +220,7 @@ class EmbedCommand extends Command {
                     embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
-                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                await client.embedShow(embedEdit.id, message);
                 break;
             case "nofooter":
             case "footeroff":
@@ -229,7 +229,7 @@ class EmbedCommand extends Command {
                     embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
-                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                await client.embedShow(embedEdit.id, message);
                 break;
             case "footeron":
                 if (embedEdit) {
@@ -237,12 +237,12 @@ class EmbedCommand extends Command {
                     embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
-                await client.embeds.showEmbed(client, embedEdit.id, message.channel);
+                await client.embedShow(embedEdit.id, message);
                 break;
             case "arch":
             case "archiver": {
                 if (embedEdit) {
-                    await client.embeds.archiveEmbed(client, embedEdit.id);
+                    await client.embedArchive(embedEdit.id);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }

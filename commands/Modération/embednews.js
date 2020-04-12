@@ -38,7 +38,7 @@ class EmbedNewsCommand extends Command {
         let generalChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
     
         message.delete();
-        let news = await client.embeds.showEmbed(client, args.embedID, newsChannel, true);
+        let news = await client.embedShowChannel(args.embedID, newsChannel, true);
     }
 }
 
