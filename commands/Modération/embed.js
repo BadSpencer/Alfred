@@ -209,6 +209,7 @@ class EmbedCommand extends Command {
             case "titleoff":
                 if (embedEdit) {
                     embedEdit.showTitle = false;
+                    embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
                 await client.embeds.showEmbed(client, embedEdit.id, message.channel);
@@ -216,6 +217,7 @@ class EmbedCommand extends Command {
             case "titleon":
                 if (embedEdit) {
                     embedEdit.showTitle = true;
+                    embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
                 await client.embeds.showEmbed(client, embedEdit.id, message.channel);
@@ -224,6 +226,7 @@ class EmbedCommand extends Command {
             case "footeroff":
                 if (embedEdit) {
                     embedEdit.showFooter = false;
+                    embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
                 await client.embeds.showEmbed(client, embedEdit.id, message.channel);
@@ -231,6 +234,7 @@ class EmbedCommand extends Command {
             case "footeron":
                 if (embedEdit) {
                     embedEdit.showFooter = true;
+                    embedEdit.changedAt = +new Date;
                     client.db_embeds.set(embedEdit.id, embedEdit);
                 }
                 await client.embeds.showEmbed(client, embedEdit.id, message.channel);
