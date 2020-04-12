@@ -69,7 +69,7 @@ exports.textesCheck = async (client) => {
 
 // USERDATA
 exports.userdataCheck = async (client) => {
-    client.log(`Vérification de la base des membres`,"debug");
+    client.log(`Vérification de la base des membres`, "debug");
     const guild = client.guilds.get(client.config.guildID);
 
     await client.db_userdata.delete("default");
@@ -87,7 +87,7 @@ exports.userdataCheck = async (client) => {
     })
 };
 exports.userlogsCheck = async (client) => {
-    client.log(`Vérification des logs`,"debug");
+    client.log(`Vérification des logs`, "debug");
     const guild = client.guilds.get(client.config.guildID);
 
 
@@ -95,17 +95,17 @@ exports.userlogsCheck = async (client) => {
     await client.db_userxplogs.set("default", datamodel.tables.userxplogs);
 };
 exports.embedsCheck = async (client) => {
-    client.log(`Vérification des embeds`,"debug");
+    client.log(`Vérification des embeds`, "debug");
     const guild = client.guilds.get(client.config.guildID);
     await client.db_embeds.delete("default");
     await client.db_embeds.set("default", datamodel.tables.embeds);
 };
 exports.usergameCheck = async (client) => {
-    client.log(`Vérification des données de jeux des membres`,"debug");
+    client.log(`Vérification des données de jeux des membres`, "debug");
     const guild = client.guilds.get(client.config.guildID);
     let games = await client.db.gamesGetActive(client);
 
-    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`,"warn");
+    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
 
     await client.db_usergame.delete("default");
     await client.db_usergame.set("default", datamodel.tables.usergame);
@@ -242,7 +242,7 @@ exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename
 };
 // GAMES
 exports.gamesCheck = async (client) => {
-    client.log(`Vérification de la base de données des jeux`,"debug");
+    client.log(`Vérification de la base de données des jeux`, "debug");
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     await client.db_games.delete("default");
@@ -250,7 +250,7 @@ exports.gamesCheck = async (client) => {
 
     let games = await client.db.gamesGetActive(client);
 
-    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`,"warn");
+    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
 
     await client.games.PostRoleReaction(client, true);
 };
@@ -281,7 +281,7 @@ exports.gamesGetAll = async (client) => {
 
 // POSTED EMBEDS
 exports.postedEmbedsCheck = async (client) => {
-    client.log(`Vérification des Embeds postés`,"debug");
+    client.log(`Vérification des Embeds postés`, "debug");
     await client.db_postedEmbeds.deleteAll();
     await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
 };
@@ -293,7 +293,7 @@ exports.postedEmbedsGetAll = async (client) => {
     const postedEmbeds = client.db_postedEmbeds.filter(postedEmbed => postedEmbed.name !== "default");
     return postedEmbeds;
 };
-exports.enmapDisplay = async (client, enmap, channel) => {
+exports.enmapDisplay = async (client, enmap, channel, fieldlist = []) => {
 
     if (enmap.size == 0) return client.logwarn(`Aucun enregistrement trouvé`, "warn");
 
@@ -303,7 +303,7 @@ exports.enmapDisplay = async (client, enmap, channel) => {
 
     let embeds = [];
     for (i = 0; i < nbPages; i++) {
-        embeds.push(await client.db.enampCreateEmbed(client, enmap, enmap.name, i + 1))
+        embeds.push(await client.db.enampCreateEmbed(client, enmap, enmap.name, i + 1, fieldlist))
     }
 
     let pageCount = 0;
@@ -339,7 +339,7 @@ exports.enmapDisplay = async (client, enmap, channel) => {
 
 
 };
-exports.enampCreateEmbed = async (client, enmap, name, page) => {
+exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => {
     let embed = new Discord.RichEmbed();
     let nbPages = Math.ceil(enmap.size / 10);
     let description = "";
@@ -353,10 +353,11 @@ exports.enampCreateEmbed = async (client, enmap, name, page) => {
 
     async function showProps(obj) {
 
-        let fieldlist = [];
-        for (var i in obj) {
-            if (i !== "id") {
-                fieldlist.push(i);
+        if (fieldlist.length == 0) {
+            for (var i in obj) {
+                if (i !== "id") {
+                    fieldlist.push(i);
+                }
             }
         }
 

@@ -519,6 +519,18 @@ module.exports = class {
             EMBED_CREATION_SUCCESS: (titre, id) => {
                 return `L'embed **${titre}** (${id}) à été correctement créé`;
             },
+            EMBED_EDIT_SUCCESS: (titre, id) => {
+                return `L'embed **${titre}** (${id}) est désormais en cours d'édition`;
+            },   
+            EMBED_UPDATE_SUCCESS: (id, titre, zone) => {
+                return `Le champs "**${zone}**" de l'embed **${titre}** (${id}) à correctement été mis à jour`;
+            },  
+            EMBED_COPY_SUCCESS: (origID, copyID,  titre) => {
+                return `L'embed **${titre}** (${origID}) à correctement été copié. Nouvel ID: ${copyID}`;
+            }, 
+            EMBED_ARCHIVED_SUCCESS: (titre, id) => {
+                return `L'embed **${titre}** (${id}) à été correctement été archivé`;
+            },           
             EMBED_CURRENT_EDIT_ARCHIVED: (embed) => {
                 return `Votre embed **${embed.titre}** (${embed.id}) est en cours d'édition. Il va être archivé`;
             },
@@ -532,7 +544,7 @@ module.exports = class {
                 } else {
                     texte += `Aucun embed en cours d'édition\n\n`;
                 }
-                texte += `Aide: \`!embed aide\`\n\nListe de vos derniers embeds:`;
+                texte += `Aide: \`!embed aide\`\n`;
                 return texte;
             },
             EMBED_AIDE_TITLE: `Gestion des embeds: Aide`,

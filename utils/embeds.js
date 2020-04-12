@@ -13,21 +13,28 @@ const {
 module.exports = (client) => {
 
     client.embedUserboard = async (message) => {
-        let embeds = client.db_embeds.filter(embed => embed.auteur == message.author.id);
+        let embedsUser = client.db_embeds.filter(embed => embed.auteur == message.author.id);
         let embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
-        let archivedEmbeds = client.db_embeds.filterArray(embed => embed.statut == "ARCH");
-        let description = client.textes.get("EMBED_USERBOARD_DESCRIPTION", embeds.size, embedEdit);
-        description += "\n";
+        let archivedEmbeds = client.db_embeds.filterArray(embed => embed.statut == "ARCH" && embed.auteur == message.author.id);
+        let description = client.textes.get("EMBED_USERBOARD_DESCRIPTION", embedsUser.size, embedEdit);
+
+        let embedsUserLastEdited = "";
+        let embedsUserLastCreated = "";
+
         archivedEmbeds.sort(function (a, b) {
             return a.changedAt + b.changedAt;
         });
-        let lastArchivedEmebeds = archivedEmbeds.slice(0, 5);
+        let lastArchivedEmebeds = archivedEmbeds.slice(0, 10);
         for (const embed of lastArchivedEmebeds) {
-            description += `**${embed.id}** : ${embed.titre}\n`;
+            embedsUserLastEdited += `**${embed.id}**: ${embed.titre}\n`;
         }
+
+        embedsUserLastEdited += `\n`;
+        embedsUserLastEdited += `\`!embed liste\` pour tous les afficher`;
 
         let embed = new Discord.RichEmbed()
             .setTitle(client.textes.get("EMBED_USERBOARD_TITLE", message.author.username))
+            .addField("Vos derniers embeds", embedsUserLastEdited, true)
             .setDescription(description);
         message.channel.send(embed);
     };
@@ -38,21 +45,22 @@ module.exports = (client) => {
         message.channel.send(embed);
     };
     client.embedEdit = async (message, id) => {
-        const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
+        const embedEdit = client.db_embeds.find(embed => embed.statut == "EDIT" && embed.auteur == message.author.id);
         if (embedEdit) {
             warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
-            await client.embedArchive(embedEdit.id);
+            await client.embedArchive(embedEdit.id, message);
         }
-
         let embed = client.db_embeds.get(id);
+        embed.changedAt = +new Date;
         embed.statut = "EDIT";
         client.db_embeds.set(embed.id, embed);
+        successMessage(client.textes.get("EMBED_EDIT_SUCCESS", embed.titre, embed.id), message.channel);
     }
     client.embedCreate = async (message, titre) => {
-        const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
+        const embedEdit = client.db_embeds.find(embed => embed.statut == "EDIT" && embed.auteur == message.author.id);
         if (embedEdit) {
             warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
-            await client.embedArchive(embedEdit.id);
+            await client.embedArchive(embedEdit.id, message);
         }
         let embed = client.db_embeds.get("default");
         let key = client.db_embeds.autonum;
@@ -66,13 +74,14 @@ module.exports = (client) => {
         embed.dateCreation = moment().format('DD.MM.YYYY');
         embed.content = Embed;
         client.db_embeds.set(key, embed);
+        successMessage(client.textes.get("EMBED_CREATION_SUCCESS", embed.titre, embed.id), message.channel);
         return key;
     };
     client.embedCopy = async (message, id) => {
         const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
         if (embedEdit) {
             warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
-            await client.embedArchive(embedEdit.id);
+            await client.embedArchive(embedEdit.id, message);
         }
 
         let embed = client.db_embeds.get(id);
@@ -82,6 +91,7 @@ module.exports = (client) => {
         embed.createdAt = +new Date;
         embed.changedAt = +new Date;
         client.db_embeds.set(key, embed);
+        successMessage(client.textes.get("EMBED_COPY_SUCCESS", id, key, embed.titre), message.channel);
     };
     client.embedShow = async (embedID, message, news = false) => {
         client.embedShowChannel(embedID, message.channel, news);
@@ -119,7 +129,7 @@ module.exports = (client) => {
         return postedMessage;
 
     };
-    client.embedUpdate = async (embedID, property, args) => {
+    client.embedUpdate = async (embedID, property, args, message) => {
 
         let embedOrig = client.db_embeds.get(embedID);
         let embedNew = new Discord.RichEmbed(embedOrig.content);
@@ -172,16 +182,18 @@ module.exports = (client) => {
         embedOrig.content = embedNew;
         embedOrig.changedAt = +new Date;
         client.db_embeds.set(embedID, embedOrig);
+        successMessage(client.textes.get("EMBED_UPDATE_SUCCESS", embedOrig.id, embedOrig.titre, property), message.channel);
     };
     client.embedShowDesc = async (embedID, message) => {
         let embed = client.db_embeds.get(embedID);
         message.channel.send(`\`\`\`!embed desc ${embed.content.description}\`\`\``)
     };
-    client.embedArchive = async (embedID) => {
+    client.embedArchive = async (embedID, message) => {
         let embed = client.db_embeds.get(embedID);
         embed.statut = 'ARCH';
         embed.changedAt = +new Date;
         client.db_embeds.set(embedID, embed);
+        successMessage(client.textes.get("EMBED_ARCHIVED_SUCCESS", embed.titre, embed.id), message.channel);
     };
 
 };
