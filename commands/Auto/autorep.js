@@ -13,6 +13,7 @@ class AutoRepCommand extends Command {
     condition(message) {
         let client = this.client;
         return false;
+        
         if (message.channel.type == "dm") return false;
 
         if (message.author.id !== "291545597205544971") return false;
