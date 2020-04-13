@@ -57,11 +57,11 @@ class ReadyListener extends Listener {
         */
 
 
-        activityCheck.start();
-        messageOfTheDay.start();
-        gameList.start();
-        serversStatus.start();
-        serversInfos.start();
+        //activityCheck.start();
+        //messageOfTheDay.start();
+        //gameList.start();
+        //serversStatus.start();
+        //serversInfos.start();
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
 

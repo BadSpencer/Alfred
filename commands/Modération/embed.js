@@ -19,7 +19,7 @@ class EmbedCommand extends Command {
         super('embed', {
             aliases: ['embed', 'em'],
             userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
-            channelRestriction: 'dm',
+            //channelRestriction: 'dm',
             // define arg properties
             category: 'Modérations',
             args: [{

@@ -22,7 +22,7 @@ const client = new AkairoClient({
         retries: 2,
         time: 30000
     },
-
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
     allowMention: true,
     aliasReplacement: /-/g,
     handleEdits: true,
