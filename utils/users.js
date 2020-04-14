@@ -103,7 +103,7 @@ module.exports = (client) => {
 
 
     };
-    client.serverKickNotification = async (member) => {
+    client.serverKickNotification = async (member, memberBy, raison) => {
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
@@ -121,12 +121,12 @@ module.exports = (client) => {
             const welcomeMessage = new RichEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
-                .setDescription(client.textes.get("MESSAGES_SERVER_KICK", member))
+                .setDescription(client.textes.get("MESSAGES_SERVER_KICK", member, memberBy, raison))
                 .setFooter(client.textes.get("LOG_EVENT_USER_KICK_SERVER", member), avatar);
             welcomeChannel.send(welcomeMessage);
         };
     };
-    client.serverBanNotification = async (member) => {
+    client.serverBanNotification = async (member, memberBy, raison) => {
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
@@ -144,7 +144,7 @@ module.exports = (client) => {
             const welcomeMessage = new RichEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
-                .setDescription(client.textes.get("MESSAGES_SERVER_BAN", member))
+                .setDescription(client.textes.get("MESSAGES_SERVER_BAN", member, memberBy, raison))
                 .setFooter(client.textes.get("LOG_EVENT_USER_BAN_SERVER", member), avatar);
             welcomeChannel.send(welcomeMessage);
         };
@@ -204,7 +204,7 @@ module.exports = (client) => {
         let userdataLogs = datamodel.tables.userdataLogs;
 
         if (!userdata) return;
-        
+
         let date;
         if (event == "JOIN") {
             date = +new Date(member.joinedAt);

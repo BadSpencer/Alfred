@@ -41,6 +41,7 @@ class KickCommand extends Command {
         client.userdataAddLog(args.member, message.member, "KICK", args.raison);
 
         args.member.kick(args.raison);
+        client.serverKickNotification(args.member, message.member, args.raison);
     }
 }
 

@@ -358,11 +358,11 @@ module.exports = class {
                 ]
                 return textes.random();
             },
-            MESSAGES_SERVER_KICK: (member) => {
-                return `**${member.displayName}** à été expulsé du serveur`;
+            MESSAGES_SERVER_KICK: (member, memberBy, raison) => {
+                return `**${member.displayName}** à été expulsé du serveur par **${memberBy.displayName}** pour la raison: ${raison}`;
             },
-            MESSAGES_SERVER_BAN: (member) => {
-                return `**${member.displayName}** à été banni du serveur`;
+            MESSAGES_SERVER_BAN: (member, memberBy, raison) => {
+                return `**${member.displayName}** à été banni du serveur par **${memberBy.displayName}** pour la raison: ${raison}`;
             },
             MESSAGES_NEW_MEMBER: (member) => {
                 let textes = [

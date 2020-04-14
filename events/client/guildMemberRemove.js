@@ -22,11 +22,10 @@ class guildMemberRemoveListener extends Listener {
         let date = moment().format('DD.MM.YYYY');
 
         if (userdata.logs.find(log => log.event == "KICK" && log.date == date)) {
-            client.serverKickNotification(member);
             client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", member));
         } else {
             if (userdata.logs.find(log => log.event == "BAN" && log.date == date)) {
-                client.serverBanNotification(member);
+                //client.serverBanNotification(member);
                 client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", member));
             } else {
                 client.serverQuitNotification(member);
