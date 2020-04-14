@@ -203,6 +203,8 @@ module.exports = (client) => {
         let userdata = client.db_userdata.get(member.id);
         let userdataLogs = datamodel.tables.userdataLogs;
 
+        if (!userdata) return;
+        
         let date;
         if (event == "JOIN") {
             date = +new Date(member.joinedAt);
@@ -220,5 +222,17 @@ module.exports = (client) => {
 
         client.db_userdata.set(member.id, userdata);
         client.log(`Log membre **${event}** pour ${member.displayName}`, "debug");
+    };
+
+    client.userdataClearLogs = async (member) => {
+        let userdata = client.db_userdata.get(member.id);
+        if (userdata) {
+            if (userdata.logs) {
+            userdata.logs = [];
+            client.db_userdata.set(member.id, userdata);
+            client.log(`Logs membre effacés pour ${member.displayName}`, "debug");
+            }
+        }
+
     };
 };

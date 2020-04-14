@@ -25,12 +25,19 @@ class dbMembersCommand extends Command {
             case 'top':
 
 
-            
+
                 break;
             case 'initxp':
                 message.guild.members.forEach(async member => {
                     client.db_userdata.set(member.id, "xp", 0);
                     client.db_userdata.set(member.id, "level", 0)
+                });
+                break;
+
+            case 'initlogs':
+                message.guild.members.forEach(async member => {
+                    await client.userdataClearLogs(member);
+                    await client.userdataAddLog(member, member, "JOIN", "A rejoint le discord");
                 });
                 break;
         }
