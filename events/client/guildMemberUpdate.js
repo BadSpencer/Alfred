@@ -29,6 +29,9 @@ class guildMemberUpdateListener extends Listener {
                     client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
+                    if (newRole.id == roleMembers.id) {
+                        client.userdataAddLog(newMember, newMember, "MEMBER", "A été ajouté au groupe des membres");
+                    }
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
                         client.newMemberNotification(newMember);
                         client.newMemberWelcome(newMember);
@@ -40,6 +43,7 @@ class guildMemberUpdateListener extends Listener {
                         client.games.createUsergame(client, game, newMember);
                         client.games.updateJoinUsergame(client, game, newMember);
                         client.games.newPlayerNotification(client, game, newMember);
+                        client.userdataAddLog(newMember, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
                     }
                 }
             });
@@ -48,7 +52,7 @@ class guildMemberUpdateListener extends Listener {
 
         // Role retiré
         if (newMember.roles.size < oldMember.roles.size) {
-            
+
 
             oldMember.roles.forEach(oldRole => {
                 if (!newMember.roles.has(oldRole.id)) {
@@ -59,12 +63,13 @@ class guildMemberUpdateListener extends Listener {
                         client.games.PostRoleReaction(client);
                         client.games.updateQuitUsergame(client, game, newMember);
                         client.games.quitPlayerNotification(client, game, newMember);
+                        client.userdataAddLog(oldMember, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
                     }
                 }
             })
         }
 
-        
+
     }
 }
 

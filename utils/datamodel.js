@@ -71,6 +71,13 @@ exports.tables = {
         "playerlist": [],
         "infoMessage": ""
     },
+    gamesSteamPlayers: {
+        "id": "default",
+        "steamName": "",
+        "lastSeen": "",
+        "lastDate": "",
+        "lastHeure": ""
+    },
     userdata: {
         "id": "",
         "name": "default",
@@ -85,10 +92,12 @@ exports.tables = {
         "logs": []
     },
     userdataLogs: {
+        "createdAt": "",
+        "createdBy": "",
         "date": "",
-        "type": "",
-        "commentaire": "",
-        "xp": ""
+        "heure": "",
+        "event": "",
+        "commentaire": ""
     },
     userdataNicknames:{
         "date": "",

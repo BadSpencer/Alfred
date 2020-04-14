@@ -307,7 +307,7 @@ module.exports = class {
             MOTD_ASTUCE: ":grey_question:  **Le saviez-vous ?**",
             MOTD_CITATION: ":bulb: **Citation du jour**",
 
-            MESSAGES_SERVER_JOIN: (member) => {
+            MESSAGES_SERVER_JOIN_OLD: (member) => {
                 let textes = [
                     `Z'ai cru voir passer un ro**${member.displayName}**minet !`,
                     `Ah ! **${member.displayName}** nous a enfin rejoint ! Nous n'attendions plus que lui...`,
@@ -327,6 +327,26 @@ module.exports = class {
                 ]
                 return textes.random();
             },
+            MESSAGES_SERVER_JOIN_OLD2: (member) => {
+                let textes = [
+                    `Nous avons un certain **${member.displayName}** à la porte.`,
+                    `Nous avons un visiteur, un certain **${member.displayName}**.`,
+                    `Nous avons un nouveau visiteur, un certain **${member.displayName}**.`,
+                    `Nous avons de la visite, un certain **${member.displayName}** est à la porte.`,
+                    `Je vais ouvrir. Un certain **${member.displayName}** vient de toquer à la porte.`,
+                    `Je vais ouvrir. Nous avons un certain **${member.displayName}** qui vient de toquer à la porte.`,
+                    `Je vais ouvrir. Nous avons un visiteur, un certain **${member.displayName}**.`,
+                    `Je vais ouvrir. Nous avons un nouveau visiteur, un certain **${member.displayName}**.`,
+                    `Il me semble avoir entendu toquer à la porte... Ah oui, un certain **${member.displayName}** est là.`,
+                    `Il me semble avoir entendu toquer à la porte... Ah oui, nous avons un certain **${member.displayName}**.`,
+                    `Il me semble avoir entendu toquer à la porte... Ah oui, nous avons un visiteur, un certain **${member.displayName}**.`,
+                    `**${member.displayName}** a rejoint le serveur.`
+                ]
+                return textes.random();
+            },
+            MESSAGES_SERVER_JOIN: (member) => {
+                return `Monsieur, nous avons un visiteur, un certain **${member.displayName}** est à la porte.`;
+            },
             MESSAGES_SERVER_QUIT: (member) => {
                 let textes = [
                     `Adieu **${member.displayName}** tu vas nous manquer... ou pas !`,
@@ -337,6 +357,12 @@ module.exports = class {
                     `T'as les vrai, et puis t'as les mecs comme **${member.displayName}** qui se barrent sans rien dire.`
                 ]
                 return textes.random();
+            },
+            MESSAGES_SERVER_KICK: (member) => {
+                return `**${member.displayName}** à été expulsé du serveur`;
+            },
+            MESSAGES_SERVER_BAN: (member) => {
+                return `**${member.displayName}** à été banni du serveur`;
             },
             MESSAGES_NEW_MEMBER: (member) => {
                 let textes = [
@@ -360,15 +386,20 @@ module.exports = class {
             USER_MESSAGE_ACCUEIL_TITRE: "Bienvenue sur Casual Effect",
             USER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {
                 return `Bonjour ${member.toString()}, je vous souhaite la bienvenue sur le discord Casual Effect
-                
-                Que nous vaut le plaisir de votre visite ?
-                
-                Dites moi en un peu plus sur vous pour que je sache qui annoncer.
-                Peut-être, êtes vous ici sur les recommandations de quelqu'un ? Pensez à le dire, ça peut avoir son importance.
+                Je suis Alfred, le majordome de ce discord. Mon rôle est de vous assister sur ce serveur et de rendre votre séjour parmi nous plus agréable.
 
-                Si vous ne savez pas où vous êtes, je vous invite à consulter [notre site](https://www.casual-effect.org/) pour en savoir plus sur ce qu'on fait ici.
+                Cet endroit peut vous sembler un peu vide, c’est normal. Pour le moment, vous n’avez accès qu’à cette section. Avant de pouvoir accéder au reste, Il vous faut l’approbation de mes patrons.
 
-                N'oubliez pas qu'on a qu'une seule occasion de faire une première bonne impression ! En attendant, je vais prévenir mes Maîtres de votre arrivée.`;
+                Je vous invite à vous présenter pour nous dire ce qui vous amène ici. Si vous avez été invité par un membre, précisez le, ça peut avoir son importance.
+
+                Les personnes susceptibles (et elles le sont croyez moi!) de vous accueillir sont <@!186143653008244746> <@!157584976525656064> <@!193822534196658176> <@!168129394387320833> et <@!291545597205544971>. Ils prendront contact avec vous pour un petit entretien vocal. Il vous présenteront cette communauté et le discord, sûrement mieux que je ne saurais le faire. Notez qu’ils ne sont pas toujours disponibles, il semblerait qu’ils aient d’autres activités ailleurs qu’ici, soyez un peu patient.                                
+                
+                Si vous ne savez pas où vous êtes ou ce que vous faites ici, je vous invite à consulter [notre site](https://www.casual-effect.org/) pour en savoir plus sur ce qu'on fait ici.`;
+            },
+            USER_MESSAGE_ACCUEIL_DESCRIPTION_AGAIN: (member) => {
+                return `Bonjour ${member.toString()}, je vous souhaite un bon retour parmi nous.
+                
+                Que nous vaut le plaisir de votre visite ?`;
             },
             MEMBER_NEW_MEMBER_NOTIFICATION: (member) => {
                 return `**${member.displayName}** à été accepté en tant que membre de Casual Effect`;
@@ -632,6 +663,12 @@ module.exports = class {
             LOG_EVENT_USER_QUIT_SERVER: (member) => {
                 return `${member.displayName} à quitté le serveur`;
             },
+            LOG_EVENT_USER_KICK_SERVER: (member) => {
+                return `${member.displayName} à été expulsé du serveur`;
+            },
+            LOG_EVENT_USER_BAN_SERVER: (member) => {
+                return `${member.displayName} à été banni du serveur`;
+            },
             LOG_EVENT_MEMBER_JOIN_MEMBERS: (member) => {
                 return `${member.displayName} à rejoint Casual Effect`;
             },
@@ -650,9 +687,18 @@ module.exports = class {
             },
             MOD_NOTIF_SERVER_JOIN: (member) => {
                 return `✅ **${member.displayName}** à rejoint le serveur`;
+            },            
+            MOD_NOTIF_SERVER_JOIN_AGAIN: (member) => {
+                return `❗️✅ **${member.displayName}** à rejoint le serveur (c'est pas la première fois)`;
             },
             MOD_NOTIF_SERVER_QUIT: (member) => {
-                return `⚠️ **${member.displayName}** à quitté le serveur`;
+                return `❗️ **${member.displayName}** à quitté le serveur`;
+            },
+            MOD_NOTIF_SERVER_KICK: (member) => {
+                return `❗️ **${member.displayName}** à été expulsé du serveur`;
+            },
+            MOD_NOTIF_SERVER_BAN: (member) => {
+                return `❗️ **${member.displayName}** à été banni du serveur`;
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
                 return `✅ **${member.displayName}** à été accepté et ajouté au groupe des membres`;

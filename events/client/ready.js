@@ -23,7 +23,7 @@ class ReadyListener extends Listener {
         await client.db.settingsCheck(client);
 
 
-        await client.db.userdataCheck(client);
+        await client.userdataCheck();
         await client.db.userlogsCheck(client);
         await client.db.embedsCheck(client);
         await client.db.gamesCheck(client);

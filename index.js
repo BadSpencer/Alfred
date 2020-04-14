@@ -49,6 +49,7 @@ require("./utils/logs.js")(client);
 require("./utils/jeux.js")(client);
 require("./utils/embeds.js")(client);
 require("./utils/members.js")(client);
+require("./utils/users.js")(client);
 
 
 

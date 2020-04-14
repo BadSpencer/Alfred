@@ -67,25 +67,7 @@ exports.textesCheck = async (client) => {
 
 };
 
-// USERDATA
-exports.userdataCheck = async (client) => {
-    client.log(`Vérification de la base des membres`, "debug");
-    const guild = client.guilds.get(client.config.guildID);
 
-    await client.db_userdata.delete("default");
-    await client.db_userdata.set("default", datamodel.tables.userdata);
-
-
-
-    guild.members.forEach(async member => {
-        if (member.user.bot) return; // Ne pas enregistrer les bots
-        let userdata = client.db_userdata.get(member.id);
-
-        if (!userdata) {
-            await client.db.userdataCreate(client, member);
-        }
-    })
-};
 exports.userlogsCheck = async (client) => {
     client.log(`Vérification des logs`, "debug");
     const guild = client.guilds.get(client.config.guildID);
@@ -120,37 +102,6 @@ exports.usergameCheck = async (client) => {
             await client.db.usergameCreate(client, member, game);
         }
     })
-};
-exports.userdataCreate = async (client, member) => {
-    let userdata = client.db_userdata.get("default");
-    let userdataLogs = datamodel.tables.userdataLogs;
-    let userdataNicknames = datamodel.tables.userdataNicknames;
-
-    let userJoinedDate = moment(member.joinedAt).format('DD.MM.YYYY');
-    let userJoinedTime = moment(member.joinedAt).format('HH:mm');
-
-    userdata.id = member.id;
-    userdata.name = member.displayName;
-    userdata.createdAt = +new Date;
-    userdata.joinedDate = userJoinedDate;
-    userdata.joinedTime = userJoinedTime;
-    userdata.level = 0;
-    userdata.xp = 0;
-
-
-    userdataNicknames.date = userJoinedDate;
-    userdataNicknames.oldNickname = member.user.username;
-    userdataNicknames.newNickname = member.displayName;
-    userdata.nicknames.push(userdataNicknames);
-
-    userdataLogs.date = userJoinedDate;
-    userdataLogs.type = "Membre"
-    userdataLogs.commentaire = "Enregistrement initial";
-    userdataLogs.xp = 0;
-    userdata.logs.push(userdataLogs);
-
-    client.db_userdata.set(member.id, userdata);
-    client.log(`Membre ${member.displayName} à été ajouté à la base de données`)
 };
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const guild = client.guilds.get(client.config.guildID);

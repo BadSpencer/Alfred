@@ -9,14 +9,24 @@ class KickCommand extends Command {
             aliases: ['kick'],
             userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
             category: 'Modération',
-            cooldown: 30000,
+            //cooldown: 30000,
             ratelimit: 1,
-            description: 'Récupérer les logs',
+            description: 'Expluser un membre (peut revenir)',
             args: [
                 {
                     id: 'member',
                     type: 'member',
-                    default: null
+                    prompt: {
+                        start: 'Quel membre voulez vous expulser ?',
+                        retry: 'Mentionnez un membre avec @ ou bien son ID',
+                    },
+                },
+                {
+                    id: 'raison',
+                    type: 'rest',
+                    prompt: {
+                        start: 'Pour quelle raison souhaitez vous expluser ce membre ?',
+                    },
                 }
             ]
         });
@@ -25,6 +35,12 @@ class KickCommand extends Command {
     async exec(message, args) {
         let client = this.client;
 
+        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
+        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
+
+        client.userdataAddLog(args.member, message.member, "KICK", args.raison);
+
+        args.member.kick(args.raison);
     }
 }
 

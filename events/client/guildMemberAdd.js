@@ -17,8 +17,29 @@ class guildMemberAddListener extends Listener {
         let client = this.client;
 
         client.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", member));
-        client.serverJoinNotification(member);
-        client.serverJoinInformation(member);
+
+
+        let userdata = client.db_userdata.get(member.id);
+        if (userdata) {
+            client.userdataAddLog(member, member, "JOIN", "A rejoint le discord");
+            client.serverJoinNotification(member);
+
+            setTimeout(function () {
+                client.serverJoinInformationAgain(member);
+            }, 5000);
+
+            client.modLog(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member));
+        } else {
+            client.userdataCreate(member);
+            client.serverJoinNotification(member);
+            setTimeout(function () {
+                client.serverJoinInformation(member);
+            }, 5000);
+
+
+            client.modLog(client.textes.get("MOD_NOTIF_SERVER_JOIN", member));
+        }
+
     }
 }
 
