@@ -40,7 +40,7 @@ class BanCommand extends Command {
 
         client.userdataAddLog(args.member, message.member, "BAN", args.raison);
 
-        args.member.kick(args.raison);
+        args.member.ban(args.raison);
         client.serverBanNotification(args.member, message.member, args.raison);
     }
 }
