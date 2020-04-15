@@ -46,6 +46,94 @@ module.exports = (client) => {
         });
 
     };
+
+    client.contactVoiceChannelJoin = async (member) => {
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
+
+        const roleEve = guild.roles.find(r => r.name == "@everyone");
+        const roleMem = guild.roles.find(r => r.name == settings.memberRole);
+        const roleMod = guild.roles.find(r => r.name == settings.modRole);
+        const roleAdm = guild.roles.find(r => r.name == settings.adminRole);
+
+        const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
+        const accueilCategory = guild.channels.find(c => c.name === settings.accueilCategory);
+
+        switch (member.voiceChannel.name) {
+            case settings.contactChannelFree:
+                if (member.roles.has(roleMod.id) || member.roles.has(roleAdm.id)) {
+
+                } else {
+                    member.voiceChannel.setParent(voiceChannelsCategory);
+                    member.voiceChannel.setName(settings.contactChannelInprogress);
+                    member.voiceChannel.overwritePermissions(roleEve, {
+                        'VIEW_CHANNEL': true,
+                        'CONNECT': false,
+                    });
+                    member.voiceChannel.overwritePermissions(roleMem, {
+                        'VIEW_CHANNEL': true,
+                        'CONNECT': false,
+                    });
+                    client.modLog(client.textes.get("MOD_NOTIF_USER_JOIN_CONTACT", member));
+                }
+                break;
+            case settings.contactChannelWaiting:
+                if (member.roles.has(roleMod.id) || member.roles.has(roleAdm.id)) {
+                    member.voiceChannel.setName(settings.contactChannelInprogress);
+                } else {
+
+                }
+                break;
+            case settings.contactChannelInprogress:
+
+                break;
+        }
+
+
+
+
+
+    };
+    client.contactVoiceChannelQuit = async (member) => {
+        const guild = client.guilds.get(client.config.guildID);
+        const settings = await client.db.getSettings(client);
+
+        const roleEve = guild.roles.find(r => r.name == "@everyone");
+        const roleMem = guild.roles.find(r => r.name == settings.memberRole);
+        const roleMod = guild.roles.find(r => r.name == settings.modRole);
+        const roleAdm = guild.roles.find(r => r.name == settings.adminRole);
+
+        const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
+        const accueilCategory = guild.channels.find(c => c.name === settings.accueilCategory);
+
+        switch (member.voiceChannel.name) {
+            case settings.contactChannelFree:
+                member.voiceChannel.setParent(accueilCategory);
+                member.voiceChannel.setName(settings.contactChannelFree);
+                member.voiceChannel.overwritePermissions(roleEve, {
+                    'VIEW_CHANNEL': true,
+                    'CONNECT': true,
+                });
+                break;
+            case settings.contactChannelWaiting:
+                member.voiceChannel.setParent(accueilCategory);
+                member.voiceChannel.setName(settings.contactChannelFree);
+                member.voiceChannel.overwritePermissions(roleEve, {
+                    'VIEW_CHANNEL': true,
+                    'CONNECT': true,
+                });
+                break;
+            case settings.contactChannelInprogress:
+                member.voiceChannel.setParent(accueilCategory);
+                member.voiceChannel.setName(settings.contactChannelFree);
+                member.voiceChannel.overwritePermissions(roleEve, {
+                    'VIEW_CHANNEL': true,
+                    'CONNECT': true,
+                });
+                break;
+        }
+    };
+
     client.gameVoiceChannelJoin = async (game, member) => {
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);

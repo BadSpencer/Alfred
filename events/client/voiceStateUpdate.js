@@ -40,13 +40,13 @@ class voiceStateUpdateListener extends Listener {
                     // Création d'un nouveau salon "➕ Créer salon"
                     await client.createVoiceChannel();
                 }
-
-                if (newMember.voiceChannel.name == "contact") {
-                    client.modLog(client.textes.get("MOD_NOTIF_USER_JOIN_CONTACT", newMember));
-                }
-
-
             }
+
+            if (newMember.voiceChannel.name == settings.contactChannelFree ||
+                newMember.voiceChannel.name == settings.contactChannelWaiting ||
+                newMember.voiceChannel.name == settings.contactChannelInprogress) {
+                await client.contactVoiceChannelJoin(newMember);
+            };
         }
 
         // Quitte un salon vocal
@@ -57,10 +57,19 @@ class voiceStateUpdateListener extends Listener {
                 if (game) {
                     await client.gameVoiceChannelQuit(game, oldMember);
                 } else {
-                    if (oldMember.voiceChannel.name == settings.quietChannel) return;
-                    if (oldMember.voiceChannel.name == settings.AFKChannel) return;
-                    if (oldMember.voiceChannel.name == "contact") return;
-                    oldMember.voiceChannel.delete();
+
+                    if (oldMember.voiceChannel.name == settings.contactChannelFree ||
+                        oldMember.voiceChannel.name !== settings.contactChannelWaiting ||
+                        oldMember.voiceChannel.name !== settings.contactChannelInprogress) {
+                        await client.contactVoiceChannelQuit(oldMember);
+                    };
+                    if (oldMember.voiceChannel.name !== settings.quietChannel &&
+                        oldMember.voiceChannel.name !== settings.AFKChannel &&
+                        oldMember.voiceChannel.name !== settings.contactChannelFree &&
+                        oldMember.voiceChannel.name !== settings.contactChannelWaiting &&
+                        oldMember.voiceChannel.name !== settings.contactChannelInprogress) {
+                        oldMember.voiceChannel.delete();
+                    };
                 }
             }
         }
@@ -72,11 +81,18 @@ class voiceStateUpdateListener extends Listener {
                 if (game) {
                     await client.gameVoiceChannelQuit(game, oldMember);
                 } else {
+                    if (oldMember.voiceChannel.name == settings.contactChannelFree ||
+                        oldMember.voiceChannel.name !== settings.contactChannelWaiting ||
+                        oldMember.voiceChannel.name !== settings.contactChannelInprogress) {
+                        await client.contactVoiceChannelQuit(oldMember);
+                    };
                     if (oldMember.voiceChannel.name !== settings.quietChannel &&
                         oldMember.voiceChannel.name !== settings.AFKChannel &&
-                        oldMember.voiceChannel.name !== "contact") {
+                        oldMember.voiceChannel.name !== settings.contactChannelFree &&
+                        oldMember.voiceChannel.name !== settings.contactChannelWaiting &&
+                        oldMember.voiceChannel.name !== settings.contactChannelInprogress) {
                         oldMember.voiceChannel.delete();
-                    }
+                    };
                 }
             }
 
