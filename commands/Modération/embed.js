@@ -132,7 +132,7 @@ class EmbedCommand extends Command {
             case "thumb":
             case "thumbnail": {
                 if (embedEdit) {
-                    await client.embedUpdate(embedEdit.id, "thumbnail", args.arguments, messsage);
+                    await client.embedUpdate(embedEdit.id, "thumbnail", args.arguments, message);
                     await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
