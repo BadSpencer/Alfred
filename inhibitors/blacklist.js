@@ -7,10 +7,10 @@ class Blacklist extends Inhibitor {
         })
     }
 
-    exec(message) {
+    exec(message, command) {
         //const blacklist = ['291545597205544971'];
         const blacklist = [];
-        return blacklist.includes(message.author.id);
+        return blacklist.includes(message.author.id); // true = coimmande bloquée
     }
 }
 

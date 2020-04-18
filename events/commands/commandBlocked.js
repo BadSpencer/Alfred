@@ -30,6 +30,9 @@ class CommandBlockedListener extends Listener {
             case 'userPermissions':
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_USERPERMISSIONS");
                 break;
+            case 'moderation':                
+                raison = client.textes.get("COMMAND_BLOCKED_REASON_USERPERMISSIONS");
+                break;
             case 'channel':
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_CHANNELS");
                 break;

@@ -27,10 +27,12 @@ class EmbedCommand extends Command {
                 type: [
                     "userboard", "board", "ub",
                     "aide",
-                    "liste", "list", "ls", "listall",
+                    "liste", "list", "ls",
+                    "listall", "listeall",
                     "ajouter", "ajout", "aj", "add",
                     "edit", "editer",
                     "titre",
+                    "title",
                     "image", "img",
                     "thumb", "thumbnail",
                     "showdesc", "desc", "description",
@@ -40,6 +42,7 @@ class EmbedCommand extends Command {
                     "url",
                     "copier", "copy",
                     "afficher", "aff", "view",
+                    "supprimer", "suppr", "del",
                     "notitle", "titleoff",
                     "titleon",
                     "nofooter", "footeroff",
@@ -65,7 +68,7 @@ class EmbedCommand extends Command {
         let client = this.client;
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        let embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
+        let embedEdit = await client.embedGetCureentEdit(message.author.id);
 
         switch (args.action) {
             case "ub":
@@ -82,11 +85,12 @@ class EmbedCommand extends Command {
             case "list":
             case "ls": {
 
-                client.db.enmapDisplay(client, client.db_embeds.filter(embed => embed.auteur == message.author.id), message.channel, ["titre"]);
+                client.db.enmapDisplay(client, client.db_embeds.filter(embed => embed.ownedBy == message.author.id), message.channel, ["titre"]);
                 break;
             }
+            case 'listeall':
             case "listall": {
-                client.db.enmapDisplay(client, client.db_embeds, message.channel);
+                client.db.enmapDisplay(client, client.db_embeds.filter(embed => embed.ownedBy !== ""), message.channel, ["titre", "ownedByName"]);
                 break;
             }
             case "ajouter":
@@ -110,9 +114,22 @@ class EmbedCommand extends Command {
 
                 break;
             }
-            case "titre": {
+            case 'supprimer':
+            case 'suppr':
+            case 'del':
+
+                break;
+            case "titre":
                 if (embedEdit) {
-                    await client.embedUpdate(embedEdit.id, "titre", args.arguments, message);
+                    embedEdit.titre = args.arguments;
+                    embedEdit = await client.embedUpdateChanged(message, embedEdit, message.author.id);
+                    client.db_embeds.set(embedEdit.id, embedEdit);
+                }
+                await client.embedShow(embedEdit.id, message);
+                break;
+            case "title": {
+                if (embedEdit) {
+                    await client.embedUpdate(embedEdit.id, "title", args.arguments, message);
                     await client.embedShow(embedEdit.id, message);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
@@ -243,7 +260,7 @@ class EmbedCommand extends Command {
             case "arch":
             case "archiver": {
                 if (embedEdit) {
-                    await client.embedArchive(embedEdit.id, message);
+                    await client.embedArchive(message, embedEdit.id);
                 } else {
                     errorMessage(client.textes.get("EMBED_EDIT_NOEDITEMBED"), message.channel);
                 }

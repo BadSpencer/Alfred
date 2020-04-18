@@ -578,8 +578,22 @@ module.exports = class {
                 texte += `Aide: \`!embed aide\`\n`;
                 return texte;
             },
-            EMBED_AIDE_TITLE: `Gestion des embeds: Aide`,
-            EMBED_AIDE_DESCRIPTION: () => {
+            EMBED_AIDE_TITLE_1: `Aide embeds: Introduction`,
+            EMBED_AIDE_TITLE_2: `Aide embeds: Commandes de base`,
+            EMBED_AIDE_DESCRIPTION_1: () => {
+                return `La commande \`!embed\` est une commande complexe qui permet à la fois ge gèrer les embeds (création, copie, suppression) mais aussi de modifier un embed.
+                Pour simplifier les commandes d'édition, et ne pas avoir à répéter à chaque fois l'id de l'embed qu'on souhaite modifier, il y a un mode "édition". On ne peut avoir qu'un seul embed en cours d'édition à la fois.
+                
+                **Tableau de bord**
+                La commande \`!embed\` lancée sans paramètre, affiche votre tableau de bord.
+                Ce tableau de bord vous permet de savoir où vous en êtes, il affiche une liste de vos 10 derniers embeds et une liste des 10 derniers embeds des autre utilisateurs. Les embeds de ces listes sont triés par date de modification et ceux qui sont en mode édition sur affichés en gras.
+
+                **Commandes de base**
+                
+
+                `;
+            },
+            EMBED_AIDE_DESCRIPTION_2: () => {
                 return `Voici l'aide détaillée de la fonction embed
                 
                 Vous ne pouvez avoir qu'un seul embed en cours d'édition pour simplifier les commandes d'édition. Voici les commandes qui vous permettrons de gérer les embeds: 
@@ -604,8 +618,16 @@ module.exports = class {
             EMBED_NOT_FOUND: (embedID) => {
                 return `L'embed **${embedID}** n'a pas été trouvé`;
             },
+            EMBED_ERROR_NOT_OWNER: (embedID, ownerName) => {
+                return `Vous n'êtes pas le propriétaire de l'embed **${embedID}**. Demandez à **${ownerName}** de vous le transférer.`;
+            },
+            EMBED_WARN_ALREADY_ARCHIVED: (embedID) => {
+                return `L'embed **${embedID}** est déjà archivé. Aucune action réalisée.`;
+            },
 
-
+            MEMBER_NOT_FOUND: (memberID) => {
+                return `Aucun membre trouvé sur le serveur avec l'ID: **${memberID}**`;
+            },
 
             AUTOREP_ALFRED_RESP_QUESTION_DEFAULT: [
                 "On parle de moi ?",

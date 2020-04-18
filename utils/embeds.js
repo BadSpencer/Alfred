@@ -13,28 +13,53 @@ const {
 module.exports = (client) => {
 
     client.embedUserboard = async (message) => {
-        let embedsUser = client.db_embeds.filter(embed => embed.auteur == message.author.id);
-        let embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
-        let archivedEmbeds = client.db_embeds.filterArray(embed => embed.statut == "ARCH" && embed.auteur == message.author.id);
-        let description = client.textes.get("EMBED_USERBOARD_DESCRIPTION", embedsUser.size, embedEdit);
+        let embedOwned = client.db_embeds.filterArray(embed => embed.ownedBy == message.author.id);
+        let embedOthers = client.db_embeds.filterArray(embed => embed.ownedBy !== message.author.id && embed.ownedBy !== "");
 
-        let embedsUserLastEdited = "";
-        let embedsUserLastCreated = "";
+        let embedEdit = await client.embedGetCureentEdit(message.author.id);
+        let archivedEmbeds = client.db_embeds.filterArray(embed => embed.statut == "ARCH" && embed.ownedBy == message.author.id);
+        let description = client.textes.get("EMBED_USERBOARD_DESCRIPTION", embedOwned.length, embedEdit);
 
-        archivedEmbeds.sort(function (a, b) {
+        let embedOwnedLastDesc = "";
+        let embedOthersLastDesc = "";
+
+        embedOwned.sort(function (a, b) {
             return a.changedAt + b.changedAt;
         });
-        let lastArchivedEmebeds = archivedEmbeds.slice(0, 10);
-        for (const embed of lastArchivedEmebeds) {
-            embedsUserLastEdited += `**${embed.id}**: ${embed.titre}\n`;
-        }
+        let embedOwnedLast = embedOwned.slice(0, 10);
+        for (const embed of embedOwnedLast) {
+            if (embed.statut == "EDIT") {
+                embedOwnedLastDesc += `**${embed.id}**: **${embed.titre}**\n`;
+            } else {
+                embedOwnedLastDesc += `**${embed.id}**: ${embed.titre}\n`;
+            }
 
-        embedsUserLastEdited += `\n`;
-        embedsUserLastEdited += `\`!embed liste\` pour tous les afficher`;
+        }
+        embedOwnedLastDesc += `\n`;
+        embedOwnedLastDesc += `\`!embed liste\` pour afficher tout vos embeds`;
+
+
+        embedOthers.sort(function (a, b) {
+            return a.changedAt + b.changedAt;
+        });
+        let embedOthersLast = embedOthers.slice(0, 5);
+        for (const embed of embedOthersLast) {
+            if (embed.statut == "EDIT") {
+                embedOthersLastDesc += `**${embed.id}**: **${embed.titre}** (${embed.ownedByName})\n`;
+            } else {
+                embedOthersLastDesc += `**${embed.id}**: ${embed.titre} (${embed.ownedByName})\n`;
+            }
+
+        }
+        embedOthersLastDesc += `\n`;
+        embedOthersLastDesc += `\`!embed listeall\` pour afficher tout les embeds`;
+
+
 
         let embed = new Discord.RichEmbed()
             .setTitle(client.textes.get("EMBED_USERBOARD_TITLE", message.author.username))
-            .addField("Vos derniers embeds", embedsUserLastEdited, true)
+            .addField("Vos derniers embeds", embedOwnedLastDesc, true)
+            .addField("Les derniers embeds des autres", embedOthersLastDesc, true)
             .setDescription(description);
         message.channel.send(embed);
     };
@@ -44,52 +69,63 @@ module.exports = (client) => {
             .setDescription(client.textes.get("EMBED_AIDE_DESCRIPTION"));
         message.channel.send(embed);
     };
-    client.embedEdit = async (message, id) => {
-        const embedEdit = client.db_embeds.find(embed => embed.statut == "EDIT" && embed.auteur == message.author.id);
-        if (embedEdit) {
-            warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
-            await client.embedArchive(embedEdit.id, message);
-        }
-        let embed = client.db_embeds.get(id);
-        embed.changedAt = +new Date;
-        embed.statut = "EDIT";
-        client.db_embeds.set(embed.id, embed);
-        successMessage(client.textes.get("EMBED_EDIT_SUCCESS", embed.titre, embed.id), message.channel);
-    }
+
     client.embedCreate = async (message, titre) => {
-        const embedEdit = client.db_embeds.find(embed => embed.statut == "EDIT" && embed.auteur == message.author.id);
-        if (embedEdit) {
-            warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
-            await client.embedArchive(embedEdit.id, message);
-        }
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(message.author.id);
+        let dateNow = +new Date;
+
+        await client.embedArchiveCurrentEdit(message);
+
+
         let embed = client.db_embeds.get("default");
         let key = client.db_embeds.autonum;
         const Embed = new Discord.RichEmbed().setTitle(titre);
         embed.id = key;
         embed.statut = "EDIT";
-        embed.auteur = message.author.id;
         embed.titre = titre;
-        embed.createdAt = +new Date;
-        embed.changedAt = +new Date;
-        embed.dateCreation = moment().format('DD.MM.YYYY');
+        embed.createdAt = dateNow;
+        embed.createdDate = moment(dateNow).format('DD.MM.YYYY');
+        embed.createdTime = moment(dateNow).format('HH:mm');
+        embed.createdBy = member.id;
+        embed.createdByName = member.displayName;
+        embed.ownedBy = member.id;
+        embed.ownedByName = member.displayName;
+        embed.changedAt = dateNow;
+        embed.changedDate = moment(dateNow).format('DD.MM.YYYY');
+        embed.changedTime = moment(dateNow).format('HH:mm');
+        embed.changedBy = member.id;
+        embed.changedByName = member.displayName;
         embed.content = Embed;
         client.db_embeds.set(key, embed);
         successMessage(client.textes.get("EMBED_CREATION_SUCCESS", embed.titre, embed.id), message.channel);
         return key;
     };
     client.embedCopy = async (message, id) => {
-        const embedEdit = client.db_embeds.find(n => n.statut == "EDIT" && n.auteur == message.author.id);
-        if (embedEdit) {
-            warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
-            await client.embedArchive(embedEdit.id, message);
-        }
+        const guild = client.guilds.get(client.config.guildID);
+        let dateNow = +new Date;
+        let member = guild.members.get(message.author.id);
+        await client.embedArchiveCurrentEdit(message);
 
         let embed = client.db_embeds.get(id);
+        if (!embed) return errorMessage(client.textes.get("EMBED_NOT_FOUND", id), message.channel);
+
         let key = client.db_embeds.autonum;
         embed.id = key;
         embed.statut = "EDIT";
-        embed.createdAt = +new Date;
-        embed.changedAt = +new Date;
+        embed.createdAt = dateNow;
+        embed.createdDate = moment(dateNow).format('DD.MM.YYYY');
+        embed.createdTime = moment(dateNow).format('HH:mm');
+        embed.createdBy = member.id;
+        embed.createdByName = member.displayName;
+        embed.ownedBy = member.id;
+        embed.ownedByName = member.displayName;
+        embed.changedAt = dateNow;
+        embed.changedDate = moment(dateNow).format('DD.MM.YYYY');
+        embed.changedTime = moment(dateNow).format('HH:mm');
+        embed.changedBy = member.id;
+        embed.changedByName = member.displayName;
+        embed.copyFrom = id;
         client.db_embeds.set(key, embed);
         successMessage(client.textes.get("EMBED_COPY_SUCCESS", id, key, embed.titre), message.channel);
     };
@@ -103,7 +139,7 @@ module.exports = (client) => {
 
         let postedMessage;
         let embed = client.db_embeds.get(embedID);
-        
+
         if (embed) {
             let member = guild.members.get(embed.auteur);
             let Embed = new Discord.RichEmbed(embed.content);
@@ -130,9 +166,9 @@ module.exports = (client) => {
 
     };
     client.embedUpdate = async (embedID, property, args, message) => {
-
-        let embedOrig = client.db_embeds.get(embedID);
-        let embedNew = new Discord.RichEmbed(embedOrig.content);
+        let dateNow = +new Date;
+        let embed = client.db_embeds.get(embedID);
+        let embedNew = new Discord.RichEmbed(embed.content);
         let arguments = args;
         switch (property) {
             case 'addfield': {
@@ -153,9 +189,9 @@ module.exports = (client) => {
                 embedNew = newEmbed;
                 break;
             }
-            case 'titre': {
+            case 'title': {
                 embedNew.setTitle(arguments);
-                embedOrig.titre = arguments;
+                embed.titre = arguments;
                 break;
             }
             case 'description': {
@@ -179,21 +215,79 @@ module.exports = (client) => {
                 break;
             }
         }
-        embedOrig.content = embedNew;
-        embedOrig.changedAt = +new Date;
-        client.db_embeds.set(embedID, embedOrig);
-        successMessage(client.textes.get("EMBED_UPDATE_SUCCESS", embedOrig.id, embedOrig.titre, property), message.channel);
+        embed.content = embedNew;
+        embed = await client.embedUpdateChanged(message, embed, message.author.id);
+        client.db_embeds.set(embedID, embed);
+        successMessage(client.textes.get("EMBED_UPDATE_SUCCESS", embed.id, embed.titre, property), message.channel);
     };
     client.embedShowDesc = async (embedID, message) => {
         let embed = client.db_embeds.get(embedID);
         message.channel.send(`\`\`\`!embed desc ${embed.content.description}\`\`\``)
     };
-    client.embedArchive = async (embedID, message) => {
-        let embed = client.db_embeds.get(embedID);
+    client.embedEdit = async (message, id) => {
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(message.author.id);
+        
+        let embed = client.db_embeds.get(id);
+        if (!embed) return errorMessage(client.textes.get("EMBED_NOT_FOUND", id), message.channel);
+        if (embed.ownedBy !== member.id) return errorMessage(client.textes.get("EMBED_ERROR_NOT_OWNER", id, embed.ownedByName), message.channel);
+
+        await client.embedArchiveCurrentEdit(message);
+
+        embed.statut = "EDIT";
+        embed = await client.embedUpdateChanged(message, embed, message.author.id);
+        client.db_embeds.set(embed.id, embed);
+        successMessage(client.textes.get("EMBED_EDIT_SUCCESS", embed.titre, embed.id), message.channel);
+    };
+    client.embedArchive = async (message, id) => {
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(message.author.id);
+
+        let embed = client.db_embeds.get(id);
+        if (!embed) return errorMessage(client.textes.get("EMBED_NOT_FOUND", id), message.channel);
+        if (embed.ownedBy !== member.id) return errorMessage(client.textes.get("EMBED_ERROR_NOT_OWNER", id, embed.ownedByName), message.channel);
+        if (embed.statut == 'ARCH') return warnMessage(client.textes.get("EMBED_WARN_ALREADY_ARCHIVED", id), message.channel);
+
+
         embed.statut = 'ARCH';
-        embed.changedAt = +new Date;
-        client.db_embeds.set(embedID, embed);
+        embed = await client.embedUpdateChanged(message, embed, message.author.id);
+        client.db_embeds.set(id, embed);
         successMessage(client.textes.get("EMBED_ARCHIVED_SUCCESS", embed.titre, embed.id), message.channel);
+    };
+    client.embedArchiveCurrentEdit = async (message) => {
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(message.author.id);
+        let embedEdit = await client.embedGetCureentEdit(message.author.id);
+        if (embedEdit) {
+            warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
+            await client.embedArchive(message, embedEdit.id);
+        }
+    };
+    client.embedUpdateChanged = async (message, embed, memberID) => {
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(message.author.id);
+
+        if (!member) {
+            errorMessage(client.textes.get("MEMBER_NOT_FOUND", memberID), message.channel);
+        } else {
+            let dateNow = +new Date;
+            embed.changedAt = dateNow;
+            embed.changedDate = moment(dateNow).format('DD.MM.YYYY');
+            embed.changedTime = moment(dateNow).format('HH:mm');
+            embed.changedBy = member.id;
+            embed.changedByName = member.displayName;
+        }
+        return embed;
+    };
+    client.embedGetCureentEdit = async (memberID) => {
+        const embedEdit = client.db_embeds.find(embed =>
+            embed.statut == "EDIT" &&
+            embed.ownedBy == memberID);
+        if (embedEdit) {
+            return embedEdit;
+        } else {
+            return null;
+        }
     };
 
 };

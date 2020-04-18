@@ -74,6 +74,10 @@ module.exports = (client) => {
                         'VIEW_CHANNEL': true,
                         'CONNECT': false,
                     });
+                    member.voiceChannel.overwritePermissions(roleMod, {
+                        'VIEW_CHANNEL': true,
+                        'CONNECT': true,
+                    });
                     client.modLog(client.textes.get("MOD_NOTIF_USER_JOIN_CONTACT", member));
                 }
                 break;
