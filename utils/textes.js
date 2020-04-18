@@ -420,6 +420,12 @@ module.exports = class {
 
                 Je vous souhaite de bien vous amuser sur Casual Effect !`;
             },
+            MEMBER_INIT_LOGS_MEMBER_SUCCESS: (member) => {
+                return `Logs  pour **${member.displayName}** réinitialisés avec succès`;
+            },
+            MEMBER_INIT_LOGS_MEMBER_NOTFOUND: (memberID) => {
+                return `**${memberID}** n'est plus sur le serveur. Traitement manuel`;
+            },
 
             // EXPERIENCE
             EXP_MESSAGE_INFORMATIONS_TITRE: "Expérience et niveau sur Casual Effect",
