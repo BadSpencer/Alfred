@@ -1,12 +1,13 @@
 const chalk = require("chalk");
 const moment = require("moment");
 
-exports.log = (content, type = "log") => {
+exports.log = (content, type = "log", debug = "false") => {
   const timestamp = `${moment().format("DD.MM HH:mm:ss")}:`;
 
   switch (type) {
     case "log": {
       return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `);
+
     }
     case "warn": {
       return console.log(`${timestamp} ${chalk.black.bgYellow(type.toUpperCase())} ${content} `);
@@ -15,7 +16,10 @@ exports.log = (content, type = "log") => {
       return console.log(`${timestamp} ${chalk.bgRed(type.toUpperCase())} ${content} `);
     }
     case "debug": {
-      return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
+      if (debug !== "false") {
+        return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
+      }
+      break;
     }
     case "cmd": {
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content}`);
