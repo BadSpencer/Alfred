@@ -161,6 +161,7 @@ module.exports = (client) => {
         let userstop5Desc = "";
         let userstopInDesc = "";
         let userstopOutDesc = "";
+        let usersLastEvents = "";
         usersTopXP.sort(function (a, b) {
             return a.xp - b.xp;
         });
@@ -224,13 +225,40 @@ module.exports = (client) => {
         }
 
 
+        let logEntriesLast = [];
+        for (const user of userdatas) {
+            for (const log of user.logs) {
+                logEntriesLast.push({
+                    "id": user.id,
+                    "createdAt": log.createdAt,
+                    "event": log.event,
+                    "name": user.name,
+                    "commentaire": log.commentaire
+                })
+            }
+        }
+        logEntriesLast.sort(function (a, b) {
+            return a.createdAt + b.createdAt;
+        });
+        logEntriesLast = logEntriesLast.slice(0, 10);
+
+        // usersLastEvents
+        for (const logEntry of logEntriesLast) {
+            usersLastEvents += `${logEntry.name}: ${logEntry.event} - ${logEntry.commentaire}\n`;
+        }
+
+
+
         let embed = new Discord.RichEmbed();
         embed.setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"));
         
+        embed.addField("Derniers évènements", usersLastEvents, false);
+
         embed.addField("Derniers arrivés", userstopInDesc, true);
         embed.addField("Derniers partis", userstopOutDesc, true);
 
         embed.addField("Top 5: level/xp", userstop5Desc, false);
+
 
         message.channel.send(embed);
     };
@@ -263,25 +291,20 @@ module.exports = (client) => {
         let userJoinedTime = moment(member.joinedAt).format('HH:mm');
 
         userdata.id = member.id;
-        userdata.name = member.displayName;
-        userdata.createdAt = member.joinedTimestamp;
-        userdata.joinedDate = userJoinedDate;
-        userdata.joinedTime = userJoinedTime;
+        userdata.username = member.user.username;
+        userdata.nickname = member.nickname;
+        userdata.displayName = member.displayName;
+        userdata.createdAt = member.user.createdTimestamp;
+        userdata.createdDate = moment(member.user.createdTimestamp).format('DD.MM.YYYY');
+        userdata.createdTime = moment(member.user.createdTimestamp).format('HH:mm');
+        userdata.joinedAt = member.joinedTimestamp;
+        userdata.joinedDate = moment(member.joinedTimestamp).format('DD.MM.YYYY');
+        userdata.joinedTime = moment(member.joinedTimestamp).format('HH:mm');
         userdata.level = 0;
         userdata.xp = 0;
 
-
-        userdataNicknames.date = userJoinedDate;
-        userdataNicknames.oldNickname = member.user.username;
-        userdataNicknames.newNickname = member.displayName;
-        userdata.nicknames.push(userdataNicknames);
-
-
-
-
-
         await client.db_userdata.set(member.id, userdata);
-        client.log(`Membre ${member.displayName} à été ajouté à la base de données`);
+        client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);
         client.userdataAddLog(member, member, "JOIN", "A rejoint le discord");
     };
 

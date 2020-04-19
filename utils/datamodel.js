@@ -83,16 +83,18 @@ exports.tables = {
         "lastHeure": ""
     },
     userdata: {
-        "id": "",
-        "name": "default",
+        "id": "default",
+        "username": "",
+        "nickname": "",
+        "displayName": "",
         "createdAt": "",
+        "createdate": "",
+        "createdTime": "",
+        "joinedAt": "",
         "joinedDate": "",
         "joinedTime": "",
         "level": "",
         "xp": "",
-        "nicknames": [],
-        "notes": [],
-        "avertissements": [],
         "logs": []
     },
     userdataLogs: {
