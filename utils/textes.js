@@ -401,6 +401,8 @@ module.exports = class {
                 
                 Que nous vaut le plaisir de votre visite ?`;
             },
+            USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
+        
             MEMBER_NEW_MEMBER_NOTIFICATION: (member) => {
                 return `**${member.displayName}** à été accepté en tant que membre de Casual Effect`;
             },

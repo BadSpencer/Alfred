@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const moment = require("moment");
 const colors = require('./colors');
 const constants = require('./constants');
+const datamodel = require('./datamodel');
 
 module.exports = (client) => {
     client.createVoiceChannel = async (name = "") => {
@@ -231,5 +232,46 @@ module.exports = (client) => {
         if (modNotifChannel) {
             modNotifChannel.send(content);
         }
+    };
+
+    client.messageLog = async (message) => {
+        let messagesLogs = datamodel.tables.messagesLogs;
+            messagesLogs.messageID = message.id;
+            messagesLogs.channelID = message.channel.id;
+            messagesLogs.createdBy = message.author.id;
+            messagesLogs.createdByName = message.author.username;
+            messagesLogs.createdAt = message.createdTimestamp;
+            messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
+            messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
+            client.db_messageslogs.set(message.id, messagesLogs);
+    };
+
+    client.channelGetAllMessages = async (channelID) => {
+
+        const guild = client.guilds.get(client.config.guildID);
+        let channel = guild.channels.get(channelID);
+
+
+        const messagesAll = [];
+        let last_id;
+
+        while (true) {
+            const options = { limit: 100 };
+            if (last_id) {
+                options.before = last_id;
+            }
+
+            const messages = await channel.fetchMessages(options);
+            if (messages.size > 0) {
+                messagesAll.push(...messages);
+                last_id = messages.last().id;
+                if (messages.size != 100) {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return messagesAll;
     };
 }

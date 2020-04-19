@@ -1,16 +1,14 @@
+const Discord = require("discord.js");
+const colors = require('./colors');
 const constants = require('./constants');
+const moment = require("moment");
+const datamodel = require('./datamodel');
 const {
     successMessage,
     errorMessage,
     warnMessage,
     questionMessage
 } = require('./messages');
-const colors = require('./colors');
-const {
-    RichEmbed
-} = require('discord.js');
-const datamodel = require('./datamodel');
-const moment = require("moment");
 
 module.exports = (client) => {
     // Message d'annonce lorsque quelqu'un rejoint le serveur
@@ -149,6 +147,72 @@ module.exports = (client) => {
             welcomeChannel.send(welcomeMessage);
         };
     };
+
+
+    client.userdataGetAll = async () => {
+        let userdatas = client.db_userdata.filter(rec => rec.id !== "");
+        return userdatas;
+    };
+    client.userdataUserboard = async (message) => {
+        const guild = client.guilds.get(client.config.guildID);
+
+        //let usersTopXP = client.db_userdata.filterArray( rec => rec.xp > 0);
+        let usersTopXP = client.db_userdata.array();
+        let usersTopIn = client.db_userdata.array();
+        let usersTopOut = client.db_userdata.array();
+
+        
+
+    
+        let userstop5Desc = "";
+        let userstopInDesc = "";
+        let userstopOutDesc = "";
+        usersTopXP.sort(function (a, b) {
+            return a.xp - b.xp;
+        });
+        usersTopXP.reverse();
+
+        usersTopXP = usersTopXP.slice(0, 5);
+        for (const user of usersTopXP) {
+            let member = await guild.members.get(user.id);
+            if (member) {
+                userstop5Desc += `**${user.name}**: ${user.level} (${user.xp})\n`;
+            } else {
+                userstop5Desc += `${user.name}: ${user.level} (${user.xp})\n`;
+            }
+        }
+
+
+        usersTopIn.sort(function (a, b) {
+            return a.createdAt - b.createdAt;
+        });
+        usersTopOut =  usersTopIn.reverse();
+
+        usersTopIn = usersTopIn.slice(0, 5);
+        usersTopOut = usersTopOut.slice(0, 5);
+
+        for (const user of usersTopIn) {
+            let member = await guild.members.get(user.id);
+            if (member) {
+                userstopInDesc += `**${user.name}** le ${user.joinedDate} à ${user.joinedTime}\n`;
+            } else {
+                userstopInDesc += `${user.name} le ${user.joinedDate} à ${user.joinedTime}\n`;
+            }
+        }
+
+        for (const user of usersTopOut) {
+                userstopOutDesc += `${user.name} (${user.id})\n`;
+        }
+
+        let embed = new Discord.RichEmbed()
+            .setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"))
+            .addField("Top 5: level/xp", userstop5Desc, true)
+            .addField("Derniers arrivés", userstopInDesc, true)
+            .addField("Derniers partis", userstopOutDesc, true);
+        message.channel.send(embed);
+
+    };
+
     client.userdataCheck = async () => {
         client.log(`Vérification de la base des membres`, "debug");
         const guild = client.guilds.get(client.config.guildID);
@@ -228,9 +292,9 @@ module.exports = (client) => {
         let userdata = client.db_userdata.get(memberID);
         if (userdata) {
             if (userdata.logs) {
-            userdata.logs = [];
-            client.db_userdata.set(memberID, userdata);
-            client.log(`Logs membre effacés pour ${userdata.name}`, "debug");
+                userdata.logs = [];
+                client.db_userdata.set(memberID, userdata);
+                client.log(`Logs membre effacés pour ${userdata.name}`, "debug");
             }
         }
 

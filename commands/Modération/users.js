@@ -8,35 +8,37 @@ const {
     warnMessage,
     questionMessage
 } = require('../../utils/messages');
+const moment = require("moment");
+const datamodel = require('../../utils/datamodel');
 
-class dbMembersCommand extends Command {
+class usersCommand extends Command {
     constructor() {
-        super('members', {
-            aliases: ['members', 'm'],
-            category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
+        super('users', {
+            aliases: ['users', 'u'],
+            category: 'Modération',
             args: [{
                 id: 'action',
                 type: 'text',
-                default: 'liste'
+                default: 'userboard'
             }],
         });
     }
 
     async exec(message, args) {
         let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        let userdatas = await client.userdataGetAll();
         switch (args.action) {
+            case 'userboard':
+                client.userdataUserboard(message);
+            break;
             case 'liste':
+                client.db.enmapDisplay(client, userdatas, message.channel, ["name", "xp", "level"]);
                 break;
             case 'top':
 
-
-
                 break;
             case 'initxp':
-                const guild = client.guilds.get(client.config.guildID);
-                let userdatas = client.db_userdata.filterArray(rec => rec.id !== "");
-
                 for (const userdata of userdatas) {
                     client.db_userdata.set(userdata.id, "xp", 0);
                     client.db_userdata.set(userdata.id, "level", 0);
@@ -44,9 +46,6 @@ class dbMembersCommand extends Command {
                 break;
 
             case 'initlogs':
-                const guild = client.guilds.get(client.config.guildID);
-                let userdatas = client.db_userdata.filterArray(rec => rec.id !== "");
-
                 for (const userdata of userdatas) {
                     let member = guild.members.get(userdata.id);
                     if (member) {
@@ -58,9 +57,24 @@ class dbMembersCommand extends Command {
                     }
                 }
                 break;
+            case 'initmesslogs':
+                let textChannels = guild.channels.filter(record => record.type == "text");
+
+                for (const channel of textChannels) {
+                    //client.log(`Récupération des messages de ${channel[1].name}`, "debug");
+                    let messagesLogs = datamodel.tables.messagesLogs;
+                    
+                    let channelMessages = await client.channelGetAllMessages(channel[1].id);
+                    for (const mess of channelMessages) {
+                           client.messageLog (mess[1]);
+                    };
+                    
+                    client.log(`${channelMessages.length} messages récupérés dans ${channel[1].name}`, "debug");
+                }
+
         }
         message.delete();
     }
 }
 
-module.exports = dbMembersCommand;
+module.exports = usersCommand;

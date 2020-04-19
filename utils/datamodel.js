@@ -161,5 +161,14 @@ exports.tables = {
         "id": "",
         "texte": "",
         "count": 0
+    },
+    messagesLogs: {
+        "messageID": "",
+        "channelID": "",
+        "createdBy": "",
+        "createdByName": "",
+        "createdAt": "",
+        "createdDate": "",
+        "createdTime": ""
     }
 }

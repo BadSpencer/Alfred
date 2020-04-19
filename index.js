@@ -87,6 +87,10 @@ client.db_citations = new Enmap({
     name: "citations"
 });
 
+client.db_messageslogs = new Enmap({
+    name: "messageslogs"
+});
+
 client.build();
 client.commandHandler.resolver.addType('game', word => {
     if (!word) return null;

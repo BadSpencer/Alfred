@@ -15,6 +15,7 @@ class MessageListener extends Listener {
         if (message.author.bot) return;
 
         message.settings = await client.db.getSettings(client);
+        await client.messageLog(message);
     }
 }
 
