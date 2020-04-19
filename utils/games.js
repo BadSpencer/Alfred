@@ -59,8 +59,12 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
 
     let description = "";
     for (const game of gamesXP) {
-        let score = Math.round(((game.xp * 100) / maxXP) / 20);
-        if (score == 0 && game.xp > 0) score = 1;
+
+        let score = 0;
+        if (game.xp > 0) {
+            score = Math.round(((game.xp * 100) / maxXP) / 20);
+        }
+
 
         if (score == 5) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n`;
         if (score == 4) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️⭐️\n`;
