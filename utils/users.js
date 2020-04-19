@@ -29,7 +29,7 @@ module.exports = (client) => {
         }
 
         if (welcomeChannel) {
-            const welcomeMessage = new RichEmbed()
+            const welcomeMessage = new Discord.RichEmbed()
                 .setTimestamp()
                 .setColor(colors['darkgreen'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_JOIN", member))
@@ -47,7 +47,7 @@ module.exports = (client) => {
         let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
 
         if (welcomeChannel) {
-            const welcomeMessage = new RichEmbed()
+            const welcomeMessage = new Discord.RichEmbed()
                 .setTitle(client.textes.get("USER_MESSAGE_ACCUEIL_TITRE"))
                 .setURL("https://www.casual-effect.org/")
                 .setColor(colors['darkorange'])
@@ -65,7 +65,7 @@ module.exports = (client) => {
         let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
 
         if (welcomeChannel) {
-            const welcomeMessage = new RichEmbed()
+            const welcomeMessage = new Discord.RichEmbed()
                 .setTitle(client.textes.get("USER_MESSAGE_ACCUEIL_TITRE"))
                 .setURL("https://www.casual-effect.org/")
                 .setColor(colors['darkorange'])
@@ -90,7 +90,7 @@ module.exports = (client) => {
 
         if (welcomeChannel) {
 
-            const welcomeMessage = new RichEmbed()
+            const welcomeMessage = new Discord.RichEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_QUIT", member))
@@ -116,7 +116,7 @@ module.exports = (client) => {
 
         if (welcomeChannel) {
 
-            const welcomeMessage = new RichEmbed()
+            const welcomeMessage = new Discord.RichEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_KICK", member, memberBy, raison))
@@ -139,7 +139,7 @@ module.exports = (client) => {
 
         if (welcomeChannel) {
 
-            const welcomeMessage = new RichEmbed()
+            const welcomeMessage = new Discord.RichEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_BAN", member, memberBy, raison))
@@ -147,8 +147,6 @@ module.exports = (client) => {
             welcomeChannel.send(welcomeMessage);
         };
     };
-
-
     client.userdataGetAll = async () => {
         let userdatas = client.db_userdata.filter(rec => rec.id !== "");
         return userdatas;
@@ -156,14 +154,10 @@ module.exports = (client) => {
     client.userdataUserboard = async (message) => {
         const guild = client.guilds.get(client.config.guildID);
 
-        //let usersTopXP = client.db_userdata.filterArray( rec => rec.xp > 0);
-        let usersTopXP = client.db_userdata.array();
-        let usersTopIn = client.db_userdata.array();
-        let usersTopOut = client.db_userdata.array();
+        let userdatas = client.db_userdata.filterArray(rec => rec.id !== "");
 
-        
+        let usersTopXP = usersTopIn = usersTopOut = userdatas;
 
-    
         let userstop5Desc = "";
         let userstopInDesc = "";
         let userstopOutDesc = "";
@@ -171,7 +165,6 @@ module.exports = (client) => {
             return a.xp - b.xp;
         });
         usersTopXP.reverse();
-
         usersTopXP = usersTopXP.slice(0, 5);
         for (const user of usersTopXP) {
             let member = await guild.members.get(user.id);
@@ -186,31 +179,60 @@ module.exports = (client) => {
         usersTopIn.sort(function (a, b) {
             return a.createdAt - b.createdAt;
         });
-        usersTopOut =  usersTopIn.reverse();
-
         usersTopIn = usersTopIn.slice(0, 5);
-        usersTopOut = usersTopOut.slice(0, 5);
-
-        for (const user of usersTopIn) {
-            let member = await guild.members.get(user.id);
+        for (const userIn of usersTopIn) {
+            let member = await guild.members.get(userIn.id);
             if (member) {
-                userstopInDesc += `**${user.name}** le ${user.joinedDate} à ${user.joinedTime}\n`;
+                userstopInDesc += `**${userIn.name}**\n`;
             } else {
-                userstopInDesc += `${user.name} le ${user.joinedDate} à ${user.joinedTime}\n`;
+                userstopInDesc += `${userIn.name}\n`;
+            }
+        };
+
+        let usersTopOutLogs = [];
+        for (const key in usersTopOut) {
+            let member = await guild.members.get(usersTopOut[key].id);
+
+            if (!member) {
+                let logEntriesQuit = usersTopOut[key].logs.filter(record =>
+                    record.event == "BAN" ||
+                    record.event == "KICK" ||
+                    record.event == "QUIT");
+
+                logEntriesQuit.sort(function (a, b) {
+                    return a.createdAt + b.createdAt;
+                });
+                usersTopOutLogs.push({
+                    "id": usersTopOut[key].id,
+                    "createdAt": logEntriesQuit[0].createdAt,
+                    "event": logEntriesQuit[0].event,
+                    "name": usersTopOut[key].name
+                })
             }
         }
 
-        for (const user of usersTopOut) {
-                userstopOutDesc += `${user.name} (${user.id})\n`;
+        if (usersTopOutLogs.length > 0) {
+            usersTopOutLogs.sort(function (a, b) {
+                return a.createdAt - b.createdAt;
+            });
+            usersTopOutLogs = usersTopOutLogs.slice(0, 5);
+            for (const keyUuserOut in usersTopOutLogs) {
+                userstopOutDesc += `${usersTopOutLogs[keyUuserOut].name} (${usersTopOutLogs[keyUuserOut].event})\n`;
+            };
+        } else {
+            userstopOutDesc = "Aucun";
         }
 
-        let embed = new Discord.RichEmbed()
-            .setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"))
-            .addField("Top 5: level/xp", userstop5Desc, true)
-            .addField("Derniers arrivés", userstopInDesc, true)
-            .addField("Derniers partis", userstopOutDesc, true);
-        message.channel.send(embed);
 
+        let embed = new Discord.RichEmbed();
+        embed.setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"));
+        
+        embed.addField("Derniers arrivés", userstopInDesc, true);
+        embed.addField("Derniers partis", userstopOutDesc, true);
+
+        embed.addField("Top 5: level/xp", userstop5Desc, false);
+
+        message.channel.send(embed);
     };
 
     client.userdataCheck = async () => {
@@ -242,7 +264,7 @@ module.exports = (client) => {
 
         userdata.id = member.id;
         userdata.name = member.displayName;
-        userdata.createdAt = +new Date;
+        userdata.createdAt = member.joinedTimestamp;
         userdata.joinedDate = userJoinedDate;
         userdata.joinedTime = userJoinedTime;
         userdata.level = 0;
