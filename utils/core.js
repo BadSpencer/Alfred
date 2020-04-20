@@ -236,14 +236,14 @@ module.exports = (client) => {
 
     client.messageLog = async (message) => {
         let messagesLogs = datamodel.tables.messagesLogs;
-            messagesLogs.messageID = message.id;
-            messagesLogs.channelID = message.channel.id;
-            messagesLogs.createdBy = message.author.id;
-            messagesLogs.createdByName = message.author.username;
-            messagesLogs.createdAt = message.createdTimestamp;
-            messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
-            messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
-            client.db_messageslogs.set(message.id, messagesLogs);
+        messagesLogs.messageID = message.id;
+        messagesLogs.channelID = message.channel.id;
+        messagesLogs.createdBy = message.author.id;
+        messagesLogs.createdByName = message.author.username;
+        messagesLogs.createdAt = message.createdTimestamp;
+        messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
+        messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
+        client.db_messageslogs.set(message.id, messagesLogs);
     };
 
     client.channelGetAllMessages = async (channelID) => {
@@ -273,5 +273,90 @@ module.exports = (client) => {
             }
         }
         return messagesAll;
+    };
+
+    client.logEventToEmoji = (event) => {
+        let emoji = "";
+        switch (event) {
+            case 'JOIN':
+                emoji = "🤝";
+                break;
+            case 'QUIT':
+                emoji = "🚪";
+                break;
+            case 'KICK':
+                emoji = "🤜";
+                break;
+            case 'BAN':
+                emoji = "🖕";
+                break;
+            case 'MEMBER':
+                emoji = "👍";
+                break;
+            case 'NOTE':
+                emoji = "✍️";
+                break;
+        }
+        return emoji;
+    };
+    client.logEventToText = (event) => {
+        let eventText = "";
+        switch (event) {
+            case 'JOIN':
+                eventText = " nous a rejoint";
+                break;
+            case 'QUIT':
+                eventText = "nous a quitté";
+                break;
+            case 'KICK':
+                eventText = "a été expulsé";
+                break;
+            case 'BAN':
+                eventText = "a été banni";
+                break;
+            case 'MEMBER':
+                eventText = "a été accepté";
+                break;
+            case 'NOTE':
+                eventText = "a reçu une note";
+                break;
+        }
+        return eventText;
+    };
+
+    client.msToDays = (milliseconds) => {
+        let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
+        let days = roundTowardsZero(milliseconds / 86400000),
+            hours = roundTowardsZero(milliseconds / 3600000) % 24,
+            minutes = roundTowardsZero(milliseconds / 60000) % 60,
+            seconds = roundTowardsZero(milliseconds / 1000) % 60;
+        if (seconds === 0) {
+            seconds++;
+        }
+        let pattern = "";
+        if (days > 0) {
+            pattern = "{days}j";
+        } else {
+            if (hours > 0) {
+                pattern = "{hours}h";
+            } else {
+                if (minutes > 0) {
+                    pattern = "{minutes}m";
+                } else {
+                    if (seconds > 0) {
+                        pattern = "{seconds}s";
+                    } else {
+                        pattern = "à l'instant";
+                    }
+                }
+            }
+        };
+        let sentence = pattern
+            .replace("{duration}", pattern)
+            .replace("{days}", days)
+            .replace("{hours}", hours)
+            .replace("{minutes}", minutes)
+            .replace("{seconds}", seconds);
+        return sentence;
     };
 }

@@ -154,7 +154,7 @@ module.exports = (client) => {
     client.userdataUserboard = async (message) => {
         const guild = client.guilds.get(client.config.guildID);
 
-        let userdatas = client.db_userdata.filterArray(rec => rec.id !== "");
+        let userdatas = client.db_userdata.filterArray(rec => rec.id !== "default");
 
         let usersTopXP = usersTopIn = usersTopOut = userdatas;
 
@@ -170,23 +170,24 @@ module.exports = (client) => {
         for (const user of usersTopXP) {
             let member = await guild.members.get(user.id);
             if (member) {
-                userstop5Desc += `**${user.name}**: ${user.level} (${user.xp})\n`;
+                userstop5Desc += `**${user.displayName}**: ${user.level} (${user.xp})\n`;
             } else {
-                userstop5Desc += `${user.name}: ${user.level} (${user.xp})\n`;
+                userstop5Desc += `${user.displayName}: ${user.level} (${user.xp})\n`;
             }
         }
 
 
         usersTopIn.sort(function (a, b) {
-            return a.createdAt - b.createdAt;
+            return a.joinedAt - b.joinedAt;
         });
+        usersTopIn.reverse();
         usersTopIn = usersTopIn.slice(0, 5);
         for (const userIn of usersTopIn) {
             let member = await guild.members.get(userIn.id);
             if (member) {
-                userstopInDesc += `**${userIn.name}**\n`;
+                userstopInDesc += `**${userIn.displayName}**\n`;
             } else {
-                userstopInDesc += `${userIn.name}\n`;
+                userstopInDesc += `${userIn.displayName}\n`;
             }
         };
 
@@ -200,15 +201,17 @@ module.exports = (client) => {
                     record.event == "KICK" ||
                     record.event == "QUIT");
 
-                logEntriesQuit.sort(function (a, b) {
-                    return a.createdAt + b.createdAt;
-                });
-                usersTopOutLogs.push({
-                    "id": usersTopOut[key].id,
-                    "createdAt": logEntriesQuit[0].createdAt,
-                    "event": logEntriesQuit[0].event,
-                    "name": usersTopOut[key].name
-                })
+                if (logEntriesQuit.length > 0) {
+                    logEntriesQuit.sort(function (a, b) {
+                        return a.createdAt + b.createdAt;
+                    });
+                    usersTopOutLogs.push({
+                        "id": usersTopOut[key].id,
+                        "createdAt": logEntriesQuit[0].createdAt,
+                        "event": logEntriesQuit[0].event,
+                        "displayName": usersTopOut[key].displayName
+                    })
+                }
             }
         }
 
@@ -216,9 +219,10 @@ module.exports = (client) => {
             usersTopOutLogs.sort(function (a, b) {
                 return a.createdAt - b.createdAt;
             });
+            usersTopOutLogs.reverse();
             usersTopOutLogs = usersTopOutLogs.slice(0, 5);
             for (const keyUuserOut in usersTopOutLogs) {
-                userstopOutDesc += `${usersTopOutLogs[keyUuserOut].name} (${usersTopOutLogs[keyUuserOut].event})\n`;
+                userstopOutDesc += `${client.logEventToEmoji(usersTopOutLogs[keyUuserOut].event)} ${usersTopOutLogs[keyUuserOut].displayName}\n`;
             };
         } else {
             userstopOutDesc = "Aucun";
@@ -232,30 +236,30 @@ module.exports = (client) => {
                     "id": user.id,
                     "createdAt": log.createdAt,
                     "event": log.event,
-                    "name": user.name,
+                    "displayName": user.displayName,
                     "commentaire": log.commentaire
                 })
             }
         }
         logEntriesLast.sort(function (a, b) {
-            return a.createdAt + b.createdAt;
+            return a.createdAt - b.createdAt;
         });
+        logEntriesLast.reverse();
         logEntriesLast = logEntriesLast.slice(0, 10);
-
-        // usersLastEvents
+        let dateNow = +new Date;
         for (const logEntry of logEntriesLast) {
-            usersLastEvents += `${logEntry.name}: ${logEntry.event} - ${logEntry.commentaire}\n`;
+            usersLastEvents += `${client.logEventToEmoji(logEntry.event)} ${logEntry.displayName} ${client.logEventToText(logEntry.event)} **${client.msToDays(dateNow - logEntry.createdAt)}**\n`;
         }
 
 
 
         let embed = new Discord.RichEmbed();
         embed.setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"));
-        
+
         embed.addField("Derniers évènements", usersLastEvents, false);
 
-        embed.addField("Derniers arrivés", userstopInDesc, true);
-        embed.addField("Derniers partis", userstopOutDesc, true);
+        embed.addField("Arrivées", userstopInDesc, true);
+        embed.addField("Départs", userstopOutDesc, true);
 
         embed.addField("Top 5: level/xp", userstop5Desc, false);
 
