@@ -33,7 +33,7 @@ class usersCommand extends Command {
                 client.userdataUserboard(message);
             break;
             case 'liste':
-                client.db.enmapDisplay(client, userdatas, message.channel, ["name", "xp", "level"]);
+                client.db.enmapDisplay(client, userdatas, message.channel, ["displayName", "xp", "level"]);
                 break;
             case 'top':
 

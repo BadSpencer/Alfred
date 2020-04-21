@@ -205,6 +205,47 @@ module.exports = (client) => {
     }
   };
 
+  client.gameServersPlayerLog = async (playerID, playerName, server) => {
+
+    let gameserversPlayer = client.db_gameserversPlayers.get(playerID);
+    let dateNow = +new Date;
+    if (gameserversPlayer) {
+
+      let serv = gameserversPlayer.servers.find(record => record.id = server.id);
+      if (serv.id !== server.id) {
+        gameserversPlayer.servers.push({
+          'id': server.id,
+          'name': server.name
+        })
+      }
+      gameserversPlayer.lastSeenAt = dateNow;
+      gameserversPlayer.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
+      gameserversPlayer.lastSeenTime = moment(dateNow).format('HH:mm');
+
+    } else {
+      gameserversPlayer = datamodel.tables.gameserversPlayers;
+      gameserversPlayer.id = playerID;
+      gameserversPlayer.steamName = playerName;
+      gameserversPlayer.lastSeenAt = dateNow;
+      gameserversPlayer.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
+      gameserversPlayer.lastSeenTime = moment(dateNow).format('HH:mm');
+      gameserversPlayer.servers.push({
+        'id': server.id,
+        'name': server.name
+      })
+
+    }
+    await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
+
+
+
+
+
+
+
+
+  };
+
   client.gameServersStatus = async () => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
@@ -214,6 +255,7 @@ module.exports = (client) => {
 
 
     let servers = await client.db_gameservers.filterArray(server => server.id !== "default");
+    client.log(`Vérification RCON (${servers.length} serveurs)`);
 
     for (const server of servers) {
       let response = await client.gameRconQuery(server, "listplayers");
@@ -255,6 +297,10 @@ module.exports = (client) => {
 
         }
       }
+      for (const player of playerlist) {
+        await client.gameServersPlayerLog(player[1], player[0], server)
+      };
+
       await client.db_gameservers.set(server.id, server);
     }
   };

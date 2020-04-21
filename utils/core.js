@@ -294,7 +294,7 @@ module.exports = (client) => {
                 emoji = "👍";
                 break;
             case 'NOTE':
-                emoji = "✍️";
+                emoji = "📝";
                 break;
         }
         return emoji;

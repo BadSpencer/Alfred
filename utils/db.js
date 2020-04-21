@@ -255,7 +255,7 @@ exports.enmapDisplay = async (client, enmap, channel, fieldlist = []) => {
     let embeds = [];
     for (i = 0; i < nbPages; i++) {
         embeds.push(await client.db.enampCreateEmbed(client, enmap, enmap.name, i + 1, fieldlist))
-    }
+    };
 
     let pageCount = 0;
     embeds.forEach(embed => {

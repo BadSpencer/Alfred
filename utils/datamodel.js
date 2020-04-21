@@ -75,12 +75,14 @@ exports.tables = {
         "playerlist": [],
         "infoMessage": ""
     },
-    gamesSteamPlayers: {
+    gameserversPlayers: {
         "id": "default",
         "steamName": "",
-        "lastSeen": "",
-        "lastDate": "",
-        "lastHeure": ""
+        "memberID": "",
+        "lastSeenAt": "",
+        "lastSeenDate": "",
+        "lastSeenTime": "",
+        "servers": [],
     },
     userdata: {
         "id": "default",

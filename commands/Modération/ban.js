@@ -23,7 +23,8 @@ class BanCommand extends Command {
                 },
                 {
                     id: 'raison',
-                    type: 'rest',
+                    type: "content",
+                    match: "rest",
                     prompt: {
                         start: 'Pour quelle raison souhaitez vous bannir ce membre ?',
                     },

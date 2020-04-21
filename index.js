@@ -68,6 +68,10 @@ client.db_games = new Enmap({
 client.db_gameservers = new Enmap({
     name: "gameservers"
 });
+
+client.db_gameserversPlayers = new Enmap({
+    name: "gameserversPlayers"
+});
 client.db_usergame = new Enmap({
     name: "usergame"
 });

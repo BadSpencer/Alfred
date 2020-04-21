@@ -3,15 +3,16 @@ const {
 } = require('discord-akairo');
 const { Permissions } = require('discord.js');
 
-class KickCommand extends Command {
+class NoteCommand extends Command {
     constructor() {
-        super('kick', {
-            aliases: ['kick'],
+        super('note', {
+            aliases: ['note'],
             userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
+            channelRestriction: 'guild',
             category: 'Modération',
             //cooldown: 30000,
             ratelimit: 1,
-            description: 'Expluser un membre (peut revenir)',
+            description: 'Ajouter une note sur un membre',
             args: [
                 {
                     id: 'member',
@@ -22,11 +23,11 @@ class KickCommand extends Command {
                     },
                 },
                 {
-                    id: 'raison',
+                    id: 'note',
                     type: "content",
                     match: "rest",
                     prompt: {
-                        start: 'Pour quelle raison souhaitez vous expluser ce membre ?',
+                        start: 'Quelle est votre note ?',
                     },
                 }
             ]
@@ -36,15 +37,11 @@ class KickCommand extends Command {
     async exec(message, args) {
         let client = this.client;
 
-        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
-        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
+        await client.userdataAddLog(args.member, message.member, "NOTE", args.note);
 
-        client.userdataAddLog(args.member, message.member, "KICK", args.raison);
 
-        args.member.kick(args.raison);
-        client.serverKickNotification(args.member, message.member, args.raison);
     }
 }
 
 
-module.exports = KickCommand;
+module.exports = NoteCommand;

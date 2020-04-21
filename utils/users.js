@@ -148,7 +148,7 @@ module.exports = (client) => {
         };
     };
     client.userdataGetAll = async () => {
-        let userdatas = client.db_userdata.filter(rec => rec.id !== "");
+        let userdatas = client.db_userdata.filter(rec => rec.id !== "default");
         return userdatas;
     };
     client.userdataUserboard = async (message) => {
