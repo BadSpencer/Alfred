@@ -411,14 +411,11 @@ module.exports = class {
                 return `Nouveau membre ${member.displayName}`;
             },
             MEMBER_MESSAGE_ACCUEIL_DESCRIPTION: (member) => {
-                return `Bonjour ${member.toString()},
-                
-                Je me présente, Alfred, je suis le majordome de Casual Effect.
-                Je m'occupe du bon fonctionnement de ce serveur discord et j'apporte quelques services pour améliorer votre séjour parmis nous.
+                return `Félicitations ${member.toString()}, tout le monde ne réussi pas le test !
 
-                Consultez le salon <#562689816966463503> pour en savoir plus sur le fonctionneemnt de ce discord.
+                Vous avez désormais accès à l'ensemble des salons du discord. Si vous souhaitez une visite guidée, allez voir <#698424583908360223> nous ferons le tour du propriétaire.
                 
-                N'oubliez pas d'indiquer les jeux auxquels vous jouez dans le salon <#601792379644805140>
+                J'ai des pouvoirs divinatoires, vous verrez, et mon petit doigt me dit que vous êtes ici pour jouer. Je vous invite à aller dans le salon <#601792379644805140> pour rejoindre les groupes de jeux.
 
                 Je vous souhaite de bien vous amuser sur Casual Effect !`;
             },
