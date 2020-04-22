@@ -18,7 +18,7 @@ class NoteCommand extends Command {
                     id: 'member',
                     type: 'member',
                     prompt: {
-                        start: 'Quel membre voulez vous expulser ?',
+                        start: 'Pour quel membre voulez vous ajouter une note ?',
                         retry: 'Mentionnez un membre avec @ ou bien son ID',
                     },
                 },
