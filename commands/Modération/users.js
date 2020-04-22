@@ -31,9 +31,13 @@ class usersCommand extends Command {
         switch (args.action) {
             case 'userboard':
                 client.userdataUserboard(message);
-            break;
+                break;
             case 'liste':
-                client.db.enmapDisplay(client, userdatas, message.channel, ["displayName", "xp", "level"]);
+                if (message.channel.type === 'text') {
+                    client.db.enmapDisplay(client, userdatas, message.member, ["displayName", "username"]);
+                } else {
+                    client.db.enmapDisplay(client, userdatas, message.channel, ["displayName", "username"]);
+                }
                 break;
             case 'top':
 
@@ -63,12 +67,12 @@ class usersCommand extends Command {
                 for (const channel of textChannels) {
                     //client.log(`Récupération des messages de ${channel[1].name}`, "debug");
                     let messagesLogs = datamodel.tables.messagesLogs;
-                    
+
                     let channelMessages = await client.channelGetAllMessages(channel[1].id);
                     for (const mess of channelMessages) {
-                           client.messageLog (mess[1]);
+                        client.messageLog(mess[1]);
                     };
-                    
+
                     client.log(`${channelMessages.length} messages récupérés dans ${channel[1].name}`, "debug");
                 }
 

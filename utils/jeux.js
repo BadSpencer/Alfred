@@ -207,35 +207,40 @@ module.exports = (client) => {
 
   client.gameServersPlayerLog = async (playerID, playerName, server) => {
 
-    let gameserversPlayer = client.db_gameserversPlayers.get(playerID);
+    let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
+
     let dateNow = +new Date;
     if (gameserversPlayer) {
 
       let serv = gameserversPlayer.servers.find(record => record.id = server.id);
-      if (serv.id !== server.id) {
+
+      if (!serv) {
         gameserversPlayer.servers.push({
           'id': server.id,
           'name': server.name
         })
       }
+
+
       gameserversPlayer.lastSeenAt = dateNow;
       gameserversPlayer.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
       gameserversPlayer.lastSeenTime = moment(dateNow).format('HH:mm');
+      await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
 
     } else {
-      gameserversPlayer = datamodel.tables.gameserversPlayers;
-      gameserversPlayer.id = playerID;
-      gameserversPlayer.steamName = playerName;
-      gameserversPlayer.lastSeenAt = dateNow;
-      gameserversPlayer.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
-      gameserversPlayer.lastSeenTime = moment(dateNow).format('HH:mm');
-      gameserversPlayer.servers.push({
+      let gameserversPlayerNew = datamodel.tables.gameserversPlayers;
+      gameserversPlayerNew.id = playerID;
+      gameserversPlayerNew.steamName = playerName;
+      gameserversPlayerNew.lastSeenAt = dateNow;
+      gameserversPlayerNew.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
+      gameserversPlayerNew.lastSeenTime = moment(dateNow).format('HH:mm');
+      gameserversPlayerNew.servers = [{
         'id': server.id,
         'name': server.name
-      })
-
+      }];
+      await client.db_gameserversPlayers.set(playerID, gameserversPlayerNew);
     }
-    await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
+
 
 
 

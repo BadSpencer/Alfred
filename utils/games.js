@@ -266,7 +266,7 @@ exports.quitConfirmation = async (client, messageReaction, game, member) => {
     let statusMessage = await questionMessage(client.textes.get("GAMES_JOIN_WANT_TO_QUIT", game.name), messageReaction.message.channel);
     const responses = await messageReaction.message.channel.awaitMessages(msg => msg.author.id === member.id, {
         max: 1,
-        time: 10000,
+        time: 30000,
     });
 
     if (responses.size !== 1) {

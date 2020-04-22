@@ -20,6 +20,10 @@ class guildMemberUpdateListener extends Listener {
         client.log(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember), "debug");
 
 
+        if (newMember.displayName !== oldMember.displayName) {
+            client.userdataAddLog(newMember, newMember, "NICK", `${oldMember.displayName} -> ${newMember.displayName}`);
+        }
+
 
         // Role ajouté
         if (newMember.roles.size > oldMember.roles.size) {

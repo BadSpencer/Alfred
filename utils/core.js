@@ -296,6 +296,9 @@ module.exports = (client) => {
             case 'NOTE':
                 emoji = "📝";
                 break;
+            case 'NICK':
+                emoji = "📧";
+                break;
         }
         return emoji;
     };
@@ -319,6 +322,9 @@ module.exports = (client) => {
                 break;
             case 'NOTE':
                 eventText = "a reçu une note";
+                break;
+            case 'NICK':
+                eventText = "a changé de pseudo";
                 break;
         }
         return eventText;

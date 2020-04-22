@@ -58,7 +58,7 @@ class ServersCommand extends Command {
 
         switch (args.action) {
             case 'list':
-                client.db.enmapDisplay(client, client.db_gameservers, message.channel);
+                client.db.enmapDisplay(client, client.db_gameservers.filter(record => record.id !== "default"), message.channel, ["gamename", "name"]);
                 break;
             case 'view':
                 let server = client.db_gameservers.get(args.arguments);

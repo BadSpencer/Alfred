@@ -325,6 +325,9 @@ module.exports = (client) => {
             date = +new Date;
         }
 
+        userdata.displayName = member.displayName;
+        userdata.nickname = member.nickname;
+        
         userdataLogs.createdAt = date;
         userdataLogs.createdBy = memberBy.id;
         userdataLogs.date = moment(date).format('DD.MM.YYYY');

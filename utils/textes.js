@@ -401,6 +401,17 @@ module.exports = class {
                 
                 Que nous vaut le plaisir de votre visite ?`;
             },
+
+            USER_KICK_NOTIFICATION_TO_USER: (memberBy, raison) => {
+                return `Vous avez été expulsé du discord Casual Effect par ${memberBy.displayName} pour la raison: ${raison}`;
+            },
+            USER_BAN_NOTIFICATION_TO_USER: (memberBy, raison) => {
+                return `Vous avez été banni du discord Casual Effect par ${memberBy.displayName} pour la raison: ${raison}`;
+            },
+
+
+
+
             USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
         
             MEMBER_NEW_MEMBER_NOTIFICATION: (member) => {
