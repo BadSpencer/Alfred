@@ -309,11 +309,14 @@ module.exports = (client) => {
 
         await client.db_userdata.set(member.id, userdata);
         client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);
-        client.userdataAddLog(member, member, "JOIN", "A rejoint le discord");
+        client.userdataAddLog(userdata, member, "JOIN", "A rejoint le discord");
     };
 
-    client.userdataAddLog = async (member, memberBy, event, commentaire) => {
-        let userdata = client.db_userdata.get(member.id);
+    client.userdataAddLog = async (userdata, memberBy, event, commentaire) => {
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(userdata.id);
+
+
         let userdataLogs = datamodel.tables.userdataLogs;
 
         if (!userdata) return;
@@ -325,9 +328,11 @@ module.exports = (client) => {
             date = +new Date;
         }
 
-        userdata.displayName = member.displayName;
-        userdata.nickname = member.nickname;
-        
+        if (member) {
+            userdata.displayName = member.displayName;
+            userdata.nickname = member.nickname;
+        };
+
         userdataLogs.createdAt = date;
         userdataLogs.createdBy = memberBy.id;
         userdataLogs.date = moment(date).format('DD.MM.YYYY');
@@ -336,8 +341,8 @@ module.exports = (client) => {
         userdataLogs.commentaire = commentaire;
         userdata.logs.push(userdataLogs);
 
-        client.db_userdata.set(member.id, userdata);
-        client.log(`Log membre **${event}** pour ${member.displayName}`, "debug");
+        client.db_userdata.set(userdata.id, userdata);
+        client.log(`Log membre **${event}** pour ${userdata.displayName}`, "debug");
     };
 
     client.userdataClearLogs = async (memberID) => {

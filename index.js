@@ -106,6 +106,15 @@ client.commandHandler.resolver.addType('game', word => {
 
     return null;
 });
+client.commandHandler.resolver.addType('userdata', word => {
+    if (!word) return null;
 
+    const userdata = client.db_userdata.find(record => record.id == word);
+    if (userdata) {
+        return userdata;
+    }
+
+    return null;
+});
 
 client.login(token);

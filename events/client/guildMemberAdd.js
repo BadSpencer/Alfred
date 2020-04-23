@@ -21,7 +21,7 @@ class guildMemberAddListener extends Listener {
 
         let userdata = client.db_userdata.get(member.id);
         if (userdata) {
-            client.userdataAddLog(member, member, "JOIN", "A rejoint le discord");
+            client.userdataAddLog(userdata, member, "JOIN", "A rejoint le discord");
             //client.serverJoinNotification(member);
 
             setTimeout(function () {

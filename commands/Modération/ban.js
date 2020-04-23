@@ -14,11 +14,11 @@ class BanCommand extends Command {
             description: 'Bannir un membre (ne peut plus revenir)',
             args: [
                 {
-                    id: 'member',
-                    type: 'member',
+                    id: 'userdata',
+                    type: 'userdata',
                     prompt: {
-                        start: 'Quel membre voulez vous bannir ?',
-                        retry: 'Mentionnez un membre avec @ ou bien son ID',
+                        start: 'Quel membre souhaitez vous bannir ?',
+                        retry: 'Mentionnez un membre avec son ID',
                     },
                 },
                 {
@@ -35,14 +35,17 @@ class BanCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(args.userdata.id);
 
-        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
-        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
+        if (!member) return;
+        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
+        if (member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
 
-        client.userdataAddLog(args.member, message.member, "BAN", args.raison);
+        client.userdataAddLog(args.userdata, message.member, "BAN", args.raison);
 
-        args.member.ban(args.raison);
-        client.serverBanNotification(args.member, message.member, args.raison);
+        member.ban(args.raison);
+        client.serverBanNotification(amember, message.member, args.raison);
     }
 }
 

@@ -29,7 +29,7 @@ class guildMemberRemoveListener extends Listener {
                 client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", member));
             } else {
                 client.serverQuitNotification(member);
-                client.userdataAddLog(member, member, "QUIT", "A quitté le discord");
+                client.userdataAddLog(userdata, member, "QUIT", "A quitté le discord");
                 client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
             }
         }

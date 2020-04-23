@@ -15,11 +15,11 @@ class NoteCommand extends Command {
             description: 'Ajouter une note sur un membre',
             args: [
                 {
-                    id: 'member',
-                    type: 'member',
+                    id: 'userdata',
+                    type: 'userdata',
                     prompt: {
                         start: 'Pour quel membre voulez vous ajouter une note ?',
-                        retry: 'Mentionnez un membre avec @ ou bien son ID',
+                        retry: 'Mentionnez un membre avec son ID',
                     },
                 },
                 {
@@ -37,7 +37,8 @@ class NoteCommand extends Command {
     async exec(message, args) {
         let client = this.client;
 
-        await client.userdataAddLog(args.member, message.member, "NOTE", args.note);
+
+        await client.userdataAddLog(args.userdata, message.member, "NOTE", args.note);
 
 
     }

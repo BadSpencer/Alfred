@@ -54,7 +54,7 @@ class usersCommand extends Command {
                     let member = guild.members.get(userdata.id);
                     if (member) {
                         await client.userdataClearLogs(member.id);
-                        await client.userdataAddLog(member, member, "JOIN", "A rejoint le discord");
+                        await client.userdataAddLog(userdata, member, "JOIN", "A rejoint le discord");
                         message.channel.send(client.textes.get("MEMBER_INIT_LOGS_MEMBER_SUCCESS", member.displayName));
                     } else {
                         message.channel.send(client.textes.get("MEMBER_INIT_LOGS_MEMBER_NOTFOUND", userdata.id));

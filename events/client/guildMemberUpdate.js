@@ -18,10 +18,10 @@ class guildMemberUpdateListener extends Listener {
         const roleMembers = newMember.guild.roles.find(r => r.name == settings.memberRole);
 
         client.log(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember), "debug");
-
+        let userdata = client.db_userdata.get(newMember.id);
 
         if (newMember.displayName !== oldMember.displayName) {
-            client.userdataAddLog(newMember, newMember, "NICK", `${oldMember.displayName} -> ${newMember.displayName}`);
+            client.userdataAddLog(userdata, newMember, "NICK", `${oldMember.displayName} -> ${newMember.displayName}`);
         }
 
 
@@ -34,7 +34,7 @@ class guildMemberUpdateListener extends Listener {
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id) {
-                        client.userdataAddLog(newMember, newMember, "MEMBER", "A été ajouté au groupe des membres");
+                        client.userdataAddLog(userdata, newMember, "MEMBER", "A été ajouté au groupe des membres");
                     }
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
                         client.newMemberNotification(newMember);
@@ -47,7 +47,7 @@ class guildMemberUpdateListener extends Listener {
                         client.games.createUsergame(client, game, newMember);
                         client.games.updateJoinUsergame(client, game, newMember);
                         client.games.newPlayerNotification(client, game, newMember);
-                        client.userdataAddLog(newMember, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
+                        client.userdataAddLog(userdata, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
                     }
                 }
             });
@@ -67,7 +67,7 @@ class guildMemberUpdateListener extends Listener {
                         client.games.PostRoleReaction(client);
                         client.games.updateQuitUsergame(client, game, newMember);
                         client.games.quitPlayerNotification(client, game, newMember);
-                        client.userdataAddLog(oldMember, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
+                        client.userdataAddLog(userdata, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
                     }
                 }
             })

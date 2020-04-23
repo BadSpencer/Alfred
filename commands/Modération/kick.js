@@ -14,11 +14,11 @@ class KickCommand extends Command {
             description: 'Expluser un membre (peut revenir)',
             args: [
                 {
-                    id: 'member',
-                    type: 'member',
+                    id: 'userdata',
+                    type: 'userdata',
                     prompt: {
-                        start: 'Quel membre voulez vous expulser ?',
-                        retry: 'Mentionnez un membre avec @ ou bien son ID',
+                        start: 'Quel membre souhaitez vous expulser ?',
+                        retry: 'Mentionnez un membre avec son ID',
                     },
                 },
                 {
@@ -35,14 +35,17 @@ class KickCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(args.userdata.id);
 
-        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
-        if (args.member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
+        if (!member) return;
+        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
+        if (member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
 
-        client.userdataAddLog(args.member, message.member, "KICK", args.raison);
+        client.userdataAddLog(args.userdata, message.member, "KICK", args.raison);
 
-        args.member.kick(args.raison);
-        client.serverKickNotification(args.member, message.member, args.raison);
+        member.kick(args.raison);
+        client.serverKickNotification(member, message.member, args.raison);
     }
 }
 
