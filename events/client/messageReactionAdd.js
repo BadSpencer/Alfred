@@ -20,9 +20,11 @@ class MessageReactionAddListener extends Listener {
 
     async exec(messageReaction, user) {
 
-        let gameGroupsBlacklist = [];
-        gameGroupsBlacklist.push("191993511543832577"); // Albator
-        gameGroupsBlacklist.push("502561242049806336"); // Bad Weiser
+        let gameGroupsBlacklist = [
+            '191993511543832577', // Albator
+            '502561242049806336'  // Bad Weuiser
+        ];
+
 
 
 
@@ -70,15 +72,15 @@ class MessageReactionAddListener extends Listener {
                 const gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.has(gameRole.id)) {
-                        if (gameGroupsBlacklist.has(member.id)) {
-
+                        if (gameGroupsBlacklist.includes(member.id)) {
+                            member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
                             client.games.quitConfirmation(client, messageReaction, game, member);
                         }
 
                     } else {
-                        if (gameGroupsBlacklist.has(member.id)) {
-
+                        if (gameGroupsBlacklist.includes(member.id)) {
+                            member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
                             member.addRole(gameRole);
                             successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);

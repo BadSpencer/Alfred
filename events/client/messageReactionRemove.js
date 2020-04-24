@@ -22,9 +22,10 @@ class MessageReactionRemoveListener extends Listener {
         let client = this.client;
         if (user.bot) return;
 
-        let gameGroupsBlacklist = [];
-        gameGroupsBlacklist.push("191993511543832577"); // Albator
-        gameGroupsBlacklist.push("502561242049806336"); // Bad Weiser
+        let gameGroupsBlacklist = [
+            '191993511543832577', // Albator
+            '502561242049806336'  // Bad Weuiser
+        ];
 
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
@@ -66,17 +67,17 @@ class MessageReactionRemoveListener extends Listener {
                 const gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.has(gameRole.id)) {
-                        if (gameGroupsBlacklist.has(member.id)) {
-
+                        if (gameGroupsBlacklist.includes(member.id)) {
+                            member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
-                        client.games.quitConfirmation(client, messageReaction, game, member);
+                            client.games.quitConfirmation(client, messageReaction, game, member);
                         }
                     } else {
-                        if (gameGroupsBlacklist.has(member.id)) {
-
+                        if (gameGroupsBlacklist.includes(member.id)) {
+                            member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
-                        member.addRole(gameRole);
-                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
+                            member.addRole(gameRole);
+                            successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
                         }
                     }
                 }
