@@ -299,6 +299,12 @@ module.exports = (client) => {
             case 'NICK':
                 emoji = "📧";
                 break;
+            case 'GAMEJOIN':
+                emoji = "🔸";
+                break;
+            case 'GAMEQUIT':
+                emoji = "🔹";
+                break;
         }
         return emoji;
     };
@@ -325,6 +331,12 @@ module.exports = (client) => {
                 break;
             case 'NICK':
                 eventText = "a changé de pseudo";
+                break;
+            case 'GAMEJOIN':
+                eventText = "a rejoint un jeu";
+                break;
+            case 'GAMEQUIT':
+                eventText = "a quitté un jeu";
                 break;
         }
         return eventText;
