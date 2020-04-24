@@ -19,6 +19,13 @@ class MessageReactionAddListener extends Listener {
     }
 
     async exec(messageReaction, user) {
+
+        let gameGroupsBlacklist = [];
+        gameGroupsBlacklist.push("191993511543832577"); // Albator
+        gameGroupsBlacklist.push("502561242049806336"); // Bad Weiser
+
+
+
         let client = this.client;
         if (user.bot) return;
 
@@ -36,7 +43,7 @@ class MessageReactionAddListener extends Listener {
                     let totalPages = postedEmbed.pages.length;
                     let indexNewPage = postedEmbed.currentPage;
                     if (indexNewPage == totalPages) return;
-                    
+
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     messageReaction.message.edit(newEmbed);
                     postedEmbed.currentPage = indexNewPage + 1;
@@ -63,10 +70,19 @@ class MessageReactionAddListener extends Listener {
                 const gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.has(gameRole.id)) {
-                        client.games.quitConfirmation(client, messageReaction, game, member);
+                        if (gameGroupsBlacklist.has(member.id)) {
+
+                        } else {
+                            client.games.quitConfirmation(client, messageReaction, game, member);
+                        }
+
                     } else {
-                        member.addRole(gameRole);
-                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
+                        if (gameGroupsBlacklist.has(member.id)) {
+
+                        } else {
+                            member.addRole(gameRole);
+                            successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
+                        }
                     }
                 }
             } else {

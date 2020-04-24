@@ -22,6 +22,10 @@ class MessageReactionRemoveListener extends Listener {
         let client = this.client;
         if (user.bot) return;
 
+        let gameGroupsBlacklist = [];
+        gameGroupsBlacklist.push("191993511543832577"); // Albator
+        gameGroupsBlacklist.push("502561242049806336"); // Bad Weiser
+
         const guild = client.guilds.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
         const member = guild.members.get(user.id);
@@ -62,12 +66,20 @@ class MessageReactionRemoveListener extends Listener {
                 const gameRole = guild.roles.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.has(gameRole.id)) {
-                        client.games.quitConfirmation(client, messageReaction,  game, member);
+                        if (gameGroupsBlacklist.has(member.id)) {
+
+                        } else {
+                        client.games.quitConfirmation(client, messageReaction, game, member);
+                        }
                     } else {
+                        if (gameGroupsBlacklist.has(member.id)) {
+
+                        } else {
                         member.addRole(gameRole);
                         successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
+                        }
                     }
-                } 
+                }
             } else {
                 // Jeu non trouvé avec emoji
             }

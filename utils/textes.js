@@ -527,6 +527,7 @@ module.exports = class {
             GAMES_JOIN_INFORMATION_CHANNEL_NOTIFICATION: (game, channel, member) => {
                 return `${member.toString()}\nVous trouverez toutes les informations utiles et nécessaires pour **${game.name}** dans le salon ${channel.toString()}.`;
             },
+            GAMES_MEMBER_BLACKLISTED: "Vous n'avez pas l'autorisation d'utiliser la liste des jeux pour rejoindre ou quitter un groupe. Veuillez contacter un admin.",
             GAMES_QUIT_NOTIFICATION: (game, member) => {
                 let textes = [
                     `${member.displayName} à quitté le groupe ${game.name}`,
