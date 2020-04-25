@@ -2,23 +2,29 @@ const {
     Command
 } = require('discord-akairo');
 const { Permissions } = require('discord.js');
+const {
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage,
+    promptMessage
+} = require('../../utils/messages');
+const colors = require('../../utils/colors');
+
 
 class BanCommand extends Command {
     constructor() {
         super('ban', {
             aliases: ['ban'],
-            userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
             category: 'Modération',
-            //cooldown: 30000,
-            ratelimit: 1,
             description: 'Bannir un membre (ne peut plus revenir)',
             args: [
                 {
                     id: 'userdata',
                     type: 'userdata',
                     prompt: {
-                        start: 'Quel membre souhaitez vous bannir ?',
-                        retry: 'Mentionnez un membre avec son ID',
+                        start: message => promptMessage('Quel membre souhaitez vous bannir ?'),
+                        retry: message => promptMessage('Mentionnez un membre avec son ID'),
                     },
                 },
                 {
@@ -26,7 +32,7 @@ class BanCommand extends Command {
                     type: "content",
                     match: "rest",
                     prompt: {
-                        start: 'Pour quelle raison souhaitez vous bannir ce membre ?',
+                        start: message => promptMessage('Pour quelle raison souhaitez vous bannir ce membre ?'),
                     },
                 }
             ]
@@ -38,14 +44,40 @@ class BanCommand extends Command {
         const guild = client.guilds.get(client.config.guildID);
         let member = guild.members.get(args.userdata.id);
 
-        if (!member) return;
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return;
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return;
+        if (!member) return errorMessage(client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName), message.channel);
+        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return errorMessage(client.textes.get("USER_ERROR_NOT_BANABLE", args.userdata.displayName), message.channel);
+        if (member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return errorMessage(client.textes.get("USER_ERROR_NOT_BANABLE", args.userdata.displayName), message.channel);
 
-        client.userdataAddLog(args.userdata, message.member, "BAN", args.raison);
+        let questionMess = await questionMessage(client.textes.get("USER_BAN_CHECK_BEFORE", member), message.channel);
+        const responses = await message.channel.awaitMessages(msg => msg.author.id === message.author.id, {
+            max: 1,
+            time: 30000,
+        });
 
-        member.ban(args.raison);
-        client.serverBanNotification(amember, message.member, args.raison);
+        if (responses.size !== 1) {
+            warnMessage(client.textes.get("COM_ACTION_TIMEOUT"), message.channel);
+            return null;
+        }
+        const response = responses.first();
+    
+        if (response.content == "oui") {
+            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === 'text') response.delete();
+
+            
+            client.userdataAddLog(args.userdata, message.member, "BAN", args.raison);
+            await member.send(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison))
+            await member.ban(args.raison);
+            client.serverBanNotification(amember, message.member, args.raison);
+            successMessage(client.textes.get("USER_BAN_CHECK_SUCCESS", member), message.channel);
+        } else {
+            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === 'text') response.delete();
+
+            warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
+            return null;
+        }
+        
     }
 }
 

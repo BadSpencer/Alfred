@@ -8,6 +8,7 @@ module.exports = class {
         this.textes = {
 
             COM_ACTION_ANNULLE: "Action annulée",
+            COM_ACTION_TIMEOUT: "Vous avez mis trop de temps à répondre. Action annulée",
             COM_REPLY_MESSAGE_SEND_BY_DM: "Je vous ai répondu par message privé",
             COM_USER_NEW_STATUS: (member, status) => {
                 return `${member.displayName} (${member.id}) est désormais ${status}`;
@@ -402,11 +403,37 @@ module.exports = class {
                 Que nous vaut le plaisir de votre visite ?`;
             },
 
+
+            
+
+            USER_KICK_CHECK_BEFORE: (member) => {
+                return `Êtes vous certain de vouloir expulser **${member.displayName}** du serveur ?`;
+            },
             USER_KICK_NOTIFICATION_TO_USER: (memberBy, raison) => {
-                return `Vous avez été expulsé du discord Casual Effect par ${memberBy.displayName} pour la raison: ${raison}`;
+                return `Vous avez été expulsé du discord Casual Effect par ${memberBy.displayName} pour la raison suivante: ${raison}`;
+            },
+            USER_KICK_CHECK_SUCCESS: (member) => {
+                return `Le membre **${member.displayName}** à été explusé du serveur avec succès.`;
+            },
+
+            USER_BAN_CHECK_BEFORE: (member) => {
+                return `Êtes vous certain de vouloir bannir **${member.displayName}** du serveur ?`;
             },
             USER_BAN_NOTIFICATION_TO_USER: (memberBy, raison) => {
                 return `Vous avez été banni du discord Casual Effect par ${memberBy.displayName} pour la raison: ${raison}`;
+            },
+            USER_BAN_CHECK_SUCCESS: (member) => {
+                return `Le membre **${member.displayName}** à été banni du serveur avec succès.`;
+            },
+
+            USER_ERROR_NOT_A_MEMBER: (memberDisplayName) => {
+                return `Le membre **${memberDisplayName}** n'est plus sur le serveur.`;
+            },
+            USER_ERROR_NOT_KICKABLE: (memberDisplayName) => {
+                return `Le membre **${memberDisplayName}** ne peut pas être expulsé.`;
+            },
+            USER_ERROR_NOT_BANABLE: (memberDisplayName) => {
+                return `Le membre **${memberDisplayName}** ne peut pas être banni.`;
             },
 
 

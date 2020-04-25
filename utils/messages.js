@@ -44,3 +44,11 @@ module.exports.questionMessage = (question, channel, del = true) => {
         if (del) msgSent.delete(10000);
     });
 };
+
+module.exports.promptMessage = (question, channel, del = true) => {
+    const questMsg = new RichEmbed()
+        .setColor(colors['blueviolet'])
+        .setDescription(`❔ ${question}`);
+
+    return questMsg;
+};
