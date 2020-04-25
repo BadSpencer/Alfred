@@ -5,6 +5,7 @@ const {
     owner, token, prefix
 } = require('./config.js');
 const Enmap = require("enmap");
+const cron = require('cron');
 
 const client = new AkairoClient({
     ownerID: owner,
@@ -42,8 +43,8 @@ client.config = require("./config.js");
 
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
-client.games =  require("./utils/games");
-client.exp =  require("./utils/exp");
+client.games = require("./utils/games");
+client.exp = require("./utils/exp");
 
 require("./utils/core.js")(client);
 require("./utils/logs.js")(client);
@@ -54,7 +55,7 @@ require("./utils/users.js")(client);
 
 
 
-client.textes = new(require(`./utils/textes.js`));
+client.textes = new (require(`./utils/textes.js`));
 
 
 client.db_settings = new Enmap({
@@ -117,5 +118,38 @@ client.commandHandler.resolver.addType('userdata', word => {
 
     return null;
 });
+
+
+let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
+    client.exp.activityCheck(client);
+});
+let serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
+    client.gameServersStatus();
+});
+let serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
+    client.gameServersPostStatusMessage();
+});
+let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
+    client.messageOfTheDay();
+});
+
+let gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
+    client.games.PostRoleReaction(client);
+});
+
+
+
+
+// let ArkDWD = new cron.CronJob('00 05 06 * * *', () => { // Tous les jours à 6h05
+//     client.gameServersArkDWD();
+// });
+
+
+
+activityCheck.start();
+messageOfTheDay.start();
+gameList.start();
+serversStatus.start();
+serversInfos.start();
 
 client.login(token);
