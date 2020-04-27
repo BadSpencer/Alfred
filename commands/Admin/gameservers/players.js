@@ -51,7 +51,12 @@ class ServersCommand extends Command {
     async exec(message, args) {
         let client = this.client;
 
-        let splittedArgs = args.arguments.split(" ");
+
+        let splittedArgs;
+        
+        if (args.arguments !== null) {
+            splittedArgs = args.arguments.split(" ");
+        }
 
 
         switch (args.action) {
