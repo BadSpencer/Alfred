@@ -436,7 +436,9 @@ module.exports = class {
                 return `Le membre **${memberDisplayName}** ne peut pas être banni.`;
             },
 
-
+            USER_ERROR_MEMBERID_NOT_FOUND: (memberID) => {
+                return `Aucun membre trouvé avec l'ID **${memberID}** sur le serveur.`;
+            },
 
 
             USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
@@ -583,12 +585,92 @@ module.exports = class {
                 Ajouté le ${moment(game.createdAt).format('DD.MM.YYYY')}
                 `;
             },
-            GAMES_SERVER_ADD_SUCCESS: (serverID) => {
+
+
+            GAMESERVER_SERVER_ADD_SUCCESS: (serverID) => {
                 return `Le serveur à correctment été ajouté avec l\'id ${serverID}.`;
             },
-            GAMES_SERVER_EDIT_SUCCESS: (serverID) => {
-                return `Le serveur  ${serverID} à correctment modifié.`;
+            GAMESERVER_SERVER_EDIT_SUCCESS: (serverID) => {
+                return `Le serveur  ${serverID} à correctment été modifié.`;
             },
+            GAMESERVER_SERVER_DELETE_SUCCESS: (server) => {
+                return `Le serveur **${server.servername} (${server.id})** à été supprimé avec succès.`;
+            },
+
+            GAMESERVER_ERROR_SERVER_NOT_FOUND: (serverID) => {
+                return `Aucun serveur trouvé avec l'ID **${serverID}**. Lancez la commande \`!servers\` pour obtenir la liste des serveurs disponibles.`;
+            },
+            GAMESERVER_ERROR_PLAYERID_NOT_FOUND: (playerID) => {
+                return `Aucun joueur trouvé avec l'ID **${playerID}**. Lancez la commande \`!players\` pour obtenir la liste des joueurs.`;
+            },
+
+            GAMESERVER_SERVER_DELETE_CHECK_BEFORE: (server) => {
+                return `Êtes-vous certain de vouloir supprimer le server **${server.servername} (${server.id})** de la base de données ?
+                **Attention:** Cette opération ne doit être réalisée que sur un serveur de test. Pensez à désactiver le serveur plutôt.`;
+            },
+
+
+            GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
+                return `Mot de passe: **Pirates**
+                Redémarrage automatique tous les jours à **5h30**
+                Réinitialisation dinos dans **${timeDwD}**`;
+            },
+            GAMESERVER_ARK_MODS: () => {
+                return `**Super Structure** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1999447172)
+                **Awesome Spyglass** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1404697612)
+                **Genesis Grinder** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=2010338386)
+                **Ebenus Astrum** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=916417001)`;
+            },
+            GAMESERVER_ARK_RATES: () => {
+                return `Exp: **2**x
+                Récolte: **3**x
+                Appriv.: **6**x
+                Int. repro: **0.05**x
+                Eclosion: **4**x
+                Maturation: **6**x`;
+            },
+            GAMESERVER_ARK_DWD_SUCCESS: (server) => {
+                return `DestroyWildDinos effectué avec succès sur le serveur **${server.servername}** (${server.id})`;
+            },
+            GAMESERVER_ARK_DWD_ERROR: (server) => {
+                return `Une erreur s'est produite avec la commande DestroyWildDinos sur le serveur **${server.servername}** (${server.id})`;
+            },
+
+            GAMESERVER_ARK_BAN_SUCCESS: (player, server) => {
+                return `Le joueur **${player.steamName}** (${player.id}) à correctement été banni du serveur **${server.servername}** (${server.id})`;
+            },
+            GAMESERVER_ARK_BAN_ERROR: (player, server) => {
+                return `Erreur. Impossible de bannir le joueur **${player.steamName}** (${player.id}) du serveur **${server.servername}** (${server.id})`;
+            },
+            GAMESERVER_ARK_UNBAN_SUCCESS: (player, server) => {
+                return `Le joueur **${player.steamName}** (${player.id}) à correctement été débanni du serveur **${server.servername}** (${server.id})`;
+            },
+            GAMESERVER_ARK_UNBAN_ERROR: (player, server) => {
+                return `Erreur. Impossible de débannir le joueur **${player.steamName}** (${player.id}) du serveur **${server.servername}** (${server.id})`;
+            },
+            GAMESERVER_NEW_PLAYER_DETECTED: (server, playerID, playerName) => {
+                return `Nouveau joueur détecté sur le serveur **${server.servername}** (${server.gamename})
+                
+                Compte Steam: ${playerName}
+                ID Steam: ${playerID}
+                
+                Veuillez relier ce joueur à un membre du serveur:
+                \`!player link ${playerID} <ID discord>\``;
+            },
+            GAMESERVER_PLAYER_OLD_MEMBER_DETECTED: (userdata, gameserversPlayer, server) => {
+                return `Le membre **${userdata.displayName}** est actuellement connecté sur le serveur **${server.servername}**
+                
+                **Ce membre ne fait plus partie du serveur**
+
+                Pour bannir ce joueur des serveurs de jeu, veuillez lancer la commande suivante:
+                \`!player ban ${playerID}\`` 
+            },
+
+            GAMESERVER_PLAYER_LINK_SUCCESS: (gameserversPlayer, member) => {
+                return `Le joueur **${gameserversPlayer.steamName}** (${gameserversPlayer.id}) à correctement été lié au membre **${member.displayName}**` 
+            },
+
+
 
             // EMBED
             EMBED_CREATION_SUCCESS: (titre, id) => {
@@ -742,9 +824,7 @@ module.exports = class {
             LOG_EVENT_USERGAME_CREATED: (member, game) => {
                 return `Création des données de jeu pour ${member.displayName} sur ${game.name}`;
             },
-            MOD_NOTIF_NEW_GAME_ADDED: (member) => {
-                return `✅ Nouveau jeu détecté **${member.presence.game.name}** joué par ${member.displayName} a été ajouté à la base`;
-            },
+
             MOD_NOTIF_USER_JOIN_CONTACT: (member) => {
                 return `⚠️ Membre **${member.displayName}** est dans le salon "contact". Il attend sûrement qu'un admin ou modo aille l'acceuillir !`;
             },

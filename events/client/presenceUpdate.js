@@ -34,8 +34,7 @@ class presenceUpdateListener extends Listener {
         if (newMember.presence.game) {
             let gamePlayed = client.db_games.get(newMember.presence.game.name);
             if (!gamePlayed) {
-                await client.db.gamesCreate(this.client, newMember.presence.game.name);
-                client.modLog(client.textes.get("MOD_NOTIF_NEW_GAME_ADDED", newMember));
+                await client.db.gamesCreate(client, newMember.presence.game.name);
             }
         }
 

@@ -49,6 +49,7 @@ client.exp = require("./utils/exp");
 require("./utils/core.js")(client);
 require("./utils/logs.js")(client);
 require("./utils/jeux.js")(client);
+require("./utils/gameservers.js")(client);
 require("./utils/embeds.js")(client);
 require("./utils/members.js")(client);
 require("./utils/users.js")(client);
@@ -105,7 +106,6 @@ client.commandHandler.resolver.addType('game', word => {
     if (game) {
         return game;
     }
-
     return null;
 });
 client.commandHandler.resolver.addType('userdata', word => {
@@ -115,41 +115,26 @@ client.commandHandler.resolver.addType('userdata', word => {
     if (userdata) {
         return userdata;
     }
-
     return null;
 });
 
 
-let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
+client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
     client.exp.activityCheck(client);
 });
-let serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
+client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
     client.gameServersStatus();
 });
-let serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
+client.cron_serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
     client.gameServersPostStatusMessage();
 });
-let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
+client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
     client.messageOfTheDay();
 });
-
-let gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
+client.cron_gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
     client.games.PostRoleReaction(client);
 });
-
-
-
-
-// let ArkDWD = new cron.CronJob('00 05 06 * * *', () => { // Tous les jours à 6h05
-//     client.gameServersArkDWD();
-// });
-
-
-
-activityCheck.start();
-messageOfTheDay.start();
-gameList.start();
-serversStatus.start();
-serversInfos.start();
-
+client.cron_ArkDWD = new cron.CronJob('00 00 06 * * 5', () => { // Tous les 2 jours à 6h00
+     client.gameServersArkDWD();
+});
 client.login(token);

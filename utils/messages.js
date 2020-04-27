@@ -41,7 +41,7 @@ module.exports.questionMessage = (question, channel, del = true) => {
         .setDescription(`❔ ${question}`);
 
     return channel.send(questMsg).then(msgSent => {
-        if (del) msgSent.delete(10000);
+        if (del) msgSent.delete(30000);
     });
 };
 

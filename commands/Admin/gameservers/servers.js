@@ -1,8 +1,8 @@
 const fs = require('fs');
 const Discord = require("discord.js");
-const {
-    Permissions, MessageAttachment
-} = require('discord.js');
+const moment = require("moment");
+const datamodel = require('../../../utils/datamodel');
+const colors = require('../../../utils/colors');
 const {
     Command
 } = require('discord-akairo');
@@ -12,34 +12,38 @@ const {
 const {
     successMessage,
     errorMessage,
-    warnMessage
+    warnMessage,
+    questionMessage,
+    promptMessage
 } = require('../../../utils/messages');
+
 class ServersCommand extends Command {
     constructor() {
         super('servers', {
-            aliases: ['servers', 'server', 'serv', 's'],
-            category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
+            aliases: ['servers', 'server', 'serv', 'srv', 's'],
+            category: 'Modérations',
             description: {
                 content: 'Gestion serveurs de jeu',
-                usage: '!sadd et laissez vous guider',
+                usage: '\`!servers aide\` pour avoir de l\'aide',
             },
             split: 'quoted',
             args: [
                 {
                     id: "action",
                     type: [
-                        "list",
-                        "score",
-                        "add",
-                        "view",
-                        "create",
-                        "active",
-                        "inactive",
-                        "delete",
-                        "voice",
-                        "statut",
-                        "infos"
+                        'liste', 'list',
+                        'supprimer', 'suppr', 'delete', 'del',
+                        'dwd',
+                        'score',
+                        'add',
+                        'view',
+                        'create',
+                        'active',
+                        'inactive',
+                        'delete',
+                        'voice',
+                        'statut',
+                        'infos'
                     ],
                     default: "list",
                 },
@@ -58,7 +62,12 @@ class ServersCommand extends Command {
 
         switch (args.action) {
             case 'list':
-                client.db.enmapDisplay(client, client.db_gameservers.filter(record => record.id !== "default"), message.channel, ["gamename", "name"]);
+                client.db.enmapDisplay(client, client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
+                break;
+            case 'add':
+                //const command = this.client.commandHandler.modules.get('serveradd');
+                //this.handler.runCommand(message, command, null);
+                //client.commandHandler.runCommand(message, command, null);
                 break;
             case 'view':
                 let server = client.db_gameservers.get(args.arguments);
@@ -68,9 +77,30 @@ class ServersCommand extends Command {
             case 'infos':
                 client.gameServersPostInfoMessages();
                 break;
+            case 'supprimer':
+            case 'suppr':
+            case 'del':
+            case 'delete':
+                await client.gameServersDeleteServer(message, args.arguments);
+                break;
+            case 'active':
+
+                break;
+            case 'inactive':
+
+                break;
+            case 'dwd':
+                let serverID = "";
+                if (args.arguments == "") {
+                    serverID = "all";
+                } else {
+                    serverID = args.arguments;
+                }
+                await client.gameServersArkDWD(serverID, message);
+                break;
         }
 
-        message.delete();
+        if (message.channel.type === 'text') message.delete();
     }
 
 }

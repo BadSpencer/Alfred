@@ -33,40 +33,12 @@ class ReadyListener extends Listener {
         await client.db.textesCheck(client);
 
 
-
-        
-
-        // let activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
-        //     client.exp.activityCheck(client);
-        // });
-        // let serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
-        //     client.gameServersStatus();
-        // });
-        // let serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
-        //     client.gameServersPostStatusMessage();
-        // });
-        // let messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
-        //     client.messageOfTheDay();
-        // });
-
-        // let gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
-        //     client.games.PostRoleReaction(client);
-        // });
-
-        
-
-
-        // let ArkDWD = new cron.CronJob('00 05 06 * * *', () => { // Tous les jours à 6h05
-        //     client.gameServersArkDWD();
-        // });
-  
-
-
-        // activityCheck.start();
-        // messageOfTheDay.start();
-        // gameList.start();
-        // serversStatus.start();
-        // serversInfos.start();
+        if (!client.cron_activityCheck.running) client.cron_activityCheck.start();
+        if (!client.cron_messageOfTheDay.running) client.cron_messageOfTheDay.start();
+        if (!client.cron_gameList.running) client.cron_gameList.start();
+        if (!client.cron_serversStatus.running) client.cron_serversStatus.start();
+        if (!client.cron_serversInfos.running) client.cron_serversInfos.start();
+        if (!client.cron_ArkDWD.running) client.cron_ArkDWD.start();
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
 

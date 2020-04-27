@@ -18,8 +18,7 @@ class ServerAddCommand extends Command {
     constructor() {
         super('serveradd', {
             aliases: ['serveradd', 'sadd'],
-            category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
+            category: 'Modérations',
             description: {
                 content: 'Ajouter un serveur de jeu',
                 usage: '!sadd et laissez vous guider',
@@ -49,17 +48,39 @@ class ServerAddCommand extends Command {
                     }
                 },
                 {
-                    id: "port",
+                    id: "portrcon",
                     type: "number",
                     prompt: {
-                        start: 'Quelle est le port du serveur ?',
+                        start: 'Quelle est le port RCON du serveur ?',
                         retry: 'Veuillez saisir un port valide !'
                     }
                 },
                 {
-                    id: "password",
+                    id: "pwdrcon",
                     prompt: {
-                        start: 'Quelle est le mot de passe du serveur ?',
+                        start: 'Quelle est le mot de passe ADMIN/RCON du serveur ?',
+                        retry: 'Veuillez saisir un mot de passe valide !'
+                    }
+                },
+                {
+                    id: "portftp",
+                    type: "number",
+                    prompt: {
+                        start: 'Quelle est le port FTP du serveur ?',
+                        retry: 'Veuillez saisir un port valide !'
+                    }
+                },
+                {
+                    id: "userftp",
+                    prompt: {
+                        start: 'Quelle est le user FTP du serveur ?',
+                        retry: 'Veuillez saisir un mot de passe valide !'
+                    }
+                },
+                {
+                    id: "pwdftp",
+                    prompt: {
+                        start: 'Quelle est le mot de passe FTP du serveur ?',
                         retry: 'Veuillez saisir un mot de passe valide !'
                     }
                 }
@@ -68,10 +89,8 @@ class ServerAddCommand extends Command {
     }
     async exec(message, args) {
         let client = this.client;
-
-        let serverID = await client.gameAddServer(args.game.name, args.name, args.ip, args.port, args.password);
-        successMessage(client.textes.get("GAMES_SERVER_ADD_SUCCESS", serverID), message.channel);
-        message.delete();
+        await client.gameServersAddServer(message, args.game.name, args.name, args.ip, args.portrcon, args.pwdrcon, args.portftp, args.userftp, args.pwdftp);
+        if (message.channel.type === 'text') message.delete();
     }
 
 }

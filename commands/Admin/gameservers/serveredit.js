@@ -18,8 +18,7 @@ class ServerEditCommand extends Command {
     constructor() {
         super('serveredit', {
             aliases: ['serveredit', 'sedit'],
-            category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
+            category: 'Modérations',
             description: {
                 content: 'Editer un serveur de jeu',
                 usage: '!sadd <id>',
@@ -56,13 +55,19 @@ class ServerEditCommand extends Command {
         if (args.field == "port") {
             server[args.field] = parseInt(args.value);
         } else {
-            server[args.field] = args.value;
+            if (args.field == "isActive") {
+                if (args.field == "true") {
+                    server[args.field] = true;
+                } else {
+                    server[args.field] = false;
+                }
+            } else {
+                server[args.field] = args.value;
+            }
         }
         client.db_gameservers.set(args.id, server);
 
-
-        //let serverID = await client.gameAddServer(args.game.name, args.name, args.ip, args.port, args.password);
-        successMessage(client.textes.get("GAMES_SERVER_EDIT_SUCCESS", args.id), message.channel);
+        successMessage(client.textes.get("GAMESERVER_SERVER_EDIT_SUCCESS", args.id), message.channel);
         message.delete();
     }
 

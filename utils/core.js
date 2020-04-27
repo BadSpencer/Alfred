@@ -377,4 +377,32 @@ module.exports = (client) => {
             .replace("{seconds}", seconds);
         return sentence;
     };
+    client.msToHours = (milliseconds) => {
+        let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
+        let days = roundTowardsZero(milliseconds / 86400000),
+            hours = roundTowardsZero(milliseconds / 3600000) % 24,
+            minutes = roundTowardsZero(milliseconds / 60000) % 60,
+            seconds = roundTowardsZero(milliseconds / 1000) % 60;
+        if (seconds === 0) {
+            seconds++;
+        }
+        let pattern = "";
+        if (days > 0) {
+            pattern += "{days}j ";
+        }
+        if (hours > 0) {
+            pattern += "{hours}h ";
+        };
+        if (minutes > 0) {
+            pattern += "{minutes}m";
+        };
+
+        let sentence = pattern
+            .replace("{duration}", pattern)
+            .replace("{days}", days)
+            .replace("{hours}", hours)
+            .replace("{minutes}", minutes)
+            .replace("{seconds}", seconds);
+        return sentence;
+    };
 }

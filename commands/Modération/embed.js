@@ -18,9 +18,6 @@ class EmbedCommand extends Command {
     constructor() {
         super('embed', {
             aliases: ['embed', 'em'],
-            userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
-            //channelRestriction: 'dm',
-            // define arg properties
             category: 'Modérations',
             args: [{
                 id: "action",
