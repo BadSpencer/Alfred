@@ -458,7 +458,7 @@ module.exports = (client) => {
       let playerName = "";
 
       if (player.memberID !== "") {
-        let userdata = client.db_userdata.get(member.id);
+        let userdata = client.db_userdata.get(player.memberID);
         if (!userdata) {
           if (player.isBanned == false) {
             statusIcon = "⚠️";
