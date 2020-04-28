@@ -450,7 +450,11 @@ module.exports = (client) => {
 
     let dateNow = +new Date();
     let listPlayersArray = [];
-    let players = client.db_gameserversPlayers.fetchEverything();
+    let players = client.db_gameserversPlayers.fetchEverything().array();
+
+    players.sort(function (a, b) {
+      return a.lastSeenAt - b.lastSeenAt;
+    }).reverse();
 
 
     players.forEach(player => {
@@ -489,12 +493,19 @@ module.exports = (client) => {
 
 
 
-
+      let connected = "";
       let ms = dateNow - player.lastSeenAt;
       if (ms < 0) ms = 1000;
       let timeDwD = client.msToHours(ms);
 
-      listPlayersArray.push(`${statusIcon}${playerName}\n⬛️ID:${player.id} (${player.steamName})\n⬛️Connecté il y a **${timeDwD}**\n`);
+
+      if (timeDwD !== "") {
+        connected = `Connecté il y a **${timeDwD}**`;
+      } else {
+        connected = `Connecté`
+      }
+
+      listPlayersArray.push(`${statusIcon}${playerName}\n⬛️ID:${player.id} (${player.steamName})\n⬛️${connected}\n`);
     })
 
     await client.arrayToEmbed(listPlayersArray, 5, "Liste des joueurs", message.channel);
