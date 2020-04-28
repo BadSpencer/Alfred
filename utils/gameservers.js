@@ -327,7 +327,7 @@ module.exports = (client) => {
             let member = await guild.members.get(player[2]);
             fieldDescription += `🔹 ${member.displayName}\n`;
           } else {
-            fieldDescription += `🔺 ${player[0]}\n`;
+            fieldDescription += `🔸 ${player[0]}\n`;
           }
 
         }
