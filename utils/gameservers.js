@@ -479,19 +479,20 @@ module.exports = (client) => {
         }
       } else {
         if (player.isBanned == false) {
-        statusIcon = "🔸";
-        playerName = `**${player.steamName}** (joueur non lié à un membre)`;
+          statusIcon = "🔸";
+          playerName = `**${player.steamName}** (joueur non lié à un membre)`;
         } else {
           statusIcon = "⛔️";
-        playerName = `**${player.steamName}** (joueur non lié à un membre)`;
+          playerName = `**${player.steamName}** (joueur non lié à un membre)`;
         }
       }
 
 
 
 
-
-      let timeDwD = client.msToHours(dateNow - player.lastSeenAt);
+      let ms = dateNow - player.lastSeenAt;
+      if (ms < 0) ms = 1000;
+      let timeDwD = client.msToHours(ms);
 
       listPlayersArray.push(`${statusIcon}${playerName}\n⬛️ID:${player.id} (${player.steamName})\n⬛️Connecté il y a **${timeDwD}**\n`);
     })
