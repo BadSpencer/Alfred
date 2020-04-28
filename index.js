@@ -53,6 +53,7 @@ require("./utils/gameservers.js")(client);
 require("./utils/embeds.js")(client);
 require("./utils/members.js")(client);
 require("./utils/users.js")(client);
+require("./utils/help.js")(client);
 
 
 
