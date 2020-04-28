@@ -444,4 +444,59 @@ module.exports = (client) => {
     gameserversPlayer.isBanned = false;
     await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
   };
+
+  client.gameServersListPlayers = async (message) => {
+    const guild = client.guilds.get(client.config.guildID);
+
+    let dateNow = +new Date();
+    let listPlayersArray = [];
+    let players = client.db_gameserversPlayers.fetchEverything();
+
+
+    players.forEach(player => {
+      let statusIcon = "";
+      let playerName = "";
+
+      if (player.memberID !== "") {
+        let userdata = client.db_userdata.get(member.id);
+        if (!userdata) {
+          if (player.isBanned == false) {
+            statusIcon = "⚠️";
+            playerName = `**${player.steamName}** (membre ${player.memberID} non trouvé)`;
+          } else {
+            statusIcon = "⛔️";
+            playerName = `**${player.steamName}** (membre ${player.memberID} non trouvé)`;
+          }
+
+        } else {
+          if (player.isBanned == false) {
+            statusIcon = "🔹";
+            playerName = `**${userdata.displayName}**`;
+          } else {
+            statusIcon = "⛔️";
+            playerName = `**${userdata.displayName}**`;
+          }
+        }
+      } else {
+        if (player.isBanned == false) {
+        statusIcon = "🔸";
+        playerName = `**${player.steamName}** (joueur non lié à un membre)`;
+        } else {
+          statusIcon = "⛔️";
+        playerName = `**${player.steamName}** (joueur non lié à un membre)`;
+        }
+      }
+
+
+
+
+
+      let timeDwD = client.msToHours(dateNow - player.lastSeenAt);
+
+      listPlayersArray.push(`${statusIcon}${playerName}\n⬛️ID:${player.id} (${player.steamName})\n⬛️Connecté il y a **${timeDwD}**\n`);
+    })
+
+    await client.arrayToEmbed(listPlayersArray, 5, "Liste des joueurs", message.channel);
+
+  };
 }

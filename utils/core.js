@@ -405,4 +405,76 @@ module.exports = (client) => {
             .replace("{seconds}", seconds);
         return sentence;
     };
+
+    client.arrayToEmbed = async (array, recordsByPage = 10, titre, channel) => {
+
+        let postedEmbeds = client.db_postedEmbeds.get("default");
+
+        let nbPages = Math.ceil(array.length / recordsByPage);
+        let pagesArray = [];
+
+        let embeds = [];
+
+
+        for (i = 0; i < nbPages; i++) {
+            let page = i + 1;
+            let pageRecords = await array.slice(i * recordsByPage, (i + 1) * recordsByPage);
+            let description = "";
+            let embed = new Discord.RichEmbed();
+
+            let firstRow = page * recordsByPage - (recordsByPage - 1);
+            let lastRow = page * recordsByPage;
+            if (lastRow > array.length) {
+                lastRow = array.length;
+            };
+
+
+
+
+            embed.setTitle(`${firstRow} - ${lastRow}`);
+            embed.setAuthor(`${titre}`);
+
+            for (var j in pageRecords) {
+                description += `${pageRecords[j]}\n`;
+            }
+            embed.setDescription(description);
+            embed.setFooter(`Page: ${page}/${nbPages}`);
+            embeds.push(embed);
+        };
+
+
+
+
+        let pageCount = 0;
+        embeds.forEach(embed => {
+            pageCount += 1;
+            let firstRow = pageCount * recordsByPage - (recordsByPage - 1);
+            let lastRow = pageCount * recordsByPage;
+            if (lastRow > array.length) {
+                lastRow = array.length;
+            };
+
+            let pagesRecord = {
+                "page": pageCount,
+                "firstRow": firstRow,
+                "lastRow": lastRow,
+                "embed": embed
+            };
+            pagesArray.push(pagesRecord);
+        });
+
+        channel.send(embeds[0]).then(async msgSent => {
+            postedEmbeds.id = msgSent.id;
+            postedEmbeds.channelID = msgSent.channel.id;
+            postedEmbeds.name = `Affichage Array "${titre}"`;
+            postedEmbeds.currentPage = 1;
+            postedEmbeds.totalPages = pagesArray.length;
+            postedEmbeds.pages = pagesArray;
+            client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
+            await msgSent.react(`◀`);
+            await msgSent.react(`▶`);
+        });
+
+
+    };
 }

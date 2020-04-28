@@ -62,7 +62,8 @@ class ServersCommand extends Command {
         switch (args.action) {
             case 'liste':
             case 'list':
-                client.db.enmapDisplay(client, client.db_gameserversPlayers, message.channel, ["steamName", "memberID", "lastSeenDate", "lastSeenTime"]);
+                client.gameServersListPlayers(message);
+                //client.db.enmapDisplay(client, client.db_gameserversPlayers, message.channel, ["steamName", "memberID", "lastSeenDate", "lastSeenTime"]);
                 break;
             case 'link':
                 let playerID = splittedArgs[0];
