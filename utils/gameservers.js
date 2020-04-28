@@ -499,10 +499,10 @@ module.exports = (client) => {
       let timeDwD = client.msToHours(ms);
 
 
-      if (timeDwD !== "") {
+      if (timeDwD !== "" && timeDwD !== "1m") {
         connected = `Connecté il y a **${timeDwD}**`;
       } else {
-        connected = `Connecté`
+        connected = `**Connecté**`
       }
 
       listPlayersArray.push(`${statusIcon}${playerName}\n⬛️ID:${player.id} (${player.steamName})\n⬛️${connected}\n`);
