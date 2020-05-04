@@ -12,9 +12,9 @@ class VocalCommand extends Command {
           id: 'nom'
         }],
       description: {
-        content: 'Permet de recréer le salon vocal "➕ Créer salon"',
+        content: 'Permet de recréer le salon vocal "+ Créer salon"',
         usage: '\`!vocal\`\n' +
-        'C\'est rare, mais il m\'arrive d\'oublier de créer le salon "➕ Créer salon". Cette commande vous permet de me le rappeler! Je viendrais tout de suite le créer.',
+        'C\'est rare, mais il m\'arrive d\'oublier de créer le salon "+ Créer salon". Cette commande vous permet de me le rappeler! Je viendrais tout de suite le créer.',
         examples: ['!vocal', '!salon']
       }
     });
