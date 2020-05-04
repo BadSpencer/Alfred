@@ -191,7 +191,6 @@ module.exports = (client) => {
             }
             case 'title': {
                 embedNew.setTitle(arguments);
-                embed.titre = arguments;
                 break;
             }
             case 'description': {
