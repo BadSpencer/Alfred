@@ -8,7 +8,7 @@ class PingCommand extends Command {
             aliases: ['ping'],
             category: 'Utilitaires',
             description: {
-                content: 'Retourne la ping entre vous, le serveur et l\'API discord',
+                content: 'Retourne le ping entre vous, le serveur et l\'API discord',
                 usage: '\`!ping\`\n' +
                 'Je vous afficherais le temps que j\'ai mis pour répondre à votre commande (ping) ainsi que le temps qu\'il m\'aura fallut pour modifier ma réponse (temps de réponse API Discord).',
                 examples: ['!ping']
