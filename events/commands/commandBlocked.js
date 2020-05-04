@@ -46,7 +46,7 @@ class CommandBlockedListener extends Listener {
         // Log 
         errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
         client.log(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), "warn");
-        if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
 
 
 

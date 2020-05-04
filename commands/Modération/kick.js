@@ -17,7 +17,6 @@ class KickCommand extends Command {
         super('kick', {
             aliases: ['kick'],
             category: 'Modération',
-            description: 'Expulser un membre (peut revenir)',
             args: [
                 {
                     id: 'userdata',
@@ -35,7 +34,12 @@ class KickCommand extends Command {
                         start: message => promptMessage('Pour quelle raison souhaitez vous expulser ce membre ?'),
                     },
                 }
-            ]
+            ],
+            description: {
+                content: 'Expulser un membre (peut revenir)',
+                usage: '',
+                examples: ['']
+              }
         });
     }
 
@@ -64,7 +68,7 @@ class KickCommand extends Command {
         const response = responses.first();
     
         if (response.content == "oui") {
-            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
             if (message.channel.type === 'text') response.delete();
 
             
@@ -74,7 +78,7 @@ class KickCommand extends Command {
             client.serverKickNotification(member, message.member, args.raison);
             successMessage(client.textes.get("USER_KICK_CHECK_SUCCESS", member), message.channel);
         } else {
-            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
             if (message.channel.type === 'text') response.delete();
 
             warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);

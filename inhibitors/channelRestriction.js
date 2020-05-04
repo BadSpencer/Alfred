@@ -11,9 +11,7 @@ class ChannelRestriction extends Inhibitor {
 exec(message, command) {
         let client = this.client;
 
-        // Ne pas bloquer le propriétaire du serveur
         if (message.channel.type == 'dm') return false;
-        //if (message.author.id == message.guild.ownerID) return false;
 
         if (message.channel.name === message.settings.modNotifChannel) return false;
         if (message.channel.name === message.settings.commandsChannel) return false;

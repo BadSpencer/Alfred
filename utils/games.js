@@ -22,7 +22,7 @@ exports.removeRoleReaction = async (client) => {
 
     if (settings.gameJoinMessage !== "") {
         gameJoinMessage = await gameJoinChannel.fetchMessage(settings.gameJoinMessage).then(message => {
-            message.delete();
+            if (message.channel.type === 'text') message.delete();;
             settings.gameJoinMessage == "";
             client.log(client.textes.get("GAMES_LIST_SUCCESS_DELETED"));
         }).catch(err => {
@@ -93,7 +93,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
                 await msgSent.react(game.emoji);
             }
         });
-        client.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"), "debug")
+        client.log(client.textes.get("GAMES_LIST_SUCCESS_CREATED"), "warn")
     } else {
         gameJoinMessage.edit(embed).then(async msgSent => {
             if (clearReact) {
@@ -103,7 +103,7 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
                 }
             }
         });
-        client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"), "debug")
+        client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
     }
 
 };

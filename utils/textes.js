@@ -295,6 +295,17 @@ module.exports = class {
                 `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`,
                 `Si le salon "+ Créer salon" est absent ou inacessible, il vous suffit de lancer la commande **!vocal** pour en créer un autre`
             ],
+
+            COM_USERS_INITMESSLOGS_RESULT: (messageCount) => {
+                return `${messageCount} messages loggués dans la base`;
+            },
+
+
+
+
+
+
+
             MOTD_TITRE: "Bonne journée à tous sur Casual Effect",
             MOTD_BONJOUR: [
                 "Bonjour à tous, je vous souhaites une bonne journée.",
@@ -854,7 +865,20 @@ module.exports = class {
             },
             MOD_NOTIF_MEMBER_QUIT_GAME: (member, game) => {
                 return `⚠️ **${member.displayName}** à quitté le groupe du jeu ${game.name}`;
-            }
+            },
+            AIDE_EMBED_TITLE_1: `Casual Effect: Aide en ligne`,
+            AIDE_EMBED_DESCRIPTION_1: `Ce livret d'aide apporte des informations sur les commandes que je peux exécuter.
+
+            Les commandes peuvent être envoyées par message privé (ci-dessous) ou bien dans le salon <#562683604690534400>. Je vous conseille de mettre ce salon en "muet" pour ne pas être notifié à chaque fois qu'une commande est lancée.
+
+            Pour avoir une aide détaillée sur une commande, lancez: \`!aide <commande>\` par exemple \`!aide aide\` affichera une aide détaillée sur la commande "aide".
+            
+            Les prochaines pages présentent les commandes disponibles. Elles sont classées par catégories, une catégorie par page.
+            Utilisez les réactions ◀️ et ▶️ pour naviguer entre les pages.
+            
+            **Sommaire:**
+            **1**: Accueil *(cette page)*
+            `,
         }
     }
 

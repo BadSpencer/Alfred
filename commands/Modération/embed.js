@@ -18,7 +18,7 @@ class EmbedCommand extends Command {
     constructor() {
         super('embed', {
             aliases: ['embed', 'em'],
-            category: 'Modérations',
+            category: 'Modération',
             args: [{
                 id: "action",
                 type: [
@@ -40,6 +40,7 @@ class EmbedCommand extends Command {
                     "copier", "copy",
                     "afficher", "aff", "view",
                     "supprimer", "suppr", "del",
+                    "delforce",
                     "notitle", "titleoff",
                     "titleon",
                     "nofooter", "footeroff",
@@ -54,7 +55,12 @@ class EmbedCommand extends Command {
                 match: "rest",
                 default: null,
             },
-            ]
+            ],
+            description: {
+                content: 'Gestion des messages de type "Embed"',
+                usage: '',
+                examples: ['']
+            }
         });
     }
 
@@ -114,6 +120,10 @@ class EmbedCommand extends Command {
             case 'supprimer':
             case 'suppr':
             case 'del':
+
+                break;
+            case 'delforce':
+                client.db_embeds.delete(args.arguments);
 
                 break;
             case "titre":
@@ -264,7 +274,7 @@ class EmbedCommand extends Command {
                 break;
             }
         }
-        if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
     }
 }
 

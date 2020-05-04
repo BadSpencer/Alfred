@@ -36,7 +36,7 @@ class MessageReactionRemoveListener extends Listener {
         let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
         if (postedEmbed) {
             switch (messageReaction.emoji.name) {
-                case '▶': {
+                case '▶️': {
                     let totalPages = postedEmbed.pages.length;
                     let indexNewPage = postedEmbed.currentPage;
                     if (indexNewPage == totalPages) return;
@@ -47,7 +47,7 @@ class MessageReactionRemoveListener extends Listener {
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;
                 }
-                case '◀': {
+                case '◀️': {
                     let totalPages = postedEmbed.pages.length;
                     if (postedEmbed.currentPage == 1) return;
                     let indexNewPage = postedEmbed.currentPage - 2;

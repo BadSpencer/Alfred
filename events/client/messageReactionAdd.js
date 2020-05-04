@@ -41,24 +41,41 @@ class MessageReactionAddListener extends Listener {
         let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
         if (postedEmbed) {
             switch (messageReaction.emoji.name) {
-                case '▶': {
+                case '▶️': {
                     let totalPages = postedEmbed.pages.length;
                     let indexNewPage = postedEmbed.currentPage;
                     if (indexNewPage == totalPages) return;
 
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
-                    messageReaction.message.edit(newEmbed);
+                    await messageReaction.message.edit(newEmbed);
+                    // await messageReaction.message.clearReactions();
+
                     postedEmbed.currentPage = indexNewPage + 1;
+                    // if (postedEmbed.currentPage !== totalPages) {
+                    //     await messageReaction.message.react(`◀️`);
+                    //     await messageReaction.message.react(`▶️`);
+                    // } else {
+                    //     await messageReaction.message.react(`◀️`);
+                    //     await messageReaction.message.react(`⏹`);
+                    // }
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;
                 }
-                case '◀': {
+                case '◀️': {
                     let totalPages = postedEmbed.pages.length;
                     if (postedEmbed.currentPage == 1) return;
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
-                    messageReaction.message.edit(newEmbed);
+                    await messageReaction.message.edit(newEmbed);
+                    // await messageReaction.message.clearReactions();
                     postedEmbed.currentPage = indexNewPage + 1;
+                    // if (postedEmbed.currentPage !== 1) {
+                    //     await messageReaction.message.react(`◀️`);
+                    //     await messageReaction.message.react(`▶️`);
+                    // } else {
+                    //     await messageReaction.message.react(`⏹`);
+                    //     await messageReaction.message.react(`▶️`);
+                    // }
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;
                 }

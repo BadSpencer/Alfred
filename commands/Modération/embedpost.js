@@ -25,7 +25,12 @@ class EmbedPostCommand extends Command {
                     start: `Quel est l'ID de l'embed à poster ?`,
                     retry: `Hmmm, je m'attendais à un nombre...`
                 }
-            }, ]
+            }, ],
+            description: {
+                content: 'Poster un "Embed" dans n\'importe quel salon',
+                usage: '',
+                examples: ['']
+              }
         });
     }
 
@@ -34,7 +39,7 @@ class EmbedPostCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        message.delete();
+        if (message.channel.type === 'text') message.delete();;
         await client.embedShow(args.embedID, message);
     }
 }

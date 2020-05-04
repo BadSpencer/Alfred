@@ -5,12 +5,18 @@ const {
 class VocalCommand extends Command {
   constructor() {
     super('vocal', {
-      aliases: ['vocal', 'salon', 'ce', 'edl', 'fj'],
+      aliases: ['vocal', 'salon'],
       category: 'Vocales',
       args: [
         {
           id: 'nom'
-        }]
+        }],
+      description: {
+        content: 'Permet de recréer le salon vocal "➕ Créer salon"',
+        usage: '\`!vocal\`\n' +
+        'C\'est rare, mais il m\'arrive d\'oublier de créer le salon "➕ Créer salon". Cette commande vous permet de me le rappeler! Je viendrais tout de suite le créer.',
+        examples: ['!vocal', '!salon']
+      }
     });
   }
 
@@ -28,12 +34,12 @@ class VocalCommand extends Command {
       channelName = "🥶Tribu des Fjords";
     };
 
-    if(args.nom) channelName = args.nom;
+    if (args.nom) channelName = args.nom;
 
 
     await client.createVoiceChannel(channelName);
 
-    message.delete();
+    if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
   }
 
 };

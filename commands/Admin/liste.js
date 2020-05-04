@@ -6,7 +6,8 @@ class ListeCommand extends Command {
     constructor() {
         super('liste', {
             aliases: ['liste', 'list', 'ls'],
-            category: 'Jeux',
+            enabled: false,
+            category: 'Admin',
         });
     }
 
@@ -14,7 +15,7 @@ class ListeCommand extends Command {
         let client = this.client;
         client.games.PostRoleReaction(client, true);
 
-        message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;;
     }
 }
 

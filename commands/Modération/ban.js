@@ -17,7 +17,6 @@ class BanCommand extends Command {
         super('ban', {
             aliases: ['ban'],
             category: 'Modération',
-            description: 'Bannir un membre (ne peut plus revenir)',
             args: [
                 {
                     id: 'userdata',
@@ -35,7 +34,12 @@ class BanCommand extends Command {
                         start: message => promptMessage('Pour quelle raison souhaitez vous bannir ce membre ?'),
                     },
                 }
-            ]
+            ],
+            description: {
+                content: 'Bannir un membre (ne peut plus revenir)',
+                usage: '',
+                examples: ['']
+              }
         });
     }
 
@@ -61,7 +65,7 @@ class BanCommand extends Command {
         const response = responses.first();
     
         if (response.content == "oui") {
-            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
             if (message.channel.type === 'text') response.delete();
 
             
@@ -71,7 +75,7 @@ class BanCommand extends Command {
             client.serverBanNotification(amember, message.member, args.raison);
             successMessage(client.textes.get("USER_BAN_CHECK_SUCCESS", member), message.channel);
         } else {
-            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
             if (message.channel.type === 'text') response.delete();
 
             warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);

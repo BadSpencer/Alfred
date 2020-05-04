@@ -21,7 +21,7 @@ class ServersCommand extends Command {
     constructor() {
         super('players', {
             aliases: ['players', 'player', 'p'],
-            category: 'Modérations',
+            category: 'Modération',
             description: {
                 content: 'Gestion serveurs de jeu',
                 usage: '\`!servers aide\` pour avoir de l\'aide',
@@ -45,7 +45,12 @@ class ServersCommand extends Command {
                     match: "rest",
                     default: null,
                 }
-            ]
+            ],
+            description: {
+                content: 'Gestion des joueurs (serveurs privés)',
+                usage: '',
+                examples: ['']
+              }
         });
     }
     async exec(message, args) {
@@ -95,7 +100,7 @@ class ServersCommand extends Command {
                 break;
         }
 
-        if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
     }
 
 }

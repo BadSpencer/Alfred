@@ -18,11 +18,12 @@ class ServerEditCommand extends Command {
     constructor() {
         super('serveredit', {
             aliases: ['serveredit', 'sedit'],
-            category: 'Modérations',
+            category: 'Modération',
             description: {
                 content: 'Editer un serveur de jeu',
-                usage: '!sadd <id>',
-            },
+                usage: '',
+                examples: ['']
+              },
             split: 'quoted',
             args: [
                 {
@@ -68,7 +69,7 @@ class ServerEditCommand extends Command {
         client.db_gameservers.set(args.id, server);
 
         successMessage(client.textes.get("GAMESERVER_SERVER_EDIT_SUCCESS", args.id), message.channel);
-        message.delete();
+        if (message.channel.type === 'text') message.delete();;
     }
 
 }

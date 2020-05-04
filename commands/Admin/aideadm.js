@@ -78,7 +78,7 @@ class AideAdmCommand extends Command {
                 true,
             );
 
-        message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;;
         return message.util.send(embed);
 
     }

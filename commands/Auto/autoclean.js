@@ -31,7 +31,7 @@ class AutoCleanCommand extends Command {
     exec(message) {
         let client = this.client;
 
-        message.delete();
+        if (message.channel.type === 'text') message.delete();;
 
     }
 

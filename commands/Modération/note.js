@@ -34,7 +34,12 @@ class NoteCommand extends Command {
                         start: message => promptMessage('Quelle est votre note ?'),
                     },
                 }
-            ]
+            ],
+            description: {
+                content: 'Ajouter une note sur un membre',
+                usage: '',
+                examples: ['']
+              }
         });
     }
 

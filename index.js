@@ -44,7 +44,6 @@ client.config = require("./config.js");
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
 client.games = require("./utils/games");
-client.exp = require("./utils/exp");
 
 require("./utils/core.js")(client);
 require("./utils/logs.js")(client);
@@ -53,7 +52,8 @@ require("./utils/gameservers.js")(client);
 require("./utils/embeds.js")(client);
 require("./utils/members.js")(client);
 require("./utils/users.js")(client);
-require("./utils/help.js")(client);
+require("./utils/aide.js")(client);
+require("./utils/exp.js")(client);
 
 
 
@@ -99,6 +99,10 @@ client.db_messageslogs = new Enmap({
     name: "messageslogs"
 });
 
+client.db_commandsLogs = new Enmap({
+    name: "commandsLogs"
+});
+
 client.build();
 client.commandHandler.resolver.addType('game', word => {
     if (!word) return null;
@@ -121,7 +125,7 @@ client.commandHandler.resolver.addType('userdata', word => {
 
 
 client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
-    client.exp.activityCheck(client);
+    client.activityCheck();
 });
 client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
     client.gameServersStatus();

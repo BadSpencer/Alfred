@@ -18,11 +18,12 @@ class ServerAddCommand extends Command {
     constructor() {
         super('serveradd', {
             aliases: ['serveradd', 'sadd'],
-            category: 'Modérations',
+            category: 'Modération',
             description: {
                 content: 'Ajouter un serveur de jeu',
-                usage: '!sadd et laissez vous guider',
-            },
+                usage: '',
+                examples: ['']
+              },
             split: 'quoted',
             args: [
                 {
@@ -90,7 +91,7 @@ class ServerAddCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         await client.gameServersAddServer(message, args.game.name, args.name, args.ip, args.portrcon, args.pwdrcon, args.portftp, args.userftp, args.pwdftp);
-        if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
     }
 
 }

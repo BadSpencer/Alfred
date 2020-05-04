@@ -618,7 +618,7 @@ class GamesCommand extends Command {
             }
         }
 
-        message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;;
     }
 
 }

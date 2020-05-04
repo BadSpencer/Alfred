@@ -64,7 +64,7 @@ class dbSettingsCommand extends Command {
 
         }
         
-        message.delete();
+        if (message.channel.type === 'text') message.delete();;
     }
 
 }

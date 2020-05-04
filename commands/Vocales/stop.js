@@ -7,6 +7,12 @@ class StopCommand extends Command {
     super('stop', {
       aliases: ['stop'],
       category: 'Vocales',
+      description: {
+        content: 'Arrête la lecture en cours',
+        usage: '\`!stop\`\n' +
+        'La musique qui passe actuellement dans votre salon vous casse les oreilles ? Lancez cette commande et j\'arrêterais tout !',
+        examples: ['!stop']
+      }
     });
   }
 
@@ -25,7 +31,7 @@ class StopCommand extends Command {
         })
         .catch(console.log);
     }
-    message.delete();
+    if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
   }
 }
 

@@ -21,6 +21,11 @@ class usersCommand extends Command {
                 type: 'text',
                 default: 'userboard'
             }],
+            description: {
+                content: 'Gestion des utilisateurs',
+                usage: '',
+                examples: ['']
+              }
         });
     }
 
@@ -40,7 +45,6 @@ class usersCommand extends Command {
                 }
                 break;
             case 'top':
-
                 break;
             case 'initxp':
                 for (const userdata of userdatas) {
@@ -62,20 +66,25 @@ class usersCommand extends Command {
                 }
                 break;
             case 'initmesslogs':
+                client.log(`Réinitialisation des logs des messages`);
+                await client.db_messageslogs.deleteAll()
+                client.log(`Table des logs des messages vidée`, "debug");
                 let textChannels = guild.channels.filter(record => record.type == "text");
+                let messageCountTotal = 0;
 
                 for (const channel of textChannels) {
-                    //client.log(`Récupération des messages de ${channel[1].name}`, "debug");
-                    let messagesLogs = datamodel.tables.messagesLogs;
-
+                    
                     let channelMessages = await client.channelGetAllMessages(channel[1].id);
+                    let messageCount = 0;
                     for (const mess of channelMessages) {
-                        client.messageLog(mess[1]);
+                        let messageLoggued = await client.messageLog(mess[1]);
+                        if (messageLoggued) messageCount += 1;
                     };
-
-                    client.log(`${channelMessages.length} messages récupérés dans ${channel[1].name}`, "debug");
+                    messageCountTotal += messageCount;
+                    client.log(`${messageCount} sur ${channelMessages.length} messages récupérés dans ${channel[1].name}`, "debug");
                 }
-
+                client.log(client.textes.get("COM_USERS_INITMESSLOGS_RESULT", messageCountTotal));
+                successMessage(client.textes.get("COM_USERS_INITMESSLOGS_RESULT", messageCountTotal), message.channel);
         }
         if (message.channel.type === 'text') message.delete();
     }

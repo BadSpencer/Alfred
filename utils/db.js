@@ -114,11 +114,10 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
         usergame.xp += xpAmount;
         client.db.userxplogAdd(client, member, "GAMEXP", xpAmount, "Joue", member.presence.game.name);
         usergame.lastPlayed = +new Date;
-        let newLevel = await client.exp.xpGetLevel(usergame.xp);
+        let newLevel = await client.xpGetLevel(usergame.xp);
         if (newLevel > usergame.level) {
             usergame.level = newLevel;
             client.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
-            //client.exp.userLevelUp(client, member, newLevel);
         };
         client.db_usergame.set(`${member.presence.game.name}-${member.id}`, usergame);
     }
@@ -134,10 +133,10 @@ exports.userdataAddXP = async (client, member, xpAmount, reason) => {
                 userdata.xp += xpAmount;
                 client.db.userxplogAdd(client, member, "XP", xpAmount, reason);
                 client.log(client.textes.get("EXP_LOG_ADDXP", member, xpAmount, reason), "debug");
-                let newLevel = await client.exp.xpGetLevel(userdata.xp);
+                let newLevel = await client.xpGetLevel(userdata.xp);
                 if (newLevel > userdata.level) {
                     userdata.level = newLevel;
-                    client.exp.userLevelUp(client, member, newLevel);
+                    client.userLevelUp(member, newLevel);
                 };
                 client.db_userdata.set(member.id, userdata);
             }
@@ -283,8 +282,8 @@ exports.enmapDisplay = async (client, enmap, channel, fieldlist = []) => {
         postedEmbeds.totalPages = pagesArray.length;
         postedEmbeds.pages = pagesArray;
         client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
-        await msgSent.react(`◀`);
-        await msgSent.react(`▶`);
+        await msgSent.react(`◀️`);
+        await msgSent.react(`▶️`);
     });
 
 

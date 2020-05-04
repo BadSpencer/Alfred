@@ -21,7 +21,7 @@ class ServersCommand extends Command {
     constructor() {
         super('servers', {
             aliases: ['servers', 'server', 'serv', 'srv', 's'],
-            category: 'Modérations',
+            category: 'Modération',
             description: {
                 content: 'Gestion serveurs de jeu',
                 usage: '\`!servers aide\` pour avoir de l\'aide',
@@ -53,7 +53,12 @@ class ServersCommand extends Command {
                     match: "rest",
                     default: null,
                 }
-            ]
+            ],
+            description: {
+                content: 'Gestion des serveurs de jeu',
+                usage: '',
+                examples: ['']
+            }
         });
     }
     async exec(message, args) {
@@ -61,6 +66,7 @@ class ServersCommand extends Command {
 
 
         switch (args.action) {
+            case 'liste':
             case 'list':
                 client.db.enmapDisplay(client, client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
                 break;
@@ -100,7 +106,7 @@ class ServersCommand extends Command {
                 break;
         }
 
-        if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
     }
 
 }

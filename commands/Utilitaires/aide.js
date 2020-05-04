@@ -20,81 +20,144 @@ class AideCommand extends Command {
         super('aide', {
             aliases: ['aide', 'help', 'h'],
             category: 'Utilitaires',
-            clientPermissions: ['EMBED_LINKS'],
             args: [{
                 id: 'command',
                 type: 'commandAlias',
                 prompt: {
-                    start: 'Which command do you need help with?',
-                    retry: 'Please provide a valid command.',
+                    start: 'Pour quelle commande souhaitez vous de l\'aide ?',
+                    retry: 'Veuillez spécifier une commande valide.',
                     optional: true
                 },
                 match: 'rest'
             }],
             description: {
-                content: 'Affiche l\'aide',
-                usage: '[commande]',
-                examples: ['', 'play', 'sugg']
+                content: 'Affiche ce message d\'aide et une aide détaillée pour chaque commande',
+                usage: '\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel\n' +
+                'Lancée sans paramètre, j\'afficherai ce menu d\'aide\n' +
+                'Si vous spécifiez une commande ou bien un de ses alias, alors je vous afficherais une aide plus détaillée sur cette commande',
+                examples: ['!aide', '!help tirage','!h sug']
             }
         });
     }
 
-    exec(message, { command }) {
+    async exec(message, { command }) {
+        let client = this.client;
+        const guild = client.guilds.get(client.config.guildID);
+
+        let member = guild.members.get(message.author.id);
+
+        //const roleEve = guild.roles.find(r => { return r.name == "@everyone" });
+        //const roleMem = guild.roles.find(r => { return r.name == message.settings.memberRole });
+        const roleMod = guild.roles.find(r => { return r.name == message.settings.modRole });
+        const roleAdm = guild.roles.find(r => { return r.name == message.settings.adminRole });
+
+        let ignoredCategories = [];
+        ignoredCategories.push("Auto");
+        // if (!member.roles.has(roleMod.id) && !member.roles.has(roleAdm.id)) {
+            ignoredCategories.push("Admin");
+            ignoredCategories.push("Modération");
+        // }
+
+
+
+
         if (!command) {
+            let postedEmbeds = client.db_postedEmbeds.get("default");
+            let embeds = [];
+            let pagesArray = [];
 
-            const embed = new RichEmbed();
+            const nbFixedPages = 1;
+
+            let postDescriptionAccueil = "";
+
+
+
+            let totalPages = nbFixedPages; // Nombre de pages fixes avant les pages de catégories de commandes
             this.handler.categories.forEach((cm, category) => {
-                const dirSize = cm.filter(cmd => cmd.category === cm);
-                let mappedOut = cm.map(x => `\`${x}\``).join(', ')
-                if (category === 'Owner' && !this.client.ownerID.includes(message.author.id)
-                    ||
-                    category === 'Moderation' && !message.member.permissions.has('MANAGE_MESSAGES')
-                ) mappedOut = '`No commands available..`'
+                if (!ignoredCategories.includes(category)) {
+                    totalPages += 1;
+                    postDescriptionAccueil += `**${totalPages}**: ${category}\n`
+                }
+            });
 
-                embed.addField(`${dirSize.size} | **${category} Commands**`, mappedOut)
-                    .setColor(colors['darkorange'])
-                    .setAuthor(`Help Menu | ${message.guild.name}`, message.guild.iconURL)
+            embeds.push(new RichEmbed(await client.aideGetAideEmbedPage(1, totalPages, null, postDescriptionAccueil)));
+
+
+            let pageIndex = nbFixedPages; // Nombre de pages fixes avant les pages de catégories de commandes
+            this.handler.categories.forEach((cm, category) => {
+                if (!ignoredCategories.includes(category)) {
+                    const embed = new RichEmbed();
+                    let description = "";
+                    pageIndex += 1;
+
+                    const commands = cm.filter(cmd => cmd.category === cm && cmd.description.content !== undefined);
+
+                    if (commands.size > 0) {
+
+                        commands.forEach(function (cmd) {
+                            // embed.addField(`**\`!${cmd}\`**`, cmd.description.content, true);
+                            description += `**!${cmd}**\n${cmd.description.content}\n\n`;
+                        });
+                        embed.setTitle(`${category}`);
+                        embed.setColor(colors['darkgreen']);
+                        embed.setDescription(description);
+                        embed.setFooter(`Page: ${pageIndex}/${totalPages}`);
+
+                        embeds.push(embed);
+                    }
+
+                }
 
             });
-            /*
-            const embed = new RichEmbed()
-                .setColor(3447003)
-                .addField('❯ Commandes', `Liste des commandes disponibles.
-                Pour plus d'informations sur une commande, lancez \`!aide <commande>\`
-            `);
 
-            for (const category of this.handler.categories.values()) {
+            let pageCount = 0;
+            embeds.forEach(embed => {
+                pageCount += 1;
+                let firstRow = 0;
+                let lastRow = 0;
 
-                let commands = category.filter(cmd => cmd.userPermissions == undefined)
-                if (commands.size == 0) continue;
+                let pagesRecord = {
+                    "page": pageCount,
+                    "firstRow": firstRow,
+                    "lastRow": lastRow,
+                    "embed": embed
+                };
+                pagesArray.push(pagesRecord);
+            });
 
-                embed.addField(
-                    `❯ ${category.id.replace(/(\b\w)/gi, lc => lc.toUpperCase())}`,
-                    `${category
-                        .filter(cmd => cmd.aliases.length > 0)
-                        .map(cmd => `\`${cmd.aliases[0]}\``)
-                        .join('\n')}`,
-                    true);
-            }
-    */
-            return message.util.send(embed);
+            if (message.channel.type === 'text') message.delete();
+
+            return message.author.send(embeds[0]).then(async msgSent => {
+                postedEmbeds.id = msgSent.id;
+                postedEmbeds.channelID = msgSent.channel.id;
+                postedEmbeds.name = `Aide`;
+                postedEmbeds.currentPage = 1;
+                postedEmbeds.totalPages = pagesArray.length;
+                postedEmbeds.pages = pagesArray;
+                client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
+                await msgSent.react(`◀️`);
+                await msgSent.react(`▶️`);
+            });
 
         }
 
-        const embed = new RichEmbed()
-            .setColor(3447003)
-            .setTitle(`\`${command.aliases[0]} ${command.description.usage || ''}\``)
-            .addField('❯ Description', command.description.content || '\u200b');
+        const embed = new RichEmbed();
+        let description = "";
+        embed.setColor(colors.darkgreen);
+        embed.setTitle(`Aide sur la commande: **${command.aliases[0]}**`);
+        embed.setDescription(description)
+        embed.addField('Description', command.description.content || '\u200b');
+        embed.addField('Utilisation', command.description.usage || '\u200b');
 
-        if (command.aliases.length > 1) embed.addField('❯ Aliases', `\`${command.aliases.join('` `')}\``, true);
+        if (command.aliases.length > 1) embed.addField('Aliases', `\n\`${command.aliases.join('` `')}\``, true);
         if (command.description.examples.length)
             embed.addField(
-                '❯ Examples',
-                `\`${command.aliases[0]} ${command.description.examples.join(`\`\n\`${command.aliases[0]} `)}\``,
-                true,
+                'Exemples',
+                `\`${command.description.examples.join(`\`\n\``)}\``,
+                false,
             );
 
-        message.delete();
+        if (message.channel.type === 'text') message.delete();
         return message.util.send(embed);
     }
 

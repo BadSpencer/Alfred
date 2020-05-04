@@ -235,6 +235,11 @@ module.exports = (client) => {
     };
 
     client.messageLog = async (message) => {
+
+
+        if (message.author.bot) return false;
+        if (message.content.startsWith("!")) return false;
+
         let messagesLogs = datamodel.tables.messagesLogs;
         messagesLogs.messageID = message.id;
         messagesLogs.channelID = message.channel.id;
@@ -244,6 +249,24 @@ module.exports = (client) => {
         messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
         messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
         client.db_messageslogs.set(message.id, messagesLogs);
+        return true;
+    };
+
+    client.commandLog = async (message, command) => {
+
+        let commandsLogs = datamodel.tables.commandsLogs;
+        commandsLogs.messageID = message.id;
+        commandsLogs.command = command.id;
+        commandsLogs.channelID = message.channel.id;
+        commandsLogs.channelType = message.channel.type;
+        commandsLogs.createdBy = message.author.id;
+        commandsLogs.createdByName = message.author.username;
+        commandsLogs.createdAt = message.createdTimestamp;
+        commandsLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
+        commandsLogs.createdTime = moment(message.createdAt).format('HH:mm');
+        commandsLogs.content = message.content;
+        client.db_commandsLogs.set(message.id, commandsLogs);
+
     };
 
     client.channelGetAllMessages = async (channelID) => {
@@ -471,8 +494,9 @@ module.exports = (client) => {
             postedEmbeds.totalPages = pagesArray.length;
             postedEmbeds.pages = pagesArray;
             client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
-            await msgSent.react(`◀`);
-            await msgSent.react(`▶`);
+            await msgSent.react(`◀️`);
+            await msgSent.react(`▶️`);
+   
         });
 
 

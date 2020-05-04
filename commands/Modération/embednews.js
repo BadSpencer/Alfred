@@ -26,7 +26,12 @@ class EmbedNewsCommand extends Command {
                     start: `Quel est l'ID de l'embed à postercomme news ?`,
                     retry: `Hmmm, je m'attendais à un nombre...`
                 }
-            }, ]
+            }, ],
+            description: {
+                content: 'Poster un "Embed" en tant que news',
+                usage: '',
+                examples: ['']
+              }
         });
     }
 
@@ -37,7 +42,7 @@ class EmbedNewsCommand extends Command {
         let newsChannel = guild.channels.find(c => c.name === settings.newsChannel);
         let generalChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
     
-        message.delete();
+        if (message.channel.type === 'text') message.delete();;
         let news = await client.embedShowChannel(args.embedID, newsChannel, true);
     }
 }

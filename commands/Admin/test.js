@@ -20,7 +20,7 @@ class TestCommand extends Command {
 
         client.messageOfTheDay();
 
-        message.delete();
+        if (message.channel.type === 'text') message.delete();;
     }
 }
 

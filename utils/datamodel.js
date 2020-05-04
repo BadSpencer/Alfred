@@ -174,5 +174,17 @@ exports.tables = {
         "createdAt": "",
         "createdDate": "",
         "createdTime": ""
+    },
+    commandsLogs: {
+        "messageID": "",
+        "command": "",
+        "channelID": "",
+        "channelType": "",
+        "createdBy": "",
+        "createdByName": "",
+        "createdAt": "",
+        "createdDate": "",
+        "createdTime": "",
+        "content": ""
     }
 }

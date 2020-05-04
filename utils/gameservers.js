@@ -366,15 +366,20 @@ module.exports = (client) => {
       if (game.serversStatusMessageID) {
         await gameInfosChannel.fetchMessage(game.serversStatusMessageID).then(message => {
           gameServerStatusMessage = message;
-        });
+        }).catch(error => {
+          gameServerStatusMessage = undefined;
+          client.log(`Message statut serveurs "${game.name}" non trouvé dans ${gameInfosChannel.name}`, "warn");
+      });
       }
 
-      if (gameServerStatusMessage) {
+      if (gameServerStatusMessage !== undefined) {
         gameServerStatusMessage.edit(embed);
+        client.log(`Message statut serveurs "${game.name}" mis à jour`);
       } else {
         let message = await gameInfosChannel.send(embed);
         game["serversStatusMessageID"] = message.id;
         client.db_games.set(game.name, game);
+        client.log(`Message statut serveurs "${game.name}" créé`, 'warn');
       }
 
     }

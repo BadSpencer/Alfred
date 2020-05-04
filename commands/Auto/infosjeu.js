@@ -7,7 +7,7 @@ const Discord = require("discord.js");
 class InfosJeuCommand extends Command {
     constructor() {
         super('infojeu', {
-            category: 'Jeux',
+            category: 'Auto',
         });
     }
     condition(message) {
@@ -49,7 +49,7 @@ class InfosJeuCommand extends Command {
                 }
             }
 
-            message.delete();
+            if (message.channel.type === 'text') message.delete();;
             message.util.send(embed).then(msgSent => {
                 msgSent.delete(60000); // Suppression au bout de 1 minute
             });

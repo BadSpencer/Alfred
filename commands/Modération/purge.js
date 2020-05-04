@@ -21,7 +21,7 @@ class PurgeCommand extends Command {
             description: {
                 usage: 'purge [ nombre ]',
                 examples: ['purge 2', 'purge 100'],
-                description: 'Supprime un certain nombre de message dans un salon.'
+                description: 'Supprime un certain nombre de messages dans un salon.'
             },
             cooldown: 6000,
             ratelimit: 2
