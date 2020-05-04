@@ -141,7 +141,7 @@ module.exports = (client) => {
         let embed = client.db_embeds.get(embedID);
 
         if (embed) {
-            let member = guild.members.get(embed.auteur);
+            let member = guild.members.get(embed.ownedBy);
             let Embed = new Discord.RichEmbed(embed.content);
             if (news) {
                 if (member) {
