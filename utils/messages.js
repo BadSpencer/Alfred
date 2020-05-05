@@ -6,7 +6,7 @@ const {
     client
 } = require('discord-akairo');
 
-module.exports.errorMessage = (error, channel, del = true) => {
+module.exports.errorMessage = async (error, channel, del = true) => {
     const errorMsg = new RichEmbed()
         .setColor(colors['red'])
         .setDescription(`❌ ${error}`);
@@ -16,7 +16,7 @@ module.exports.errorMessage = (error, channel, del = true) => {
     });
 };
 
-module.exports.warnMessage = (warning, channel, del = true) => {
+module.exports.warnMessage = async (warning, channel, del = true) => {
     const warnMsg = new RichEmbed()
         .setColor(colors['orange'])
         .setDescription(`⚠️ ${warning}`);
@@ -25,7 +25,7 @@ module.exports.warnMessage = (warning, channel, del = true) => {
     });
 };
 
-module.exports.successMessage = (content, channel, del = true) => {
+module.exports.successMessage = async (content, channel, del = true) => {
     const succMsg = new RichEmbed()
         .setColor(colors['green'])
         .setDescription(`✅ ${content}`);
@@ -35,7 +35,7 @@ module.exports.successMessage = (content, channel, del = true) => {
     });
 };
 
-module.exports.questionMessage = (question, channel, del = true) => {
+module.exports.questionMessage = async (question, channel, del = true) => {
     const questMsg = new RichEmbed()
         .setColor(colors['blueviolet'])
         .setDescription(`❔ ${question}`);
@@ -45,7 +45,7 @@ module.exports.questionMessage = (question, channel, del = true) => {
     });
 };
 
-module.exports.promptMessage = (question, channel, del = true) => {
+module.exports.promptMessage = async (question, channel, del = true) => {
     const questMsg = new RichEmbed()
         .setColor(colors['blueviolet'])
         .setDescription(`❔ ${question}`);

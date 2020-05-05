@@ -421,7 +421,7 @@ module.exports = class {
                 return `Êtes vous certain de vouloir expulser **${member.displayName}** du serveur ?`;
             },
             USER_KICK_NOTIFICATION_TO_USER: (memberBy, raison) => {
-                return `Vous avez été expulsé du discord Casual Effect par ${memberBy.displayName} pour la raison suivante: ${raison}`;
+                return `Vous avez été expulsé du discord Casual Effect par ${memberBy.displayName} pour la raison suivante:\n${raison}`;
             },
             USER_KICK_CHECK_SUCCESS: (member) => {
                 return `Le membre **${member.displayName}** à été explusé du serveur avec succès.`;
@@ -431,7 +431,7 @@ module.exports = class {
                 return `Êtes vous certain de vouloir bannir **${member.displayName}** du serveur ?`;
             },
             USER_BAN_NOTIFICATION_TO_USER: (memberBy, raison) => {
-                return `Vous avez été banni du discord Casual Effect par ${memberBy.displayName} pour la raison: ${raison}`;
+                return `Vous avez été banni du discord Casual Effect par ${memberBy.displayName} pour la raison:\n${raison}`;
             },
             USER_BAN_CHECK_SUCCESS: (member) => {
                 return `Le membre **${member.displayName}** à été banni du serveur avec succès.`;

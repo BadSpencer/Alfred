@@ -70,7 +70,8 @@ class BanCommand extends Command {
 
             
             client.userdataAddLog(args.userdata, message.member, "BAN", args.raison);
-            await member.send(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison))
+            // await member.send(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison))
+            await errorMessage(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
             await member.ban(args.raison);
             client.serverBanNotification(amember, message.member, args.raison);
             successMessage(client.textes.get("USER_BAN_CHECK_SUCCESS", member), message.channel);

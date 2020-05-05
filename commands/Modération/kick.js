@@ -39,7 +39,7 @@ class KickCommand extends Command {
                 content: 'Expulser un membre (peut revenir)',
                 usage: '',
                 examples: ['']
-              }
+            }
         });
     }
 
@@ -60,21 +60,24 @@ class KickCommand extends Command {
             max: 1,
             time: 30000,
         });
-    
+
         if (responses.size !== 1) {
             warnMessage(client.textes.get("COM_ACTION_TIMEOUT"), message.channel);
             return null;
         }
         const response = responses.first();
-    
+
         if (response.content == "oui") {
             if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
             if (message.channel.type === 'text') response.delete();
 
-            
+
             client.userdataAddLog(args.userdata, message.member, "KICK", args.raison);
-            await member.send(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison))
+            // await member.send(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison))
+            await warnMessage(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
             await member.kick(args.raison);
+
+
             client.serverKickNotification(member, message.member, args.raison);
             successMessage(client.textes.get("USER_KICK_CHECK_SUCCESS", member), message.channel);
         } else {
