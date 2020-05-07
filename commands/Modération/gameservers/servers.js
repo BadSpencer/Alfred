@@ -90,11 +90,10 @@ class ServersCommand extends Command {
                 await client.gameServersDeleteServer(message, args.arguments);
                 break;
             case 'active':
-                client.db_gameservers.set(args.arguments, 'isActive', true);
-
+                client.db_gameservers.set(args.arguments, true, 'isActive');
                 break;
             case 'inactive':
-                client.db_gameservers.set(args.arguments, 'isActive', false);
+                client.db_gameservers.set(args.arguments, false, 'isActive');
                 break;
         }
 
