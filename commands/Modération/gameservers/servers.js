@@ -33,7 +33,6 @@ class ServersCommand extends Command {
                     type: [
                         'liste', 'list',
                         'supprimer', 'suppr', 'delete', 'del',
-                        'dwd',
                         'score',
                         'add',
                         'view',
@@ -63,6 +62,7 @@ class ServersCommand extends Command {
     }
     async exec(message, args) {
         let client = this.client;
+        let serverID = "";
 
 
         switch (args.action) {
@@ -90,19 +90,11 @@ class ServersCommand extends Command {
                 await client.gameServersDeleteServer(message, args.arguments);
                 break;
             case 'active':
+                client.db_gameservers.set(args.arguments, 'isActive', true);
 
                 break;
             case 'inactive':
-
-                break;
-            case 'dwd':
-                let serverID = "";
-                if (args.arguments == "") {
-                    serverID = "all";
-                } else {
-                    serverID = args.arguments;
-                }
-                await client.gameServersArkDWD(serverID, message);
+                client.db_gameservers.set(args.arguments, 'isActive', false);
                 break;
         }
 

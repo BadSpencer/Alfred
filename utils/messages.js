@@ -45,7 +45,7 @@ module.exports.questionMessage = async (question, channel, del = true) => {
     });
 };
 
-module.exports.promptMessage = async (question, channel, del = true) => {
+module.exports.promptMessage = async (question) => {
     const questMsg = new RichEmbed()
         .setColor(colors['blueviolet'])
         .setDescription(`❔ ${question}`);

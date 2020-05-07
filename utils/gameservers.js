@@ -120,59 +120,61 @@ module.exports = (client) => {
     client.log(`Vérification RCON (${servers.length} serveurs)`);
 
     for (const server of servers) {
-      let response = await client.gameRconQuery(server, "listplayers");
-      let playerlist = [];
+      if (server.status !== "maintenance") {
+        let response = await client.gameRconQuery(server, "listplayers");
+        let playerlist = [];
 
-      let game = client.db_games.get(server.gamename);
-      const gameTextChannel = await guild.channels.get(game.textChannelID);
+        let game = client.db_games.get(server.gamename);
+        const gameTextChannel = await guild.channels.get(game.textChannelID);
 
-      if (response == undefined) {
-        if (server.status == "online") {
-          // Annonce serveur est tombé
-          if (heure !== "05") gameTextChannel.send(`Le serveur ${server.servername} est tombé. Les admins ont déjà été prévenus`);
-        };
-        server.status = "offline";
-        server.connected = 0;
-        server.playerlist = [];
-
-      } else {
-        if (server.status == "offline") {
-          // Annonce serveur est revenu
-          if (heure !== "05") gameTextChannel.send(`Le serveur ${server.servername} est à nouveau en ligne !`);
-        };
-        server.status = "online";
-
-        if (response.startsWith(`No Players Connected`)) {
+        if (response == undefined) {
+          if (server.status == "online") {
+            // Annonce serveur est tombé
+            warnMessage(`Le serveur ${server.servername} est tombé.`,gameTextChannel, false);
+          };
+          server.status = "offline";
           server.connected = 0;
           server.playerlist = [];
+
         } else {
-          let entries = response.split("\n");
-          const regex = /(?<=\.)(.*?)(?=\,)/;
-          let m;
-          entries.forEach(entry => {
-            if ((m = regex.exec(entry)) !== null) {
-              let user = m[1];
-              let id = entry.split(",")[1].trim();
+          if (server.status == "offline") {
+            // Annonce serveur est revenu
+            successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`,gameTextChannel, false)
+          };
+          server.status = "online";
 
-              let player = client.db_gameserversPlayers.get(id);
-              if (player) {
-                playerlist.push([user, id, player.memberID]);
-              } else {
-                playerlist.push([user, id, ""]);
+          if (response.startsWith(`No Players Connected`)) {
+            server.connected = 0;
+            server.playerlist = [];
+          } else {
+            let entries = response.split("\n");
+            const regex = /(?<=\.)(.*?)(?=\,)/;
+            let m;
+            entries.forEach(entry => {
+              if ((m = regex.exec(entry)) !== null) {
+                let user = m[1];
+                let id = entry.split(",")[1].trim();
+
+                let player = client.db_gameserversPlayers.get(id);
+                if (player) {
+                  playerlist.push([user, id, player.memberID]);
+                } else {
+                  playerlist.push([user, id, ""]);
+                }
+
               }
+            });
+            server.connected = playerlist.length;
+            server.playerlist = playerlist;
 
-            }
-          });
-          server.connected = playerlist.length;
-          server.playerlist = playerlist;
-
+          }
         }
-      }
-      for (const player of playerlist) {
-        await client.gameServersPlayerLog(player[1], player[0], server)
-      };
+        for (const player of playerlist) {
+          await client.gameServersPlayerLog(player[1], player[0], server)
+        };
 
-      await client.db_gameservers.set(server.id, server);
+        await client.db_gameservers.set(server.id, server);
+      }
     }
   };
 
@@ -204,13 +206,10 @@ module.exports = (client) => {
     const guild = client.guilds.get(client.config.guildID);
     let settings = client.db_settings.get(guild.id);
 
-
-
-
     if (serverID == "all") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
-        //let response = await client.gameRconQuery(server, "destroywilddinos");
+        let response = await client.gameRconQuery(server, "destroywilddinos");
         if (response.includes("All Wild Dinos Destroyed")) {
           client.modLog(client.textes.get("GAMESERVER_ARK_DWD_SUCCESS", server));
           if (message !== null) {
@@ -240,6 +239,40 @@ module.exports = (client) => {
         }
       }
     }
+  };
+
+  client.gameServersSetMaintenanceOn = async (serverID = "all") => {
+    if (serverID == "all") {
+      let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
+      for (const server of servers) {
+        await client.gameServersSetStatus(serverID, "maintenance");
+      }
+    } else {
+      let server = client.db_gameservers.get(serverID);
+      await client.gameServersSetStatus(serverID, "maintenance");
+    };
+  };
+
+  client.gameServersSetMaintenanceOff = async (serverID = "all") => {
+    if (serverID == "all") {
+      let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
+      for (const server of servers) {
+        await client.gameServersSetStatus(serverID, "offline");
+      }
+    } else {
+      await client.gameServersSetStatus(serverID, "offline");
+    };
+  };
+
+  client.gameServersSetStatus = async (serverID = "all", status) => {
+    if (serverID == "all") {
+      let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
+      for (const server of servers) {
+        client.db_gameservers.set(server.id, status, 'status');
+      }
+    } else {
+      client.db_gameservers.set(serverID, status, 'status');
+    };
   };
 
   client.gameRconQuery = async (server, command) => {
@@ -312,25 +345,36 @@ module.exports = (client) => {
       });
 
       for (const server of servers) {
-        if (server.status == "online") {
-          if (server.connected == 0) {
-            fieldDescription = `🟢 [**${server.servername}**](${server.steamlink})\n`;
-          } else {
-            fieldDescription = `🟢 [**${server.servername}**](${server.steamlink}) **${server.connected}**\n`;
+
+        switch (server.status) {
+          case 'online':
+            if (server.connected == 0) {
+              fieldDescription = `🟢 [**${server.servername}**](${server.steamlink})\n`;
+            } else {
+              fieldDescription = `🟢 [**${server.servername}**](${server.steamlink}) **${server.connected}**\n`;
+            }
+            break;
+          case 'offline':
+            fieldDescription = `🔴 [**${server.servername}**](${server.steamlink})\n`;
+            break;
+          case 'maintenance':
+            fieldDescription = `🟠 [**${server.servername}**](${server.steamlink})\n`;
+            break;
+        }
+        if (server.status !== 'maintenance') {
+          for (const player of server.playerlist) {
+            // fieldDescription += `◽️ ${player[0]} (${player[1]})\n`;
+            if (player[2] !== "") {
+              let member = await guild.members.get(player[2]);
+              fieldDescription += `🔹 ${member.displayName}\n`;
+            } else {
+              fieldDescription += `🔸 ${player[0]}\n`;
+            }
           }
         } else {
-          fieldDescription = `🔴 [**${server.servername}**](${server.steamlink})\n`;
+          fieldDescription += `Serveur en **maintenance**`;
         }
-        for (const player of server.playerlist) {
-          // fieldDescription += `◽️ ${player[0]} (${player[1]})\n`;
-          if (player[2] !== "") {
-            let member = await guild.members.get(player[2]);
-            fieldDescription += `🔹 ${member.displayName}\n`;
-          } else {
-            fieldDescription += `🔸 ${player[0]}\n`;
-          }
 
-        }
         fieldDescription += '〰️〰️〰️〰️〰️〰️〰️〰️';
         fieldServerAdressesDescription += `[**${server.servername}**](${server.steamlink}): ${server.ip}:${server.portrcon}\n`;
 
@@ -369,7 +413,7 @@ module.exports = (client) => {
         }).catch(error => {
           gameServerStatusMessage = undefined;
           client.log(`Message statut serveurs "${game.name}" non trouvé dans ${gameInfosChannel.name}`, "warn");
-      });
+        });
       }
 
       if (gameServerStatusMessage !== undefined) {

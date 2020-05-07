@@ -22,8 +22,8 @@ class KickCommand extends Command {
                     id: 'userdata',
                     type: 'userdata',
                     prompt: {
-                        start: message => promptMessage('Quel membre souhaitez vous expulser ?'),
-                        retry: message => promptMessage('Mentionnez un membre avec son ID'),
+                        start: 'Quel membre souhaitez vous expulser ?',
+                        retry: 'Mentionnez un membre avec son ID'
                     },
                 },
                 {
@@ -31,7 +31,7 @@ class KickCommand extends Command {
                     type: "content",
                     match: "rest",
                     prompt: {
-                        start: message => promptMessage('Pour quelle raison souhaitez vous expulser ce membre ?'),
+                        start: 'Pour quelle raison souhaitez vous expulser ce membre ?'
                     },
                 }
             ],
