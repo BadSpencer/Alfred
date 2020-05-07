@@ -202,11 +202,11 @@ module.exports = (client) => {
 
   };
 
-  client.gameServersArkDWD = async (serverID = "all", message = null) => {
+  client.gameServersArkDWD = async (serverID = "*", message = null) => {
     const guild = client.guilds.get(client.config.guildID);
     let settings = client.db_settings.get(guild.id);
 
-    if (serverID == "all") {
+    if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
         let response = await client.gameRconQuery(server, "destroywilddinos");
@@ -241,8 +241,8 @@ module.exports = (client) => {
     }
   };
 
-  client.gameServersSetMaintenanceOn = async (serverID = "all") => {
-    if (serverID == "all") {
+  client.gameServersSetMaintenanceOn = async (serverID = "*") => {
+    if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
         await client.gameServersSetStatus(serverID, "maintenance");
@@ -253,8 +253,8 @@ module.exports = (client) => {
     };
   };
 
-  client.gameServersSetMaintenanceOff = async (serverID = "all") => {
-    if (serverID == "all") {
+  client.gameServersSetMaintenanceOff = async (serverID = "*") => {
+    if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
         await client.gameServersSetStatus(serverID, "offline");
@@ -264,8 +264,8 @@ module.exports = (client) => {
     };
   };
 
-  client.gameServersSetStatus = async (serverID = "all", status) => {
-    if (serverID == "all") {
+  client.gameServersSetStatus = async (serverID = "*", status) => {
+    if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
         client.db_gameservers.set(server.id, status, 'status');

@@ -44,7 +44,7 @@ class ArkCommand extends Command {
                 {
                     id: "serverID",
                     prompt: {
-                        start: 'Sur quel serveur ? Il me faut soit son ID soit "all" pour tous les serveurs'
+                        start: 'Sur quel serveur ? Il me faut soit son ID soit "*" pour tous les serveurs'
                     },
                 },
                 {
@@ -66,14 +66,14 @@ class ArkCommand extends Command {
         const guild = client.guilds.get(client.config.guildID);
         let servers = [];
 
-        if (args.serverID == "all") {
+        if (args.serverID == "*") {
             servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved" && server.isActive == true);
         } else {
             servers.push(client.db_gameservers.get(args.serverID));
         }
 
         let game = client.db_games.get("ARK: Survival Evolved");
-        const gameTextChannel = await guild.channels.get(game.textChannelID);
+        const gameTextChannel = guild.channels.get(game.textChannelID);
 
         switch (args.action) {
             case 'dwd':
@@ -82,11 +82,11 @@ class ArkCommand extends Command {
                 }
                 break;
             case 'maint':
-                if (args.serverID == "all") {
+                if (args.serverID == "*") {
                     warnMessage(`Les serveurs "ARK: Survival Evolved" entrent en maintenance.`, gameTextChannel, false);
                 }
                 for (const server of servers) {
-                    if (args.serverID !== "all") {
+                    if (args.serverID !== "*") {
                         warnMessage(`Le serveur ${server.servername} entre en maintenance.`, gameTextChannel, false);
                     }
                     if (server.connected > 0) warnMessage(`Attention, il y a **${server.connected} joueur(s)** connecté(s) sur ${server.servername}`, message.channel);
