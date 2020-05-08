@@ -93,32 +93,7 @@ module.exports = (client) => {
       let usergame = client.db_usergame.get(key);
       if (usergame) {
         let now = +new Date;
-        let milliseconds = now - usergame.lastPlayed;
-
-        let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
-        let days = roundTowardsZero(milliseconds / 86400000),
-          hours = roundTowardsZero(milliseconds / 3600000) % 24,
-          minutes = roundTowardsZero(milliseconds / 60000) % 60,
-          seconds = roundTowardsZero(milliseconds / 1000) % 60;
-        if (seconds === 0) {
-          seconds++;
-        }
-        let isDays = days > 0,
-          isHours = hours > 0,
-          isMinutes = minutes > 0;
-        let pattern =
-          (!isDays ? "" : (isMinutes || isHours) ? "{days} jours, " : "{days} jours et ") +
-          (!isHours ? "" : (isMinutes) ? "{hours} heures, " : "{hours} heures et ") +
-          (!isMinutes ? "" : "{minutes} minutes et ") +
-          ("{seconds} secondes");
-        let sentence = pattern
-          .replace("{duration}", pattern)
-          .replace("{days}", days)
-          .replace("{hours}", hours)
-          .replace("{minutes}", minutes)
-          .replace("{seconds}", seconds);
-
-        description += `**${member[1].displayName}** ${sentence}\n`;
+        description += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)} Action: ${client.msToDays(now - usergame.lastAction)} \n`;
       } else {
         description += `**${member[1].displayName}** Aucune donnée de jeu\n`;
       }
