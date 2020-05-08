@@ -139,12 +139,12 @@ module.exports = (client) => {
 
         if (welcomeChannel) {
 
-            const welcomeMessage = new Discord.RichEmbed()
+            const banMessage = new Discord.RichEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_BAN", member, memberBy, raison))
                 .setFooter(client.textes.get("LOG_EVENT_USER_BAN_SERVER", member), avatar);
-            welcomeChannel.send(welcomeMessage);
+            welcomeChannel.send(banMessage);
         };
     };
     client.userdataGetAll = async () => {
@@ -316,7 +316,6 @@ module.exports = (client) => {
         const guild = client.guilds.get(client.config.guildID);
         let member = guild.members.get(userdata.id);
 
-
         let userdataLogs = datamodel.tables.userdataLogs;
 
         if (!userdata) return;
@@ -355,5 +354,22 @@ module.exports = (client) => {
             }
         }
 
+    };
+
+    client.userdataShowInfos = async (memberID, channel) => {
+        const guild = client.guilds.get(client.config.guildID);
+        let member = guild.members.get(memberID);
+        let userdata = client.db_userdata.get(memberID);
+
+        if (!userdata) return;
+
+        if (channel) {
+            const userInfosMessage = new Discord.RichEmbed();
+            userInfosMessage.setTitle(`${userdata.displayName}`);
+            userInfosMessage.setColor(colors['darkorange']);
+            // userInfosMessage.setThumbnail();
+            // userInfosMessage.setDescription();
+            channel.send(userInfosMessage);
+        };
     };
 };
