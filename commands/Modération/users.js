@@ -16,16 +16,26 @@ class usersCommand extends Command {
         super('users', {
             aliases: ['users', 'u'],
             category: 'Modération',
-            args: [{
-                id: 'action',
-                type: 'text',
-                default: 'userboard'
-            }],
+            args: [
+                {
+                    id: 'action',
+                    type: 'text',
+                    default: 'userboard'
+                },
+                {
+                    id: 'userdata',
+                    type: 'userdata',
+                    prompt: {
+                        start: 'Quel membre souhaitez vous expulser ?',
+                        retry: 'Mentionnez un membre avec son ID'
+                    },
+                }
+            ],
             description: {
                 content: 'Gestion des utilisateurs',
                 usage: '',
                 examples: ['']
-              }
+            }
         });
     }
 
@@ -46,13 +56,18 @@ class usersCommand extends Command {
                 break;
             case 'top':
                 break;
+
+            case 'info':
+            case 'infos':
+            case 'view':
+                client.userdataShowInfos(memberID, message.channel);
+                break;
             case 'initxp':
                 for (const userdata of userdatas) {
                     client.db_userdata.set(userdata.id, "xp", 0);
                     client.db_userdata.set(userdata.id, "level", 0);
                 }
                 break;
-
             case 'initlogs':
                 for (const userdata of userdatas) {
                     let member = guild.members.get(userdata.id);
@@ -73,7 +88,7 @@ class usersCommand extends Command {
                 let messageCountTotal = 0;
 
                 for (const channel of textChannels) {
-                    
+
                     let channelMessages = await client.channelGetAllMessages(channel[1].id);
                     let messageCount = 0;
                     for (const mess of channelMessages) {
