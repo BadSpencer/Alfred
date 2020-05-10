@@ -203,62 +203,6 @@ exports.quitPlayerNotification = async (client, game, member) => {
     client.modLog(client.textes.get("MOD_NOTIF_MEMBER_QUIT_GAME", member, game));
 
 }
-exports.notifyPlayerActiveGame = async (client, member, game) => {
-    const guild = client.guilds.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
-
-    const gameRole = guild.roles.get(game.roleID);
-    const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
-
-    const notification = new RichEmbed()
-        .setColor(colors['darkviolet'])
-        .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
-    member.send(notification);
-    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
-
-}
-exports.createUsergame = async (client, game, member) => {
-
-    let usergameKey = `${game.name}-${member.id}`;
-    let usergame = client.db_usergame.get(usergameKey);
-    if (!usergame) {
-        usergame = client.db_usergame.get("default");
-        usergame.id = usergameKey;
-        usergame.userid = member.id;
-        usergame.gameid = game.name;
-        client.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
-        if (game.actif && !member.roles.has(game.roleID)) {
-            client.games.notifyPlayerActiveGame(client, member, game);
-        }
-    }
-    usergame.lastPlayed = +new Date;
-    client.db_usergame.set(usergameKey, usergame);
-}
-exports.updateJoinUsergame = async (client, game, member) => {
-
-    let usergameKey = `${game.name}-${member.id}`;
-    let usergame = client.db_usergame.get(usergameKey);
-
-    usergame.id = usergameKey;
-    usergame.userid = member.id;
-    usergame.gameid = game.name;
-    usergame.joinedAt = +new Date;
-    usergame.joinedDate = moment().format('DD.MM.YYYY');
-    usergame.joinedTime = moment().format('HH:mm');
-
-    client.db_usergame.set(usergameKey, usergame);
-}
-exports.updateQuitUsergame = async (client, game, member) => {
-
-    let usergameKey = `${game.name}-${member.id}`;
-    let usergame = client.db_usergame.get(usergameKey);
-    if (usergame) {
-        usergame.joinedAt = "";
-        usergame.joinedDate = "";
-        usergame.joinedTime = "";
-    }
-    client.db_usergame.set(usergameKey, usergame);
-}
 exports.quitConfirmation = async (client, messageReaction, game, member) => {
     const guild = client.guilds.get(client.config.guildID);
     const settings = await client.db.getSettings(client);

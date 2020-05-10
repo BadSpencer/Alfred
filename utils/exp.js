@@ -21,7 +21,7 @@ module.exports = (client) => {
                 if (member.presence.game) {
                     const game = client.db_games.find(game => game.name == member.presence.game.name);
                     if (game) {
-                        client.games.createUsergame(client, game, member);
+                        client.usergameUpdateLastPlayed(game, member);
                         client.db.usergameAddXP(client, member, 1, game);
 
                         if (member.voiceChannel && member.roles.has(game.roleID)) {

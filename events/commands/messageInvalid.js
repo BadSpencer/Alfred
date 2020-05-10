@@ -10,7 +10,7 @@ class MessageInvalidListener extends Listener {
         });
     }
 
-   async exec(message) {
+    async exec(message) {
         let client = this.client;
 
         if (message.author.bot) return;
@@ -22,8 +22,17 @@ class MessageInvalidListener extends Listener {
             } else {
                 client.db.userdataAddXP(client, message.member, 5, `Message`);
             }
-        }
-    }
+        };
+
+        let game = client.db_games.find(game => game.textChannelID == message.channel.id);
+        if (game) {
+            if (message.member.roles.has(game.roleID)) {
+                await client.usergameUpdateLastAction(game, message.member);
+            };
+        };
+
+    };
+
 }
 
 module.exports = MessageInvalidListener;

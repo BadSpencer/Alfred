@@ -72,6 +72,8 @@ module.exports = (client) => {
   client.gameServersPlayerLog = async (playerID, playerName, server) => {
     const guild = client.guilds.get(client.config.guildID);
 
+    let gamePlayed = client.db_games.get(server.servername);
+
     let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
     let dateNow = +new Date;
     if (gameserversPlayer) {
@@ -88,6 +90,8 @@ module.exports = (client) => {
           if (userdata) {
             await client.modLog(client.textes.get("GAMESERVER_PLAYER_OLD_MEMBER_DETECTED", server, playerID, playerName));
           }
+        } else {
+          await client.usergameUpdateLastPlayed(gamePlayed, member);
         }
       }
 

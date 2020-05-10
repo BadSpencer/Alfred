@@ -89,13 +89,25 @@ module.exports = (client) => {
     embed.setColor(colors['darkorange']);
 
     for (const member of gameRole.members) {
-      let key = `${gamename}-${member[1].id}`
-      let usergame = client.db_usergame.get(key);
+      let usergameKey = `${gamename}-${member[1].id}`
+      let usergame = client.db_usergame.get(usergameKey);
+      let now = +new Date;
+
       if (usergame) {
-        let now = +new Date;
+        if (usergame.lastAction == "") {
+          usergame.lastAction = 1587500080000;
+          client.db_usergame.set(usergameKey, usergame);          
+        }
         description += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)} Action: ${client.msToDays(now - usergame.lastAction)} \n`;
       } else {
-        description += `**${member[1].displayName}** Aucune donnée de jeu\n`;
+        usergame = client.db_usergame.get("default");
+        usergame.id = usergameKey;
+        usergame.userid = member.id;
+        usergame.gameid = game.name;
+        usergame.lastPlayed = 1586000080000;
+        usergame.lastAction = 1587500080000;
+        client.db_usergame.set(usergameKey, usergame);
+        description += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)} Action: ${client.msToDays(now - usergame.lastAction)} (Données créées) \n`;
       }
     }
 
@@ -104,4 +116,67 @@ module.exports = (client) => {
     message.channel.send(embed);
 
   };
+
+  client.usergameUpdateLastPlayed = async (game, member) => {
+    let usergameKey = `${game.name}-${member.id}`;
+    let usergame = client.db_usergame.get(usergameKey);
+    if (!usergame) {
+      usergame = client.db_usergame.get("default");
+      usergame.id = usergameKey;
+      usergame.userid = member.id;
+      usergame.gameid = game.name;
+      client.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
+      if (game.actif && !member.roles.has(game.roleID)) {
+        client.usergameNotifyPlayerActiveGame(game, member);
+      }
+    }
+    usergame.lastPlayed = +new Date;
+    client.db_usergame.set(usergameKey, usergame);
+  };
+
+  client.usergameUpdateLastAction = async (game, member) => {
+    let usergameKey = `${game.name}-${member.id}`;
+    let usergame = client.db_usergame.get(usergameKey);
+    if (!usergame) {
+      usergame = client.db_usergame.get("default");
+      usergame.id = usergameKey;
+      usergame.userid = member.id;
+      usergame.gameid = game.name;
+    }
+    usergame.lastAction = +new Date;
+    client.db_usergame.set(usergameKey, usergame);
+  };
+
+  client.usergameUpdateJoinedAt = async (game, member) => {
+    let usergameKey = `${game.name}-${member.id}`;
+    let usergame = client.db_usergame.get(usergameKey);
+    if (!usergame) {
+      usergame = client.db_usergame.get("default");
+      usergame.id = usergameKey;
+      usergame.userid = member.id;
+      usergame.gameid = game.name;
+    }
+    usergame.joinedAt = +new Date;
+    usergame.joinedDate = moment().format('DD.MM.YYYY');
+    usergame.joinedTime = moment().format('HH:mm');
+    usergame.lastAction = +new Date;
+    client.db_usergame.set(usergameKey, usergame);
+  };
+
+  client.usergameNotifyPlayerActiveGame = async (game, member) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    const gameRole = guild.roles.get(game.roleID);
+    const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
+
+    const notification = new RichEmbed()
+        .setColor(colors['darkviolet'])
+        .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
+    member.send(notification);
+    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
+
+}
+
+
 }

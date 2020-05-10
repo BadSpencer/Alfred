@@ -44,8 +44,9 @@ class guildMemberUpdateListener extends Listener {
                     const game = client.db_games.find(game => game.roleID == newRole.id);
                     if (game) {
                         client.games.PostRoleReaction(client);
-                        client.games.createUsergame(client, game, newMember);
-                        client.games.updateJoinUsergame(client, game, newMember);
+
+                        client.usergameUpdateJoinedAt(game, newMember);
+
                         client.games.newPlayerNotification(client, game, newMember);
                         client.userdataAddLog(userdata, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
                     }
@@ -65,7 +66,6 @@ class guildMemberUpdateListener extends Listener {
                     const game = client.db_games.find(game => game.roleID == oldRole.id);
                     if (game) {
                         client.games.PostRoleReaction(client);
-                        client.games.updateQuitUsergame(client, game, newMember);
                         client.games.quitPlayerNotification(client, game, newMember);
                         client.userdataAddLog(userdata, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
                     }

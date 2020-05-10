@@ -45,7 +45,7 @@ class presenceUpdateListener extends Listener {
             let gamePlayed = client.db_games.get(newMember.presence.game.name);
             if (gamePlayed && gamePlayed.actif) {
 
-                client.games.createUsergame(client, gamePlayed, newMember);
+                await client.usergameUpdateLastPlayed(gamePlayed, newMember);
 
                 if (gamePlayed.actif) {
                     let gamePlayRole = newMember.guild.roles.get(gamePlayed.playRoleID);
@@ -92,6 +92,9 @@ class presenceUpdateListener extends Listener {
             }
             let gamePlayedNew = client.db_games.get(newMember.presence.game.name);
             if (gamePlayedNew) {
+
+                await client.usergameUpdateLastPlayed(gamePlayedNew, newMember);
+
                 let gamePlayRole = newMember.guild.roles.get(gamePlayedNew.playRoleID);
                 if (newMember.roles.has(gamePlayedNew.roleID)) {
                     await newMember.addRole(gamePlayRole);
