@@ -72,7 +72,7 @@ module.exports = (client) => {
   client.gameServersPlayerLog = async (playerID, playerName, server) => {
     const guild = client.guilds.get(client.config.guildID);
 
-    let gamePlayed = client.db_games.get(server.servername);
+    let gamePlayed = client.db_games.get(server.gamename);
 
     let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
     let dateNow = +new Date;
