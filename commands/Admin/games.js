@@ -19,7 +19,6 @@ class GamesCommand extends Command {
         super('games', {
             aliases: ['games'],
             category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             description: {
                 content: 'Gestion des jeux',
                 usage: '<action> <...arguments>',
@@ -29,6 +28,7 @@ class GamesCommand extends Command {
                 id: "action",
                 type: [
                     "list",
+                    "listall",
                     "score",
                     "add",
                     "view",
@@ -63,10 +63,12 @@ class GamesCommand extends Command {
         const roleMod = guild.roles.find(r => r.name == settings.modRole);
 
         switch (args.action) {
-            case 'list': {
+            case 'list': 
+                client.db.enmapDisplay(client, client.db_games.filter(rec => rec.actif == true), message.channel);
+                break;
+            case 'listall': 
                 client.db.enmapDisplay(client, client.db_games, message.channel);
                 break;
-            }
             case 'players':
                 client.gamesPlayersDetail(args.arguments, message);
                 break;

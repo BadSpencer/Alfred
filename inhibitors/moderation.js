@@ -19,7 +19,7 @@ class ModerationCheck extends Inhibitor {
         const roleAdm = guild.roles.find(r => { return r.name == message.settings.adminRole });
 
         // Les commandes de la catégorie "Modérations" ne sont autorisé que pour les modérateurs et admins
-        if (command.category.id == "Modération") {
+        if (command.category.id == "Modération" || command.category.id == "Admin") {
             if (member.roles.has(roleMod.id) || member.roles.has(roleAdm.id)) {
                 return false;
             } else {

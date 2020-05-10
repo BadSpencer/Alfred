@@ -16,7 +16,6 @@ class debugCommand extends Command {
         super('debug', {
             aliases: ['debug'],
             category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             split: 'quoted',
 
             description: {
