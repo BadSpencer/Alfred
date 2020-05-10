@@ -83,6 +83,11 @@ module.exports = (client) => {
 
     let description = "";
 
+    let descActive = "**Joueurs actifs**\n";
+    let descInactivePlayed = "**Joueurs inactifs (jeu)**\n";
+    let descInactiveAction = "**Joueurs inactifs (discussion)**\n";
+    let descInactiveBoth = "**Joueurs inactifs (les deux)**\n";
+
 
     const embed = new Discord.RichEmbed();
     embed.setTitle(gamename);
@@ -92,13 +97,14 @@ module.exports = (client) => {
       let usergameKey = `${gamename}-${member[1].id}`
       let usergame = client.db_usergame.get(usergameKey);
       let now = +new Date;
+      let daysPlayed = 0;
+      let daysAction = 0;
 
       if (usergame) {
         if (usergame.lastAction == "") {
           usergame.lastAction = 1587500080000;
-          client.db_usergame.set(usergameKey, usergame);          
+          client.db_usergame.set(usergameKey, usergame);
         }
-        description += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)} Action: ${client.msToDays(now - usergame.lastAction)} \n`;
       } else {
         usergame = client.db_usergame.get("default");
         usergame.id = usergameKey;
@@ -107,9 +113,31 @@ module.exports = (client) => {
         usergame.lastPlayed = 1586000080000;
         usergame.lastAction = 1587500080000;
         client.db_usergame.set(usergameKey, usergame);
-        description += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)} Action: ${client.msToDays(now - usergame.lastAction)} (Données créées) \n`;
       }
+
+      daysPlayed = client.msToDays(now - usergame.lastPlayed);
+      daysAction = client.msToDays(now - usergame.lastAction);
+
+      if (daysPlayed < 30 && daysAction < 30) {
+        descActive += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)}j Action: ${client.msToDays(now - usergame.lastAction)}j\n`;
+      } else {
+
+        if (daysPlayed > 29 && daysAction > 29) {
+          descInactiveBoth += `**${member[1].displayName}** Jeu: **${client.msToDays(now - usergame.lastPlayed)}j** Action: **${client.msToDays(now - usergame.lastAction)}j**\n`;
+        } else {
+          if (daysPlayed > 29) {
+            descInactivePlayed += `**${member[1].displayName}** Jeu: **${client.msToDays(now - usergame.lastPlayed)}j** Action: ${client.msToDays(now - usergame.lastAction)}j\n`;
+          }
+          if (daysAction > 29) {
+            descInactiveAction += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)}j Action: **${client.msToDays(now - usergame.lastAction)}j**\n`;
+          }
+        }
+      }
+
+      
+
     }
+    description = descActive + '\n' + descInactivePlayed + '\n' + descInactiveAction + '\n' + descInactiveBoth;
 
     embed.setDescription(description);
 
@@ -171,12 +199,12 @@ module.exports = (client) => {
     const gameJoinChannel = await guild.channels.find(c => c.name === settings.gameJoinChannel);
 
     const notification = new RichEmbed()
-        .setColor(colors['darkviolet'])
-        .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
+      .setColor(colors['darkviolet'])
+      .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
     member.send(notification);
     client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
 
-}
+  }
 
 
 }

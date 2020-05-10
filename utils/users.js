@@ -248,7 +248,7 @@ module.exports = (client) => {
         logEntriesLast = logEntriesLast.slice(0, 10);
         let dateNow = +new Date;
         for (const logEntry of logEntriesLast) {
-            usersLastEvents += `${client.logEventToEmoji(logEntry.event)} ${logEntry.displayName} ${client.logEventToText(logEntry.event)} **${client.msToDays(dateNow - logEntry.createdAt)}**\n`;
+            usersLastEvents += `${client.logEventToEmoji(logEntry.event)} ${logEntry.displayName} ${client.logEventToText(logEntry.event)} **${client.msToDaysText(dateNow - logEntry.createdAt)}**\n`;
         }
 
 
