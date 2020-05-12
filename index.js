@@ -131,11 +131,11 @@ client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes le
     client.gameServersStatus();
 });
 
-client.cron_serverMaintenanceOn = new cron.CronJob('00 44 04 * * *', () => { // Tous les jours à 5h25
+client.cron_serverMaintenanceOn = new cron.CronJob('00 25 05 * * *', () => { // Tous les jours à 5h25
     client.gameServersSetMaintenanceOn("*");
 });
 
-client.cron_serverMaintenanceOff = new cron.CronJob('00 45 04 * * *', () => { // Tous les jours à 5h40
+client.cron_serverMaintenanceOff = new cron.CronJob('00 45 05 * * *', () => { // Tous les jours à 5h45
     client.gameServersSetMaintenanceOff("*");
 });
 
