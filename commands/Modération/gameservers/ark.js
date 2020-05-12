@@ -83,11 +83,11 @@ class ArkCommand extends Command {
                 break;
             case 'maint':
                 if (args.serverID == "*") {
-                    warnMessage(`Les serveurs "ARK: Survival Evolved" entrent en maintenance.`, gameTextChannel, false);
+                    warnMessage(`Les serveurs "ARK: Survival Evolved" entrent en maintenance.`, gameTextChannel, true, 600000);
                 }
                 for (const server of servers) {
                     if (args.serverID !== "*") {
-                        warnMessage(`Le serveur ${server.servername} entre en maintenance.`, gameTextChannel, false);
+                        warnMessage(`Le serveur ${server.servername} entre en maintenance.`, gameTextChannel, true, 600000);
                     }
                     if (server.connected > 0) warnMessage(`Attention, il y a **${server.connected} joueur(s)** connecté(s) sur ${server.servername}`, message.channel);
                     if (server.connected == 0) successMessage(`Aucun joueur connecté sur ${server.servername} vous pouvez y aller`, message.channel);
@@ -96,18 +96,19 @@ class ArkCommand extends Command {
                 }
                 break;
             case 'nomaint':
+                successMessage(`Maintenance terminée !`, gameTextChannel, true, 600000);
                 for (const server of servers) {
                     await client.gameServersSetMaintenanceOff(server.id);
                 }
                 break;
-                case 'send':
-                case 'tchat':
-                case 'chat':
-                    let sendmess = 'ServerChat ' + args.arguments.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    for (const server of servers) {
-                        await client.gameRconQuery(server, sendmess)
-                    }
-                    break;                
+            case 'send':
+            case 'tchat':
+            case 'chat':
+                let sendmess = 'ServerChat ' + args.arguments.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                for (const server of servers) {
+                    await client.gameRconQuery(server, sendmess)
+                }
+                break;
             case 'cmd':
                 for (const server of servers) {
                     await client.gameRconQuery(server, args.arguments)
