@@ -18,9 +18,7 @@ class TestCommand extends Command {
     async exec(message) {
         let client = this.client;
 
-        await client.gameServersSetMaintenanceOn("*");
 
-        await client.gameServersSetMaintenanceOff("*");
         if (message.channel.type === 'text') message.delete();;
     }
 }
