@@ -198,9 +198,17 @@ exports.gamesCheck = async (client) => {
     await client.db_games.delete("default");
     await client.db_games.set("default", datamodel.tables.games);
 
-    let games = await client.db.gamesGetActive(client);
+    let games = await client.db.gamesGetAll(client);
+    for (const game of games) {
+        if (game.nbDaysInactive == undefined) {
+            game["nbDaysInactive"] = 30;
+            client.db_games.set(game.id, game);
+        }
+    }
 
-    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
+
+    let gamesActive = await client.db.gamesGetActive(client);
+    if (!gamesActive) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
 
     await client.games.PostRoleReaction(client, true);
 };
@@ -225,7 +233,7 @@ exports.gamesGetActiveArray = async (client) => {
     return games;
 };
 exports.gamesGetAll = async (client) => {
-    const games = client.db_games.find(game => game.name !== "default");
+    const games = client.db_games.filterArray(game => game.name !== "default");
     return games;
 };
 
