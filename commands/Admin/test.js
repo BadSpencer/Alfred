@@ -6,7 +6,7 @@ const { Permissions } = require('discord.js');
 class TestCommand extends Command {
     constructor() {
         super('test', {
-            aliases: ['test', 'tst', 'tt'],
+            aliases: ['test'],
             category: 'Admin',
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             cooldown: 30000,
@@ -18,8 +18,9 @@ class TestCommand extends Command {
     async exec(message) {
         let client = this.client;
 
-        client.messageOfTheDay();
+        await client.gameServersSetMaintenanceOn("*");
 
+        await client.gameServersSetMaintenanceOff("*");
         if (message.channel.type === 'text') message.delete();;
     }
 }

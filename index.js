@@ -21,7 +21,7 @@ const client = new AkairoClient({
         cancel: message => 'Commande annulée',
         cancelWord: 'annuler',
         retries: 2,
-        time: 30000
+        time: 60000
     },
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
     allowMention: true,
@@ -130,6 +130,16 @@ client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes l
 client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
     client.gameServersStatus();
 });
+
+client.cron_serverMaintenanceOn = new cron.CronJob('00 44 04 * * *', () => { // Tous les jours à 5h25
+    client.gameServersSetMaintenanceOn("*");
+});
+
+client.cron_serverMaintenanceOff = new cron.CronJob('00 45 04 * * *', () => { // Tous les jours à 5h40
+    client.gameServersSetMaintenanceOff("*");
+});
+
+
 client.cron_serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
     client.gameServersPostStatusMessage();
 });

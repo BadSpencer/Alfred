@@ -134,7 +134,7 @@ module.exports = (client) => {
         if (response == undefined) {
           if (server.status == "online") {
             // Annonce serveur est tombé
-            warnMessage(`Le serveur ${server.servername} est tombé.`,gameTextChannel, false);
+            warnMessage(`Le serveur ${server.servername} est tombé.`, gameTextChannel, true, 600000);
           };
           server.status = "offline";
           server.connected = 0;
@@ -143,7 +143,7 @@ module.exports = (client) => {
         } else {
           if (server.status == "offline") {
             // Annonce serveur est revenu
-            successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`,gameTextChannel, false)
+            successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`, gameTextChannel, true, 600000)
           };
           server.status = "online";
 
@@ -249,11 +249,11 @@ module.exports = (client) => {
     if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
-        await client.gameServersSetStatus(serverID, "maintenance");
+        await client.gameServersSetStatus(server.id, "maintenance");
       }
     } else {
       let server = client.db_gameservers.get(serverID);
-      await client.gameServersSetStatus(serverID, "maintenance");
+      await client.gameServersSetStatus(server.id, "maintenance");
     };
   };
 
@@ -261,10 +261,10 @@ module.exports = (client) => {
     if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
-        await client.gameServersSetStatus(serverID, "offline");
+        await client.gameServersSetStatus(server.id, "maintenanceoff");
       }
     } else {
-      await client.gameServersSetStatus(serverID, "offline");
+      await client.gameServersSetStatus(server.id, "maintenanceoff");
     };
   };
 
@@ -273,9 +273,12 @@ module.exports = (client) => {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
         client.db_gameservers.set(server.id, status, 'status');
+        client.log(`Serveur "${server.servername}" nouveau statut: "${status}"`);
       }
     } else {
       client.db_gameservers.set(serverID, status, 'status');
+      let server = client.db_gameservers.get(serverID);
+      client.log(`Serveur "${server.servername}" nouveau statut: "${status}"`);
     };
   };
 
@@ -365,18 +368,17 @@ module.exports = (client) => {
             fieldDescription = `🟠 [**${server.servername}**](${server.steamlink})\n`;
             break;
         }
-        if (server.status !== 'maintenance') {
-          for (const player of server.playerlist) {
-            // fieldDescription += `◽️ ${player[0]} (${player[1]})\n`;
-            if (player[2] !== "") {
-              let member = await guild.members.get(player[2]);
-              fieldDescription += `🔹 ${member.displayName}\n`;
-            } else {
-              fieldDescription += `🔸 ${player[0]}\n`;
-            }
+        if (server.status == 'maintenance') {
+          fieldDescription += `en **maintenance**\n`;
+        }
+        for (const player of server.playerlist) {
+          // fieldDescription += `◽️ ${player[0]} (${player[1]})\n`;
+          if (player[2] !== "") {
+            let member = await guild.members.get(player[2]);
+            fieldDescription += `🔹 ${member.displayName}\n`;
+          } else {
+            fieldDescription += `🔸 ${player[0]}\n`;
           }
-        } else {
-          fieldDescription += `Serveur en **maintenance**`;
         }
 
         fieldDescription += '〰️〰️〰️〰️〰️〰️〰️〰️';
