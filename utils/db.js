@@ -324,7 +324,7 @@ exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => 
     for (var i in pageRecords) {
         //let record = util.inspect(pageRecords[i], {compact: 10, breakLength: 180});
         let record = await showProps(pageRecords[i]);
-        description += `**${pageIndexes[i]}**:\`${record.substring(0, 100)}\`\n`;
+        description += `**${pageIndexes[i]}**: \`${record.substring(0, 100)}\`\n`;
         row += 1;
     }
 
