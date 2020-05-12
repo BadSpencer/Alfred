@@ -44,6 +44,7 @@ exports.tables = {
         "emoji": "",
         "createdAt": "",
         "actif": false,
+        "nbDaysInactive": 30,
         "roleID": "",
         "modRoleID": "",
         "playRoleID": "",
