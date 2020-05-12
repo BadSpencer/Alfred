@@ -77,6 +77,9 @@ module.exports = (client) => {
   };
 
 
+ 
+
+
   client.gamesPlayersDetail = async (gamename, message) => {
     const guild = client.guilds.get(client.config.guildID);
     const game = await client.db_games.get(gamename);
@@ -208,7 +211,6 @@ module.exports = (client) => {
   };
 
   client.gameDisplayInfos = async (game, channel) => {
-    let client = this.client;
     const guild = client.guilds.get(client.config.guildID);
 
     const gameRole = await guild.roles.get(game.roleID);

@@ -12,15 +12,16 @@ const {
 const colors = require('../../utils/colors');
 
 
-class JeuCommand extends Command {
+class JeuxCommand extends Command {
     constructor() {
-        super('jeu', {
-            aliases: ['jeu', 'j'],
+        super('jeux', {
+            aliases: ['jeux', 'jeu', 'j'],
             category: 'Modération',
             args: [
                 {
                     id: 'game',
                     type: 'game',
+                    match: 'content',
                     prompt: {
                         start: 'Veuillez spécifier un nom de jeu',
                         retry: 'Veuillez spécifier un nom de jeu'
@@ -39,10 +40,11 @@ class JeuCommand extends Command {
         let client = this.client;
         const guild = client.guilds.get(client.config.guildID);
 
-        client.gamesPlayersDetail(args.game.name, message)
+        client.gameDisplayInfos(args.game, message.channel);
 
+        if (message.channel.type === 'text') message.delete();;
     }
 }
 
 
-module.exports = JeuCommand;
+module.exports = JeuxCommand;
