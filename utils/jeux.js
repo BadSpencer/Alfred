@@ -76,10 +76,11 @@ module.exports = (client) => {
     await client.db_gameservers.set("default", datamodel.tables.gameservers);
   };
 
-  client.gamesPlayersDetail = async (gamename, message) => {
 
+  client.gamesPlayersDetail = async (gamename, message) => {
+    const guild = client.guilds.get(client.config.guildID);
     const game = await client.db_games.get(gamename);
-    const gameRole = await message.guild.roles.get(game.roleID);
+    const gameRole = guild.roles.get(game.roleID);
 
     let description = "";
 
@@ -204,7 +205,27 @@ module.exports = (client) => {
     member.send(notification);
     client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
 
-  }
+  };
+
+  client.gameDisplayInfos = async (game, channel) => {
+    let client = this.client;
+    const guild = client.guilds.get(client.config.guildID);
+
+    const gameRole = await guild.roles.get(game.roleID);
+
+    let description = "";
+
+    const embed = new Discord.RichEmbed();
+    embed.setTitle(game.name);
+    embed.setColor(colors['darkorange']);
+
+    
+
+
+
+
+    channel.send(embed);
+  };
 
 
 }
