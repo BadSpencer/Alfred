@@ -77,7 +77,7 @@ module.exports = (client) => {
   };
 
 
- 
+
 
 
   client.gamesPlayersDetail = async (gamename, message) => {
@@ -138,7 +138,7 @@ module.exports = (client) => {
         }
       }
 
-      
+
 
     }
     description = descActive + '\n' + descInactivePlayed + '\n' + descInactiveAction + '\n' + descInactiveBoth;
@@ -221,13 +221,92 @@ module.exports = (client) => {
     embed.setTitle(game.name);
     embed.setColor(colors['darkorange']);
 
-    
+    let players = await client.gameGetPlayerList(game);
 
+    players.sort(function (a, b) {
+      return a.lastPlayed - b.lastPlayed;
+    });
 
+    for (const player of players) {
+      if (player.usergame) {
+        if (player.isActive) {
+          description += `🔹 **${player.level}** ${player.name} depuis ${player.daysJoined}j\n`;
+
+        } else {
+          if (player.daysPlayed >= game.nbDaysInactive && player.daysAction >= game.nbDaysInactive) {
+            description += `👻 **${player.level}** ${player.name} depuis ${player.daysJoined}j Inact jeu: **${player.daysPlayed}j** Inact discord: **${player.daysAction}j**\n`;
+          } else {
+            if (player.daysPlayed >= game.nbDaysInactive) {
+              description += `👻 **${player.level}** ${player.name} depuis ${player.daysJoined}j Inact jeu: **${player.daysPlayed}j** Inact discord: ${player.daysAction}j\n`;
+            }
+            if (player.daysAction >= game.nbDaysInactive) {
+              description += `👻 **${player.level}** ${player.name} depuis ${player.daysJoined}j Inact jeu: ${player.daysPlayed}j Inact discord:** ${player.daysAction}j**\n`;
+            }
+          }
+        }
+      } else {
+        description += `⚠️ ${player.name} - Données de jeu absentes\n`;
+      }
+
+    }
+
+    embed.setDescription(description);
 
 
     channel.send(embed);
   };
+
+  client.gameGetPlayerList = async (game) => {
+    const guild = client.guilds.get(client.config.guildID);
+    const gameRole = guild.roles.get(game.roleID);
+
+    let now = +new Date;
+
+    let players = [];
+
+    for (const member of gameRole.members) {
+
+      let player = {
+        "id": "",
+        "name": "",
+        "usergame": true,
+        "isActive": true,
+        "daysJoined": 0,
+        "daysPlayed": 0,
+        "daysAction": 0,
+        "lastPlayed": "",
+        "lastAction": "",
+        "level": "",
+        "xp": ""
+      };
+      let usergameKey = `${game.name}-${member[1].id}`
+      let usergame = client.db_usergame.get(usergameKey);
+
+      if (usergame) {
+        player.id = member[1].id;
+        player.name = member[1].displayName;
+        player.daysJoined = client.msToDays(now - usergame.joinedAt);
+        player.daysPlayed = client.msToDays(now - usergame.lastPlayed);
+        player.daysAction = client.msToDays(now - usergame.lastAction);
+        player.lastPlayed = usergame.lastPlayed;
+        player.lastAction = usergame.lastAction;
+        if (usergame.level == "") {
+          player.level = "0";
+        } else {
+        player.level = usergame.level;
+        }
+        player.xp = usergame.xp;
+      } else {
+        player.id = member.id;
+        player.name = member.displayName;
+        player.usergame = false;
+      }
+
+      players.push(player);
+
+    }
+    return players;
+  }
 
 
 }
