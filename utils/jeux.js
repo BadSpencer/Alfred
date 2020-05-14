@@ -230,17 +230,17 @@ module.exports = (client) => {
     for (const player of players) {
       if (player.usergame) {
         if (player.isActive == true) {
-          description += `◽️ **${player.name}** (${player.level})\nDepuis **${player.daysJoined}j**\n`;
+          description += `◽️ **${player.name}** ${player.daysJoined}j - XP:${player.xp}\n`;
 
         } else {
           if (player.daysPlayed >= game.nbDaysInactive && player.daysAction >= game.nbDaysInactive) {
-            description += `◽️ **${player.name}** (${player.level})\nDepuis **${player.daysJoined}j** jeu: **${player.daysPlayed}j** discord: **${player.daysAction}j**\n`;
+            description += `◽️ **${player.name}** ${player.daysJoined}j - XP:${player.xp}\njeu: **${player.daysPlayed}j** discord: **${player.daysAction}j**\n`;
           } else {
             if (player.daysPlayed >= game.nbDaysInactive) {
-              description += `◽️ **${player.name}** (${player.level})\nDepuis **${player.daysJoined}j** jeu: **${player.daysPlayed}j** discord: ${player.daysAction}j\n`;
+              description += `◽️ **${player.name}** ${player.daysJoined}j - XP:${player.xp}\njeu: **${player.daysPlayed}j** discord: ${player.daysAction}j\n`;
             }
             if (player.daysAction >= game.nbDaysInactive) {
-              description += `◽️ **${player.name}** (${player.level})\nDepuis **${player.daysJoined}j** jeu: ${player.daysPlayed}j discord: **${player.daysAction}j**\n`;
+              description += `◽️ **${player.name}** ${player.daysJoined}j - XP:${player.xp}\njeu: ${player.daysPlayed}j discord: **${player.daysAction}j**\n`;
             }
           }
         }
