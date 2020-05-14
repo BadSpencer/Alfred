@@ -117,13 +117,13 @@ exports.tables = {
         "id": "",
         "userid": "",
         "gameid": "",
-        "joinedAt": "",
+        "joinedAt": 0,
         "joinedDate": "",
         "joinedTime": "",
         "xp": 0,
-        "level": "",
-        "lastPlayed": "",
-        "lastAction": ""
+        "level": 0,
+        "lastPlayed": 0,
+        "lastAction": 0
     },
     userxplogs: {
         "id": "",
