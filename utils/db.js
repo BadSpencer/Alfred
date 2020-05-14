@@ -102,55 +102,56 @@ exports.usergameCheck = async (client) => {
         }
     })
 
-    let usergames = client.db_usergame.array();
-    for (const usergame of usergames) {
-        if (usergame !== null) {
-            let game = client.db_games.get(usergame.gameid);
-            if (game) {
-                let gameRole = guild.roles.get(game.roleID);
+    // let usergames = client.db_usergame.array();
+    // for (const usergame of usergames) {
+    //     if (usergame !== null) {
+    //         let game = client.db_games.get(usergame.gameid);
+    //         if (game) {
+    //             let gameRole = guild.roles.get(game.roleID);
 
-                if (usergame.userid == undefined) {
-                    let text = usergame.id.split("-");
-                    usergame["userid"] = text[1];
-                }
+    //             if (usergame.userid == undefined) {
+    //                 let text = usergame.id.split("-");
+    //                 usergame["userid"] = text[1];
+    //             }
 
-                if (usergame.joinedAt == "") {
-                    usergame.joinedAt = 0;
-                }
-                if (usergame.lastPlayed == "") {
-                    usergame.lastPlayed = 0;
-                }
-                if (usergame.lastAction == "") {
-                    usergame.lastAction = 0;
-                }
-                if (usergame.xp == "") {
-                    usergame.xp = 0;
-                }
-                if (usergame.level == "") {
-                    usergame.level = 0;
-                }
-                if (gameRole) {
-                    if (gameRole.members.has(usergame.userid)) {
-                        if (usergame.joinedAt == 0) {
-                            usergame.joinedAt = game.createdAt + 90000;
-                            usergame.joinedDate = moment(usergame.joinedAt).format('DD.MM.YYYY');
-                            usergame.joinedTime = moment(usergame.joinedAt).format('HH:mm');
-                        }
-                    } else {
-                        usergame.joinedAt = 0;
-                        usergame.joinedDate = "";
-                        usergame.joinedTime = "";
-                    }
-                } else {
-                    usergame.joinedAt = 0;
-                    usergame.joinedDate = "";
-                    usergame.joinedTime = "";
-                }
-                client.db_usergame.set(usergame.id, usergame);
-            }
-        }
+    //             if (usergame.joinedAt == "") {
+    //                 usergame.joinedAt = 0;
+    //             }
+    //             if (usergame.lastPlayed == "") {
+    //                 usergame.lastPlayed = 0;
+    //             }
+    //             if (usergame.lastAction == "") {
+    //                 usergame.lastAction = 0;
+    //             }
+    //             if (usergame.xp == "") {
+    //                 usergame.xp = 0;
+    //             }
+    //             if (usergame.level == "") {
+    //                 usergame.level = 0;
+    //             }
+    //             if (gameRole) {
+    //                 if (gameRole.members.has(usergame.userid)) {
+    //                     if (usergame.joinedAt == 0) {
+    //                         usergame.joinedAt = game.createdAt + 90000;
+    //                         usergame.joinedDate = moment(usergame.joinedAt).format('DD.MM.YYYY');
+    //                         usergame.joinedTime = moment(usergame.joinedAt).format('HH:mm');
+    //                     }
+    //                 } else {
+    //                     usergame.joinedAt = 0;
+    //                     usergame.joinedDate = "";
+    //                     usergame.joinedTime = "";
+    //                 }
+    //             } else {
+    //                 usergame.joinedAt = 0;
+    //                 usergame.joinedDate = "";
+    //                 usergame.joinedTime = "";
+    //             }
+    //             client.db_usergame.set(usergame.id, usergame);
+    //         }
+    //     }
+    // }
 
-    }
+
 };
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const guild = client.guilds.get(client.config.guildID);
