@@ -109,6 +109,11 @@ exports.usergameCheck = async (client) => {
             if (game) {
                 let gameRole = guild.roles.get(game.roleID);
 
+                if (usergame.userid == undefined) {
+                    let text = usergame.id.split("-");
+                    usergame["userid"] = text[1];
+                }
+
                 if (usergame.joinedAt == "") {
                     usergame.joinedAt = 0;
                 }
