@@ -229,18 +229,18 @@ module.exports = (client) => {
 
     for (const player of players) {
       if (player.usergame) {
-        if (player.isActive) {
-          description += `🔹 **${player.level}** ${player.name} depuis ${player.daysJoined}j\n`;
+        if (player.isActive == true) {
+          description += `◽️ **${player.name}** (${player.level})\nJoue depuis ${player.daysJoined}j\n`;
 
         } else {
           if (player.daysPlayed >= game.nbDaysInactive && player.daysAction >= game.nbDaysInactive) {
-            description += `👻 **${player.level}** ${player.name} depuis ${player.daysJoined}j Inact jeu: **${player.daysPlayed}j** Inact discord: **${player.daysAction}j**\n`;
+            description += `◽️ **${player.name}** (${player.level})\nJoue depuis **${player.daysJoined}j** Inactivité jeu: **${player.daysPlayed}j** Inactivité discord: **${player.daysAction}j**\n`;
           } else {
             if (player.daysPlayed >= game.nbDaysInactive) {
-              description += `👻 **${player.level}** ${player.name} depuis ${player.daysJoined}j Inact jeu: **${player.daysPlayed}j** Inact discord: ${player.daysAction}j\n`;
+              description += `◽️ **${player.name}** (${player.level})\nJoue depuis **${player.daysJoined}j** Inactivité jeu: **${player.daysPlayed}j**\n`;
             }
             if (player.daysAction >= game.nbDaysInactive) {
-              description += `👻 **${player.level}** ${player.name} depuis ${player.daysJoined}j Inact jeu: ${player.daysPlayed}j Inact discord:** ${player.daysAction}j**\n`;
+              description += `◽️ **${player.name}** (${player.level})\nJoue depuis **${player.daysJoined}j** Inactivité discord: **${player.daysAction}j**\n`;
             }
           }
         }
@@ -290,10 +290,13 @@ module.exports = (client) => {
         player.daysAction = client.msToDays(now - usergame.lastAction);
         player.lastPlayed = usergame.lastPlayed;
         player.lastAction = usergame.lastAction;
+        if (player.daysPlayed >= game.nbDaysInactive || player.daysAction >= game.nbDaysInactive) {
+          player.isActive = false;
+        }
         if (usergame.level == "") {
           player.level = "0";
         } else {
-        player.level = usergame.level;
+          player.level = usergame.level;
         }
         player.xp = usergame.xp;
       } else {
