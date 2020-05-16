@@ -26,9 +26,9 @@ class usersCommand extends Command {
                     id: 'userdata',
                     type: 'userdata',
                     prompt: {
-                        start: 'Quel membre souhaitez vous expulser ?',
+                        start: 'Pour quel membre ? Donnez mon son ID s\'il vous plait.',
                         retry: 'Mentionnez un membre avec son ID'
-                    },
+                    }
                 }
             ],
             description: {
