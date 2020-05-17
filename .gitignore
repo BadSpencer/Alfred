@@ -108,3 +108,4 @@ media/*
 config.json
 config.js
 media/
+.vscode/

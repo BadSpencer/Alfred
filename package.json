@@ -20,8 +20,8 @@
     "node-superfetch": "^0.1.10",
     "opusscript": "0.0.7",
     "path": "^0.12.7",
-    "rcon": "^1.0.3",
     "sequelize": "^5.21.6",
+    "source-rcon-client": "0.0.10",
     "sqlite": "^3.0.6",
     "ytdl-core": "^2.0.1"
   },
