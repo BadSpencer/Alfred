@@ -43,6 +43,8 @@ exports.PostRoleReaction = async (client, clearReact = false) => {
 
     //let embed = new Discord.RichEmbed(await client.games.gameGetListEmbed(client));
 
+    if (games.size == 0) return;
+
     let embed = new Discord.RichEmbed();
 
     let gameJoinMessage = undefined;
