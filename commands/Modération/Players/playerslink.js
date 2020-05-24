@@ -43,7 +43,7 @@ class PlayersLinkCommand extends Command {
 
         await client.gameServersPlayerLink(message, args.playerID, args.userdata);
 
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
+        if (message.channel.type === 'text') message.delete();;
     }
 
 }
