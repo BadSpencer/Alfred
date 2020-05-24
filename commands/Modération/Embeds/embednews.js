@@ -1,10 +1,10 @@
-const colors = require('../../utils/colors');
+const colors = require('../../../utils/colors');
 const {
     successMessage,
     errorMessage,
     warnMessage,
     questionMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 
 
 // Required things for using Embeds and extending Akairo Command
@@ -37,10 +37,10 @@ class EmbedNewsCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.db_settings.get(guild.id);
-        let newsChannel = guild.channels.find(c => c.name === settings.newsChannel);
-        let generalChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
+        let newsChannel = guild.channels.cache.find(c => c.name === settings.newsChannel);
+        let generalChannel = guild.channels.cache.find(c => c.name === settings.welcomeMemberChannel);
     
         if (message.channel.type === 'text') message.delete();;
         let news = await client.embedShowChannel(args.embedID, newsChannel, true);

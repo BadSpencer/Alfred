@@ -9,7 +9,7 @@ class ReadyListener extends Listener {
     constructor() {
         super('ready', {
             emitter: 'client',
-            eventName: 'ready'
+            event: 'ready'
         });
     }
 
@@ -43,6 +43,8 @@ class ReadyListener extends Listener {
 
         if (!client.cron_serversInfos.running) client.cron_serversInfos.start();
         if (!client.cron_ArkDWD.running) client.cron_ArkDWD.start();
+
+        if (!client.cron_gamePurge.running) client.cron_gamePurge.start();
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
 

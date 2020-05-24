@@ -63,7 +63,7 @@ class ArkCommand extends Command {
     }
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         let servers = [];
 
         if (args.serverID == "*") {
@@ -73,7 +73,7 @@ class ArkCommand extends Command {
         }
 
         let game = client.db_games.get("ARK: Survival Evolved");
-        const gameTextChannel = guild.channels.get(game.textChannelID);
+        const gameTextChannel = guild.channels.cache.get(game.textChannelID);
 
         switch (args.action) {
             case 'dwd':
@@ -104,7 +104,7 @@ class ArkCommand extends Command {
             case 'send':
             case 'tchat':
             case 'chat':
-                let sendmess = 'ServerChat ' + args.arguments.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                let sendmess = `ServerChat ${args.arguments.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`;
                 for (const server of servers) {
                     await client.gameRconQuery(server, sendmess)
                 }

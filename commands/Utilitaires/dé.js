@@ -29,9 +29,9 @@ class DéCommand extends Command {
 
             description: {
                 content: 'Permet d\'effectuer un lancer de dé virtuel',
-                usage: '\`!dé [<nb faces> <nb tirages>]\`\n' +
-                'Choisissez le nombre de faces que comporte votre dé et le nombre de tirages successifs que vous souhaitez que j\'effectue.\n' + 
-                'Si vous lancez la commande sans paramètre, j\'effectuerais un seul lancé d\'un dé à six faces.',
+                usage: `\`!dé [<nb faces> <nb tirages>]\`
+                Choisissez le nombre de faces que comporte votre dé et le nombre de tirages successifs que vous souhaitez que j\'effectue.
+                Si vous lancez la commande sans paramètre, j'effectuerais un seul lancé d'un dé à six faces`,
                 examples: ['!dé','!dé 20 4', '!rnd 100 1']
             }
         });
@@ -43,9 +43,9 @@ class DéCommand extends Command {
         if (args.numTirages == null) args.numTirages=1; 
         var msg = "Résultat du tirage: ";
         for (var i=0; i<args.numTirages-1; i++) {
-          msg += (Math.floor(Math.random()*args.numFaces)+1).toString() + ", ";
+          msg += `${(Math.floor(Math.random()*args.numFaces)+1).toString()},`;
         }
-        msg += (Math.floor(Math.random()*args.numFaces)+1).toString();
+        msg += `${(Math.floor(Math.random()*args.numFaces)+1).toString()},`;
         message.reply(msg);
         if (message.channel.type === 'text') message.delete();;
 

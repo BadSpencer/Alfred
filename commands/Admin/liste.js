@@ -13,7 +13,7 @@ class ListeCommand extends Command {
 
     exec(message) {
         let client = this.client;
-        client.games.PostRoleReaction(client, true);
+        client.gamesListPost(true);
 
         if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;;
     }

@@ -14,26 +14,26 @@ class MessageReactionAddListener extends Listener {
     constructor() {
         super('messageReactionAdd', {
             emitter: 'client',
-            eventName: 'messageReactionAdd'
+            event: 'messageReactionAdd'
         });
     }
 
     async exec(messageReaction, user) {
 
         let gameGroupsBlacklist = [
-            '191993511543832577', // Albator
-            '502561242049806336'  // Bad Weuiser
+            '191993511543832577' // Albator
         ];
 
 
 
 
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
         if (user.bot) return;
 
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        const member = guild.members.get(user.id);
+        const member = guild.members.cache.get(user.id);
 
         client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
 
@@ -48,7 +48,7 @@ class MessageReactionAddListener extends Listener {
 
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     await messageReaction.message.edit(newEmbed);
-                    // await messageReaction.message.clearReactions();
+                    // await messageReaction.message.reactions.removeAll();
 
                     postedEmbed.currentPage = indexNewPage + 1;
                     // if (postedEmbed.currentPage !== totalPages) {
@@ -67,7 +67,7 @@ class MessageReactionAddListener extends Listener {
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     await messageReaction.message.edit(newEmbed);
-                    // await messageReaction.message.clearReactions();
+                    // await messageReaction.message.reactions.removeAll();
                     postedEmbed.currentPage = indexNewPage + 1;
                     // if (postedEmbed.currentPage !== 1) {
                     //     await messageReaction.message.react(`◀️`);
@@ -86,20 +86,19 @@ class MessageReactionAddListener extends Listener {
         if (messageReaction.message.id == settings.gameJoinMessage) {
             const game = client.db_games.find(game => game.emoji == messageReaction.emoji.name);
             if (game) {
-                const gameRole = guild.roles.get(game.roleID);
+                const gameRole = guild.roles.cache.get(game.roleID);
                 if (gameRole) {
-                    if (member.roles.has(gameRole.id)) {
+                    if (member.roles.cache.has(gameRole.id)) {
                         if (gameGroupsBlacklist.includes(member.id)) {
                             member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
-                            client.games.quitConfirmation(client, messageReaction, game, member);
+                            client.gameQuitConfirmation(messageReaction, game, member);
                         }
-
                     } else {
                         if (gameGroupsBlacklist.includes(member.id)) {
                             member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
-                            member.addRole(gameRole);
+                            member.roles.add(gameRole);
                             successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
                         }
                     }

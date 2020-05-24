@@ -16,9 +16,9 @@ class PlayCommand extends Command {
       ],
       description: {
         content: 'Joue le son d\'une vidéo Youtube dans le salon où vous êtes connecté',
-        usage: '\`!play <url>\`\n' +
-        'Donnez moi l\'adresse d\'une vidéo Youtube et je viendrais jouer son son dans votre salon vocal.\n\n' +
-        'Après avoir lancé cette commande, vous devrez patienter 1 minute avant de pouvoir l\'utiliser à nouveau.',
+        usage: `\`!play <url>\`
+        Donnez moi l\'adresse d\'une vidéo Youtube et je viendrais jouer son son dans votre salon vocal.\n
+        Après avoir lancé cette commande, vous devrez patienter 1 minute avant de pouvoir l'utiliser à nouveau.`,
         examples: ['!play https://www.youtube.com/watch?v=dQw4w9WgXcQ']
       }
     });
@@ -48,15 +48,15 @@ class PlayCommand extends Command {
         }
       });
 
-      if (message.member.voiceChannel) {
-        message.member.voiceChannel.join()
+      if (message.member.voice.channel) {
+        message.member.voice.channel.join()
           .then(connection => {
             const stream = youtube(String(argument), {
               audioonly: true
             });
-            const dispatcher = connection.playStream(stream, streamOptions);
-            dispatcher.on("end", () => {
-              message.member.voiceChannel.leave();
+            const dispatcher = connection.play(stream, streamOptions);
+            dispatcher.on("finish", () => {
+              message.member.voice.channel.leave();
             });
           })
           .catch(console.error);
@@ -64,14 +64,14 @@ class PlayCommand extends Command {
 
     } else {
 
-      const file = settings.mediaPath + argument + ".mp3";
+      const file = `${settings.mediaPath}${argument}.mp3`;
 
-      if (message.member.voiceChannel) {
-        message.member.voiceChannel.join()
+      if (message.member.voice.channel) {
+        message.member.voice.channel.join()
           .then(connection => {
-            const dispatcher = connection.playFile(file, streamOptions);
-            dispatcher.on("end", () => {
-              message.member.voiceChannel.leave();
+            const dispatcher = connection.play(file, streamOptions);
+            dispatcher.on("finish", () => {
+              message.member.voice.channel.leave();
             });
           })
           .catch(console.error);

@@ -14,7 +14,7 @@ module.exports = (client) => {
      * @returns {embed}
      */
     client.aideGetAideEmbedPage = async (page, totalPages, preDescription = null, postDescription = null) => {
-        let embed = new Discord.RichEmbed();
+        let embed = new Discord.MessageEmbed();
         let texteTitle = `AIDE_EMBED_TITLE_${page}`;
         let texteDescription = `AIDE_EMBED_DESCRIPTION_${page}`;
 

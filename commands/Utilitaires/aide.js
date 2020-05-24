@@ -1,3 +1,4 @@
+const Discord = require("discord.js");
 const colors = require('../../utils/colors');
 const {
     successMessage,
@@ -7,7 +8,7 @@ const {
 } = require('../../utils/messages');
 const {
     Message,
-    RichEmbed,
+    MessageEmbed,
     Permissions
 } = require('discord.js');
 const {
@@ -32,9 +33,9 @@ class AideCommand extends Command {
             }],
             description: {
                 content: 'Affiche ce message d\'aide et une aide détaillée pour chaque commande',
-                usage: '\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel\n' +
-                'Lancée sans paramètre, j\'afficherai ce menu d\'aide\n' +
-                'Si vous spécifiez une commande ou bien un de ses alias, alors je vous afficherais une aide plus détaillée sur cette commande',
+                usage: `\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel
+                Lancée sans paramètre, j\'afficherai ce menu d\'aide
+                Si vous spécifiez une commande ou bien un de ses alias, alors je vous afficherais une aide plus détaillée sur cette commande`,
                 examples: ['!aide', '!help tirage','!h sug']
             }
         });
@@ -42,18 +43,18 @@ class AideCommand extends Command {
 
     async exec(message, { command }) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
 
-        let member = guild.members.get(message.author.id);
+        let member = guild.members.cache.get(message.author.id);
 
-        //const roleEve = guild.roles.find(r => { return r.name == "@everyone" });
-        //const roleMem = guild.roles.find(r => { return r.name == message.settings.memberRole });
-        const roleMod = guild.roles.find(r => { return r.name == message.settings.modRole });
-        const roleAdm = guild.roles.find(r => { return r.name == message.settings.adminRole });
+        //const roleEve = guild.roles.cache.find(r => { return r.name == "@everyone" });
+        //const roleMem = guild.roles.cache.find(r => { return r.name == message.settings.memberRole });
+        const roleMod = guild.roles.cache.find(r => { return r.name == message.settings.modRole });
+        const roleAdm = guild.roles.cache.find(r => { return r.name == message.settings.adminRole });
 
         let ignoredCategories = [];
         ignoredCategories.push("Auto");
-        // if (!member.roles.has(roleMod.id) && !member.roles.has(roleAdm.id)) {
+        // if (!member.roles.cache.has(roleMod.id) && !member.roles.cache.has(roleAdm.id)) {
             ignoredCategories.push("Admin");
             ignoredCategories.push("Modération");
         // }
@@ -80,13 +81,13 @@ class AideCommand extends Command {
                 }
             });
 
-            embeds.push(new RichEmbed(await client.aideGetAideEmbedPage(1, totalPages, null, postDescriptionAccueil)));
+            embeds.push(new MessageEmbed(await client.aideGetAideEmbedPage(1, totalPages, null, postDescriptionAccueil)));
 
 
             let pageIndex = nbFixedPages; // Nombre de pages fixes avant les pages de catégories de commandes
             this.handler.categories.forEach((cm, category) => {
                 if (!ignoredCategories.includes(category)) {
-                    const embed = new RichEmbed();
+                    const embed = new MessageEmbed();
                     let description = "";
                     pageIndex += 1;
 
@@ -141,7 +142,7 @@ class AideCommand extends Command {
 
         }
 
-        const embed = new RichEmbed();
+        const embed = new MessageEmbed();
         let description = "";
         embed.setColor(colors.darkgreen);
         embed.setTitle(`Aide sur la commande: **${command.aliases[0]}**`);

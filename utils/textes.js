@@ -415,7 +415,7 @@ module.exports = class {
             },
 
 
-            
+
 
             USER_KICK_CHECK_BEFORE: (member) => {
                 return `Êtes vous certain de vouloir expulser **${member.displayName}** du serveur ?`;
@@ -453,7 +453,7 @@ module.exports = class {
 
 
             USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
-        
+
             MEMBER_NEW_MEMBER_NOTIFICATION: (member) => {
                 return `**${member.displayName}** à été accepté en tant que membre de Casual Effect`;
             },
@@ -575,6 +575,10 @@ module.exports = class {
                 ]
                 return textes.random();
             },
+            GAMES_PURGE_NOTIFICATION: (game, member) => {
+                return `${member.displayName} est inactif sur ${game.name} depuis plus de ${game.nbDaysInactive} jours.
+                Il a éré retiré du groupe`;
+            },
             GAMES_QUIT_SUCCESS: (jeu) => {
                 let textes = [
                     `Vous avez quitté le groupe ${jeu}. Vous allez nous manquer!`,
@@ -601,8 +605,38 @@ module.exports = class {
             GAMESERVER_SERVER_ADD_SUCCESS: (serverID) => {
                 return `Le serveur à correctment été ajouté avec l\'id ${serverID}.`;
             },
-            GAMESERVER_SERVER_EDIT_SUCCESS: (serverID) => {
-                return `Le serveur  ${serverID} à correctment été modifié.`;
+            GAMESERVER_SERVER_ADD_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un serveur ?`,
+            GAMESERVER_SERVER_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
+
+
+            GAMESERVER_SERVER_EDIT_SERVER_PROMPT: `Quel **serveur** souhaitez vous modifier ? (ID)`,
+            GAMESERVER_SERVER_EDIT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
+            GAMESERVER_SERVER_EDIT_FIELD_PROMPT: `Quel **champ** souhaitez vous modifier ?`,
+            GAMESERVER_SERVER_EDIT_VALUE_PROMPT: `Quelle est la **nouvelle valeur** pour ce champ ?`,
+
+            GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT: `Ajouter un serveur de jeu`,
+            GAMESERVER_SERVER_VIEW_SERVER_PROMPT: `Quel **serveur** souhaitez vous afficher ? (ID)`,
+            GAMESERVER_SERVER_VIEW_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
+            GAMESERVER_SERVER_VIEW_NAME_PROMPT: `Quel est le **nom** de ce serveur ?`,
+            GAMESERVER_SERVER_VIEW_IP_PROMPT: `Quelle est l'adresse **ip** du serveur ?`,
+            GAMESERVER_SERVER_VIEW_PORTRCON_PROMPT: `Quel est le **port RCON** du serveur ?`,
+            GAMESERVER_SERVER_VIEW_PORTRCON_RETRY: `Veuillez saisir un port valide !`,
+            GAMESERVER_SERVER_VIEW_PWDRCON_PROMPT: `Quel est le **mot de passe RCON** du serveur ?`,
+            GAMESERVER_SERVER_VIEW_PORTFTP_PROMPT: `Quel est le **port FTP** du serveur ?`,
+            GAMESERVER_SERVER_VIEW_PORTFTP_RETRY: `Veuillez saisir un port valide !`,
+            GAMESERVER_SERVER_VIEW_USERFTP_PROMPT: `Quel est le **user FTP** du serveur ?`,
+            GAMESERVER_SERVER_VIEW_PWDFTP_PROMPT: `Quel est le **mot de passe FTP** du serveur ?`,
+
+            GAMESERVER_SERVER_DEL_SERVER_PROMPT: `⚠️ Un serveur ne doit pas être supprimé mais désactivé. A n'utiliser qu'en cas de problème avec la base de données
+            Quel serveur souhaitez vous supprimer ?`,
+            GAMESERVER_SERVER_DEL_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
+            GAMESERVER_SERVER_DEL_CONFIRMATION_PROMPT: `Êtes-vous sûr de vouloir supprimer ce serveur ? (oui/non)`,
+            GAMESERVER_SERVER_DEL_CONFIRMATION_RETRY: `Veuillez répondre par 'oui' ou 'non'`,
+
+
+
+            GAMESERVER_SERVER_EDIT_SUCCESS: (server) => {
+                return `Le serveur  **${server.servername}** (${server.id}) à correctment été modifié.`;
             },
             GAMESERVER_SERVER_DELETE_SUCCESS: (server) => {
                 return `Le serveur **${server.servername} (${server.id})** à été supprimé avec succès.`;
@@ -614,12 +648,6 @@ module.exports = class {
             GAMESERVER_ERROR_PLAYERID_NOT_FOUND: (playerID) => {
                 return `Aucun joueur trouvé avec l'ID **${playerID}**. Lancez la commande \`!players\` pour obtenir la liste des joueurs.`;
             },
-
-            GAMESERVER_SERVER_DELETE_CHECK_BEFORE: (server) => {
-                return `Êtes-vous certain de vouloir supprimer le server **${server.servername} (${server.id})** de la base de données ?
-                **Attention:** Cette opération ne doit être réalisée que sur un serveur de test. Pensez à désactiver le serveur plutôt.`;
-            },
-
 
             GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
                 return `Mot de passe: **Pirates**
@@ -670,15 +698,13 @@ module.exports = class {
             },
             GAMESERVER_PLAYER_OLD_MEMBER_DETECTED: (userdata, gameserversPlayer, server) => {
                 return `Le membre **${userdata.displayName}** est actuellement connecté sur le serveur **${server.servername}**
-                
-                **Ce membre ne fait plus partie du serveur**
-
+                **Ce membre ne fait plus partie du discord**
                 Pour bannir ce joueur des serveurs de jeu, veuillez lancer la commande suivante:
-                \`!player ban ${playerID}\`` 
+                \`!player ban ${gameserversPlayer.id}\``
             },
 
             GAMESERVER_PLAYER_LINK_SUCCESS: (gameserversPlayer, member) => {
-                return `Le joueur **${gameserversPlayer.steamName}** (${gameserversPlayer.id}) à correctement été lié au membre **${member.displayName}**` 
+                return `Le joueur **${gameserversPlayer.steamName}** (${gameserversPlayer.id}) à correctement été lié au membre **${member.displayName}**`
             },
 
 
@@ -689,16 +715,16 @@ module.exports = class {
             },
             EMBED_EDIT_SUCCESS: (titre, id) => {
                 return `L'embed **${titre}** (${id}) est désormais en cours d'édition`;
-            },   
+            },
             EMBED_UPDATE_SUCCESS: (id, titre, zone) => {
                 return `Le champs "**${zone}**" de l'embed **${titre}** (${id}) à correctement été mis à jour`;
-            },  
-            EMBED_COPY_SUCCESS: (origID, copyID,  titre) => {
+            },
+            EMBED_COPY_SUCCESS: (origID, copyID, titre) => {
                 return `L'embed **${titre}** (${origID}) à correctement été copié. Nouvel ID: ${copyID}`;
-            }, 
+            },
             EMBED_ARCHIVED_SUCCESS: (titre, id) => {
                 return `L'embed **${titre}** (${id}) à été correctement été archivé`;
-            },           
+            },
             EMBED_CURRENT_EDIT_ARCHIVED: (embed) => {
                 return `Votre embed **${embed.titre}** (${embed.id}) est en cours d'édition. Il va être archivé`;
             },
@@ -776,9 +802,9 @@ module.exports = class {
             ],
 
             // PURGE
-            PURGE_DELETE_SUCCESS: (args, sizeDeleted) => {
+            PURGE_DELETE_SUCCESS: (nbdel, sizeDeleted) => {
 
-                if (args.purge == sizeDeleted) {
+                if (nbdel == sizeDeleted) {
                     if (sizeDeleted == 1) {
                         return `${sizeDeleted} message a été correctement supprimé.`;
                     } else {
@@ -786,15 +812,19 @@ module.exports = class {
                     }
                 } else {
                     if (sizeDeleted == 1) {
-                        return `${sizeDeleted} message a été supprimé sur les ${args.purge} demandés.`;
+                        return `${sizeDeleted} message a été supprimé sur les ${nbdel} demandés.`;
                     } else {
-                        return `${sizeDeleted} messages ont été supprimés sur les ${args.purge} demandés.`;
+                        return `${sizeDeleted} messages ont été supprimés sur les ${nbdel} demandés.`;
                     }
                 }
 
             },
             PURGE_DELETE_ERROR: (error) => {
                 return `Je n'ai pas réussi à supprimer les messages pour la raison: ${error}`;
+            },
+
+            ERROR_FIELD_NOT_FOUND: (field) => {
+                return `Le champ "${field}" n'existe pas`;
             },
 
             // DEBUG
@@ -844,7 +874,7 @@ module.exports = class {
             },
             MOD_NOTIF_SERVER_JOIN: (member) => {
                 return `✅ **${member.displayName}** à rejoint le serveur`;
-            },            
+            },
             MOD_NOTIF_SERVER_JOIN_AGAIN: (member) => {
                 return `❗️✅ **${member.displayName}** à rejoint le serveur (c'est pas la première fois)`;
             },
@@ -865,6 +895,9 @@ module.exports = class {
             },
             MOD_NOTIF_MEMBER_QUIT_GAME: (member, game) => {
                 return `⚠️ **${member.displayName}** à quitté le groupe du jeu ${game.name}`;
+            },
+            MOD_NOTIF_MEMBER_PURGE_GAME: (member, game) => {
+                return `⚠️ **${member.displayName}** à été retiré du groupe du jeu ${game.name} pour inactivité.`;
             },
             AIDE_EMBED_TITLE_1: `Casual Effect: Aide en ligne`,
             AIDE_EMBED_DESCRIPTION_1: `Ce livret d'aide apporte des informations sur les commandes que je peux exécuter.
@@ -911,24 +944,7 @@ module.exports = class {
     }
 
 
-    printDate(pdate, isLongDate) {
-        let monthNames = [
-            "janvier", "février", "mars",
-            "avril", "mai", "juin", "juillet",
-            "août", "septembre", "octobre",
-            "novembre", "décembre"
-        ];
 
-        let day = pdate.getDate();
-        let monthIndex = pdate.getMonth();
-        let year = pdate.getFullYear();
-        let hour = pdate.getHours() < 10 ? "0" + pdate.getHours() : pdate.getHours();
-        let minute = pdate.getMinutes() < 10 ? "0" + pdate.getMinutes() : pdate.getMinutes();
-
-        let thedate = (isLongDate) ? day + " " + monthNames[monthIndex] + " " + year + " à " + hour + "h" + minute :
-            day + " " + monthNames[monthIndex] + " " + year;
-        return thedate;
-    }
 
     /**
      * Parse ms and returns a string
@@ -948,10 +964,7 @@ module.exports = class {
             isHours = hours > 0,
             isMinutes = minutes > 0;
         let pattern =
-            (!isDays ? "" : (isMinutes || isHours) ? "{days} jours, " : "{days} jours et ") +
-            (!isHours ? "" : (isMinutes) ? "{hours} heures, " : "{hours} heures et ") +
-            (!isMinutes ? "" : "{minutes} minutes et ") +
-            ("{seconds} secondes");
+            `${(!isDays ? "" : (isMinutes || isHours) ? "{days} jours, " : "{days} jours et ")}${(!isHours ? "" : (isMinutes) ? "{hours} heures, " : "{hours} heures et ")}${(!isMinutes ? "" : "{minutes} minutes et ")}${("{seconds} secondes")}`;
         let sentence = pattern
             .replace("{duration}", pattern)
             .replace("{days}", days)

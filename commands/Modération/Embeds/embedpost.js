@@ -1,10 +1,10 @@
-const colors = require('../../utils/colors');
+const colors = require('../../../utils/colors');
 const {
     successMessage,
     errorMessage,
     warnMessage,
     questionMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 
 const { Permissions } = require('discord.js');
 const {

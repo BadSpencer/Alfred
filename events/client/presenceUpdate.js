@@ -14,49 +14,69 @@ class presenceUpdateListener extends Listener {
     constructor() {
         super('presenceUpdate', {
             emitter: 'client',
-            eventName: 'presenceUpdate'
+            event: 'presenceUpdate'
         });
     }
 
-    async exec(oldMember, newMember) {
+    async exec(oldPresence, newPresence) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`EVENT: ${this.emitter}/${this.event} pour ${newPresence.member.displayName}`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        if (newMember.bot) return;
+        if (newPresence.member.bot) return;
+
+        let newPresenceGame = null;
+        if (newPresence) {
+            if (newPresence.activities) {
+                if (newPresence.activities.length > 0) {
+                    let newPresencePlaying = newPresence.activities.find(rec => rec.type == "PLAYING");
+                    if (newPresencePlaying) newPresenceGame = newPresencePlaying.name;
+                }
+            }
+        }
+        let oldPresenceGame = null;
+        if (oldPresence) {
+            if (oldPresence.activities) {
+                if (oldPresence.activities.length > 0) {
+                    let oldPresencePlaying = oldPresence.activities.find(rec => rec.type == "PLAYING");
+                    if (oldPresencePlaying) oldPresenceGame = oldPresencePlaying.name;
+                }
+            }
+        }
 
         // Log membre qui change de statut
-        if (oldMember.presence.status !== newMember.presence.status) {
-            client.log(client.textes.get("COM_USER_NEW_STATUS", newMember, statusTexts[newMember.presence.status]), "debug")
+        if (oldPresence.status !== newPresence.status) {
+            client.log(client.textes.get("COM_USER_NEW_STATUS", newPresence.member, statusTexts[newPresence.status]), "debug")
         }
 
         // Ajout du jeu dans la base s'il n'ets pas trouvé
-        if (newMember.presence.game) {
-            let gamePlayed = client.db_games.get(newMember.presence.game.name);
+        if (newPresenceGame !== null) {
+            let gamePlayed = client.db_games.get(newPresenceGame);
             if (!gamePlayed) {
-                await client.db.gamesCreate(client, newMember.presence.game.name);
+                await client.gamesCreate(newPresenceGame);
             }
         }
 
         /*---------------------------------------------------------------------------------------------*/
         /*                       Le membre se met à jouer à quelque chose                              */
         /*---------------------------------------------------------------------------------------------*/
-        if (oldMember.presence.game == null && newMember.presence.game !== null) {
-            let gamePlayed = client.db_games.get(newMember.presence.game.name);
+        if (oldPresenceGame == null && newPresenceGame !== null) {
+            let gamePlayed = client.db_games.get(newPresenceGame);
             if (gamePlayed && gamePlayed.actif) {
 
-                await client.usergameUpdateLastPlayed(gamePlayed, newMember);
+                await client.usergameUpdateLastPlayed(gamePlayed, newPresence.member);
 
                 if (gamePlayed.actif) {
-                    let gamePlayRole = newMember.guild.roles.get(gamePlayed.playRoleID);
-                    if (newMember.roles.has(gamePlayed.roleID)) {
-                        await newMember.addRole(gamePlayRole);
+                    let gamePlayRole = newPresence.member.guild.roles.cache.get(gamePlayed.playRoleID);
+                    if (newPresence.member.roles.cache.has(gamePlayed.roleID)) {
+                        await newPresence.member.roles.add(gamePlayRole);
 
-                        let voicechannel = client.channels.get(newMember.voiceChannelID);
+                        let voicechannel = client.channels.cache.get(newPresence.member.voice.channelID);
                         if (voicechannel) {
-                          if (voicechannel.name == "🔊 Salon vocal") {
-                            voicechannel.setName("🔊" + gamePlayed.name);
-                          }
+                            if (voicechannel.name == "🔊 Salon vocal") {
+                                voicechannel.setName(`🔊 ${gamePlayed.name}`);
+                            }
                         }
                     }
                 }
@@ -66,38 +86,38 @@ class presenceUpdateListener extends Listener {
         /*---------------------------------------------------------------------------------------------*/
         /*                           Membre a arreté de jouer à un jeu                                 */
         /*---------------------------------------------------------------------------------------------*/
-        if (oldMember.presence.game !== null && newMember.presence.game == null) {
-            let gamePlayed = client.db_games.get(oldMember.presence.game.name);
+        if (oldPresenceGame !== null && newPresenceGame == null) {
+            let gamePlayed = client.db_games.get(oldPresenceGame);
             if (gamePlayed) {
                 if (gamePlayed.actif) {
-                    let gamePlayRole = oldMember.guild.roles.get(gamePlayed.playRoleID);
-                    if (oldMember.roles.has(gamePlayed.roleID)) {
-                        await oldMember.removeRole(gamePlayRole);
+                    let gamePlayRole = oldPresence.member.guild.roles.cache.get(gamePlayed.playRoleID);
+                    if (oldPresence.member.roles.cache.has(gamePlayed.roleID)) {
+                        await oldPresence.member.roles.remove(gamePlayRole);
                     }
                 }
-            } 
+            }
         }
 
 
         /*---------------------------------------------------------------------------------------------*/
         /*                                 Membre a changé de jeu                                      */
         /*---------------------------------------------------------------------------------------------*/
-        if (oldMember.presence.game !== null && newMember.presence.game !== null) {
-            let gamePlayedOld = client.db_games.get(oldMember.presence.game.name);
+        if (oldPresenceGame !== null && newPresenceGame !== null) {
+            let gamePlayedOld = client.db_games.get(oldPresenceGame);
             if (gamePlayedOld) {
-                let gamePlayRole = oldMember.guild.roles.get(gamePlayedOld.playRoleID);
-                if (oldMember.roles.has(gamePlayedOld.roleID)) {
-                    await oldMember.removeRole(gamePlayRole);
+                let gamePlayRole = oldPresence.guild.roles.cache.get(gamePlayedOld.playRoleID);
+                if (oldPresence.member.roles.cache.has(gamePlayedOld.roleID)) {
+                    await oldPresence.member.roles.remove(gamePlayRole);
                 }
             }
-            let gamePlayedNew = client.db_games.get(newMember.presence.game.name);
+            let gamePlayedNew = client.db_games.get(newPresenceGame);
             if (gamePlayedNew) {
 
-                await client.usergameUpdateLastPlayed(gamePlayedNew, newMember);
+                await client.usergameUpdateLastPlayed(gamePlayedNew, newPresence.member);
 
-                let gamePlayRole = newMember.guild.roles.get(gamePlayedNew.playRoleID);
-                if (newMember.roles.has(gamePlayedNew.roleID)) {
-                    await newMember.addRole(gamePlayRole);
+                let gamePlayRole = newPresence.member.guild.roles.cache.get(gamePlayedNew.playRoleID);
+                if (newPresence.member.roles.cache.has(gamePlayedNew.roleID)) {
+                    await newPresence.member.roles.add(gamePlayRole);
                 }
             }
 

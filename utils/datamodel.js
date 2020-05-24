@@ -4,7 +4,7 @@ exports.tables = {
         "guildName": "",
         "logChannelID": "",
         "logToChan": "false",
-        "debug": "false",
+        "debug": "true",
         "modRole": "Modérateurs",
         "adminRole": "Admins",
         "memberRole": "Membres", 

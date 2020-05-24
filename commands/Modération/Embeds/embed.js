@@ -1,10 +1,10 @@
-const colors = require('../../utils/colors');
+const colors = require('../../../utils/colors');
 const {
     successMessage,
     errorMessage,
     warnMessage,
     questionMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 
 
 
@@ -69,7 +69,7 @@ class EmbedCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
         let embedEdit = await client.embedGetCureentEdit(message.author.id);
 

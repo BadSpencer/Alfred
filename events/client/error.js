@@ -14,6 +14,7 @@ class ErrorListener extends Listener {
 
     async exec(error) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
         if (error) {
             client.log(`${error.message}\n${error.stack}`, "error");
         }

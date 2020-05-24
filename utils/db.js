@@ -5,14 +5,14 @@ const datamodel = require('./datamodel');
 
 // CONGIG
 exports.getSettings = async (client) => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     if (!guild) return console.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
     let settings = client.db_settings.get(guild.id);
     return settings;
 }
 exports.settingsCheck = async (client) => {
     client.logger.debug(`Vérification de la configuration serveur`);
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
 
     if (!guild) return client.logger.debug(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
 
@@ -70,7 +70,7 @@ exports.textesCheck = async (client) => {
 
 exports.userlogsCheck = async (client) => {
     client.log(`Vérification des logs`, "debug");
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
 
 
     await client.db_userxplogs.delete("default");
@@ -78,13 +78,13 @@ exports.userlogsCheck = async (client) => {
 };
 exports.embedsCheck = async (client) => {
     client.log(`Vérification des embeds`, "debug");
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     await client.db_embeds.delete("default");
     await client.db_embeds.set("default", datamodel.tables.embeds);
 };
 exports.usergameCheck = async (client) => {
     client.log(`Vérification des données de jeux des membres`, "debug");
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     let games = await client.db.gamesGetActive(client);
 
     if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
@@ -94,7 +94,7 @@ exports.usergameCheck = async (client) => {
 
 
 
-    guild.members.forEach(async member => {
+    guild.members.cache.forEach(async member => {
         if (member.user.bot) return; // Ne pas enregistrer les bots
         let userdata = client.db_userdata.get(member.id);
         if (!userdata) {
@@ -107,7 +107,7 @@ exports.usergameCheck = async (client) => {
     //     if (usergame !== null) {
     //         let game = client.db_games.get(usergame.gameid);
     //         if (game) {
-    //             let gameRole = guild.roles.get(game.roleID);
+    //             let gameRole = guild.roles.cache.get(game.roleID);
 
     //             if (usergame.userid == undefined) {
     //                 let text = usergame.id.split("-");
@@ -154,10 +154,10 @@ exports.usergameCheck = async (client) => {
 
 };
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
     const userdata = client.db_userdata.get(member.id);
-    const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
+    const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
 
     let usergame = client.db_usergame.get(`${member.presence.game.name}-${member.id}`);
     if (usergame) {
@@ -173,12 +173,12 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
     }
 };
 exports.userdataAddXP = async (client, member, xpAmount, reason) => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
     const userdata = client.db_userdata.get(member.id);
-    const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
+    const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
     if (roleMembers) {
-        if (member.roles.has(roleMembers.id)) {
+        if (member.roles.cache.has(roleMembers.id)) {
             if (xpAmount > 0) {
                 userdata.xp += xpAmount;
                 client.db.userxplogAdd(client, member, "XP", xpAmount, reason);
@@ -243,7 +243,7 @@ exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename
 // GAMES
 exports.gamesCheck = async (client) => {
     client.log(`Vérification de la base de données des jeux`, "debug");
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     await client.db_games.delete("default");
     await client.db_games.set("default", datamodel.tables.games);
@@ -260,20 +260,9 @@ exports.gamesCheck = async (client) => {
     let gamesActive = await client.db.gamesGetActive(client);
     if (!gamesActive) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
 
-    await client.games.PostRoleReaction(client, true);
+    await client.gamesListPost(true);
 };
-exports.gamesCreate = async (client, gamename) => {
-    let game = client.db_games.get("default");
 
-    game.id = gamename;
-    game.name = gamename;
-    game.createdAt = +new Date;
-
-    client.db_games.set(game.id, game);
-    client.log(`Le jeu ${gamename} à été ajouté à la base de données`)
-
-
-};
 exports.gamesGetActive = async (client) => {
     const games = client.db_games.filter(game => game.actif === true);
     return games;
@@ -303,7 +292,7 @@ exports.postedEmbedsGetAll = async (client) => {
 };
 exports.enmapDisplay = async (client, enmap, channel, fieldlist = []) => {
 
-    if (enmap.size == 0) return client.logwarn(`Aucun enregistrement trouvé`, "warn");
+    if (enmap.size == 0) return client.log(`Aucun enregistrement trouvé`, "warn");
 
     let postedEmbeds = client.db_postedEmbeds.get("default");
     let pagesArray = [];
@@ -348,7 +337,7 @@ exports.enmapDisplay = async (client, enmap, channel, fieldlist = []) => {
 
 };
 exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => {
-    let embed = new Discord.RichEmbed();
+    let embed = new Discord.MessageEmbed();
     let nbPages = Math.ceil(enmap.size / 10);
     let description = "";
     let array = enmap.array();
@@ -382,7 +371,7 @@ exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => 
     for (var i in pageRecords) {
         //let record = util.inspect(pageRecords[i], {compact: 10, breakLength: 180});
         let record = await showProps(pageRecords[i]);
-        description += `**${pageIndexes[i]}**: \`${record.substring(0, 100)}\`\n`;
+        description += `**${pageIndexes[i]}** \`${record.substring(0, 100)}\`\n`;
         row += 1;
     }
 
@@ -393,11 +382,6 @@ exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => 
     return embed;
 };
 
-Object.defineProperty(String.prototype, "toProperCase", {
-    value: function () {
-        return this.replace(/([^\W_]+[^\s-]*) */g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-    }
-});
 
 // <Array>.random() returns a single random element from an array
 // [1, 2, 3, 4, 5].random() can return 1, 2, 3, 4 or 5.

@@ -41,36 +41,13 @@ module.exports = (client) => {
     return successMessage(client.textes.get("GAMESERVER_SERVER_ADD_SUCCESS", serverID), message.channel);
   };
 
-  client.gameServersDeleteServer = async (message, serverID) => {
-    let server = client.db_gameservers.get(serverID);
-
-    if (!server) return errorMessage(client.textes.get("GAMESERVER_ERROR_SERVER_NOT_FOUND", serverID), message.channel);
-
-    let questionMess = await questionMessage(client.textes.get("GAMESERVER_SERVER_DELETE_CHECK_BEFORE", server), message.channel);
-    const responses = await message.channel.awaitMessages(msg => msg.author.id === message.author.id, {
-      max: 1,
-      time: 30000,
-    });
-
-    if (responses.size !== 1) {
-      warnMessage(client.textes.get("COM_ACTION_TIMEOUT"), message.channel);
-      return null;
-    }
-    const response = responses.first();
-    if (message.channel.type === 'text') response.delete();
-
-    if (response.content == "oui") {
-      await client.db_gameservers.delete(serverID);
+  client.gameServersDeleteServer = async (message, server) => {
+      await client.db_gameservers.delete(server.id);
       successMessage(client.textes.get("GAMESERVER_SERVER_DELETE_SUCCESS", server), message.channel);
-    } else {
-      warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
-      return null;
-    }
-
   };
 
   client.gameServersPlayerLog = async (playerID, playerName, server) => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
 
     let gamePlayed = client.db_games.get(server.gamename);
 
@@ -84,11 +61,11 @@ module.exports = (client) => {
 
 
       if (gameserversPlayer.memberID !== "") {
-        let member = guild.members.get(gameserversPlayer.memberID);
+        let member = guild.members.cache.get(gameserversPlayer.memberID);
         if (!member) {
           let userdata = client.db_userdata.get(gameserversPlayer.memberID);
           if (userdata) {
-            await client.modLog(client.textes.get("GAMESERVER_PLAYER_OLD_MEMBER_DETECTED", server, playerID, playerName));
+            await client.modLog(client.textes.get("GAMESERVER_PLAYER_OLD_MEMBER_DETECTED", userdata, gameserversPlayer, server));
           }
         } else {
           await client.usergameUpdateLastPlayed(gamePlayed, member);
@@ -113,7 +90,7 @@ module.exports = (client) => {
   };
 
   client.gameServersStatus = async () => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
     let heure = moment().format('HH');
@@ -129,7 +106,7 @@ module.exports = (client) => {
         let playerlist = [];
 
         let game = client.db_games.get(server.gamename);
-        const gameTextChannel = await guild.channels.get(game.textChannelID);
+        const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
 
         if (response == undefined) {
           if (server.status == "online") {
@@ -184,7 +161,7 @@ module.exports = (client) => {
 
   client.gameServerGetInfosEmbed = async (server, details = false) => {
 
-    let embed = new Discord.RichEmbed();
+    let embed = new Discord.MessageEmbed();
     let playerlist = [];
     let description = "";
 
@@ -207,7 +184,7 @@ module.exports = (client) => {
   };
 
   client.gameServersArkDWD = async (serverID = "*", message = null) => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     let settings = client.db_settings.get(guild.id);
 
     if (serverID == "*") {
@@ -301,35 +278,19 @@ module.exports = (client) => {
     return returnResponse;
   };
 
-  client.gameServersPostInfoMessages = async () => {
-    const guild = client.guilds.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
-
-    let servers = await client.db_gameservers.filterArray(server => server.id !== "default");
-
-    for (const server of servers) {
-      const game = await client.db_games.find(game => game.name == server.gamename);
-
-      if (!game.infosChannelID) return;
-      const gameInfosChannel = await guild.channels.get(game.infosChannelID);
-      let embed = new Discord.RichEmbed(await client.gameServerGetInfosEmbed(server));
-
-      let gameServerInfoMessage = await gameInfosChannel.send(embed);
-      server.infoMessage = gameServerInfoMessage.id;
-      client.db_gameservers.set(server.id, server);
-    };
-  };
-
   client.gameServersPostStatusMessage = async () => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
     let games = await client.db.gamesGetActiveArray(client);
 
     for (const game of games) {
       if (!game.infosChannelID) continue;
-      let embed = new Discord.RichEmbed();
-      const gameInfosChannel = await guild.channels.get(game.infosChannelID);
+      let embed = new Discord.MessageEmbed();
+      const gameInfosChannel = await guild.channels.cache.get(game.infosChannelID);
+
+      if (!gameInfosChannel) return;
+
       let servers = await client.db_gameservers.filterArray(server => server.gamename == game.name && server.isActive == true);
 
       if (servers.length == 0) continue;
@@ -374,8 +335,12 @@ module.exports = (client) => {
         for (const player of server.playerlist) {
           // fieldDescription += `◽️ ${player[0]} (${player[1]})\n`;
           if (player[2] !== "") {
-            let member = await guild.members.get(player[2]);
-            fieldDescription += `🔹 ${member.displayName}\n`;
+            let member = await guild.members.cache.get(player[2]);
+            if (member) {
+              fieldDescription += `🔹 ${member.displayName}\n`;
+            } else {
+              fieldDescription += `⚠️ ${player[0]}\n`;
+            }
           } else {
             fieldDescription += `🔸 ${player[0]}\n`;
           }
@@ -414,7 +379,7 @@ module.exports = (client) => {
 
       let gameServerStatusMessage = undefined;
       if (game.serversStatusMessageID) {
-        await gameInfosChannel.fetchMessage(game.serversStatusMessageID).then(message => {
+        await gameInfosChannel.messages.fetch(game.serversStatusMessageID).then(message => {
           gameServerStatusMessage = message;
         }).catch(error => {
           gameServerStatusMessage = undefined;
@@ -435,16 +400,16 @@ module.exports = (client) => {
     }
   };
 
-  client.gameServersPlayerLink = async (message, playerID, memberID) => {
-    const guild = client.guilds.get(client.config.guildID);
+  client.gameServersPlayerLink = async (message, playerID, userdata) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
 
     let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
-    let member = guild.members.get(memberID);
+    let member = guild.members.cache.get(userdata.id);
 
     if (!gameserversPlayer) return errorMessage(client.textes.get("GAMESERVER_ERROR_PLAYERID_NOT_FOUND", playerID), message.channel);
-    if (!member) return errorMessage(client.textes.get("USER_ERROR_MEMBERID_NOT_FOUND", memberID), message.channel);
+    if (!member) return errorMessage(client.textes.get("USER_ERROR_MEMBERID_NOT_FOUND", userdat.id), message.channel);
 
-    gameserversPlayer.memberID = memberID;
+    gameserversPlayer.memberID = userdata.id;
     await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
     return successMessage(client.textes.get("GAMESERVER_PLAYER_LINK_SUCCESS", gameserversPlayer, member), message.channel);
   };
@@ -501,7 +466,7 @@ module.exports = (client) => {
   };
 
   client.gameServersListPlayers = async (message) => {
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
 
     let dateNow = +new Date();
     let listPlayersArray = [];

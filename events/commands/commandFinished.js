@@ -6,15 +6,16 @@ class CommandFinishedListener extends Listener {
     constructor() {
         super('commandFinished', {
             emitter: 'commandHandler',
-            eventName: 'commandFinished',
+            event: 'commandFinished',
         })
     }
 
     async exec(message, command) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
 
-        let member = guild.members.get(message.author.id);
+        let member = guild.members.cache.get(message.author.id);
 
         client.db.userdataAddXP(client, member, 5, `Commande`);
 

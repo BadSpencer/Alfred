@@ -56,7 +56,7 @@ module.exports = (client) => {
 
 
 
-        let embed = new Discord.RichEmbed()
+        let embed = new Discord.MessageEmbed()
             .setTitle(client.textes.get("EMBED_USERBOARD_TITLE", message.author.username))
             .addField("Vos derniers embeds", embedOwnedLastDesc, true)
             .addField("Les derniers embeds des autres", embedOthersLastDesc, true)
@@ -64,15 +64,15 @@ module.exports = (client) => {
         message.channel.send(embed);
     };
     client.embedAide = async (message) => {
-        let embed = new Discord.RichEmbed()
+        let embed = new Discord.MessageEmbed()
             .setTitle(client.textes.get("EMBED_AIDE_TITLE", message.author.username))
             .setDescription(client.textes.get("EMBED_AIDE_DESCRIPTION"));
         message.channel.send(embed);
     };
 
     client.embedCreate = async (message, titre) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(message.author.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(message.author.id);
         let dateNow = +new Date;
 
         await client.embedArchiveCurrentEdit(message);
@@ -80,7 +80,7 @@ module.exports = (client) => {
 
         let embed = client.db_embeds.get("default");
         let key = client.db_embeds.autonum;
-        const Embed = new Discord.RichEmbed().setTitle(titre);
+        const Embed = new Discord.MessageEmbed().setTitle(titre);
         embed.id = key;
         embed.statut = "EDIT";
         embed.titre = titre;
@@ -102,9 +102,9 @@ module.exports = (client) => {
         return key;
     };
     client.embedCopy = async (message, id) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         let dateNow = +new Date;
-        let member = guild.members.get(message.author.id);
+        let member = guild.members.cache.get(message.author.id);
         await client.embedArchiveCurrentEdit(message);
 
         let embed = client.db_embeds.get(id);
@@ -133,7 +133,7 @@ module.exports = (client) => {
         client.embedShowChannel(embedID, message.channel, news);
     }
     client.embedShowChannel = async (embedID, channel, news = false) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.db_settings.get(guild.id);
 
 
@@ -141,11 +141,11 @@ module.exports = (client) => {
         let embed = client.db_embeds.get(embedID);
 
         if (embed) {
-            let member = guild.members.get(embed.ownedBy);
-            let Embed = new Discord.RichEmbed(embed.content);
+            let member = guild.members.cache.get(embed.ownedBy);
+            let Embed = new Discord.MessageEmbed(embed.content);
             if (news) {
                 if (member) {
-                    Embed.setFooter(`Envoyé par ${member.displayName} le ${moment().format('DD.MM.YYYY')} à ${moment().format('HH:mm')}`, member.user.avatarURL);
+                    Embed.setFooter(`Envoyé par ${member.displayName} le ${moment().format('DD.MM.YYYY')} à ${moment().format('HH:mm')}`, member.user.avatarURL());
                 } else {
                     Embed.setFooter(`Envoyé par ??????? le ${moment().format('DD.MM.YYYY')} à ${moment().format('HH:mm')}`);
                 }
@@ -168,7 +168,7 @@ module.exports = (client) => {
     client.embedUpdate = async (embedID, property, args, message) => {
         let dateNow = +new Date;
         let embed = client.db_embeds.get(embedID);
-        let embedNew = new Discord.RichEmbed(embed.content);
+        let embedNew = new Discord.MessageEmbed(embed.content);
         let arguments = args;
         switch (property) {
             case 'addfield': {
@@ -180,7 +180,7 @@ module.exports = (client) => {
                 break;
             }
             case 'clearfields': {
-                let newEmbed = new Discord.RichEmbed();
+                let newEmbed = new Discord.MessageEmbed();
                 newEmbed.setTitle(embedNew.title);
                 newEmbed.setDescription(embedNew.description);
                 newEmbed.setImage(embedNew.image);
@@ -224,8 +224,8 @@ module.exports = (client) => {
         message.channel.send(`\`\`\`!embed desc ${embed.content.description}\`\`\``)
     };
     client.embedEdit = async (message, id) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(message.author.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(message.author.id);
         
         let embed = client.db_embeds.get(id);
         if (!embed) return errorMessage(client.textes.get("EMBED_NOT_FOUND", id), message.channel);
@@ -239,8 +239,8 @@ module.exports = (client) => {
         successMessage(client.textes.get("EMBED_EDIT_SUCCESS", embed.titre, embed.id), message.channel);
     };
     client.embedArchive = async (message, id) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(message.author.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(message.author.id);
 
         let embed = client.db_embeds.get(id);
         if (!embed) return errorMessage(client.textes.get("EMBED_NOT_FOUND", id), message.channel);
@@ -254,8 +254,8 @@ module.exports = (client) => {
         successMessage(client.textes.get("EMBED_ARCHIVED_SUCCESS", embed.titre, embed.id), message.channel);
     };
     client.embedArchiveCurrentEdit = async (message) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(message.author.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(message.author.id);
         let embedEdit = await client.embedGetCureentEdit(message.author.id);
         if (embedEdit) {
             warnMessage(client.textes.get("EMBED_CURRENT_EDIT_ARCHIVED", embedEdit), message.channel);
@@ -263,8 +263,8 @@ module.exports = (client) => {
         }
     };
     client.embedUpdateChanged = async (message, embed, memberID) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(message.author.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(message.author.id);
 
         if (!member) {
             errorMessage(client.textes.get("MEMBER_NOT_FOUND", memberID), message.channel);

@@ -13,23 +13,23 @@ const {
 module.exports = (client) => {
     // Message d'annonce lorsque quelqu'un rejoint le serveur
     client.serverJoinNotification = async (member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 
-        let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
+        let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
 
         let avatar;
-        if (!member.user.avatarURL) {
+        if (!member.user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL;
+            avatar = member.user.avatarURL();
         }
 
         if (welcomeChannel) {
-            const welcomeMessage = new Discord.RichEmbed()
+            const welcomeMessage = new Discord.MessageEmbed()
                 .setTimestamp()
                 .setColor(colors['darkgreen'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_JOIN", member))
@@ -39,58 +39,58 @@ module.exports = (client) => {
     };
     // Message d'acceuil du nouvel utilisateur (lien vers site)
     client.serverJoinInformation = async (member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
-        let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
+        let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         if (welcomeChannel) {
-            const welcomeMessage = new Discord.RichEmbed()
+            const welcomeMessage = new Discord.MessageEmbed()
                 .setTitle(client.textes.get("USER_MESSAGE_ACCUEIL_TITRE"))
                 .setURL("https://www.casual-effect.org/")
                 .setColor(colors['darkorange'])
-                .setThumbnail(client.user.avatarURL)
+                .setThumbnail(client.user.avatarURL())
                 .setDescription(client.textes.get("USER_MESSAGE_ACCUEIL_DESCRIPTION", member));
             welcomeChannel.send(welcomeMessage);
         };
     };
     client.serverJoinInformationAgain = async (member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
-        let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
+        let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         if (welcomeChannel) {
-            const welcomeMessage = new Discord.RichEmbed()
+            const welcomeMessage = new Discord.MessageEmbed()
                 .setTitle(client.textes.get("USER_MESSAGE_ACCUEIL_TITRE"))
                 .setURL("https://www.casual-effect.org/")
                 .setColor(colors['darkorange'])
-                .setThumbnail(client.user.avatarURL)
+                .setThumbnail(client.user.avatarURL())
                 .setDescription(client.textes.get("USER_MESSAGE_ACCUEIL_DESCRIPTION_AGAIN", member));
             welcomeChannel.send(welcomeMessage);
         };
     };
     // Message d'annonce lorsque quelqu'un quitte le serveur
     client.serverQuitNotification = async (member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
+        let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         let avatar;
-        if (!member.user.avatarURL) {
+        if (!member.user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL;
+            avatar = member.user.avatarURL();
         }
 
         if (welcomeChannel) {
 
-            const welcomeMessage = new Discord.RichEmbed()
+            const welcomeMessage = new Discord.MessageEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_QUIT", member))
@@ -102,21 +102,21 @@ module.exports = (client) => {
 
     };
     client.serverKickNotification = async (member, memberBy, raison) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
+        let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         let avatar;
-        if (!member.user.avatarURL) {
+        if (!member.user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL;
+            avatar = member.user.avatarURL();
         }
 
         if (welcomeChannel) {
 
-            const welcomeMessage = new Discord.RichEmbed()
+            const welcomeMessage = new Discord.MessageEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_KICK", member, memberBy, raison))
@@ -125,21 +125,21 @@ module.exports = (client) => {
         };
     };
     client.serverBanNotification = async (member, memberBy, raison) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        let welcomeChannel = guild.channels.find(c => c.name === settings.welcomeChannel);
+        let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         let avatar;
-        if (!member.user.avatarURL) {
+        if (!member.user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL;
+            avatar = member.user.avatarURL();
         }
 
         if (welcomeChannel) {
 
-            const banMessage = new Discord.RichEmbed()
+            const banMessage = new Discord.MessageEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_BAN", member, memberBy, raison))
@@ -152,7 +152,7 @@ module.exports = (client) => {
         return userdatas;
     };
     client.userdataUserboard = async (message) => {
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
 
         let userdatas = client.db_userdata.filterArray(rec => rec.id !== "default");
 
@@ -168,7 +168,7 @@ module.exports = (client) => {
         usersTopXP.reverse();
         usersTopXP = usersTopXP.slice(0, 5);
         for (const user of usersTopXP) {
-            let member = await guild.members.get(user.id);
+            let member = await guild.members.cache.get(user.id);
             if (member) {
                 userstop5Desc += `**${user.displayName}**: ${user.level} (${user.xp})\n`;
             } else {
@@ -183,7 +183,7 @@ module.exports = (client) => {
         usersTopIn.reverse();
         usersTopIn = usersTopIn.slice(0, 5);
         for (const userIn of usersTopIn) {
-            let member = await guild.members.get(userIn.id);
+            let member = await guild.members.cache.get(userIn.id);
             if (member) {
                 userstopInDesc += `**${userIn.displayName}**\n`;
             } else {
@@ -193,7 +193,7 @@ module.exports = (client) => {
 
         let usersTopOutLogs = [];
         for (const key in usersTopOut) {
-            let member = await guild.members.get(usersTopOut[key].id);
+            let member = await guild.members.cache.get(usersTopOut[key].id);
 
             if (!member) {
                 let logEntriesQuit = usersTopOut[key].logs.filter(record =>
@@ -253,7 +253,7 @@ module.exports = (client) => {
 
 
 
-        let embed = new Discord.RichEmbed();
+        let embed = new Discord.MessageEmbed();
         embed.setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"));
 
         embed.addField("Derniers évènements", usersLastEvents, false);
@@ -269,14 +269,15 @@ module.exports = (client) => {
 
     client.userdataCheck = async () => {
         client.log(`Vérification de la base des membres`, "debug");
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
 
         await client.db_userdata.delete("default");
         await client.db_userdata.set("default", datamodel.tables.userdata);
 
+        client.log(`Membres actuellement sur le serveur discord: ${guild.members.cache.size}`, "debug");
+        client.log(`Membres actuellement dans la base de données: ${client.db_userdata.count}`, "debug");
 
-
-        guild.members.forEach(async member => {
+        guild.members.cache.forEach(async member => {
             if (member.user.bot) return; // Ne pas enregistrer les bots
             let userdata = client.db_userdata.get(member.id);
 
@@ -288,11 +289,6 @@ module.exports = (client) => {
 
     client.userdataCreate = async (member) => {
         let userdata = client.db_userdata.get("default");
-        let userdataLogs = datamodel.tables.userdataLogs;
-        let userdataNicknames = datamodel.tables.userdataNicknames;
-
-        let userJoinedDate = moment(member.joinedAt).format('DD.MM.YYYY');
-        let userJoinedTime = moment(member.joinedAt).format('HH:mm');
 
         userdata.id = member.id;
         userdata.username = member.user.username;
@@ -313,8 +309,8 @@ module.exports = (client) => {
     };
 
     client.userdataAddLog = async (userdata, memberBy, event, commentaire) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(userdata.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(userdata.id);
 
         let userdataLogs = datamodel.tables.userdataLogs;
 
@@ -357,14 +353,14 @@ module.exports = (client) => {
     };
 
     client.userdataShowInfos = async (memberID, channel) => {
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(memberID);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(memberID);
         let userdata = client.db_userdata.get(memberID);
 
         if (!userdata) return;
 
         if (channel) {
-            const userInfosMessage = new Discord.RichEmbed();
+            const userInfosMessage = new Discord.MessageEmbed();
             userInfosMessage.setTitle(`${userdata.displayName}`);
             userInfosMessage.setColor(colors['darkorange']);
             // userInfosMessage.setThumbnail();

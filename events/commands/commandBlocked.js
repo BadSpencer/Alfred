@@ -11,12 +11,13 @@ class CommandBlockedListener extends Listener {
     constructor() {
         super('commandBlocked', {
             emitter: 'commandHandler',
-            eventName: 'commandBlocked'
+            event: 'commandBlocked'
         });
     }
 
     async exec(message, command, reason) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
 
         let guild;
         let blocked;

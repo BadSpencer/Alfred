@@ -17,145 +17,151 @@ const {
 class GamesCommand extends Command {
     constructor() {
         super('games', {
-            aliases: ['games'],
+            aliases: ['games', 'g'],
             category: 'Admin',
             description: {
                 content: 'Gestion des jeux',
                 usage: '<action> <...arguments>',
             },
-            category: 'Admin',
-            args: [{
-                id: "action",
-                type: [
-                    "list",
-                    "listall",
-                    "score",
-                    "add",
-                    "view",
-                    "create",
-                    "active",
-                    "inactive",
-                    "delete",
-                    "voice",
-                    "statut",
-                    "infos",
-                    "players"
-                ],
-                default: "list",
-            },
-            {
-                id: "arguments",
-                type: "content",
-                match: "rest",
-                default: null,
-            },
-            ]
         });
     }
+
+    *args(message) {
+        const action = yield {
+            type: [
+                "liste",
+                "listall",
+                "score",
+                "add",
+                "view",
+                "create",
+                "active",
+                "inactive",
+                "delete",
+                "voice",
+                "statut",
+                "infos",
+                "players"
+            ],
+            default: 'liste'
+        };
+
+        const game = yield {
+            type: "game",
+            match: "rest",
+            default: null,
+        };
+        return { action, game };
+    }
+
+
     async exec(message, args) {
 
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        const roleEveryone = guild.roles.find(r => r.name == "@everyone");
-        const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
-        const roleMod = guild.roles.find(r => r.name == settings.modRole);
+        const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
+        const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleMod = guild.roles.cache.find(r => r.name == settings.modRole);
 
         switch (args.action) {
-            case 'list': 
+            case 'liste': {
                 client.db.enmapDisplay(client, client.db_games.filter(rec => rec.actif == true), message.channel);
                 break;
-            case 'listall': 
+            }
+            case 'listall': {
                 client.db.enmapDisplay(client, client.db_games, message.channel);
                 break;
-            case 'players':
-                client.gamesPlayersDetail(args.arguments, message);
+            }
+            case 'players': {
+                if (!args.game) return errorMessage(`Veuillez spécifier un jeu pour cette action\nLancez la commande \`!games\` pour connaitre la liste des jeux`)
+                client.gamesPlayersDetail(args.game.name, message);
                 break;
+            }
             case 'add': {
-                await client.db.gamesCreate(client, args.arguments)
+                await client.gamesCreate(args.game.name)
                 break;
             }
             case 'view': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                message.channel.send(`Données de **${args.arguments}**\n\`\`\`json\n${inspect(game)}\n\`\`\``)
+                message.channel.send(`Données de **${args.game.name}**\n\`\`\`json\n${inspect(args.game)}\n\`\`\``)
                 break;
             }
             case 'create': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-
-                let statusMessage = await message.channel.send(`Création des rôles et salons pour ${args.arguments}...`);
+                let statusMessage = await message.channel.send(`Création des rôles et salons pour ${args.game.name}...`);
 
                 // Création du rôle principal
-                await message.guild.createRole({
-                    name: args.arguments,
-                    color: settings.gameMainRoleColor,
-                    hoist: false,
-                    mentionable: true
-                }).then(mainRole => {
-                    game.roleID = mainRole.id;
-                    statusMessage.edit(`Rôle principal ${mainRole.name} créé`);
-                })
+                await message.guild.roles.create({
+                        data: {
+                            name: args.game.name,
+                            color: settings.gameMainRoleColor,
+                            hoist: false,
+                            mentionable: true
+                        },
+                        reason: `Création du jeu ${args.game.name}`
+                    }).then(mainRole => {
+                        args.game.roleID = mainRole.id;
+                        statusMessage.edit(`Rôle principal ${mainRole.name} créé`);
+                    })
 
                 // Création du rôle "Joue à"
-                await message.guild.createRole({
-                    name: `Joue à ${args.arguments}`,
-                    color: settings.gamePlayRoleColor,
-                    hoist: true,
-                    mentionable: false
+                await message.guild.roles.create({
+                    data: {
+                        name: `Joue à ${args.game.name}`,
+                        color: settings.gamePlayRoleColor,
+                        hoist: true,
+                        mentionable: false
+                    },
+                    reason: `Création du jeu ${args.game.name}`
                 }).then(playRole => {
-                    game.playRoleID = playRole.id;
+                    args.game.playRoleID = playRole.id;
                     statusMessage.edit(`Rôle "Joue à" ${playRole.name} créé`);
                 })
 
                 // Création categorie
-                await message.guild.createChannel(`🔒${settings.gameCategoryPrefix}${args.arguments}`, {
+                await message.guild.channels.create(`🔒${settings.gameCategoryPrefix}${args.game.name}`, {
                     type: "category"
                 }).then(async category => {
-                    game.categoryID = category.id;
+                    args.game.categoryID = category.id;
                     category.setPosition(99);
                     statusMessage.edit(`Catégorie ${category.name} créée`);
 
                     // Création du salon discussions du jeu 
-                    await message.guild.createChannel(`🔒${settings.gameTextPrefix}discussions`, {
+                    await message.guild.channels.create(`🔒${settings.gameTextPrefix}discussions`, {
                         type: 'text'
                     }).then(textchannel => {
-                        game.textChannelID = textchannel.id;
+                        args.game.textChannelID = textchannel.id;
                         textchannel.setParent(category);
-                        textchannel.overwritePermissions(roleEveryone, {
+                        textchannel.createOverwrite(roleEveryone, {
                             'VIEW_CHANNEL': false,
                             'READ_MESSAGES': false,
                         });
-                        textchannel.overwritePermissions(roleMembers, {
+                        textchannel.createOverwrite(roleMembers, {
                             'READ_MESSAGES': false,
                         });
                         statusMessage.edit(`Salon ${textchannel.name} créé`);
                     })
                 })
-                await client.db_games.set(args.arguments, game);
-                statusMessage.edit(`Salons et rôles pour ${args.arguments} correctement créés`);
+                await client.db_games.set(args.game.name, args.game);
+                statusMessage.edit(`Salons et rôles pour ${args.game.name} correctement créés`);
 
                 break;
             }
             case 'active': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                if (game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà actif`, message.channel);
+                if (args.game.actif) return errorMessage(`Le jeu ${args.game.name} est déjà actif`, message.channel);
 
-                const gameRole = message.guild.roles.get(game.roleID);
-                const gameCategory = message.guild.channels.get(game.categoryID);
-                const gameTextChannel = message.guild.channels.get(game.textChannelID);
+                const gameRole = message.guild.roles.cache.get(args.game.roleID);
+                const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+                const gameTextChannel = message.guild.channels.cache.get(args.game.textChannelID);
 
-                const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
-                const gameStatutChannel = message.guild.channels.get(game.statusChannelID);
+                const gameInfosChannel = message.guild.channels.cache.get(args.game.infosChannelID);
+                const gameStatutChannel = message.guild.channels.cache.get(args.game.statusChannelID);
 
                 if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message.channel);
                 if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message.channel);
-                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message.channel);
-                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message.channel);
-                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message.channel);
+                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${args.game.roleID})`, message.channel);
+                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${args.game.categoryID})`, message.channel);
+                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${args.game.textChannelID})`, message.channel);
 
                 let statusMessage;
                 await message.util.send(`Quel est l'emoji qui doit être associé à ce jeu ?`);
@@ -172,17 +178,17 @@ class GamesCommand extends Command {
                 const response = responses.first();
 
                 if (response.content) {
-                    game.emoji = response.content;
-                    statusMessage = await response.reply(`Activation du jeu ${args.arguments}...`);
+                    args.game.emoji = response.content;
+                    statusMessage = await response.reply(`Activation du jeu ${args.game.name}...`);
                 } else {
                     message.reply('Activation du jeu annulée');
                     return null;
                 }
 
 
-                await gameCategory.setName(`${settings.gameCategoryPrefix}${args.arguments}`);
+                await gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`);
                 await gameTextChannel.setName(`${settings.gameTextPrefix}discussions`);
-                await gameTextChannel.overwritePermissions(gameRole, {
+                await gameTextChannel.createOverwrite(gameRole, {
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
                     'SEND_TTS_MESSAGES': true,
@@ -193,7 +199,7 @@ class GamesCommand extends Command {
                     'USE_EXTERNAL_EMOJIS': true,
                     'ADD_REACTIONS': true,
                 });
-                await gameTextChannel.overwritePermissions(roleMembers, {
+                await gameTextChannel.createOverwrite(roleMembers, {
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
                     'SEND_TTS_MESSAGES': true,
@@ -204,7 +210,7 @@ class GamesCommand extends Command {
                     'USE_EXTERNAL_EMOJIS': true,
                     'ADD_REACTIONS': true,
                 });
-                await gameTextChannel.overwritePermissions(roleMod, {
+                await gameTextChannel.createOverwrite(roleMod, {
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
                     'SEND_TTS_MESSAGES': true,
@@ -218,10 +224,10 @@ class GamesCommand extends Command {
                 });
                 if (gameInfosChannel) {
                     await gameInfosChannel.setName(`${settings.gameInfosPrefix}informations`)
-                    gameInfosChannel.overwritePermissions(roleEveryone, {
+                    gameInfosChannel.createOverwrite(roleEveryone, {
                         'VIEW_CHANNEL': false,
                     });
-                    await gameInfosChannel.overwritePermissions(gameRole, {
+                    await gameInfosChannel.createOverwrite(gameRole, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -233,7 +239,7 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': false,
                     });
 
-                    await gameInfosChannel.overwritePermissions(roleMembers, {
+                    await gameInfosChannel.createOverwrite(roleMembers, {
                         'READ_MESSAGES': false,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -244,7 +250,7 @@ class GamesCommand extends Command {
                         'USE_EXTERNAL_EMOJIS': false,
                         'ADD_REACTIONS': false,
                     });
-                    await gameInfosChannel.overwritePermissions(roleMod, {
+                    await gameInfosChannel.createOverwrite(roleMod, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': true,
                         'MANAGE_MESSAGES': true,
@@ -259,10 +265,10 @@ class GamesCommand extends Command {
                 }
                 if (gameStatutChannel) {
                     await gameStatutChannel.setName(`${settings.gameStatusPrefix}statut`)
-                    await gameStatutChannel.overwritePermissions(roleEveryone, {
+                    await gameStatutChannel.createOverwrite(roleEveryone, {
                         'VIEW_CHANNEL': false,
                     });
-                    await gameStatutChannel.overwritePermissions(gameRole, {
+                    await gameStatutChannel.createOverwrite(gameRole, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -274,7 +280,7 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': false,
                     });
 
-                    await gameStatutChannel.overwritePermissions(roleMembers, {
+                    await gameStatutChannel.createOverwrite(roleMembers, {
                         'READ_MESSAGES': false,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -285,7 +291,7 @@ class GamesCommand extends Command {
                         'USE_EXTERNAL_EMOJIS': false,
                         'ADD_REACTIONS': false,
                     });
-                    await gameStatutChannel.overwritePermissions(roleMod, {
+                    await gameStatutChannel.createOverwrite(roleMod, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': true,
                         'MANAGE_MESSAGES': true,
@@ -298,54 +304,52 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': true,
                     });
                 }
-                game.actif = true;
-                client.db_games.set(args.arguments, game);
-                statusMessage.edit(`${args.arguments} a été correctement activé`);
+                args.game.actif = true;
+                client.db_games.set(args.game.name, args.game);
+                statusMessage.edit(`${args.game.name} a été correctement activé`);
                 break;
             }
             case 'inactive': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} est déjà inactif`, message.channel);
+                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} est déjà inactif`, message.channel);
 
-                const gameRole = message.guild.roles.get(game.roleID);
-                const gameCategory = message.guild.channels.get(game.categoryID);
-                const gameTextChannel = message.guild.channels.get(game.textChannelID);
+                const gameRole = message.guild.roles.cache.get(args.game.roleID);
+                const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+                const gameTextChannel = message.guild.channels.cache.get(args.game.textChannelID);
 
-                const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
-                const gameStatutChannel = message.guild.channels.get(game.statusChannelID);
+                const gameInfosChannel = message.guild.channels.cache.get(args.game.infosChannelID);
+                const gameStatutChannel = message.guild.channels.cache.get(args.game.statusChannelID);
 
                 if (!roleMembers) return errorMessage(`Le rôle "Membres n'a pas été trouvé (memberRole:${settings.memberRole})`, message.channel);
                 if (!roleMod) return errorMessage(`Le rôle "Modérateurs" n'a pas été trouvé (modRole:${settings.modRole})`, message.channel);
-                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${game.roleID})`, message.channel);
-                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${game.categoryID})`, message.channel);
-                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${game.textChannelID})`, message.channel);
+                if (!gameRole) return errorMessage(`Le rôle principal du jeu n'a pas été trouvé (roleID:${args.game.roleID})`, message.channel);
+                if (!gameCategory) return errorMessage(`La catégorie du jeu n'a pas été trouvée (categoryID:${args.game.categoryID})`, message.channel);
+                if (!gameTextChannel) return errorMessage(`Le salon discussions du jeu n'a pas été trouvée (textChannelID:${args.game.textChannelID})`, message.channel);
 
-                await gameCategory.setName(`🔒${settings.gameCategoryPrefix}${args.arguments}`);
+                await gameCategory.setName(`🔒${settings.gameCategoryPrefix}${args.game.name}`);
                 await gameTextChannel.setName(`🔒${settings.gameTextPrefix}discussions`);
-                await gameTextChannel.overwritePermissions(gameRole, {
+                await gameTextChannel.createOverwrite(gameRole, {
                     'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
                 });
-                await gameTextChannel.overwritePermissions(roleMembers, {
+                await gameTextChannel.createOverwrite(roleMembers, {
                     'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
                 });
-                await gameTextChannel.overwritePermissions(roleMod, {
+                await gameTextChannel.createOverwrite(roleMod, {
                     'VIEW_CHANNEL': false,
                     'READ_MESSAGES': false,
                 });
                 if (gameInfosChannel) {
                     await gameInfosChannel.setName(`🔒${settings.gameInfosPrefix}informations`)
-                    await gameInfosChannel.overwritePermissions(gameRole, {
+                    await gameInfosChannel.createOverwrite(gameRole, {
                         'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                     });
-                    await gameInfosChannel.overwritePermissions(roleMembers, {
+                    await gameInfosChannel.createOverwrite(roleMembers, {
                         'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                     });
-                    await gameInfosChannel.overwritePermissions(roleMod, {
+                    await gameInfosChannel.createOverwrite(roleMod, {
                         'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                     });
@@ -353,133 +357,127 @@ class GamesCommand extends Command {
 
                 if (gameStatutChannel) {
                     await gameStatutChannel.setName(`🔒${settings.gameStatusPrefix}statut`)
-                    await gameStatutChannel.overwritePermissions(gameRole, {
+                    await gameStatutChannel.createOverwrite(gameRole, {
                         'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                     });
-                    await gameStatutChannel.overwritePermissions(roleMembers, {
+                    await gameStatutChannel.createOverwrite(roleMembers, {
                         'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                     });
-                    await gameStatutChannel.overwritePermissions(roleMod, {
+                    await gameStatutChannel.createOverwrite(roleMod, {
                         'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                     });
                 }
 
-                game.actif = false;
-                game.emoji = "";
-                client.db_games.set(args.arguments, game);
+                args.game.actif = false;
+                args.game.emoji = "";
+                client.db_games.set(args.game.name, args.game);
                 break;
             }
             case 'delete': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                if (game.actif) return errorMessage(`Le jeu ${args.arguments} est actif`, message.channel);
+                if (args.game.actif) return errorMessage(`Le jeu ${args.game.name} est actif`, message.channel);
 
-                const gameRole = message.guild.roles.get(game.roleID);
+                const gameRole = message.guild.roles.cache.get(args.game.roleID);
                 if (gameRole) {
-                    game.roleID = "";
+                    args.game.roleID = "";
                     gameRole.delete("Suppression du jeu");
                 }
-                const gamePlayRole = message.guild.roles.get(game.playRoleID);
+                const gamePlayRole = message.guild.roles.cache.get(args.game.playRoleID);
                 if (gamePlayRole) {
-                    game.playRoleID = "";
+                    args.game.playRoleID = "";
                     gamePlayRole.delete("Suppression du jeu");
                 }
 
-                const gameTextChannel = message.guild.channels.get(game.textChannelID);
+                const gameTextChannel = message.guild.channels.cache.get(args.game.textChannelID);
                 if (gameTextChannel) {
-                    game.textChannelID = "";
+                    args.game.textChannelID = "";
                     gameTextChannel.delete("Suppression du jeu");
                 }
 
-                const gameInfosChannel = message.guild.channels.get(game.infosChannelID);
+                const gameInfosChannel = message.guild.channels.cache.get(args.game.infosChannelID);
                 if (gameInfosChannel) {
-                    game.infosChannelID = "";
+                    args.game.infosChannelID = "";
                     gameInfosChannel.delete("Suppression du jeu");
                 }
 
-                const gameStatusChannel = message.guild.channels.get(game.statusChannelID);
+                const gameStatusChannel = message.guild.channels.cache.get(args.game.statusChannelID);
                 if (gameStatusChannel) {
-                    game.statusChannelID = "";
+                    args.game.statusChannelID = "";
                     gameStatusChannel.delete("Suppression du jeu");
                 }
 
-                const gameVoiceChannel = message.guild.channels.get(game.voiceChannelID);
+                const gameVoiceChannel = message.guild.channels.cache.get(args.game.voiceChannelID);
                 if (gameVoiceChannel) {
-                    game.voiceChannelID = "";
+                    args.game.voiceChannelID = "";
                     gameVoiceChannel.delete("Suppression du jeu");
                 }
 
-                const gameJoinChannel = message.guild.channels.get(game.joinChannelID);
+                const gameJoinChannel = message.guild.channels.cache.get(args.game.joinChannelID);
                 if (gameJoinChannel) {
-                    game.joinChannelID = "";
+                    args.game.joinChannelID = "";
                     gameJoinChannel.delete("Suppression du jeu");
                 }
 
-                const gameCategory = message.guild.channels.get(game.categoryID);
+                const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
                 if (gameCategory) {
-                    game.categoryID = "";
+                    args.game.categoryID = "";
                     gameCategory.delete("Suppression du jeu");
                 }
-                game.actif = false;
-                game.emoji = "";
-                client.db_games.set(args.arguments, game);
+                args.game.actif = false;
+                args.game.emoji = "";
+                client.db_games.set(args.game.name, args.game);
                 break;
             }
             case 'voice': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
+                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n'est pas actif`, message.channel);
 
-                const gameCategory = message.guild.channels.get(game.categoryID);
-                const gameRole = message.guild.roles.get(game.roleID);
+                const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+                const gameRole = message.guild.roles.cache.get(args.game.roleID);
 
-                await message.guild.createChannel(`${game.name}`, {
+                await message.guild.channels.create(`${args.game.name}`, {
                     type: 'voice'
                 }).then(async gameVoiceChannel => {
-                    game.voiceChannelID = gameVoiceChannel.id;
+                    args.game.voiceChannelID = gameVoiceChannel.id;
                     await gameVoiceChannel.setParent(gameCategory)
                         .then(successMessage(client.textes.get("GAMES_CHANNEL_LINKED_TO_CATEGORY", gameVoiceChannel, gameCategory), message.channel));
-                    await gameVoiceChannel.overwritePermissions(roleEveryone, {
+                    await gameVoiceChannel.createOverwrite(roleEveryone, {
                         'VIEW_CHANNEL': false,
                         'CONNECT': false,
                     }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP", gameVoiceChannel, roleEveryone), message.channel));
-                    await gameVoiceChannel.overwritePermissions(roleMembers, {
+                    await gameVoiceChannel.createOverwrite(roleMembers, {
                         'VIEW_CHANNEL': false,
                         'CONNECT': false,
                     }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP", gameVoiceChannel, roleMembers), message.channel));
-                    await gameVoiceChannel.overwritePermissions(gameRole, {
+                    await gameVoiceChannel.createOverwrite(gameRole, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': true,
                     }).then(successMessage(client.textes.get("GAMES_CHANNEL_PERM_FOR_GROUP", gameVoiceChannel, gameRole), message.channel));
                     successMessage(`Salon ${gameVoiceChannel.name} créé`, message.channel);
-                    game.voiceChannelID = gameVoiceChannel.id;
-                    client.db_games.set(args.arguments, game);
+                    args.game.voiceChannelID = gameVoiceChannel.id;
+                    client.db_games.set(args.game.name, args.game);
                 })
 
                 break;
             }
             case 'statut': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
+                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n'est pas actif`, message.channel);
 
-                const gameCategory = message.guild.channels.get(game.categoryID);
-                const gameRole = message.guild.roles.get(game.roleID);
+                const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+                const gameRole = message.guild.roles.cache.get(args.game.roleID);
 
 
-                await message.guild.createChannel(`${settings.gameStatusPrefix}statut`, {
+                await message.guild.channels.create(`${settings.gameStatusPrefix}statut`, {
                     type: 'text'
                 }).then(gameStatusChannel => {
-                    game.statusChannelID = gameStatusChannel.id;
+                    args.game.statusChannelID = gameStatusChannel.id;
                     gameStatusChannel.setParent(gameCategory);
 
-                    gameStatusChannel.overwritePermissions(roleEveryone, {
+                    gameStatusChannel.createOverwrite(roleEveryone, {
                         'VIEW_CHANNEL': false,
                     });
-                    gameStatusChannel.overwritePermissions(gameRole, {
+                    gameStatusChannel.createOverwrite(gameRole, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -491,7 +489,7 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': false,
                     });
 
-                    gameStatusChannel.overwritePermissions(roleMembers, {
+                    gameStatusChannel.createOverwrite(roleMembers, {
                         'READ_MESSAGES': false,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -502,7 +500,7 @@ class GamesCommand extends Command {
                         'USE_EXTERNAL_EMOJIS': false,
                         'ADD_REACTIONS': false,
                     });
-                    gameStatusChannel.overwritePermissions(roleMod, {
+                    gameStatusChannel.createOverwrite(roleMod, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': true,
                         'MANAGE_MESSAGES': true,
@@ -516,28 +514,26 @@ class GamesCommand extends Command {
                     });
                     successMessage(`Salon ${gameStatusChannel.name} créé`, message.channel);
                 })
-                client.db_games.set(args.arguments, game);
+                client.db_games.set(args.game.name, args.game);
                 break;
             }
             case 'infos': {
-                let game = client.db_games.get(args.arguments);
-                if (!game) return errorMessage(`Le jeu ${args.arguments} n'a pas été trouvé`, message.channel);
-                if (!game.actif) return errorMessage(`Le jeu ${args.arguments} n'est pas actif`, message.channel);
+                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n'est pas actif`, message.channel);
 
-                const gameCategory = message.guild.channels.get(game.categoryID);
-                const gameRole = message.guild.roles.get(game.roleID);
+                const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+                const gameRole = message.guild.roles.cache.get(args.game.roleID);
 
 
-                await message.guild.createChannel(`${settings.gameInfosPrefix}informations`, {
+                await message.guild.channels.create(`${settings.gameInfosPrefix}informations`, {
                     type: 'text'
                 }).then(gameInfosChannel => {
-                    game.infosChannelID = gameInfosChannel.id;
+                    args.game.infosChannelID = gameInfosChannel.id;
                     gameInfosChannel.setParent(gameCategory);
 
-                    gameInfosChannel.overwritePermissions(roleEveryone, {
+                    gameInfosChannel.createOverwrite(roleEveryone, {
                         'VIEW_CHANNEL': false,
                     });
-                    gameInfosChannel.overwritePermissions(gameRole, {
+                    gameInfosChannel.createOverwrite(gameRole, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -549,7 +545,7 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': false,
                     });
 
-                    gameInfosChannel.overwritePermissions(roleMembers, {
+                    gameInfosChannel.createOverwrite(roleMembers, {
                         'READ_MESSAGES': false,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -560,7 +556,7 @@ class GamesCommand extends Command {
                         'USE_EXTERNAL_EMOJIS': false,
                         'ADD_REACTIONS': false,
                     });
-                    gameInfosChannel.overwritePermissions(roleMod, {
+                    gameInfosChannel.createOverwrite(roleMod, {
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': true,
                         'MANAGE_MESSAGES': true,
@@ -574,48 +570,7 @@ class GamesCommand extends Command {
                     });
                     successMessage(`Salon ${gameInfosChannel.name} créé`, message.channel);
                 })
-                client.db_games.set(args.arguments, game);
-                break;
-            }
-            case 'postrr': {
-                client.games.PostRoleReaction(client);
-                break;
-            }
-            case 'score': {
-                //let embed = new Discord.RichEmbed(await client.gameGetScore());
-                //message.channel.send(embed);
-                break;
-            }
-            case 'export': {
-                let games = client.db_games.fetchEverything();
-                if (!games) return errorMessage(`Aucun jeu trouvé`, message.channel);
-
-
-                let data = "";
-                games.forEach(game => {
-                    data += JSON.stringify(game) + `\n`;
-                })
-
-                //const buffer = new Buffer.allocUnsafe(exporteddata);
-
-                //const attachment = new MessageAttachment(exporteddata, 'games.txt');
-                //const attachment = new MessageAttachment(buffer, 'games.txt');
-
-
-
-                //let data = JSON.stringify(data);
-                fs.writeFileSync('export.json', data);
-
-                //message.channel.send(`${message.author}, Voici la table des jeux`, attachment);
-
-                message.channel.send({
-                    files: [{
-                        attachment: 'export.json',
-                        name: 'games.json'
-                    }]
-                });
-
-
+                client.db_games.set(args.game.name, args.game);
                 break;
             }
         }

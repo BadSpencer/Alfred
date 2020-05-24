@@ -9,8 +9,8 @@ class PingCommand extends Command {
             category: 'Utilitaires',
             description: {
                 content: 'Retourne le ping entre vous, le serveur et l\'API discord',
-                usage: '\`!ping\`\n' +
-                'Je vous afficherais le temps que j\'ai mis pour répondre à votre commande (ping) ainsi que le temps qu\'il m\'aura fallut pour modifier ma réponse (temps de réponse API Discord).',
+                usage: `\`!ping\`
+                Je vous afficherais le temps que j\'ai mis pour répondre à votre commande (ping) ainsi que le temps qu\'il m\'aura fallut pour modifier ma réponse (temps de réponse API Discord).`,
                 examples: ['!ping']
             }
         });
@@ -20,8 +20,8 @@ class PingCommand extends Command {
         if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
         return message.util.send('Pong!').then(sent => {
             const timeDiff = (sent.editedAt || sent.createdAt) - (message.editedAt || message.createdAt);
-            const text = `🔂\u2000**API Discord**: ${timeDiff} ms\n💟\u2000**Ping**: ${Math.round(this.client.ping)} ms`;
-            return message.util.send(`Pong!\n${text}`);
+            const text = `🔂\u2000**API Discord**: ${timeDiff} ms\n💟\u2000**Ping**: ${Math.round(this.client.ws.ping)} ms`;
+            return message.channel.send(`Pong!\n${text}`);
         });
 
     }

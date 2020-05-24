@@ -7,9 +7,9 @@ const {
     errorMessage,
     warnMessage,
     questionMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 const moment = require("moment");
-const datamodel = require('../../utils/datamodel');
+const datamodel = require('../../../utils/datamodel');
 
 class usersCommand extends Command {
     constructor() {
@@ -21,14 +21,6 @@ class usersCommand extends Command {
                     id: 'action',
                     type: 'text',
                     default: 'userboard'
-                },
-                {
-                    id: 'userdata',
-                    type: 'userdata',
-                    prompt: {
-                        start: 'Pour quel membre ? Donnez mon son ID s\'il vous plait.',
-                        retry: 'Mentionnez un membre avec son ID'
-                    }
                 }
             ],
             description: {
@@ -41,18 +33,19 @@ class usersCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         let userdatas = await client.userdataGetAll();
         switch (args.action) {
             case 'userboard':
                 client.userdataUserboard(message);
                 break;
             case 'liste':
-                if (message.channel.type === 'text') {
-                    client.db.enmapDisplay(client, userdatas, message.member, ["displayName", "username"]);
-                } else {
-                    client.db.enmapDisplay(client, userdatas, message.channel, ["displayName", "username"]);
-                }
+                // if (message.channel.type === 'text') {
+                //     client.db.enmapDisplay(client, userdatas, message.member, ["displayName", "username"]);
+                // } else {
+                //     client.db.enmapDisplay(client, userdatas, message.channel, ["displayName", "username"]);
+                // }
+                client.db.enmapDisplay(client, userdatas, message.channel, ["displayName", "username"]);
                 break;
             case 'top':
                 break;
@@ -70,7 +63,7 @@ class usersCommand extends Command {
                 break;
             case 'initlogs':
                 for (const userdata of userdatas) {
-                    let member = guild.members.get(userdata.id);
+                    let member = guild.members.cache.get(userdata.id);
                     if (member) {
                         await client.userdataClearLogs(member.id);
                         await client.userdataAddLog(userdata, member, "JOIN", "A rejoint le discord");
@@ -84,7 +77,7 @@ class usersCommand extends Command {
                 client.log(`Réinitialisation des logs des messages`);
                 await client.db_messageslogs.deleteAll()
                 client.log(`Table des logs des messages vidée`, "debug");
-                let textChannels = guild.channels.filter(record => record.type == "text");
+                let textChannels = guild.channels.cache.filter(record => record.type == "text");
                 let messageCountTotal = 0;
 
                 for (const channel of textChannels) {
