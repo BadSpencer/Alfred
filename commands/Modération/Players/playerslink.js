@@ -35,7 +35,7 @@ class PlayersLinkCommand extends Command {
             }
         };
 
-        return { playerID, memberID: userdata };
+        return { playerID, userdata };
 
     }
     async exec(message, args) {
