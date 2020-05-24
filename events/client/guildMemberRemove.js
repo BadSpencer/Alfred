@@ -9,12 +9,13 @@ class guildMemberRemoveListener extends Listener {
     constructor() {
         super('guildMemberRemove', {
             emitter: 'client',
-            eventName: 'guildMemberRemove'
+            event: 'guildMemberRemove'
         });
     }
 
     exec(member) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
 
         client.log(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member));
 

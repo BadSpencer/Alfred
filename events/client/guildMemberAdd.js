@@ -9,12 +9,13 @@ class guildMemberAddListener extends Listener {
     constructor() {
         super('guildMemberAdd', {
             emitter: 'client',
-            eventName: 'guildMemberAdd'
+            event: 'guildMemberAdd'
         });
     }
 
     exec(member) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
 
         client.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", member));
 

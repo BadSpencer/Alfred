@@ -14,7 +14,7 @@ class InfosJeuCommand extends Command {
         let client = this.client;
         if (message.channel.type == "dm") return false;
         
-        const gameJoinChannel = message.guild.channels.find(c => c.name === message.settings.gameJoinChannel);
+        const gameJoinChannel = message.guild.channels.cache.find(c => c.name === message.settings.gameJoinChannel);
 
         if (message.channel.id == gameJoinChannel.id) {
             if (message.mentions.roles.first()) {
@@ -36,7 +36,7 @@ class InfosJeuCommand extends Command {
         if (game) {
 
             let description = client.textes.get("GAMES_INFOSJEU_DESCRIPTION", game, role)
-            const embed = new Discord.RichEmbed();
+            const embed = new Discord.MessageEmbed();
             embed.setTitle(game.name);
             embed.setColor(colors['darkorange']);
             embed.setDescription(description);

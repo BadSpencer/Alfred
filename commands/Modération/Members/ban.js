@@ -8,8 +8,8 @@ const {
     warnMessage,
     questionMessage,
     promptMessage
-} = require('../../utils/messages');
-const colors = require('../../utils/colors');
+} = require('../../../utils/messages');
+const colors = require('../../../utils/colors');
 
 
 class BanCommand extends Command {
@@ -17,36 +17,37 @@ class BanCommand extends Command {
         super('ban', {
             aliases: ['ban'],
             category: 'Modération',
-            args: [
-                {
-                    id: 'userdata',
-                    type: 'userdata',
-                    prompt: {
-                        start: message => promptMessage('Quel membre souhaitez vous bannir ?'),
-                        retry: message => promptMessage('Mentionnez un membre avec son ID'),
-                    },
-                },
-                {
-                    id: 'raison',
-                    type: "content",
-                    match: "rest",
-                    prompt: {
-                        start: message => promptMessage('Pour quelle raison souhaitez vous bannir ce membre ?'),
-                    },
-                }
-            ],
             description: {
                 content: 'Bannir un membre (ne peut plus revenir)',
                 usage: '',
                 examples: ['']
-              }
+            }
         });
+    }
+
+    *args(message) {
+        const userdata = yield {
+            type: 'userdata', 
+            prompt: {
+                start: message => promptMessage('Quel membre souhaitez vous bannir ?'),
+                retry: message => promptMessage('Mentionnez un membre avec son ID')
+            }
+        };
+        const raison = yield {
+            type: 'content', 
+            match: 'rest',
+            prompt: {
+                start: message => promptMessage(`Pour quelle raison souhaitez vous bannir **${userdata.displayName}** ?`),
+                retry: message => promptMessage(`Pour quelle raison souhaitez vous bannir **${userdata.displayName}** ?`)
+            }
+        };
+        return { userdata, raison };
     }
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(args.userdata.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(args.userdata.id);
 
         if (!member) return errorMessage(client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName), message.channel);
         if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return errorMessage(client.textes.get("USER_ERROR_NOT_BANABLE", args.userdata.displayName), message.channel);
@@ -63,12 +64,12 @@ class BanCommand extends Command {
             return null;
         }
         const response = responses.first();
-    
+
         if (response.content == "oui") {
             if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
             if (message.channel.type === 'text') response.delete();
 
-            
+
             client.userdataAddLog(args.userdata, message.member, "BAN", args.raison);
             // await member.send(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison))
             await errorMessage(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
@@ -82,7 +83,7 @@ class BanCommand extends Command {
             warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
             return null;
         }
-        
+
     }
 }
 

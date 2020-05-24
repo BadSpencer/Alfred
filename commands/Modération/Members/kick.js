@@ -1,15 +1,7 @@
-const {
-    Command
-} = require('discord-akairo');
+const { Command } = require('discord-akairo');
 const { Permissions } = require('discord.js');
-const {
-    successMessage,
-    errorMessage,
-    warnMessage,
-    questionMessage,
-    promptMessage
-} = require('../../utils/messages');
-const colors = require('../../utils/colors');
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const colors = require('../../../utils/colors');
 
 
 class KickCommand extends Command {
@@ -17,24 +9,6 @@ class KickCommand extends Command {
         super('kick', {
             aliases: ['kick'],
             category: 'Modération',
-            args: [
-                {
-                    id: 'userdata',
-                    type: 'userdata',
-                    prompt: {
-                        start: 'Quel membre souhaitez vous expulser ?',
-                        retry: 'Mentionnez un membre avec son ID'
-                    },
-                },
-                {
-                    id: 'raison',
-                    type: "content",
-                    match: "rest",
-                    prompt: {
-                        start: 'Pour quelle raison souhaitez vous expulser ce membre ?'
-                    },
-                }
-            ],
             description: {
                 content: 'Expulser un membre (peut revenir)',
                 usage: '',
@@ -43,10 +17,29 @@ class KickCommand extends Command {
         });
     }
 
+    *args(message) {
+        const userdata = yield {
+            type: 'userdata', 
+            prompt: {
+                start: message => promptMessage('Quel membre souhaitez vous expulser ?'),
+                retry: message => promptMessage('Mentionnez un membre avec son ID')
+            }
+        };
+        const raison = yield {
+            type: 'content', 
+            match: 'rest',
+            prompt: {
+                start: message => promptMessage(`Pour quelle raison souhaitez vous expulser **${userdata.displayName}** ?`),
+                retry: message => promptMessage(`Pour quelle raison souhaitez vous expulser **${userdata.displayName}** ?`)
+            }
+        };
+        return { userdata, raison };
+    }
+
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
-        let member = guild.members.get(args.userdata.id);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let member = guild.members.cache.get(args.userdata.id);
 
 
 

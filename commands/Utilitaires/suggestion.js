@@ -16,9 +16,9 @@ class SuggestionCommand extends Command {
             ],
             description: {
                 content: 'Permet de soumettre une suggestion dans <#688062451228475428>',
-                usage: '\`!suggestion <ma suggestion>\`\n\n' +
-                    'Vous pouvez utiliser cette commande directement dans <#688062451228475428> ou bien directement ici par message privé.\n' +
-                    'Votre suggestion apparaitra dans le salon sous un format particulier avec les réactions 💚💛💔. Les réactions permettront de recceuillir l\'avis des membres, elle auront évidement un poid dans la balance de la décision finale.'
+                usage: `\`!suggestion <ma suggestion>\`\n
+                    Vous pouvez utiliser cette commande directement dans <#688062451228475428> ou bien directement ici par message privé.
+                    Votre suggestion apparaitra dans le salon sous un format particulier avec les réactions 💚💛💔. Les réactions permettront de recceuillir l\'avis des membres, elle auront évidement un poid dans la balance de la décision finale.`
                     ,
                 examples: [
                     '!suggestion Que pensez-vous d\'ajouter le mod **Super mod** sur Ark ?',
@@ -33,10 +33,10 @@ class SuggestionCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        let suggChannel = guild.channels.find(c => c.name === settings.suggChannel);
+        let suggChannel = guild.channels.cache.find(c => c.name === settings.suggChannel);
 
         if (!suggChannel) return;
 
@@ -46,15 +46,15 @@ class SuggestionCommand extends Command {
         }
         */
 
-        let member = guild.members.get(message.author.id);
+        let member = guild.members.cache.get(message.author.id);
 
-        let embed = new Discord.RichEmbed();
+        let embed = new Discord.MessageEmbed();
 
         let avatar;
-        if (!member.user.avatarURL) {
+        if (!member.user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL;
+            avatar = member.user.avatarURL();
         }
 
         embed.setTitle(client.textes.get("SUGG_NOTIF_TITLE"));

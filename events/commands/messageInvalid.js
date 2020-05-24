@@ -6,12 +6,13 @@ class MessageInvalidListener extends Listener {
     constructor() {
         super('messageInvalid', {
             emitter: 'commandHandler',
-            eventName: 'messageInvalid'
+            event: 'messageInvalid'
         });
     }
 
     async exec(message) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
 
         if (message.author.bot) return;
 
@@ -26,7 +27,7 @@ class MessageInvalidListener extends Listener {
 
         let game = client.db_games.find(game => game.textChannelID == message.channel.id);
         if (game) {
-            if (message.member.roles.has(game.roleID)) {
+            if (message.member.roles.cache.has(game.roleID)) {
                 await client.usergameUpdateLastAction(game, message.member);
             };
         };

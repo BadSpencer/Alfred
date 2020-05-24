@@ -6,11 +6,12 @@ const datamodel = require('./datamodel');
 
 module.exports = (client) => {
     client.createVoiceChannel = async (name = "") => {
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: createVoiceChannel`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        const roleEveryone = guild.roles.find(r => r.name == "@everyone");
-        const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
-        const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
+        const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
+        const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
         let channelName = "";
         if (!name) {
@@ -19,13 +20,13 @@ module.exports = (client) => {
             channelName = name;
         }
 
-        await guild.createChannel(channelName, {
+        await guild.channels.create(channelName, {
             type: 'voice'
         }).then(freeVoiceChannel => {
-            freeVoiceChannel.overwritePermissions(roleEveryone, {
+            freeVoiceChannel.createOverwrite(roleEveryone, {
                 'CONNECT': false,
             });
-            freeVoiceChannel.overwritePermissions(roleMembers, {
+            freeVoiceChannel.createOverwrite(roleMembers, {
                 'CONNECT': true,
             });
             freeVoiceChannel.setParent(voiceChannelsCategory);
@@ -33,6 +34,7 @@ module.exports = (client) => {
 
     };
     client.renameFreeVoiceChannel = async (member) => {
+        client.log(`Méthode: renameFreeVoiceChannel`, 'debug');
         let channelName = client.textes.get("VOICE_NEW_VOICE_CHANNEL");
         if (member.presence.game) {
             let game = client.db_games.get(member.presence.game.name);
@@ -41,41 +43,41 @@ module.exports = (client) => {
             }
         }
         //if (member.id == "193822534196658176") channelName = `🔊 Confinement COVID-19`;
-        await member.voiceChannel.setName(channelName);
-        await member.voiceChannel.overwritePermissions(member, {
+        await member.voice.channel.setName(channelName);
+        await member.voice.channel.createOverwrite(member, {
             'MANAGE_CHANNELS': true,
         });
 
     };
-
     client.contactVoiceChannelJoin = async (member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: contactVoiceChannelJoin`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        const roleEve = guild.roles.find(r => r.name == "@everyone");
-        const roleMem = guild.roles.find(r => r.name == settings.memberRole);
-        const roleMod = guild.roles.find(r => r.name == settings.modRole);
-        const roleAdm = guild.roles.find(r => r.name == settings.adminRole);
+        const roleEve = guild.roles.cache.find(r => r.name == "@everyone");
+        const roleMem = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleMod = guild.roles.cache.find(r => r.name == settings.modRole);
+        const roleAdm = guild.roles.cache.find(r => r.name == settings.adminRole);
 
-        const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
-        const accueilCategory = guild.channels.find(c => c.name === settings.accueilCategory);
+        const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
+        const accueilCategory = guild.channels.cache.find(c => c.name === settings.accueilCategory);
 
-        switch (member.voiceChannel.name) {
+        switch (member.voice.channel.name) {
             case settings.contactChannelFree:
-                if (member.roles.has(roleMod.id) || member.roles.has(roleAdm.id)) {
+                if (member.roles.cache.has(roleMod.id) || member.roles.cache.has(roleAdm.id)) {
 
                 } else {
-                    member.voiceChannel.setParent(voiceChannelsCategory);
-                    member.voiceChannel.setName(settings.contactChannelInprogress);
-                    member.voiceChannel.overwritePermissions(roleEve, {
+                    member.voice.channel.setParent(voiceChannelsCategory);
+                    member.voice.channel.setName(settings.contactChannelInprogress);
+                    member.voice.channel.createOverwrite(roleEve, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': false,
                     });
-                    member.voiceChannel.overwritePermissions(roleMem, {
+                    member.voice.channel.createOverwrite(roleMem, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': false,
                     });
-                    member.voiceChannel.overwritePermissions(roleMod, {
+                    member.voice.channel.createOverwrite(roleMod, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': true,
                     });
@@ -83,8 +85,8 @@ module.exports = (client) => {
                 }
                 break;
             case settings.contactChannelWaiting:
-                if (member.roles.has(roleMod.id) || member.roles.has(roleAdm.id)) {
-                    member.voiceChannel.setName(settings.contactChannelInprogress);
+                if (member.roles.cache.has(roleMod.id) || member.roles.cache.has(roleAdm.id)) {
+                    member.voice.channel.setName(settings.contactChannelInprogress);
                 } else {
 
                 }
@@ -100,80 +102,82 @@ module.exports = (client) => {
 
     };
     client.contactVoiceChannelQuit = async (member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: contactVoiceChannelQuit`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        const roleEve = guild.roles.find(r => r.name == "@everyone");
-        const roleMem = guild.roles.find(r => r.name == settings.memberRole);
-        const roleMod = guild.roles.find(r => r.name == settings.modRole);
-        const roleAdm = guild.roles.find(r => r.name == settings.adminRole);
+        const roleEve = guild.roles.cache.find(r => r.name == "@everyone");
+        const roleMem = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleMod = guild.roles.cache.find(r => r.name == settings.modRole);
+        const roleAdm = guild.roles.cache.find(r => r.name == settings.adminRole);
 
-        const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
-        const accueilCategory = guild.channels.find(c => c.name === settings.accueilCategory);
+        const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
+        const accueilCategory = guild.channels.cache.find(c => c.name === settings.accueilCategory);
 
-        switch (member.voiceChannel.name) {
+        switch (member.voice.channel.name) {
             case settings.contactChannelFree:
-                member.voiceChannel.setParent(accueilCategory);
-                member.voiceChannel.setName(settings.contactChannelFree);
-                member.voiceChannel.overwritePermissions(roleEve, {
+                member.voice.channel.setParent(accueilCategory);
+                member.voice.channel.setName(settings.contactChannelFree);
+                member.voice.channel.createOverwrite(roleEve, {
                     'VIEW_CHANNEL': true,
                     'CONNECT': true,
                 });
                 break;
             case settings.contactChannelWaiting:
-                member.voiceChannel.setParent(accueilCategory);
-                member.voiceChannel.setName(settings.contactChannelFree);
-                member.voiceChannel.overwritePermissions(roleEve, {
+                member.voice.channel.setParent(accueilCategory);
+                member.voice.channel.setName(settings.contactChannelFree);
+                member.voice.channel.createOverwrite(roleEve, {
                     'VIEW_CHANNEL': true,
                     'CONNECT': true,
                 });
                 break;
             case settings.contactChannelInprogress:
-                member.voiceChannel.setParent(accueilCategory);
-                member.voiceChannel.setName(settings.contactChannelFree);
-                member.voiceChannel.overwritePermissions(roleEve, {
+                member.voice.channel.setParent(accueilCategory);
+                member.voice.channel.setName(settings.contactChannelFree);
+                member.voice.channel.createOverwrite(roleEve, {
                     'VIEW_CHANNEL': true,
                     'CONNECT': true,
                 });
                 break;
         }
     };
-
     client.gameVoiceChannelJoin = async (game, member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: gameVoiceChannelJoin`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
-        const voiceChannelsCategory = guild.channels.find(c => c.name === settings.voiceChansCategory);
+        const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
-        member.voiceChannel.setParent(voiceChannelsCategory);
-        member.voiceChannel.setName(`🔊${game.name}`);
-        member.voiceChannel.overwritePermissions(roleMembers, {
+        member.voice.channel.setParent(voiceChannelsCategory);
+        member.voice.channel.setName(`🔊${game.name}`);
+        member.voice.channel.createOverwrite(roleMembers, {
             'VIEW_CHANNEL': true,
             'CONNECT': true,
         });
     };
     client.gameVoiceChannelQuit = async (game, member) => {
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: gameVoiceChannelQuit`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        const roleMembers = guild.roles.find(r => r.name == settings.memberRole);
-        const gameCategory = guild.channels.get(game.categoryID);
+        const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const gameCategory = guild.channels.cache.get(game.categoryID);
 
-        member.voiceChannel.setParent(gameCategory);
-        member.voiceChannel.setName(`🔈${game.name}`);
-        member.voiceChannel.overwritePermissions(roleMembers, {
+        member.voice.channel.setParent(gameCategory);
+        member.voice.channel.setName(`🔈${game.name}`);
+        member.voice.channel.createOverwrite(roleMembers, {
             'VIEW_CHANNEL': false,
             'CONNECT': false,
         });
     };
     client.messageOfTheDay = async () => {
-
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: messageOfTheDay`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        let embed = new Discord.RichEmbed();
+        let embed = new Discord.MessageEmbed();
         let description = "";
 
-        let generalChannel = guild.channels.find(c => c.name === settings.welcomeMemberChannel);
+        let generalChannel = guild.channels.cache.find(c => c.name === settings.welcomeMemberChannel);
 
         let astuces = client.db_astuces.array();
         astuces.sort(function (a, b) {
@@ -221,21 +225,18 @@ module.exports = (client) => {
 
     };
     client.modLog = async (content) => {
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`Méthode: modLog`, 'debug');
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
 
-        //let timestamp = moment().format('DD.MM') + " " + moment().format('HH:mm');
-        //let notification = timestamp + " " + content;
-
-        let modNotifChannel = guild.channels.find(c => c.name === settings.modNotifChannel);
+        let modNotifChannel = guild.channels.cache.find(c => c.name === settings.modNotifChannel);
 
         if (modNotifChannel) {
             modNotifChannel.send(content);
         }
     };
-
     client.messageLog = async (message) => {
-
+        client.log(`Méthode: messageLog`, 'debug');
 
         if (message.author.bot) return false;
         if (message.content.startsWith("!")) return false;
@@ -251,9 +252,8 @@ module.exports = (client) => {
         client.db_messageslogs.set(message.id, messagesLogs);
         return true;
     };
-
     client.commandLog = async (message, command) => {
-
+        client.log(`Méthode: commandLog`, 'debug');
         let commandsLogs = datamodel.tables.commandsLogs;
         commandsLogs.messageID = message.id;
         commandsLogs.command = command.id;
@@ -266,13 +266,12 @@ module.exports = (client) => {
         commandsLogs.createdTime = moment(message.createdAt).format('HH:mm');
         commandsLogs.content = message.content;
         client.db_commandsLogs.set(message.id, commandsLogs);
-
     };
-
     client.channelGetAllMessages = async (channelID) => {
+        client.log(`Méthode: channelGetAllMessages`, 'debug');
 
-        const guild = client.guilds.get(client.config.guildID);
-        let channel = guild.channels.get(channelID);
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let channel = guild.channels.cache.get(channelID);
 
 
         const messagesAll = [];
@@ -284,7 +283,7 @@ module.exports = (client) => {
                 options.before = last_id;
             }
 
-            const messages = await channel.fetchMessages(options);
+            const messages = await channel.messages.fetchs(options);
             if (messages.size > 0) {
                 messagesAll.push(...messages);
                 last_id = messages.last().id;
@@ -297,8 +296,8 @@ module.exports = (client) => {
         }
         return messagesAll;
     };
-
     client.logEventToEmoji = (event) => {
+        client.log(`Méthode: logEventToEmoji`, 'debug');
         let emoji = "";
         switch (event) {
             case 'JOIN':
@@ -332,6 +331,7 @@ module.exports = (client) => {
         return emoji;
     };
     client.logEventToText = (event) => {
+        client.log(`Méthode: logEventToText`, 'debug');
         let eventText = "";
         switch (event) {
             case 'JOIN':
@@ -364,8 +364,8 @@ module.exports = (client) => {
         }
         return eventText;
     };
-
     client.msToDays = (milliseconds) => {
+        client.log(`Méthode: msToDays`, 'debug');
         let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
         let days = roundTowardsZero(milliseconds / 86400000),
             hours = roundTowardsZero(milliseconds / 3600000) % 24,
@@ -376,8 +376,8 @@ module.exports = (client) => {
         }
         return days;
     };
-
     client.msToDaysText = (milliseconds) => {
+        client.log(`Méthode: msToDaysText`, 'debug');
         let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
         let days = roundTowardsZero(milliseconds / 86400000),
             hours = roundTowardsZero(milliseconds / 3600000) % 24,
@@ -413,6 +413,7 @@ module.exports = (client) => {
         return sentence;
     };
     client.msToHours = (milliseconds) => {
+        client.log(`Méthode: msToHours`, 'debug');
         let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
         let days = roundTowardsZero(milliseconds / 86400000),
             hours = roundTowardsZero(milliseconds / 3600000) % 24,
@@ -440,9 +441,8 @@ module.exports = (client) => {
             .replace("{seconds}", seconds);
         return sentence;
     };
-
     client.arrayToEmbed = async (array, recordsByPage = 10, titre, channel) => {
-
+        client.log(`Méthode: arrayToEmbed`, 'debug');
         let postedEmbeds = client.db_postedEmbeds.get("default");
 
         let nbPages = Math.ceil(array.length / recordsByPage);
@@ -455,7 +455,7 @@ module.exports = (client) => {
             let page = i + 1;
             let pageRecords = await array.slice(i * recordsByPage, (i + 1) * recordsByPage);
             let description = "";
-            let embed = new Discord.RichEmbed();
+            let embed = new Discord.MessageEmbed();
 
             let firstRow = page * recordsByPage - (recordsByPage - 1);
             let lastRow = page * recordsByPage;

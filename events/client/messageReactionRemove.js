@@ -14,22 +14,22 @@ class MessageReactionRemoveListener extends Listener {
     constructor() {
         super('messageReactionRemove', {
             emitter: 'client',
-            eventName: 'messageReactionRemove'
+            event: 'messageReactionRemove'
         });
     }
 
     async exec(messageReaction, user) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
         if (user.bot) return;
 
         let gameGroupsBlacklist = [
-            '191993511543832577', // Albator
-            '502561242049806336'  // Bad Weuiser
+            '191993511543832577' // Albator
         ];
 
-        const guild = client.guilds.get(client.config.guildID);
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        const member = guild.members.get(user.id);
+        const member = guild.members.cache.get(user.id);
 
         client.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));
 
@@ -64,19 +64,19 @@ class MessageReactionRemoveListener extends Listener {
         if (messageReaction.message.id == settings.gameJoinMessage) {
             const game = this.client.db_games.find(game => game.emoji == messageReaction.emoji.name);
             if (game) {
-                const gameRole = guild.roles.get(game.roleID);
+                const gameRole = guild.roles.cache.get(game.roleID);
                 if (gameRole) {
-                    if (member.roles.has(gameRole.id)) {
+                    if (member.roles.cache.has(gameRole.id)) {
                         if (gameGroupsBlacklist.includes(member.id)) {
                             member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
-                            client.games.quitConfirmation(client, messageReaction, game, member);
+                            client.gameQuitConfirmation(messageReaction, game, member);
                         }
                     } else {
                         if (gameGroupsBlacklist.includes(member.id)) {
                             member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
                         } else {
-                            member.addRole(gameRole);
+                            member.roles.add(gameRole);
                             successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
                         }
                     }

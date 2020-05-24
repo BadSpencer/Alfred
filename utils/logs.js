@@ -8,7 +8,7 @@ module.exports = (client) => {
       client.logger.log(msg, type, settings.debug);
       if (settings.logChannelID && settings.logToChan == "true") {
         if (type == "debug" && settings.debug == "false") return;
-        client.channels.get(settings.logChannelID).send(`[${type.toUpperCase()}] ${msg}`).catch(console.error);
+        client.channels.cache.get(settings.logChannelID).send(`[${type.toUpperCase()}] ${msg}`).catch(console.error);
       }
     }
   }

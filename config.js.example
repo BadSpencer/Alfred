@@ -1,8 +1,6 @@
 const config = {
   "token": "",
-  "owner": [
-      ""
-  ],
+  "owner": [""],
   "guildID": "",
   "prefix": [""]
 };

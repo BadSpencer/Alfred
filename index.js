@@ -6,48 +6,19 @@ const {
 } = require('./config.js');
 const Enmap = require("enmap");
 const cron = require('cron');
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('./utils/messages');
 
-const client = new AkairoClient({
-    ownerID: owner,
-    prefix: prefix,
+const AlfredClient = require('./utils/AlfredClient');
+const config = require('./config.js');
 
-    emitters: {
-        process
-    },
-
-    defaultPrompt: {
-        timeout: message => 'Vous avez mis trop de temps à répondre. Commande annulée',
-        ended: message => 'Trop de tentatives. Commande annulée',
-        cancel: message => 'Commande annulée',
-        cancelWord: 'annuler',
-        retries: 2,
-        time: 60000
-    },
-    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
-    allowMention: true,
-    aliasReplacement: /-/g,
-    handleEdits: true,
-    commandUtilLifetime: 300000,
-    storeMessages: true,
-    commandDirectory: './commands/',
-    inhibitorDirectory: './inhibitors/',
-    listenerDirectory: './events/',
-
-    //automateCategories: true,
-    commandUtil: true
-}, {
-    disableEveryone: true
-});
-
-client.config = require("./config.js");
+const client = new AlfredClient(config);
 
 client.logger = require("./utils/logger");
 client.db = require("./utils/db");
-client.games = require("./utils/games");
 
 require("./utils/core.js")(client);
 require("./utils/logs.js")(client);
-require("./utils/jeux.js")(client);
+require("./utils/games.js")(client);
 require("./utils/gameservers.js")(client);
 require("./utils/embeds.js")(client);
 require("./utils/members.js")(client);
@@ -55,10 +26,12 @@ require("./utils/users.js")(client);
 require("./utils/aide.js")(client);
 require("./utils/exp.js")(client);
 
-
-
 client.textes = new (require(`./utils/textes.js`));
 
+client.on('shardDisconnect', () => client.log('Connection perdue...', 'warn'))
+    .on('shardReconnecting', () => client.log('Tentative de reconnexion...', 'warn'))
+    .on('error', err => client.log(err, 'error'))
+    .on('warn', info => client.log(info, 'warn'));
 
 client.db_settings = new Enmap({
     name: "settings"
@@ -103,25 +76,25 @@ client.db_commandsLogs = new Enmap({
     name: "commandsLogs"
 });
 
-client.build();
-client.commandHandler.resolver.addType('game', word => {
-    if (!word) return null;
+// client.build();
+// client.commandHandler.resolver.addType('game', word => {
+//     if (!word) return null;
 
-    const game = client.db_games.find(game => game.name == word);
-    if (game) {
-        return game;
-    }
-    return null;
-});
-client.commandHandler.resolver.addType('userdata', word => {
-    if (!word) return null;
+//     const game = client.db_games.find(game => game.name == word);
+//     if (game) {
+//         return game;
+//     }
+//     return null;
+// });
+// client.commandHandler.resolver.addType('userdata', word => {
+//     if (!word) return null;
 
-    const userdata = client.db_userdata.find(record => record.id == word);
-    if (userdata) {
-        return userdata;
-    }
-    return null;
-});
+//     const userdata = client.db_userdata.find(record => record.id == word);
+//     if (userdata) {
+//         return userdata;
+//     }
+//     return null;
+// });
 
 
 client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
@@ -139,17 +112,75 @@ client.cron_serverMaintenanceOff = new cron.CronJob('00 45 05 * * *', () => { //
     client.gameServersSetMaintenanceOff("*");
 });
 
-
 client.cron_serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
     client.gameServersPostStatusMessage();
 });
 client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
     client.messageOfTheDay();
 });
-client.cron_gameList = new cron.CronJob('10 00 */1 * * *', () => { // Tous les heures après 10sec
-    client.games.PostRoleReaction(client);
+client.cron_gameList = new cron.CronJob('15 00 */1 * * *', () => { // Tous les heures après 15sec
+    client.gamesListPost();
 });
 client.cron_ArkDWD = new cron.CronJob('00 00 06 * * 5', () => { // Tous les 2 jours à 6h00
-     client.gameServersArkDWD();
+    client.gameServersArkDWD();
 });
-client.login(token);
+
+client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les jours à 14h30 et 20sec
+    client.gamesPurge();
+});
+
+
+client.commandHandler.resolver.addType('game', (message, phrase) => {
+    if (!phrase) return null;
+
+    const game = client.db_games.find(game => game.name == phrase);
+    if (game) {
+        return game;
+    }
+    return null;
+});
+client.commandHandler.resolver.addType('userdata', (message, phrase) => {
+    if (!phrase) return null;
+
+    const userdata = client.db_userdata.find(record => record.id == phrase);
+    if (userdata) {
+        return userdata;
+    }
+    return null;
+});
+
+client.commandHandler.resolver.addType('steamID', (message, phrase) => {
+    if (!phrase) return null;
+    if (phrase.length == 17 && phrase.startsWith('7656')) {
+        return phrase;
+    } else {
+        return null;
+    }
+});
+
+client.commandHandler.resolver.addType('server', (message, phrase) => {
+    if (!phrase) return null;
+
+    const server = client.db_gameservers.get(phrase);
+    if (server) {
+        return server;
+    } else {
+        return null;
+    }
+});
+
+client.commandHandler.resolver.addType('ouinon', (message, phrase) => {
+    if (!phrase) return null;
+    if (phrase == 'oui' || phrase == 'non') {
+        return phrase;
+    } else {
+        return null;
+    }
+});
+
+
+client.start();
+
+process.on('unhandledRejection', error => {
+    client.log(`${error.message}\n${error.stack}`, 'error');
+});

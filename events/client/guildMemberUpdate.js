@@ -7,15 +7,17 @@ class guildMemberUpdateListener extends Listener {
     constructor() {
         super('guildMemberUpdate', {
             emitter: 'client',
-            eventName: 'guildMemberUpdate'
+            event: 'guildMemberUpdate'
         });
     }
 
     async exec(oldMember, newMember) {
         let client = this.client;
-        const guild = client.guilds.get(client.config.guildID);
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+
+        const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
-        const roleMembers = newMember.guild.roles.find(r => r.name == settings.memberRole);
+        const roleMembers = newMember.guild.roles.cache.find(r => r.name == settings.memberRole);
 
         client.log(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember), "debug");
         let userdata = client.db_userdata.get(newMember.id);
@@ -26,10 +28,10 @@ class guildMemberUpdateListener extends Listener {
 
 
         // Role ajouté
-        if (newMember.roles.size > oldMember.roles.size) {
+        if (newMember.roles.cache.size > oldMember.roles.cache.size) {
 
-            newMember.roles.forEach(newRole => {
-                if (!oldMember.roles.has(newRole.id)) {
+            newMember.roles.cache.forEach(newRole => {
+                if (!oldMember.roles.cache.has(newRole.id)) {
                     client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
@@ -43,11 +45,11 @@ class guildMemberUpdateListener extends Listener {
                     // Annonce rejoindre jeu
                     const game = client.db_games.find(game => game.roleID == newRole.id);
                     if (game) {
-                        client.games.PostRoleReaction(client);
+                        client.gamesListPost();
 
                         client.usergameUpdateJoinedAt(game, newMember);
 
-                        client.games.newPlayerNotification(client, game, newMember);
+                        client.gameNewPlayerNotification(game, newMember);
                         client.userdataAddLog(userdata, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
                     }
                 }
@@ -56,21 +58,21 @@ class guildMemberUpdateListener extends Listener {
 
 
         // Role retiré
-        if (newMember.roles.size < oldMember.roles.size) {
+        if (newMember.roles.cache.size < oldMember.roles.cache.size) {
 
 
-            oldMember.roles.forEach(oldRole => {
-                if (!newMember.roles.has(oldRole.id)) {
-                    client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
+            // oldMember.roles.cache.forEach(oldRole => {
+            //     if (!newMember.roles.cache.has(oldRole.id)) {
+            //         client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
 
-                    const game = client.db_games.find(game => game.roleID == oldRole.id);
-                    if (game) {
-                        client.games.PostRoleReaction(client);
-                        client.games.quitPlayerNotification(client, game, newMember);
-                        client.userdataAddLog(userdata, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
-                    }
-                }
-            })
+            //         const game = client.db_games.find(game => game.roleID == oldRole.id);
+            //         if (game) {
+            //             client.gamesListPost();
+            //             client.gamePlayerQuitNotification(game, newMember);
+            //             client.userdataAddLog(userdata, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
+            //         }
+            //     }
+            // })
         }
 
 

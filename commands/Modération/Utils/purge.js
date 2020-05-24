@@ -1,19 +1,10 @@
-const { Permissions } = require('discord.js');
 const { Command } = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
-const Discord = require("discord.js");
-const colors = require('../../utils/colors');
-const {
-    successMessage,
-    errorMessage,
-    warnMessage
-} = require('../../utils/messages');
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
 
 class PurgeCommand extends Command {
     constructor() {
         super('purge', {
             aliases: ['purge', 'del', 'bulkdelete'],
-            userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
             category: 'Modération',
             args: [{
                 id: 'purge', type: 'number', default: 1,
@@ -28,16 +19,25 @@ class PurgeCommand extends Command {
         })
     }
 
+    *args(message) {
+        const nbdel = yield {
+            type: 'number',
+            default: 1
+
+        }
+        return { nbdel };
+    }
+
     async exec(message, args) {
         let client = this.client;
 
-        if (args.purge < 1 || args.purge > 100) return message.util.send('Le nombre de messages à supprimer doit être compris entre 1 et 100.');
+        if (args.nbdel < 1 || args.nbdel > 100) return message.util.send('Le nombre de messages à supprimer doit être compris entre 1 et 100.');
         await message.delete()
 
-        const deleted = await message.channel.fetchMessages({ limit: args.purge });
+        const deleted = await message.channel.messages.fetch({ limit: args.nbdel });
         await message.channel.bulkDelete(deleted)
             .then(deletedMsg => {
-                successMessage(client.textes.get("PURGE_DELETE_SUCCESS", args, deletedMsg.size), message.channel);
+                successMessage(client.textes.get("PURGE_DELETE_SUCCESS", args.nbdel, deletedMsg.size), message.channel);
             })
             .catch(error => {
                 errorMessage(client.textes.get("PURGE_DELETE_ERROR", error), message.channel);

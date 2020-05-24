@@ -7,12 +7,13 @@ class CommandStartedListener extends Listener {
     constructor() {
         super('commandStarted', {
             emitter: 'commandHandler',
-            eventName: 'commandStarted',
+            event: 'commandStarted',
         })
     }
 
     async exec(message, command) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
         let commandUsed = command;
         let timestamp = `${moment(new Date()).format("DD-MM-YY HH:mm:ss")}`;
 

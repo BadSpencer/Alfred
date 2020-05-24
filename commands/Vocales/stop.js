@@ -9,8 +9,8 @@ class StopCommand extends Command {
       category: 'Vocales',
       description: {
         content: 'Arrête la lecture en cours',
-        usage: '\`!stop\`\n' +
-        'La musique qui passe actuellement dans votre salon vous casse les oreilles ? Lancez cette commande et j\'arrêterais tout !',
+        usage: `\`!stop\`
+        La musique qui passe actuellement dans votre salon vous casse les oreilles ? Lancez cette commande et j'arrêterais tout !`,
         examples: ['!stop']
       }
     });
@@ -19,10 +19,10 @@ class StopCommand extends Command {
   async exec(message, args) {
 
     let client = this.client;
-    const guild = client.guilds.get(client.config.guildID);
+    const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     
-    let channel = guild.channels.find(c => c.name === settings.AFKChannel);
+    let channel = guild.channels.cache.find(c => c.name === settings.AFKChannel);
 
     if (channel) {
       channel.join()

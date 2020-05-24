@@ -6,15 +6,17 @@ class MessageDeleteListener extends Listener {
     constructor() {
         super('messageDelete', {
             emitter: 'client',
-            eventName: 'messageDelete'
+            event: 'messageDelete'
         });
     }
 
     exec(message) {
         let client = this.client;
+        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
 
-        if (message.author.bot) return;
-        if (message.content.startsWith("!")) return;
+        if (message.author == null) return client.log(`Message supprimé mais il n\'est plus disponible`, 'debug');
+        if (message.author.bot) return; // On ne log pas les suppr de messages de bot
+        if (message.content.startsWith("!")) return; // On ne log pas les suppr de commandes
 
         let deleted = `Le message ${message.id} à été supprimé dans le salon <#${message.channel.id}>`
         client.log(`${deleted}`);
