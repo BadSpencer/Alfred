@@ -33,7 +33,7 @@ class voiceStateUpdateListener extends Listener {
 
                 const game = client.db_games.find(game => game.voiceChannelID == newState.channel.id);
                 if (game) {
-                    await client.gameVoiceChannelJoin(game, newState.member);
+                    await client.gameVoiceChannelJoin(game, newState.channel);
                 }
 
                 if (newState.channel.name == settings.freeVoiceChan) {
@@ -56,13 +56,13 @@ class voiceStateUpdateListener extends Listener {
 
                 const game = client.db_games.find(game => game.voiceChannelID == oldState.channel.id);
                 if (game) {
-                    await client.gameVoiceChannelQuit(game, oldState.member);
+                    await client.gameVoiceChannelQuit(game, oldState.channel);
                 } else {
 
                     if (oldState.channel.name == settings.contactChannelFree ||
                         oldState.channel.name == settings.contactChannelWaiting ||
                         oldState.channel.name == settings.contactChannelInprogress) {
-                        await client.contactVoiceChannelQuit(oldState.member);
+                        await client.contactVoiceChannelQuit(oldState.channel);
                     };
                     if (oldState.channel.name !== settings.quietChannel &&
                         oldState.channel.name !== settings.AFKChannel &&
@@ -80,12 +80,12 @@ class voiceStateUpdateListener extends Listener {
             if (oldState.channel.members.size == "0") {
                 const game = client.db_games.find(game => game.voiceChannelID == oldState.channel.id);
                 if (game) {
-                    await client.gameVoiceChannelQuit(game, oldState.member);
+                    await client.gameVoiceChannelQuit(game, oldState.channel);
                 } else {
                     if (oldState.channel.name == settings.contactChannelFree ||
                         oldState.channel.name == settings.contactChannelWaiting ||
                         oldState.channel.name == settings.contactChannelInprogress) {
-                        await client.contactVoiceChannelQuit(oldState.member);
+                        await client.contactVoiceChannelQuit(oldState.channel);
                     };
                     if (oldState.channel.name !== settings.quietChannel &&
                         oldState.channel.name !== settings.AFKChannel &&
@@ -100,7 +100,7 @@ class voiceStateUpdateListener extends Listener {
             if (newState.channel.members.size == "1") {
                 const game = client.db_games.find(game => game.voiceChannelID == newState.channel.id);
                 if (game) {
-                    await client.gameVoiceChannelJoin(game, newState.member);
+                    await client.gameVoiceChannelJoin(game, newState.channel);
                 }
                 if (newState.channel.name == settings.freeVoiceChan) {
                     await client.renameFreeVoiceChannel(newState.member);

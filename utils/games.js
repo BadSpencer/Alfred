@@ -347,13 +347,23 @@ module.exports = (client) => {
     }
 
     if (gameTextChannel) {
-      const welcomeMessage = new Discord.MessageEmbed()
+      const notifChannelMessage = new Discord.MessageEmbed()
         .setColor(colors['yellow'])
         .setTimestamp()
         .setThumbnail(avatar)
         .setDescription(client.textes.get(channelNotification, game, member));
-      gameTextChannel.send(welcomeMessage);
+      gameTextChannel.send(notifChannelMessage);
     };
+    if (type == "PURGE") {
+      const notifMemberMessage = new Discord.MessageEmbed()
+        .setColor(colors['yellow'])
+        .setTimestamp()
+        .setDescription(client.textes.get('GAMES_PURGE_MEMBER_NOTIFICATION', game));
+      member.send(notifMemberMessage);
+
+    };
+
+
     client.modLog(client.textes.get(modNotification, member, game));
 
   };

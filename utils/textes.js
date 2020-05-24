@@ -579,6 +579,9 @@ module.exports = class {
                 return `${member.displayName} est inactif sur ${game.name} depuis plus de ${game.nbDaysInactive} jours.
                 Il a éré retiré du groupe`;
             },
+            GAMES_PURGE_MEMBER_NOTIFICATION: (game) => {
+                return `Vous avez été retiré du groupe **${game.name}** car vous êtes inactif sur ce jeu depuis plus de ${game.nbDaysInactive} jours.`;
+            },
             GAMES_QUIT_SUCCESS: (jeu) => {
                 let textes = [
                     `Vous avez quitté le groupe ${jeu}. Vous allez nous manquer!`,

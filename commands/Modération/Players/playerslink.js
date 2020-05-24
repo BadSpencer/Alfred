@@ -35,7 +35,7 @@ class PlayersLinkCommand extends Command {
             }
         };
 
-        return { playerID, memberID: userdata };
+        return { playerID, userdata };
 
     }
     async exec(message, args) {
@@ -43,7 +43,7 @@ class PlayersLinkCommand extends Command {
 
         await client.gameServersPlayerLink(message, args.playerID, args.userdata);
 
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
+        if (message.channel.type === 'text') message.delete();;
     }
 
 }

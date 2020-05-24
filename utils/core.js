@@ -62,22 +62,22 @@ module.exports = (client) => {
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
         const accueilCategory = guild.channels.cache.find(c => c.name === settings.accueilCategory);
 
-        switch (member.voice.channel.name) {
+        switch (channel.name) {
             case settings.contactChannelFree:
                 if (member.roles.cache.has(roleMod.id) || member.roles.cache.has(roleAdm.id)) {
 
                 } else {
-                    member.voice.channel.setParent(voiceChannelsCategory);
-                    member.voice.channel.setName(settings.contactChannelInprogress);
-                    member.voice.channel.createOverwrite(roleEve, {
+                    channel.setParent(voiceChannelsCategory);
+                    channel.setName(settings.contactChannelInprogress);
+                    channel.createOverwrite(roleEve, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': false,
                     });
-                    member.voice.channel.createOverwrite(roleMem, {
+                    channel.createOverwrite(roleMem, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': false,
                     });
-                    member.voice.channel.createOverwrite(roleMod, {
+                    channel.createOverwrite(roleMod, {
                         'VIEW_CHANNEL': true,
                         'CONNECT': true,
                     });
@@ -86,7 +86,7 @@ module.exports = (client) => {
                 break;
             case settings.contactChannelWaiting:
                 if (member.roles.cache.has(roleMod.id) || member.roles.cache.has(roleAdm.id)) {
-                    member.voice.channel.setName(settings.contactChannelInprogress);
+                    channel.setName(settings.contactChannelInprogress);
                 } else {
 
                 }
@@ -101,7 +101,7 @@ module.exports = (client) => {
 
 
     };
-    client.contactVoiceChannelQuit = async (member) => {
+    client.contactVoiceChannelQuit = async (channel) => {
         client.log(`Méthode: contactVoiceChannelQuit`, 'debug');
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
@@ -114,57 +114,57 @@ module.exports = (client) => {
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
         const accueilCategory = guild.channels.cache.find(c => c.name === settings.accueilCategory);
 
-        switch (member.voice.channel.name) {
+        switch (channel.name) {
             case settings.contactChannelFree:
-                member.voice.channel.setParent(accueilCategory);
-                member.voice.channel.setName(settings.contactChannelFree);
-                member.voice.channel.createOverwrite(roleEve, {
+                channel.setParent(accueilCategory);
+                channel.setName(settings.contactChannelFree);
+                channel.createOverwrite(roleEve, {
                     'VIEW_CHANNEL': true,
                     'CONNECT': true,
                 });
                 break;
             case settings.contactChannelWaiting:
-                member.voice.channel.setParent(accueilCategory);
-                member.voice.channel.setName(settings.contactChannelFree);
-                member.voice.channel.createOverwrite(roleEve, {
+                channel.setParent(accueilCategory);
+                channel.setName(settings.contactChannelFree);
+                channel.createOverwrite(roleEve, {
                     'VIEW_CHANNEL': true,
                     'CONNECT': true,
                 });
                 break;
             case settings.contactChannelInprogress:
-                member.voice.channel.setParent(accueilCategory);
-                member.voice.channel.setName(settings.contactChannelFree);
-                member.voice.channel.createOverwrite(roleEve, {
+                channel.setParent(accueilCategory);
+                channel.setName(settings.contactChannelFree);
+                channel.createOverwrite(roleEve, {
                     'VIEW_CHANNEL': true,
                     'CONNECT': true,
                 });
                 break;
         }
     };
-    client.gameVoiceChannelJoin = async (game, member) => {
+    client.gameVoiceChannelJoin = async (game, channel) => {
         client.log(`Méthode: gameVoiceChannelJoin`, 'debug');
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
-        member.voice.channel.setParent(voiceChannelsCategory);
-        member.voice.channel.setName(`🔊${game.name}`);
-        member.voice.channel.createOverwrite(roleMembers, {
+        channel.setParent(voiceChannelsCategory);
+        channel.setName(`🔊${game.name}`);
+        channel.createOverwrite(roleMembers, {
             'VIEW_CHANNEL': true,
             'CONNECT': true,
         });
     };
-    client.gameVoiceChannelQuit = async (game, member) => {
+    client.gameVoiceChannelQuit = async (game, channel) => {
         client.log(`Méthode: gameVoiceChannelQuit`, 'debug');
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = await client.db.getSettings(client);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const gameCategory = guild.channels.cache.get(game.categoryID);
 
-        member.voice.channel.setParent(gameCategory);
-        member.voice.channel.setName(`🔈${game.name}`);
-        member.voice.channel.createOverwrite(roleMembers, {
+        channel.setParent(gameCategory);
+        channel.setName(`🔈${game.name}`);
+        channel.createOverwrite(roleMembers, {
             'VIEW_CHANNEL': false,
             'CONNECT': false,
         });
