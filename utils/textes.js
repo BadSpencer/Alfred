@@ -692,18 +692,17 @@ module.exports = class {
             },
             GAMESERVER_NEW_PLAYER_DETECTED: (server, playerID, playerName) => {
                 return `Nouveau joueur détecté sur le serveur **${server.servername}** (${server.gamename})
-                
-                Compte Steam: ${playerName}
-                ID Steam: ${playerID}
-                
+                Compte Steam: **${playerName}** ID Steam: **${playerID}**
+            
                 Veuillez relier ce joueur à un membre du serveur:
-                \`!player link ${playerID} <ID discord>\``;
+                Voici la commande à lancer: \`!player-link ${playerID}\` ou \`!plink ${playerID}\`
+                Vous devrez spécifier l'ID du membre sur le discord`;
             },
             GAMESERVER_PLAYER_OLD_MEMBER_DETECTED: (userdata, gameserversPlayer, server) => {
                 return `Le membre **${userdata.displayName}** est actuellement connecté sur le serveur **${server.servername}**
                 **Ce membre ne fait plus partie du discord**
                 Pour bannir ce joueur des serveurs de jeu, veuillez lancer la commande suivante:
-                \`!player ban ${gameserversPlayer.id}\``
+                \`!player-ban ${gameserversPlayer.id}\` ou \`!pban ${gameserversPlayer.id}\``
             },
 
             GAMESERVER_PLAYER_LINK_SUCCESS: (gameserversPlayer, member) => {
