@@ -12,10 +12,12 @@ class AutoCleanCommand extends Command {
     }
     condition(message) {
         let client = this.client;
+        const guild = client.guilds.cache.get(client.config.guildID);
+        let settings = client.db_settings.get(guild.id);
 
         if (message.author.bot) return false;
         if (message.channel.type == 'dm') return false;
-        if (message.channel.name == message.settings.gameJoinChannel) {
+        if (message.channel.name == settings.gameJoinChannel) {
             if (message.mentions.roles.size == 0) {
                 return true;
             } else {
