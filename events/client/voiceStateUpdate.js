@@ -66,6 +66,7 @@ class voiceStateUpdateListener extends Listener {
                     };
                     if (oldState.channel.name !== settings.quietChannel &&
                         oldState.channel.name !== settings.AFKChannel &&
+                        oldState.channel.name !== settings.modVoiceChannel &&
                         oldState.channel.name !== settings.contactChannelFree &&
                         oldState.channel.name !== settings.contactChannelWaiting &&
                         oldState.channel.name !== settings.contactChannelInprogress) {
@@ -89,6 +90,7 @@ class voiceStateUpdateListener extends Listener {
                     };
                     if (oldState.channel.name !== settings.quietChannel &&
                         oldState.channel.name !== settings.AFKChannel &&
+                        oldState.channel.name !== settings.modVoiceChannel &&
                         oldState.channel.name !== settings.contactChannelFree &&
                         oldState.channel.name !== settings.contactChannelWaiting &&
                         oldState.channel.name !== settings.contactChannelInprogress) {
