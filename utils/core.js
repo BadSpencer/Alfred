@@ -42,7 +42,6 @@ module.exports = (client) => {
                 channelName = `🔊 ${game.name}`
             }
         }
-        //if (member.id == "193822534196658176") channelName = `🔊 Confinement COVID-19`;
         await member.voice.channel.setName(channelName);
         await member.voice.channel.createOverwrite(member, {
             'MANAGE_CHANNELS': true,
