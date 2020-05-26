@@ -28,21 +28,11 @@ class presenceUpdateListener extends Listener {
 
         let newPresenceGame = null;
         if (newPresence) {
-            if (newPresence.activities) {
-                if (newPresence.activities.length > 0) {
-                    let newPresencePlaying = newPresence.activities.find(rec => rec.type == "PLAYING");
-                    if (newPresencePlaying) newPresenceGame = newPresencePlaying.name;
-                }
-            }
+            newPresenceGame = await client.presenceGetGameName(newPresence);
         }
         let oldPresenceGame = null;
         if (oldPresence) {
-            if (oldPresence.activities) {
-                if (oldPresence.activities.length > 0) {
-                    let oldPresencePlaying = oldPresence.activities.find(rec => rec.type == "PLAYING");
-                    if (oldPresencePlaying) oldPresenceGame = oldPresencePlaying.name;
-                }
-            }
+            oldPresenceGame = await client.presenceGetGameName(oldPresence);
         }
 
         // Log membre qui change de statut
