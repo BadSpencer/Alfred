@@ -19,12 +19,19 @@ class PlayersLinkCommand extends Command {
     }
 
     *args(message) {
+        let client = this.client;
         const playerID = yield {
             type: 'steamID',
             prompt: {
                 start: message => promptMessage(`Quel est le SteamID du joueur ?`),
                 retry: message => promptMessage(`Ce n'est pas un SteamID valide. Il doit commencer par "7656" et comporte 17 caractères en tout`)
             }
+        };
+
+        let gameserversPlayer = client.db_gameserversPlayers.get(playerID);
+        if (!gameserversPlayer.memberID == "") {
+            let linkedUserdata = client.db_userdata.get(gameserversPlayer.memberID);
+            warnMessage(client.textes.get("GAMESERVER_ERROR_PLAYERID_ALREADY_LINKED", playerID, linkedUserdata), message.channel);
         };
 
         const userdata = yield {
