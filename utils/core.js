@@ -36,8 +36,10 @@ module.exports = (client) => {
     client.renameFreeVoiceChannel = async (member) => {
         client.log(`Méthode: renameFreeVoiceChannel`, 'debug');
         let channelName = client.textes.get("VOICE_NEW_VOICE_CHANNEL");
-        if (member.presence.game) {
-            let game = client.db_games.get(member.presence.game.name);
+
+        let presenceGame = await client.presenceGetGameName(member.presence);
+        if (presenceGame) {
+            let game = client.db_games.get(presenceGame);
             if (game) {
                 channelName = `🔊 ${game.name}`
             }
@@ -46,8 +48,20 @@ module.exports = (client) => {
         await member.voice.channel.createOverwrite(member, {
             'MANAGE_CHANNELS': true,
         });
-
     };
+
+    client.presenceGetGameName = async (presence) => {
+        if (!presence.activities) return null;
+        if (presence.activities.length == 0) return null;
+
+        let presencePlaying = presence.activities.find(rec => rec.type == "PLAYING");
+        if (presencePlaying) {
+            return presencePlaying.name;
+        } else {
+            return null;
+        }
+    };
+
     client.contactVoiceChannelJoin = async (member) => {
         client.log(`Méthode: contactVoiceChannelJoin`, 'debug');
         const guild = client.guilds.cache.get(client.config.guildID);
@@ -507,7 +521,7 @@ module.exports = (client) => {
             client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
             await msgSent.react(`◀️`);
             await msgSent.react(`▶️`);
-   
+
         });
 
 
