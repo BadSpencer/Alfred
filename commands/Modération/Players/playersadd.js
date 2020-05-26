@@ -60,7 +60,7 @@ class PlayersAddCommand extends Command {
         client.db_gameserversPlayers.set(gameserversPlayerNew.id, gameserversPlayerNew);
         successMessage(`Le joueur **${args.playerName}** (${args.playerID}) à été correctmeent ajouté à la base de données`, message.channel);
 
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
+        if (message.channel.type === 'text') message.delete();;
     }
 
 }
