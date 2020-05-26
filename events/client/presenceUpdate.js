@@ -1,14 +1,4 @@
-const {
-    Listener
-} = require('discord-akairo');
-
-const statusTexts = {
-    'online': 'en ligne',
-    'offline': 'hors ligne',
-    'idle': 'inactif',
-    'dnd': 'en mode "Ne pas déranger"',
-};
-
+const { Listener } = require('discord-akairo');
 
 class presenceUpdateListener extends Listener {
     constructor() {
