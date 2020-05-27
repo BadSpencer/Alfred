@@ -451,6 +451,8 @@ module.exports = class {
                 return `Aucun membre trouvé avec l'ID **${memberID}** sur le serveur.`;
             },
 
+     
+
 
             USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
 
@@ -647,6 +649,10 @@ module.exports = class {
 
             GAMESERVER_ERROR_SERVER_NOT_FOUND: (serverID) => {
                 return `Aucun serveur trouvé avec l'ID **${serverID}**. Lancez la commande \`!servers\` pour obtenir la liste des serveurs disponibles.`;
+            },
+            
+            GAMESERVER_ERROR_PLAYERID_ALREADY_LINKED: (playerID, userdata) => {
+                return `Le joueur avec l'ID **${playerID}** est déjà lié au membre **${userdata.displayName}**. Si vous continuez, le lien sera mis à jour.`;
             },
             GAMESERVER_ERROR_PLAYERID_NOT_FOUND: (playerID) => {
                 return `Aucun joueur trouvé avec l'ID **${playerID}**. Lancez la commande \`!players\` pour obtenir la liste des joueurs.`;

@@ -34,7 +34,7 @@ class PlayersBanCommand extends Command {
 
         await client.gameServersPlayerBan(args.playerID, message);
 
-       if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') message.delete();
     }
 
 }

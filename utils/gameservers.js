@@ -403,11 +403,11 @@ module.exports = (client) => {
   client.gameServersPlayerLink = async (message, playerID, userdata) => {
     const guild = client.guilds.cache.get(client.config.guildID);
 
-    let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
+    let gameserversPlayer = client.db_gameserversPlayers.get(playerID);
     let member = guild.members.cache.get(userdata.id);
 
     if (!gameserversPlayer) return errorMessage(client.textes.get("GAMESERVER_ERROR_PLAYERID_NOT_FOUND", playerID), message.channel);
-    if (!member) return errorMessage(client.textes.get("USER_ERROR_MEMBERID_NOT_FOUND", userdat.id), message.channel);
+    if (!member) return errorMessage(client.textes.get("USER_ERROR_MEMBERID_NOT_FOUND", userdata.id), message.channel);
 
     gameserversPlayer.memberID = userdata.id;
     await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
