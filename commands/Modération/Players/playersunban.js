@@ -35,7 +35,7 @@ class PlayersUnbanCommand extends Command {
 
         await client.gameServersPlayerUnban(args.playerID, message)
 
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') message.delete();
     }
 
 }

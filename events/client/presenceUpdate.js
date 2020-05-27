@@ -1,14 +1,4 @@
-const {
-    Listener
-} = require('discord-akairo');
-
-const statusTexts = {
-    'online': 'en ligne',
-    'offline': 'hors ligne',
-    'idle': 'inactif',
-    'dnd': 'en mode "Ne pas déranger"',
-};
-
+const { Listener } = require('discord-akairo');
 
 class presenceUpdateListener extends Listener {
     constructor() {
@@ -33,11 +23,6 @@ class presenceUpdateListener extends Listener {
         let oldPresenceGame = null;
         if (oldPresence) {
             oldPresenceGame = await client.presenceGetGameName(oldPresence);
-        }
-
-        // Log membre qui change de statut
-        if (oldPresence.status !== newPresence.status) {
-            client.log(client.textes.get("COM_USER_NEW_STATUS", newPresence.member, statusTexts[newPresence.status]), "debug")
         }
 
         // Ajout du jeu dans la base s'il n'ets pas trouvé

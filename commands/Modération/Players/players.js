@@ -23,7 +23,7 @@ class PlayersCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         client.gameServersListPlayers(message);
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') message.delete();
     }
 
 }
