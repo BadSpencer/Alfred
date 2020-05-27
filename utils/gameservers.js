@@ -241,7 +241,7 @@ module.exports = (client) => {
         await client.gameServersSetStatus(server.id, "maintenanceoff");
       }
     } else {
-      await client.gameServersSetStatus(server.id, "maintenanceoff");
+      await client.gameServersSetStatus(serverID, "maintenanceoff");
     };
   };
 
