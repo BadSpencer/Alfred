@@ -49,10 +49,23 @@ module.exports = (client) => {
   client.gameServersPlayerLog = async (playerID, playerName, server) => {
     const guild = client.guilds.cache.get(client.config.guildID);
 
+    let dateNow = +new Date;
+
     let gamePlayed = client.db_games.get(server.gamename);
 
+    let playersLog = datamodel.tables.playersLogs;
+    let playersLogID = client.db_playersLogs.autonum;
+
+    playersLog.id = playersLogID;
+    playersLog.playerID = playerID;
+    playersLog.serverID = server.id;
+    playersLog.createdAt = dateNow;
+    playersLog.createdate = moment(dateNow).format('DD.MM.YYYY');
+    playersLog.createdTime = moment(dateNow).format('HH:mm');
+    client.db_playersLogs.set(playersLogID, playersLog);
+
     let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
-    let dateNow = +new Date;
+
     if (gameserversPlayer) {
       gameserversPlayer.lastSeenAt = dateNow;
       gameserversPlayer.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');

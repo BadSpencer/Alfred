@@ -85,6 +85,14 @@ exports.tables = {
         "lastSeenTime": "",
         "isBanned": false
     },
+    playersLogs: {
+        "id": "",
+        "playerID": "",        
+        "serverID": "",
+        "createdAt": "",
+        "createdate": "",
+        "createdTime": ""
+    },
     userdata: {
         "id": "default",
         "username": "",

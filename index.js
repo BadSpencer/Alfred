@@ -76,6 +76,10 @@ client.db_commandsLogs = new Enmap({
     name: "commandsLogs"
 });
 
+client.db_playersLogs = new Enmap({
+    name: "playersLogs"
+});
+
 // client.build();
 // client.commandHandler.resolver.addType('game', word => {
 //     if (!word) return null;
