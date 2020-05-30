@@ -87,11 +87,19 @@ exports.tables = {
     },
     playersLogs: {
         "id": "",
-        "playerID": "",        
         "serverID": "",
-        "createdAt": "",
-        "createdate": "",
-        "createdTime": ""
+        "servername": "",
+        "playerID": "",        
+        "memberID": "",
+        "displayName": "",
+        "firstSeenAt": "",
+        "firstSeenDate": "",
+        "firstSeenTime": "",
+        "lastSeenAt": "",
+        "lastSeenDate": "",
+        "lastSeenTime": "",
+        "isActive": true
+
     },
     userdata: {
         "id": "default",

@@ -42,29 +42,66 @@ module.exports = (client) => {
   };
 
   client.gameServersDeleteServer = async (message, server) => {
-      await client.db_gameservers.delete(server.id);
-      successMessage(client.textes.get("GAMESERVER_SERVER_DELETE_SUCCESS", server), message.channel);
+    await client.db_gameservers.delete(server.id);
+    successMessage(client.textes.get("GAMESERVER_SERVER_DELETE_SUCCESS", server), message.channel);
+  };
+
+  client.gameServerCheckPlayerOffline = (server) => {
+
+    let dateNow = +new Date;
+    let activeEntries = client.db_playersLogs.filter(record => record.isActive == true);
+
+    for (const entry of activeEntries) {
+      if (entry[1].lastSeenAt < dateNow - 300000) {
+        entry[1].isActive = false;
+        client.db_playersLogs.set(entry[0], entry[1]);
+      }
+    };
+
   };
 
   client.gameServersPlayerLog = async (playerID, playerName, server) => {
     const guild = client.guilds.cache.get(client.config.guildID);
 
     let dateNow = +new Date;
-
+    let gameserversPlayer = client.db_gameserversPlayers.get(playerID);
     let gamePlayed = client.db_games.get(server.gamename);
 
-    let playersLog = datamodel.tables.playersLogs;
-    let playersLogID = client.db_playersLogs.autonum;
 
-    playersLog.id = playersLogID;
-    playersLog.playerID = playerID;
-    playersLog.serverID = server.id;
-    playersLog.createdAt = dateNow;
-    playersLog.createdate = moment(dateNow).format('DD.MM.YYYY');
-    playersLog.createdTime = moment(dateNow).format('HH:mm');
-    client.db_playersLogs.set(playersLogID, playersLog);
-
-    let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
+    let playersLog = client.db_playersLogs.find(record =>
+      record.playerID == playerID &&
+      record.serverID == server.id &&
+      record.isActive == true
+    );
+    if (playersLog) {
+      playersLog.lastSeenAt = dateNow;
+      playersLog.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
+      playersLog.lastSeenTime = moment(dateNow).format('HH:mm');
+      client.db_playersLogs.set(playersLog.id, playersLog);
+    } else {
+      let playersLogID = client.db_playersLogs.autonum;
+      let playersLogNew = datamodel.tables.playersLogs;
+      playersLogNew.id = playersLogID;
+      playersLogNew.serverID = server.id;
+      playersLogNew.servername = server.servername;
+      playersLogNew.playerID = playerID;
+      if (gameserversPlayer && gameserversPlayer.memberID !== "") {
+        playersLogNew.memberID = gameserversPlayer.memberID;
+          let userdata = client.db_userdata.get(gameserversPlayer.memberID);
+          if (userdata) {
+            playersLogNew.displayName = userdata.displayName;
+          }
+      } else {
+        playersLogNew.displayName = playerName;
+      }
+      playersLogNew.firstSeenAt = dateNow;
+      playersLogNew.firstSeenDate = moment(dateNow).format('DD.MM.YYYY');
+      playersLogNew.firstSeenTime = moment(dateNow).format('HH:mm');
+      playersLogNew.lastSeenAt = dateNow;
+      playersLogNew.lastSeenDate = moment(dateNow).format('DD.MM.YYYY');
+      playersLogNew.lastSeenTime = moment(dateNow).format('HH:mm');
+      client.db_playersLogs.set(playersLogNew.id, playersLogNew);
+    }
 
     if (gameserversPlayer) {
       gameserversPlayer.lastSeenAt = dateNow;
@@ -72,22 +109,22 @@ module.exports = (client) => {
       gameserversPlayer.lastSeenTime = moment(dateNow).format('HH:mm');
       await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
 
-
       if (gameserversPlayer.memberID !== "") {
         let member = guild.members.cache.get(gameserversPlayer.memberID);
         if (!member) {
           let userdata = client.db_userdata.get(gameserversPlayer.memberID);
           if (userdata) {
+            playersLog.displayName = userdata.displayName;
             await client.modLog(client.textes.get("GAMESERVER_PLAYER_OLD_MEMBER_DETECTED", userdata, gameserversPlayer, server));
           }
         } else {
+          playersLog.displayName = member.displayName;
           await client.usergameUpdateLastPlayed(gamePlayed, member);
         }
       }
 
-
-
     } else {
+
       let gameserversPlayerNew = datamodel.tables.gameserversPlayers;
       gameserversPlayerNew.id = playerID;
       gameserversPlayerNew.steamName = playerName;
@@ -99,16 +136,13 @@ module.exports = (client) => {
       gameserversPlayerNew.lastSeenTime = moment(dateNow).format('HH:mm');
       await client.db_gameserversPlayers.set(playerID, gameserversPlayerNew);
       await client.modLog(client.textes.get("GAMESERVER_NEW_PLAYER_DETECTED", server, playerID, playerName));
+
     }
+
   };
 
   client.gameServersStatus = async () => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
-
-    let heure = moment().format('HH');
-
-
 
     let servers = await client.db_gameservers.filterArray(server => server.id !== "default" && server.isActive == true);
     client.log(`Vérification RCON (${servers.length} serveurs)`);
@@ -155,19 +189,18 @@ module.exports = (client) => {
                 } else {
                   playerlist.push([user, id, ""]);
                 }
-
               }
             });
             server.connected = playerlist.length;
             server.playerlist = playerlist;
-
           }
         }
         for (const player of playerlist) {
           await client.gameServersPlayerLog(player[1], player[0], server)
         };
 
-        await client.db_gameservers.set(server.id, server);
+        client.gameServerCheckPlayerOffline(server);
+        client.db_gameservers.set(server.id, server);
       }
     }
   };
@@ -543,5 +576,14 @@ module.exports = (client) => {
 
     await client.arrayToEmbed(listPlayersArray, 5, "Liste des joueurs", message.channel);
 
+  };
+
+  client.gameServerGetSessions = async (server, dateDeb, datefin) => {
+    let sessions = [];
+
+
+
+
+    return sessions;
   };
 }
