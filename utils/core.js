@@ -50,7 +50,7 @@ module.exports = (client) => {
         });
     };
 
-    client.presenceGetGameName = async (presence) => {
+    client.presenceGetGameName = (presence) => {
         if (!presence.activities) return null;
         if (presence.activities.length == 0) return null;
 

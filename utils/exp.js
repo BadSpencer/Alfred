@@ -16,10 +16,11 @@ module.exports = (client) => {
 
         if (!games) return;
 
-        guild.members.cache.forEach(member => {
+        guild.members.cache.forEach(member =>  {
             if (member.roles.cache.has(roleMembers.id)) {
-                if (member.presence.game) {
-                    const game = client.db_games.find(game => game.name == member.presence.game.name);
+                let presenceGame = client.presenceGetGameName(member.presence);
+                if (presenceGame) {
+                    const game = client.db_games.find(game => game.name == presenceGame);
                     if (game) {
                         client.usergameUpdateLastPlayed(game, member);
                         client.db.usergameAddXP(client, member, 1, game);
