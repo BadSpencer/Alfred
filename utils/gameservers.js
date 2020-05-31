@@ -114,11 +114,9 @@ module.exports = (client) => {
         if (!member) {
           let userdata = client.db_userdata.get(gameserversPlayer.memberID);
           if (userdata) {
-            playersLog.displayName = userdata.displayName;
             await client.modLog(client.textes.get("GAMESERVER_PLAYER_OLD_MEMBER_DETECTED", userdata, gameserversPlayer, server));
           }
         } else {
-          playersLog.displayName = member.displayName;
           await client.usergameUpdateLastPlayed(gamePlayed, member);
         }
       }
