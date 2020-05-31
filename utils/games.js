@@ -117,6 +117,7 @@ module.exports = (client) => {
         score = Math.round(((game.xp * 100) / maxXP) / 20);
       }
 
+      if (game.xp > 0 && score == 0) score = 1;
 
       if (score == 5) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n`;
       if (score == 4) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️⭐️\n`;
