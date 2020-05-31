@@ -33,15 +33,28 @@ class ServerSessionsCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        
-        
+
+        let sessionsList = [];
+
+        let dateNow = +new Date;
+        let dateFrom = dateNow - 86400000; // 2 jours
+        // let dateFrom = dateNow - 7200000; // 2 heures
 
 
+        let entries = client.db_playersLogs.filterArray(record =>
+            record.serverID == args.server.id &&
+            record.firstSeenAt <= dateNow &&
+            record.lastSeenAt >= dateFrom
+        );
+        entries.sort(function (a, b) {
+            return a.firstSeenAt - b.firstSeenAt;
+        });
 
+        for (const entry of entries) {
+            sessionsList.push(`**${entry.displayName}**: Le ${entry.firstSeenDate} à ${entry.firstSeenTime} Durée: ${client.msToHours(entry.lastSeenAt - entry.firstSeenAt)}`);
+        }
 
-
-
-
+        await client.arrayToEmbed(sessionsList, 20, `Sessions sur ${args.server.servername}`, message.channel);
 
         if (message.channel.type === 'text') message.delete();
     }
