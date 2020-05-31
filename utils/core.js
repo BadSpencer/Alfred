@@ -479,7 +479,7 @@ module.exports = (client) => {
 
 
 
-            embed.setTitle(`${firstRow} - ${lastRow}`);
+            // embed.setTitle(`${firstRow} - ${lastRow}`);
             embed.setAuthor(`${titre}`);
 
             for (var j in pageRecords) {
