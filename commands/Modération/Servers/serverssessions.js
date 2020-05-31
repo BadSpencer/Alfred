@@ -19,14 +19,18 @@ class ServerSessionsCommand extends Command {
 
 
     async *args(message) {
-        let msgServerList = await this.client.db.enmapDisplay(this.client, this.client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
+
         const server = yield {
             type: 'server',
             prompt: {
-                start: message => promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_PROMPT')),
+                start: async message => { 
+                    await this.client.db.enmapDisplay(this.client, this.client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
+                    return promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_PROMPT'))
+                },
                 retry: message => promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_RETRY')),
             }
         };
+
 
         // msgServerList.delete();
         return { server };
