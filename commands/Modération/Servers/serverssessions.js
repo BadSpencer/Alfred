@@ -1,5 +1,6 @@
 const { Command } = require('discord-akairo');
 const { inspect } = require("util");
+const moment = require("moment");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
 
 class ServerSessionsCommand extends Command {
@@ -37,9 +38,10 @@ class ServerSessionsCommand extends Command {
         let sessionsList = [];
 
         let dateNow = +new Date;
-        let dateFrom = dateNow - 86400000; // 2 jours
-        // let dateFrom = dateNow - 7200000; // 2 heures
 
+        let dateFrom = dateNow - 86400000; // 1 jours
+        // let dateFrom = dateNow - (86400000 * 2‬); // 2 jours
+        // let dateFrom = dateNow - 7200000; // 2 heures
 
         let entries = client.db_playersLogs.filterArray(record =>
             record.serverID == args.server.id &&
@@ -50,8 +52,27 @@ class ServerSessionsCommand extends Command {
             return a.firstSeenAt - b.firstSeenAt;
         });
 
+        let firstSeenDatePrevious = null;
+        let line = 0;
         for (const entry of entries) {
-            sessionsList.push(`**${entry.displayName}**: Le ${entry.firstSeenDate} à ${entry.firstSeenTime} Durée: ${client.msToHours(entry.lastSeenAt - entry.firstSeenAt)}`);
+            if (line == 0 || firstSeenDatePrevious !== entry.firstSeenDate) {
+                if (line == 19) {
+                    sessionsList.push(`...`);
+                    line += 1;
+                } else {
+                    sessionsList.push(`${entry.firstSeenDate}`);
+                    line += 1;
+                }
+            }
+            if (entry.isActive == true) {
+                sessionsList.push(`${entry.firstSeenTime} **${entry.displayName}** Actif depuis: ${client.msToHours(entry.lastSeenAt - entry.firstSeenAt)}`);
+                line += 1;
+            } else {
+                sessionsList.push(`${entry.firstSeenTime} **${entry.displayName}** ${client.msToHours(entry.lastSeenAt - entry.firstSeenAt)}`);
+                line += 1;
+            }
+            firstSeenDatePrevious = entry.firstSeenDate;
+            if (line == 20) line = 0;
         }
 
         await client.arrayToEmbed(sessionsList, 20, `Sessions sur ${args.server.servername}`, message.channel);
