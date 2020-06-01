@@ -15,7 +15,7 @@ class ServersCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         client.db.enmapDisplay(client, client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === 'text') message.delete();
     }
 
 }
