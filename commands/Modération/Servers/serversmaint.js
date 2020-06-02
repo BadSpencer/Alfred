@@ -94,7 +94,7 @@ class ServerMaintCommand extends Command {
 
                 const gameTextChannel = guild.channels.cache.get(dbgame.textChannelID);
                 if (args.mode == 'on') {
-                    warnMessage(textes.gt('GAMESERVER_SERVER_MAINT_WARN_SERVER_MAINT_ON', server), gameTextChannel, true, 600000);
+                    warnMessage(textes.get('GAMESERVER_SERVER_MAINT_WARN_SERVER_MAINT_ON', server), gameTextChannel, true, 600000);
                     if (server.connected > 0) warnMessage(textes.get('GAMESERVER_SERVER_MAINT_WARN_PLAYERS_CONNECTED', server), message.channel);
                     if (server.connected == 0) successMessage(textes.get('GAMESERVER_SERVER_MAINT_SUCCESS_NO_PLAYERS', server), message.channel);
                     await client.gameServersSetMaintenanceOn(server.id);
