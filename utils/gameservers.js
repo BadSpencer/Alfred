@@ -13,9 +13,29 @@ const fetch = require("node-fetch");
 
 module.exports = (client) => {
 
+  client.gameServersGetAll = (toArray = false) => {
+    if (toArray == false) {
+      return client.db_gameservers.fetchEverything();
+    } else {
+      return client.db_gameservers.array();
+    };
+  };
+
+  client.gameServersGetActive = (toArray = false) => {
+    if (toArray == false) {
+      return client.db_gameservers.filter(rec => rec.isActive == true);
+    } else {
+      return client.db_gameservers.filterArray(rec => rec.isActive == true);
+    };
+  };
+
+  client.gameServersGet = (serverID) => {
+      return client.db_gameservers.get(serverID);
+  };
+
   client.gameServersAddServer = async (message, gamename, name, ip, portrcon, pwdrcon, portftp, userftp, pwdftp) => {
     let serverID = client.db_gameservers.autonum;
-    let gameserver = client.db_gameservers.get("default");
+    let gameserver = datamodel.tables.gameservers;
     let dateNow = +new Date;
 
     let urlshortener = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURI(`steam://connect/${ip}:${portrcon}/`)}`);
@@ -41,8 +61,8 @@ module.exports = (client) => {
     return successMessage(client.textes.get("GAMESERVER_SERVER_ADD_SUCCESS", serverID), message.channel);
   };
 
-  client.gameServersDeleteServer = async (message, server) => {
-    await client.db_gameservers.delete(server.id);
+  client.gameServersDeleteServer = (message, server) => {
+    client.db_gameservers.delete(server.id.toString());
     successMessage(client.textes.get("GAMESERVER_SERVER_DELETE_SUCCESS", server), message.channel);
   };
 
@@ -87,10 +107,10 @@ module.exports = (client) => {
       playersLogNew.playerID = playerID;
       if (gameserversPlayer && gameserversPlayer.memberID !== "") {
         playersLogNew.memberID = gameserversPlayer.memberID;
-          let userdata = client.db_userdata.get(gameserversPlayer.memberID);
-          if (userdata) {
-            playersLogNew.displayName = userdata.displayName;
-          }
+        let userdata = client.db_userdata.get(gameserversPlayer.memberID);
+        if (userdata) {
+          playersLogNew.displayName = userdata.displayName;
+        }
       } else {
         playersLogNew.displayName = playerName;
       }
@@ -574,14 +594,5 @@ module.exports = (client) => {
 
     await client.arrayToEmbed(listPlayersArray, 5, "Liste des joueurs", message.channel);
 
-  };
-
-  client.gameServerGetSessions = async (server, dateDeb, datefin) => {
-    let sessions = [];
-
-
-
-
-    return sessions;
   };
 }

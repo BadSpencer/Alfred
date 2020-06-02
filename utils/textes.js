@@ -607,36 +607,103 @@ module.exports = class {
             },
 
 
+            GAMESERVER_SERVER_HELP_DESCRIPTION: `Voici la listes des commandes qui permettent de gèrer les serveurs.
+            
+            `,
+            GAMESERVER_SERVER_DESCRIPTION_CONTENT: `Informations et aide sur les serveurs`,
+            GAMESERVER_SERVER_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+
+
+
             GAMESERVER_SERVER_ADD_SUCCESS: (serverID) => {
                 return `Le serveur à correctment été ajouté avec l\'id ${serverID}.`;
             },
+            GAMESERVER_SERVER_ADD_DESCRIPTION_CONTENT: `Ajouter un nouveau serveur de jeu`,
+            GAMESERVER_SERVER_ADD_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider
+            Munissez-vous des informations suivantes :
+            - Nom du jeu concerné et un nom pour le serveur
+            - Adresse IP et port du serveur
+            - Mot de passe RCON
+            - User, port et mot de passe FTP`,
             GAMESERVER_SERVER_ADD_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un serveur ?`,
             GAMESERVER_SERVER_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
+            GAMESERVER_SERVER_ADD_NAME_PROMPT: `Quel est le **nom** de ce serveur ?`,
+            GAMESERVER_SERVER_ADD_IP_PROMPT: `Quelle est l'adresse **ip** du serveur ?`,
+            GAMESERVER_SERVER_ADD_PORTRCON_PROMPT: `Quel est le **port RCON** du serveur ?`,
+            GAMESERVER_SERVER_ADD_PORTRCON_RETRY: `Veuillez saisir un port valide !`,
+            GAMESERVER_SERVER_ADD_PWDRCON_PROMPT: `Quel est le **mot de passe RCON** du serveur ?`,
+            GAMESERVER_SERVER_ADD_PORTFTP_PROMPT: `Quel est le **port FTP** du serveur ?`,
+            GAMESERVER_SERVER_ADD_PORTFTP_RETRY: `Veuillez saisir un port valide !`,
+            GAMESERVER_SERVER_ADD_USERFTP_PROMPT: `Quel est le **user FTP** du serveur ?`,
+            GAMESERVER_SERVER_ADD_PWDFTP_PROMPT: `Quel est le **mot de passe FTP** du serveur ?`,
 
+            GAMESERVER_SERVER_CHAT_DESCRIPTION_CONTENT: `Envoyer un message dans le chat d'un serveur ou tous à la fois.`,
+            GAMESERVER_SERVER_CHAT_DESCRIPTION_USAGE: `!server-chat <ID/*> <Message à envoyer>`,
+            GAMESERVER_SERVER_CHAT_SERVER_PROMPT: `Spécifiez un **ID de serveur** ou bien **'*'** pour sélectionner tous les serveurs`,
+            GAMESERVER_SERVER_CHAT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID ou bien '*'`,
+            GAMESERVER_SERVER_CHAT_MSG_PROMPT: `Quel message souhaitez vous envoyer ?`,
 
-            GAMESERVER_SERVER_EDIT_SERVER_PROMPT: `Quel **serveur** souhaitez vous modifier ? (ID)`,
-            GAMESERVER_SERVER_EDIT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
-            GAMESERVER_SERVER_EDIT_FIELD_PROMPT: `Quel **champ** souhaitez vous modifier ?`,
-            GAMESERVER_SERVER_EDIT_VALUE_PROMPT: `Quelle est la **nouvelle valeur** pour ce champ ?`,
+            GAMESERVER_SERVER_CMD_DESCRIPTION_CONTENT: `Envoyer une commande RCON sur un serveur ou tous à la fois.`,
+            GAMESERVER_SERVER_CMD_DESCRIPTION_USAGE: `!server-cmd <commande>`,
+            GAMESERVER_SERVER_CMD_SERVER_PROMPT: `Spécifiez un **ID de serveur** ou bien **'*'** pour sélectionner tous les serveurs`,
+            GAMESERVER_SERVER_CMD_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID ou bien '*'`,
+            GAMESERVER_SERVER_CMD_CMD_PROMPT: `Quelle commande souhaitez vous envoyer ?
+            DestroyWildDinos
+            SaveWorld`,
 
-            GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT: `Ajouter un serveur de jeu`,
-            GAMESERVER_SERVER_VIEW_SERVER_PROMPT: `Quel **serveur** souhaitez vous afficher ? (ID)`,
-            GAMESERVER_SERVER_VIEW_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
-            GAMESERVER_SERVER_VIEW_NAME_PROMPT: `Quel est le **nom** de ce serveur ?`,
-            GAMESERVER_SERVER_VIEW_IP_PROMPT: `Quelle est l'adresse **ip** du serveur ?`,
-            GAMESERVER_SERVER_VIEW_PORTRCON_PROMPT: `Quel est le **port RCON** du serveur ?`,
-            GAMESERVER_SERVER_VIEW_PORTRCON_RETRY: `Veuillez saisir un port valide !`,
-            GAMESERVER_SERVER_VIEW_PWDRCON_PROMPT: `Quel est le **mot de passe RCON** du serveur ?`,
-            GAMESERVER_SERVER_VIEW_PORTFTP_PROMPT: `Quel est le **port FTP** du serveur ?`,
-            GAMESERVER_SERVER_VIEW_PORTFTP_RETRY: `Veuillez saisir un port valide !`,
-            GAMESERVER_SERVER_VIEW_USERFTP_PROMPT: `Quel est le **user FTP** du serveur ?`,
-            GAMESERVER_SERVER_VIEW_PWDFTP_PROMPT: `Quel est le **mot de passe FTP** du serveur ?`,
-
+            GAMESERVER_SERVER_DEL_DESCRIPTION_CONTENT: `Supprimer un serveur de la base.⚠️ (ne pas utiliser)`,
+            GAMESERVER_SERVER_DEL_DESCRIPTION_USAGE: `!server-del <ID>`,
             GAMESERVER_SERVER_DEL_SERVER_PROMPT: `⚠️ Un serveur ne doit pas être supprimé mais désactivé. A n'utiliser qu'en cas de problème avec la base de données
             Quel serveur souhaitez vous supprimer ?`,
             GAMESERVER_SERVER_DEL_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
             GAMESERVER_SERVER_DEL_CONFIRMATION_PROMPT: `Êtes-vous sûr de vouloir supprimer ce serveur ? (oui/non)`,
             GAMESERVER_SERVER_DEL_CONFIRMATION_RETRY: `Veuillez répondre par 'oui' ou 'non'`,
+
+            GAMESERVER_SERVER_EDIT_DESCRIPTION_CONTENT: `Modifier les données d'un serveur`,
+            GAMESERVER_SERVER_EDIT_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
+            GAMESERVER_SERVER_EDIT_SERVER_PROMPT: `Quel **serveur** souhaitez vous modifier ? (ID)`,
+            GAMESERVER_SERVER_EDIT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
+            GAMESERVER_SERVER_EDIT_FIELD_PROMPT: `Quel **champ** souhaitez vous modifier ?`,
+            GAMESERVER_SERVER_EDIT_VALUE_PROMPT: `Quelle est la **nouvelle valeur** pour ce champ ?`,
+
+            GAMESERVER_SERVER_LIST_DESCRIPTION_CONTENT: `Afficher la liste des serveurs`,
+            GAMESERVER_SERVER_LIST_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+
+            GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT: `Afficher les données d'un serveur de jeu`,
+            GAMESERVER_SERVER_VIEW_DESCRIPTION_USAGE: `!server-view <ID>`,
+            GAMESERVER_SERVER_VIEW_SERVER_PROMPT: `Quel **serveur** souhaitez vous afficher ? (ID)`,
+            GAMESERVER_SERVER_VIEW_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
+
+            GAMESERVER_SERVER_MAINT_DESCRIPTION_CONTENT: `Activer la maintenance sur un serveur ou tous à la fois.`,
+            GAMESERVER_SERVER_MAINT_DESCRIPTION_USAGE: `Activer la maintenance sur un serveur ou tous à la fois.`,
+            GAMESERVER_SERVER_MAINT_MODE_PROMPT: `Spécifiez le **mode**:
+            - **on** pour activer la maintenance
+            - **off** pour désactiver la maintenance`,
+            GAMESERVER_SERVER_MAINT_MODE_RETRY: `Veuillez répondre par 'on' ou par 'off'`,
+            GAMESERVER_SERVER_MAINT_SERVER_PROMPT: `Spécifiez un **ID de serveur** ou bien **'*'** pour sélectionner tous les serveurs`,
+            GAMESERVER_SERVER_MAINT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID ou bien '*'`,
+
+            GAMESERVER_SERVER_MAINT_WARN_GAME_MAINT_ON: (gamename) => {
+                return `Les serveurs "${gamename}" entrent en maintenance.`;
+            },
+            GAMESERVER_SERVER_MAINT_WARN_SERVER_MAINT_ON: (server) => {
+                return `Le serveur ${server.servername} entre en maintenance.`;
+            },
+            GAMESERVER_SERVER_MAINT_SUCCESS_MAINT_OVER: `Maintenance terminée !`,
+            GAMESERVER_SERVER_MAINT_WARN_PLAYERS_CONNECTED: (server) => {
+                return `Attention, il y a **${server.connected} joueur(s)** connecté(s) sur ${server.servername}.`;
+            },
+            GAMESERVER_SERVER_MAINT_SUCCESS_NO_PLAYERS: (server) => {
+                return `Aucun joueur connecté sur ${server.servername} vous pouvez y aller!`;
+            },
+            GAMESERVER_SERVER_MAINT_MSG_TO_PLAYERS: `Le serveur va entrer en maintenance. Merci de vous mettre a l'abri et de vous deconnecter`,
+
+            GAMESERVER_SERVER_SESS_DESCRIPTION_CONTENT: `Afficher les dernières sessions pour un serveur`,
+            GAMESERVER_SERVER_SESS_DESCRIPTION_USAGE: `!server-sessions <ID>`,
+
+
+
+
 
 
 

@@ -57,6 +57,7 @@ class AideCommand extends Command {
         // if (!member.roles.cache.has(roleMod.id) && !member.roles.cache.has(roleAdm.id)) {
             ignoredCategories.push("Admin");
             ignoredCategories.push("Modération");
+            ignoredCategories.push("Modération-server");
         // }
 
 
@@ -97,7 +98,7 @@ class AideCommand extends Command {
 
                         commands.forEach(function (cmd) {
                             // embed.addField(`**\`!${cmd}\`**`, cmd.description.content, true);
-                            description += `**!${cmd}**\n${cmd.description.content}\n\n`;
+                            description += `**${cmd}**\n${cmd.description.content}\n\n`;
                         });
                         embed.setTitle(`${category}`);
                         embed.setColor(colors['darkgreen']);

@@ -18,8 +18,15 @@ class ModerationCheck extends Inhibitor {
         const roleMod = guild.roles.cache.find(r => { return r.name == message.settings.modRole });
         const roleAdm = guild.roles.cache.find(r => { return r.name == message.settings.adminRole });
 
+        const modCategories = [
+            'Modération',
+            'Modération-server',
+            'Admin'
+        ];
+
+
         // Les commandes de la catégorie "Modérations" ne sont autorisé que pour les modérateurs et admins
-        if (command.category.id == "Modération" || command.category.id == "Admin") {
+        if (modCategories.includes(command.category.id)) {
             if (member.roles.cache.has(roleMod.id) || member.roles.cache.has(roleAdm.id)) {
                 return false;
             } else {

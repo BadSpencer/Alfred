@@ -2,16 +2,17 @@ const { Command } = require('discord-akairo');
 const { inspect } = require("util");
 const moment = require("moment");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const textes = new (require(`../../../utils/textes.js`));
 
 class ServerSessionsCommand extends Command {
     constructor() {
         super('server-sessions', {
-            aliases: ['server-sessions', 'server-sess', 'ssessions', 'ssess'],
-            category: 'Modération',
+            aliases: ['server-sessions', 'ssess'],
+            category: 'Modération-server',
             description: {
-                content: `Afficher les sessions de jeu d'un serveur`,
-                usage: '',
-                examples: ['']
+                content: textes.get('GAMESERVER_SERVER_SESS_DESCRIPTION_CONTENT'),
+                usage: textes.get('GAMESERVER_SERVER_SESS_DESCRIPTION_USAGE'),
+                examples: ['!server-sessions', '!ssess 1']
             },
             split: 'quoted',
         });
@@ -19,33 +20,24 @@ class ServerSessionsCommand extends Command {
 
 
     async *args(message) {
-
         const server = yield {
             type: 'server',
             prompt: {
                 start: async message => { 
-                    await this.client.db.enmapDisplay(this.client, this.client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
-                    return promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_PROMPT'))
+                    await this.client.db.enmapDisplay(this.client, this.client.gameServersGetActive(), message.channel, ["servername", "gamename"]);
+                    return promptMessage(textes.get('GAMESERVER_SERVER_VIEW_SERVER_PROMPT'))
                 },
-                retry: message => promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_RETRY')),
+                retry: message => promptMessage(textes.get('GAMESERVER_SERVER_VIEW_SERVER_RETRY')),
             }
         };
-
-
-        // msgServerList.delete();
         return { server };
     }
 
     async exec(message, args) {
         let client = this.client;
-
         let sessionsList = [];
-
         let dateNow = +new Date;
-
-        let dateFrom = dateNow - 86400000; // 1 jours
-        // let dateFrom = dateNow - (86400000 * 2‬); // 2 jours
-        // let dateFrom = dateNow - 7200000; // 2 heures
+        let dateFrom = dateNow - 86400000; // 1 jour
 
         let entries = client.db_playersLogs.filterArray(record =>
             record.serverID == args.server.id &&
