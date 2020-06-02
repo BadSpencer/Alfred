@@ -1,16 +1,17 @@
 const { Command } = require('discord-akairo');
 const { inspect } = require("util");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const textes = new (require(`../../../utils/textes.js`));
 
 class ServerViewCommand extends Command {
     constructor() {
         super('server-view', {
             aliases: ['server-view', 'sview'],
-            category: 'Modération',
+            category: 'Modération-server',
             description: {
-                content: `Afficher l'enregistrement d'un serveur de jeu`,
-                usage: '',
-                examples: ['']
+                content: textes.get('GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT'),
+                usage: textes.get('GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT'),
+                examples: ['!server-view', '!sview 1']
             },
             split: 'quoted',
         });
@@ -18,16 +19,16 @@ class ServerViewCommand extends Command {
 
 
     async *args(message) {
-        let msgServerList = await this.client.db.enmapDisplay(this.client, this.client.db_gameservers.filter(record => record.id !== "default" && record.isActive == true), message.channel, ["servername", "gamename", "ip", "port"]);
         const server = yield {
             type: 'server',
             prompt: {
-                start: message => promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_PROMPT')),
-                retry: message => promptMessage(this.client.textes.get('GAMESERVER_SERVER_VIEW_SERVER_RETRY')),
+                start: async message => { 
+                    await this.client.db.enmapDisplay(this.client, this.client.gameServersGetActive(), message.channel, ["servername", "gamename"]);
+                    return promptMessage(textes.get('GAMESERVER_SERVER_VIEW_SERVER_PROMPT'))
+                },
+                retry: message => promptMessage(textes.get('GAMESERVER_SERVER_VIEW_SERVER_RETRY')),
             }
         };
-
-        // msgServerList.delete();
         return { server };
     }
 

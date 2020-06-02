@@ -80,25 +80,7 @@ client.db_playersLogs = new Enmap({
     name: "playersLogs"
 });
 
-// client.build();
-// client.commandHandler.resolver.addType('game', word => {
-//     if (!word) return null;
 
-//     const game = client.db_games.find(game => game.name == word);
-//     if (game) {
-//         return game;
-//     }
-//     return null;
-// });
-// client.commandHandler.resolver.addType('userdata', word => {
-//     if (!word) return null;
-
-//     const userdata = client.db_userdata.find(record => record.id == word);
-//     if (userdata) {
-//         return userdata;
-//     }
-//     return null;
-// });
 
 
 client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
@@ -172,10 +154,30 @@ client.commandHandler.resolver.addType('server', (message, phrase) => {
         return null;
     }
 });
+client.commandHandler.resolver.addType('serverID', (message, phrase) => {
+    if (!phrase) return null;
+    if (phrase == "*") return phrase;
+
+    const server = client.db_gameservers.get(phrase);
+    if (server) {
+        return phrase;
+    } else {
+        return null;
+    }
+});
 
 client.commandHandler.resolver.addType('ouinon', (message, phrase) => {
     if (!phrase) return null;
     if (phrase == 'oui' || phrase == 'non') {
+        return phrase;
+    } else {
+        return null;
+    }
+});
+
+client.commandHandler.resolver.addType('onoff', (message, phrase) => {
+    if (!phrase) return null;
+    if (phrase == 'on' || phrase == 'off') {
         return phrase;
     } else {
         return null;
