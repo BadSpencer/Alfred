@@ -8,7 +8,6 @@ class TestCommand extends Command {
         super('test', {
             aliases: ['test'],
             category: 'Admin',
-            userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             cooldown: 30000,
             ratelimit: 1,
             description: 'Commande de test',

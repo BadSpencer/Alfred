@@ -607,7 +607,7 @@ module.exports = class {
             },
 
 
-            GAMESERVER_SERVER_HELP_DESCRIPTION: `Voici la listes des commandes qui permettent de gèrer les serveurs.
+            GAMESERVER_SERVER_HELP_DESCRIPTION: `Voici la liste des commandes qui permettent de gèrer les serveurs.
             
             `,
             GAMESERVER_SERVER_DESCRIPTION_CONTENT: `Informations et aide sur les serveurs`,
@@ -637,14 +637,19 @@ module.exports = class {
             GAMESERVER_SERVER_ADD_USERFTP_PROMPT: `Quel est le **user FTP** du serveur ?`,
             GAMESERVER_SERVER_ADD_PWDFTP_PROMPT: `Quel est le **mot de passe FTP** du serveur ?`,
 
-            GAMESERVER_SERVER_CHAT_DESCRIPTION_CONTENT: `Envoyer un message dans le chat d'un serveur ou tous à la fois.`,
-            GAMESERVER_SERVER_CHAT_DESCRIPTION_USAGE: `!server-chat <ID/*> <Message à envoyer>`,
+            GAMESERVER_SERVER_CHAT_DESCRIPTION_CONTENT: `Envoyer un message dans le chat d'un serveur ou sur tous.`,
+            GAMESERVER_SERVER_CHAT_DESCRIPTION_USAGE: `Cette commande peut être lancée sans paramètre.
+            Syntaxe: \`!server-chat <ID/*> <Message à envoyer>\`
+            
+            Note: Le message sera reformatté pour qu'il s'affiche correctement dans le chat du serveur (accents, ponctuation...)`,
             GAMESERVER_SERVER_CHAT_SERVER_PROMPT: `Spécifiez un **ID de serveur** ou bien **'*'** pour sélectionner tous les serveurs`,
             GAMESERVER_SERVER_CHAT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID ou bien '*'`,
             GAMESERVER_SERVER_CHAT_MSG_PROMPT: `Quel message souhaitez vous envoyer ?`,
 
-            GAMESERVER_SERVER_CMD_DESCRIPTION_CONTENT: `Envoyer une commande RCON sur un serveur ou tous à la fois.`,
-            GAMESERVER_SERVER_CMD_DESCRIPTION_USAGE: `!server-cmd <commande>`,
+            GAMESERVER_SERVER_CMD_DESCRIPTION_CONTENT: `Envoyer une commande RCON sur un serveur ou sur tous.`,
+            GAMESERVER_SERVER_CMD_DESCRIPTION_USAGE: `Cette commande peut être lancée sans paramètre. Une liste des commandes courantes sera affichée.
+            Syntaxe: \`!server-cmd <ID/*> <commande>\`
+            `,
             GAMESERVER_SERVER_CMD_SERVER_PROMPT: `Spécifiez un **ID de serveur** ou bien **'*'** pour sélectionner tous les serveurs`,
             GAMESERVER_SERVER_CMD_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID ou bien '*'`,
             GAMESERVER_SERVER_CMD_CMD_PROMPT: `Quelle commande souhaitez vous envoyer ?
@@ -652,7 +657,10 @@ module.exports = class {
             SaveWorld`,
 
             GAMESERVER_SERVER_DEL_DESCRIPTION_CONTENT: `Supprimer un serveur de la base.⚠️ (ne pas utiliser)`,
-            GAMESERVER_SERVER_DEL_DESCRIPTION_USAGE: `!server-del <ID>`,
+            GAMESERVER_SERVER_DEL_DESCRIPTION_USAGE: `Un serveur ne doit pas être supprimé mais désactivé.
+            Pour désactiver un serveur, utilisez la commande \`!server-edit\` et modifiez la valeur de "isActive" à "false"
+
+            Syntaxe: \`!server-del <ID>\``,
             GAMESERVER_SERVER_DEL_SERVER_PROMPT: `⚠️ Un serveur ne doit pas être supprimé mais désactivé. A n'utiliser qu'en cas de problème avec la base de données
             Quel serveur souhaitez vous supprimer ?`,
             GAMESERVER_SERVER_DEL_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
@@ -670,12 +678,16 @@ module.exports = class {
             GAMESERVER_SERVER_LIST_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
 
             GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT: `Afficher les données d'un serveur de jeu`,
-            GAMESERVER_SERVER_VIEW_DESCRIPTION_USAGE: `!server-view <ID>`,
+            GAMESERVER_SERVER_VIEW_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider
+            
+            Syntaxe: \`!server-view <ID>\``,
             GAMESERVER_SERVER_VIEW_SERVER_PROMPT: `Quel **serveur** souhaitez vous afficher ? (ID)`,
             GAMESERVER_SERVER_VIEW_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
 
             GAMESERVER_SERVER_MAINT_DESCRIPTION_CONTENT: `Activer la maintenance sur un serveur ou tous à la fois.`,
-            GAMESERVER_SERVER_MAINT_DESCRIPTION_USAGE: `Activer la maintenance sur un serveur ou tous à la fois.`,
+            GAMESERVER_SERVER_MAINT_DESCRIPTION_USAGE: `Lorsque vous activez la maintenance, vous serez prévenu si des joueurs sont actuellement connectés sur les serveurs concernés. Les joueurs seront eux aussi prévénus via un message sur le discord et dans le chat en jeu.
+            
+            Lorsqu'un serveur est en maintenance, aucune notification ne sera faite à son sujet.`,
             GAMESERVER_SERVER_MAINT_MODE_PROMPT: `Spécifiez le **mode**:
             - **on** pour activer la maintenance
             - **off** pour désactiver la maintenance`,
@@ -698,11 +710,11 @@ module.exports = class {
             },
             GAMESERVER_SERVER_MAINT_MSG_TO_PLAYERS: `Le serveur va entrer en maintenance. Merci de vous mettre a l'abri et de vous deconnecter`,
 
-            GAMESERVER_SERVER_SESS_DESCRIPTION_CONTENT: `Afficher les dernières sessions pour un serveur`,
-            GAMESERVER_SERVER_SESS_DESCRIPTION_USAGE: `!server-sessions <ID>`,
+            GAMESERVER_SERVER_SESS_DESCRIPTION_CONTENT: `Sessions de jeu d'un serveur`,
+            GAMESERVER_SERVER_SESS_DESCRIPTION_USAGE: `Permet d'afficher les sessions de jeu d'un serveur sur les 2 derniers jours.
+            Lancez la commande sans paramètre. La liste des serveurs sera affichée pour vous permettre de sélectionner le bon.
 
-
-
+            Syntaxe: \`!server-sessions <ID>\``,
 
 
 
@@ -781,6 +793,63 @@ module.exports = class {
             GAMESERVER_PLAYER_LINK_SUCCESS: (gameserversPlayer, member) => {
                 return `Le joueur **${gameserversPlayer.steamName}** (${gameserversPlayer.id}) à correctement été lié au membre **${member.displayName}**`
             },
+
+
+            CMD_CMDALIAS_PROMPT: `Quel est l'ID du membre ?`,
+            CMD_CMDALIAS_RETRY: `Je ne connais pas cette commande. Veuillez spécifier une commande ou un alias valide.
+            Lacez la commande \`!aide\` pour obtenir la liste des commandes disponibles.`,
+
+            CMD_USERDATA_PROMPT: `Quel est l'ID du membre ?`,
+            CMD_USERDATA_RETRY: `Je ne trouve aucun membre avec cet ID, êtes vous sûr de votre saisie ?`,
+            
+            CMD_STEAMID_PROMPT: `Quel est le SteamID du joueur ?`,
+            CMD_STEAMID_RETRY: `Ce n'est pas un SteamID valide. Il doit commencer par "7656" et comporte 17 caractères en tout`,
+
+            CMD_PLAYER_PROMPT: `Quel est l'ID du joueur ?`,
+            CMD_PLAYER_RETRY: `Cet ID n'est pas enregistré dans la base des joueurs. Vérifiez votre sasie.`,
+
+            AIDE_AIDE_DESCRIPTION_CONTENT: `Affiche ce message d'aide et une aide détaillée pour chaque commande`,
+            AIDE_AIDE_DESCRIPTION_USAGE: `\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel
+            Lancée sans paramètre, j\'afficherai ce menu d\'aide
+            Si vous spécifiez une commande ou bien un de ses alias, alors j'afficherais une aide plus détaillée sur la commande.`,
+            AIDE_CATEGORY_ADMIN_DESCRIPTION: `Description pour la catégorie "Admin"`,
+
+            // PLAYER
+            PLAYER_PLAYER_DESCRIPTION_CONTENT: `Aide commandes: **joueurs**`,
+            PLAYER_PLAYER_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+            PLAYER_PLAYER_HELP_DESCRIPTION: `Voici la liste des commandes qui permettent de gèrer les joueurs.
+            
+            `,
+
+            PLAYER_ADD_DESCRIPTION_CONTENT: `Ajouter manuellement un joueur.`,
+            PLAYER_ADD_DESCRIPTION_USAGE: `Les joueurs sont ajoutés automatiquement. Cette commande ne sert qu'en cas de test/maintnenance`,
+            
+            
+            PLAYER_ADD_PLAYERNAME_PROMPT: `Quel est le compte Steam du joueur ?`,
+
+            PLAYER_BAN_DESCRIPTION_CONTENT: `Bannir un joueur des serveurs privés`,
+            PLAYER_BAN_DESCRIPTION_USAGE: `Cette commande permet de bannir un joueur de tous les serveurs privés enregistrés et actifs. Le ban ne concerne que les serveurs privés, pas le discord.
+            Lancez cette commande sans paramètre. Une liste des joueurs actifs sera affichée et vous devrez préciser le steamID du joueur à bannir.
+
+            Note: Les joueurs qui quittent le groupe Ark ou le discord sont automatiquement bannis.`,
+
+            PLAYER_UNBAN_DESCRIPTION_CONTENT: `Lever le ban d'un joueur des serveurs privés`,
+            PLAYER_UNBAN_DESCRIPTION_USAGE: `Cette commande permet de lever le ban d'un joueur de tous les serveurs privés enregistrés et actifs.
+            Lancez cette commande sans paramètre. Une liste des joueurs bannis sera affichée et vous devrez préciser le steamID du joueur.`,
+
+            PLAYER_LINK_DESCRIPTION_CONTENT: `Créer ou modifier le lien entre joueur et un membre`,
+            PLAYER_LINK_DESCRIPTION_USAGE: `Lancez la commande sans paramètre. La liste des joueurs non liés sera affichée pour vous permettre de sélectionner le bon steamID à lier.
+            Vous devrez aussi préciser l'ID du membre discord.`,
+
+            PLAYER_SESS_DESCRIPTION_CONTENT: `Sessions de jeu d'un joueur`,
+            PLAYER_SESS_DESCRIPTION_USAGE: `Permet d'afficher les sessions de jeu d'un joueur sur les 2 derniers jours.
+            Lancez la commande sans paramètre. La liste des joueurs sera affichée pour vous permettre de sélectionner le bon steamID`,
+
+            PLAYER_LIST_DESCRIPTION_CONTENT: `Afficher la liste des joueurs.`,
+            PLAYER_LIST_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner
+            La liste est trièe avec les joueurs qui se sont connectés récement en premier.`,
+
+
 
 
 

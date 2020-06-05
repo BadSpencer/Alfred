@@ -6,12 +6,12 @@ class ServerDelCommand extends Command {
     constructor() {
         super('server-del', {
             aliases: ['server-del', 'sdel'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             split : 'quoted',
             description: {
                 content: textes.get('GAMESERVER_SERVER_DEL_DESCRIPTION_CONTENT'),
                 usage: textes.get('GAMESERVER_SERVER_DEL_DESCRIPTION_USAGE'),
-                examples: ['']
+                examples: ['Ne pas utiliser']
               },
         });
     }

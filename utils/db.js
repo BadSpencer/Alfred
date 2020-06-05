@@ -330,8 +330,10 @@ exports.enmapDisplay = async (client, enmap, channel, fieldlist = []) => {
         postedEmbeds.totalPages = pagesArray.length;
         postedEmbeds.pages = pagesArray;
         client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
-        await msgSent.react(`◀️`);
-        await msgSent.react(`▶️`);
+        if (pagesArray.length > 1) {
+            await msgSent.react(`◀️`);
+            await msgSent.react(`▶️`);
+        }
     });
 
 
@@ -379,7 +381,7 @@ exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => 
     embed.setTitle(`${page * 10 - 9} - ${page * 10 - 10 + pageRecords.length} / ${enmap.size}`);
     embed.setAuthor(`${name}`, "https://cdn.discordapp.com/attachments/599235210550181900/633576189822500874/SQLite_Database_Browser_icon.png");
     embed.setDescription(description);
-    embed.setFooter(`Page: ${page}/${nbPages}`);
+    if (nbPages > 1) embed.setFooter(`Page: ${page}/${nbPages}`);
     return embed;
 };
 

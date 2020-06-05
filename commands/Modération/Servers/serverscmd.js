@@ -7,11 +7,11 @@ class ServerChatCommand extends Command {
     constructor() {
         super('server-cmd', {
             aliases: ['server-cmd', 'scmd'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             description: {
                 content: textes.get('GAMESERVER_SERVER_CMD_DESCRIPTION_CONTENT'),
                 usage: textes.get('GAMESERVER_SERVER_CMD_DESCRIPTION_USAGE'),
-                examples: ['!server-chat * Bonjour à tous', '!schat 1 Le serveur doit être rebooté']
+                examples: ['!server-cmd * SaveWorld', '!scmd 1 DestroyWildDinos']
             },
             split: 'quoted',
         });

@@ -27,7 +27,6 @@ class ReadyListener extends Listener {
         await client.db.userlogsCheck(client);
         await client.db.embedsCheck(client);
         await client.db.gamesCheck(client);
-        await client.checkGameServers();
         await client.db.usergameCheck(client);
         await client.db.postedEmbedsCheck(client);
         await client.db.textesCheck(client);

@@ -4,17 +4,17 @@ const datamodel = require('../../../utils/datamodel');
 const colors = require('../../../utils/colors');
 const { Command } = require('discord-akairo');
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const textes = new (require(`../../../utils/textes.js`));
 
-class PlayersAddCommand extends Command {
+class PlayerAddCommand extends Command {
     constructor() {
-        super('players-add', {
-            aliases: ['players-add', 'padd'],
-            category: 'Modération',
+        super('player-add', {
+            aliases: ['player-add', 'padd'],
+            category: 'Joueurs',
             description: {
-                content: `Ajouter manuellement un joueur via son SteamID et son compte Steam.
-                Les joueurs sont automatiquement enregistrés. Cette commande ne sert qu'en cas de problème avec la base et qu'on doit ajouter un ancien joueur qui ne se connectera plus. `,
-                usage: '',
-                examples: ['']
+                content: textes.get('PLAYER_ADD_DESCRIPTION_CONTENT'),
+                usage: textes.get('PLAYER_ADD_DESCRIPTION_USAGE'),
+                examples: ['!padd']
             }
         });
     }
@@ -23,8 +23,8 @@ class PlayersAddCommand extends Command {
         const playerID = yield {
             type: 'steamID',
             prompt: {
-                start: message => promptMessage(`Quel est le SteamID du joueur ?`),
-                retry: message => promptMessage(`Ce n'est pas un SteamID valide. Il doit commencer par "7656" et comporte 17 caractères en tout`)
+                start: message => promptMessage(textes.get('CMD_STEAMID_PROMPT')),
+                retry: message => promptMessage(textes.get('CMD_STEAMID_RETRY'))
             }
         };
 
@@ -32,7 +32,7 @@ class PlayersAddCommand extends Command {
             type: 'string',
             match: 'rest',
             prompt: {
-                start: message => promptMessage(`Quel est le compte Steam du joueur ?`),
+                start: message => promptMessage(textes.get('PLAYER_ADD_PLAYERNAME_PROMPT'))
             }
         };
 
@@ -64,4 +64,4 @@ class PlayersAddCommand extends Command {
     }
 
 }
-module.exports = PlayersAddCommand;
+module.exports = PlayerAddCommand;

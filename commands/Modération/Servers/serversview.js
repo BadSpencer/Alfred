@@ -7,10 +7,10 @@ class ServerViewCommand extends Command {
     constructor() {
         super('server-view', {
             aliases: ['server-view', 'sview'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             description: {
                 content: textes.get('GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT'),
-                usage: textes.get('GAMESERVER_SERVER_VIEW_DESCRIPTION_CONTENT'),
+                usage: textes.get('GAMESERVER_SERVER_VIEW_DESCRIPTION_USAGE'),
                 examples: ['!server-view', '!sview 1']
             },
             split: 'quoted',

@@ -486,7 +486,7 @@ module.exports = (client) => {
                 description += `${pageRecords[j]}\n`;
             }
             embed.setDescription(description);
-            embed.setFooter(`Page: ${page}/${nbPages}`);
+            if (nbPages > 1) embed.setFooter(`Page: ${page}/${nbPages}`);
             embeds.push(embed);
         };
 
@@ -519,8 +519,10 @@ module.exports = (client) => {
             postedEmbeds.totalPages = pagesArray.length;
             postedEmbeds.pages = pagesArray;
             client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
-            await msgSent.react(`◀️`);
-            await msgSent.react(`▶️`);
+            if (postedEmbeds.totalPages > 1) {
+                await msgSent.react(`◀️`);
+                await msgSent.react(`▶️`);
+            }
 
         });
 

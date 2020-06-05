@@ -7,7 +7,7 @@ class ServerChatCommand extends Command {
     constructor() {
         super('server-chat', {
             aliases: ['server-chat', 'schat'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             description: {
                 content: textes.get('GAMESERVER_SERVER_CHAT_DESCRIPTION_CONTENT'),
                 usage: textes.get('GAMESERVER_SERVER_CHAT_DESCRIPTION_USAGE'),

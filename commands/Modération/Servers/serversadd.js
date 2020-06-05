@@ -6,7 +6,7 @@ class ServerAddCommand extends Command {
     constructor() {
         super('server-add', {
             aliases: ['server-add', 'sadd'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             split: 'quoted',
             description: {
                 content: textes.get('GAMESERVER_SERVER_ADD_DESCRIPTION_CONTENT'),

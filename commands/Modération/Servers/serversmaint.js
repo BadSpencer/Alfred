@@ -7,7 +7,7 @@ class ServerMaintCommand extends Command {
     constructor() {
         super('server-maint', {
             aliases: ['server-maint', 'smaint'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             description: {
                 content: textes.get('GAMESERVER_SERVER_MAINT_DESCRIPTION_CONTENT'),
                 usage: textes.get('GAMESERVER_SERVER_MAINT_DESCRIPTION_USAGE'),

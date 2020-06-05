@@ -7,7 +7,7 @@ class ServerListCommand extends Command {
     constructor() {
         super('server-list', {
             aliases: ['server-list', 'slist'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             description: {
                 content: textes.get('GAMESERVER_SERVER_LIST_DESCRIPTION_CONTENT'),
                 usage: textes.get('GAMESERVER_SERVER_LIST_DESCRIPTION_USAGE'),

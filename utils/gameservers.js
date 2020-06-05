@@ -542,40 +542,17 @@ module.exports = (client) => {
 
 
     players.forEach(player => {
-      let statusIcon = "";
-      let playerName = "";
-
+      let memberLinked = "";
       if (player.memberID !== "") {
         let userdata = client.db_userdata.get(player.memberID);
         if (!userdata) {
-          if (player.isBanned == false) {
-            statusIcon = "⚠️";
-            playerName = `**${player.steamName}** (membre ${player.memberID} non trouvé)`;
-          } else {
-            statusIcon = "⛔️";
-            playerName = `**${player.steamName}** (membre ${player.memberID} non trouvé)`;
-          }
-
+          memberLinked = `⚠️${player.memberID}`;
         } else {
-          if (player.isBanned == false) {
-            statusIcon = "🔹";
-            playerName = `**${userdata.displayName}**`;
-          } else {
-            statusIcon = "⛔️";
-            playerName = `**${userdata.displayName}**`;
-          }
+          memberLinked = `🔹${userdata.displayName}`;
         }
       } else {
-        if (player.isBanned == false) {
-          statusIcon = "🔸";
-          playerName = `**${player.steamName}** (joueur non lié à un membre)`;
-        } else {
-          statusIcon = "⛔️";
-          playerName = `**${player.steamName}** (joueur non lié à un membre)`;
-        }
+        memberLinked = '🔸non lié'
       }
-
-
 
       let connected = "";
       let ms = dateNow - player.lastSeenAt;
@@ -584,15 +561,14 @@ module.exports = (client) => {
 
 
       if (timeDwD !== "" && timeDwD !== "1m") {
-        connected = `Connecté il y a **${timeDwD}**`;
+        connected = `${timeDwD}`;
       } else {
-        connected = `**Connecté**`
+        connected = `Connecté`
       }
 
-      listPlayersArray.push(`${statusIcon}${playerName}\n⬛️ID:${player.id} (${player.steamName})\n⬛️${connected}\n`);
-    })
+      listPlayersArray.push(`**${player.id}** ${player.steamName} - ${memberLinked} - ${connected}`);    })
 
-    await client.arrayToEmbed(listPlayersArray, 5, "Liste des joueurs", message.channel);
+    await client.arrayToEmbed(listPlayersArray, 15, "Liste des joueurs", message.channel);
 
   };
 }

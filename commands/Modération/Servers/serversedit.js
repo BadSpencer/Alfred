@@ -7,7 +7,7 @@ class ServerEditCommand extends Command {
     constructor() {
         super('server-edit', {
             aliases: ['server-edit', 'sedit'],
-            category: 'Modération-server',
+            category: 'Serveurs',
             description: {
                 content: textes.get('GAMESERVER_SERVER_EDIT_DESCRIPTION_CONTENT'),
                 usage: textes.get('GAMESERVER_SERVER_EDIT_DESCRIPTION_USAGE'),

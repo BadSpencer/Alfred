@@ -166,6 +166,17 @@ client.commandHandler.resolver.addType('serverID', (message, phrase) => {
     }
 });
 
+client.commandHandler.resolver.addType('player', (message, phrase) => {
+    if (!phrase) return null;
+
+    const player = client.db_gameserversPlayers.get(phrase);
+    if (player) {
+        return player;
+    } else {
+        return null;
+    }
+});
+
 client.commandHandler.resolver.addType('ouinon', (message, phrase) => {
     if (!phrase) return null;
     if (phrase == 'oui' || phrase == 'non') {

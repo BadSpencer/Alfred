@@ -161,12 +161,6 @@ module.exports = (client) => {
 
   };
 
-  client.checkGameServers = async () => {
-    // client.log(`Vérification de la base de données des serveurs de jeu`, "debug");
-    // await client.db_gameservers.delete("default");
-    // await client.db_gameservers.set("default", datamodel.tables.gameservers);
-  };
-
   client.gamesPlayersDetail = async (gamename, message) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const game = await client.db_games.get(gamename);
