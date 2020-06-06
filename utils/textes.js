@@ -605,12 +605,20 @@ module.exports = class {
                 `;
             },
 
+            GAMES_GAME_EDIT_DESCRIPTION_CONTENT: `Modifier les données d'un serveur`,
+            GAMES_GAME_EDIT_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+            GAMES_GAME_EDIT_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un serveur ?`,
+            GAMES_GAME_EDIT_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
+            GAMES_GAME_EDIT_SUCCESS: (game) => {
+                return `Le jeu  **${game.id}** à correctment été modifié.`;
+            },
+
 
             GAMESERVER_SERVER_HELP_DESCRIPTION: `Voici la liste des commandes qui permettent de gèrer les serveurs.
             
             `,
             GAMESERVER_SERVER_DESCRIPTION_CONTENT: `Informations et aide sur les serveurs`,
-            GAMESERVER_SERVER_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+            GAMESERVER_SERVER_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
 
 
 
@@ -624,8 +632,6 @@ module.exports = class {
             - Adresse IP et port du serveur
             - Mot de passe RCON
             - User, port et mot de passe FTP`,
-            GAMESERVER_SERVER_ADD_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un serveur ?`,
-            GAMESERVER_SERVER_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
             GAMESERVER_SERVER_ADD_NAME_PROMPT: `Quel est le **nom** de ce serveur ?`,
             GAMESERVER_SERVER_ADD_IP_PROMPT: `Quelle est l'adresse **ip** du serveur ?`,
             GAMESERVER_SERVER_ADD_PORTRCON_PROMPT: `Quel est le **port RCON** du serveur ?`,
@@ -670,9 +676,7 @@ module.exports = class {
             GAMESERVER_SERVER_EDIT_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
             GAMESERVER_SERVER_EDIT_SERVER_PROMPT: `Quel **serveur** souhaitez vous modifier ? (ID)`,
             GAMESERVER_SERVER_EDIT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
-            GAMESERVER_SERVER_EDIT_FIELD_PROMPT: `Quel **champ** souhaitez vous modifier ?`,
-            GAMESERVER_SERVER_EDIT_VALUE_PROMPT: `Quelle est la **nouvelle valeur** pour ce champ ?`,
-
+            
             GAMESERVER_SERVER_LIST_DESCRIPTION_CONTENT: `Afficher la liste des serveurs`,
             GAMESERVER_SERVER_LIST_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
 
@@ -806,6 +810,14 @@ module.exports = class {
 
             CMD_PLAYER_PROMPT: `Quel est l'ID du joueur ?`,
             CMD_PLAYER_RETRY: `Cet ID n'est pas enregistré dans la base des joueurs. Vérifiez votre sasie.`,
+
+            CMD_EDIT_FIELD_PROMPT: `Quel **champ** souhaitez vous modifier ?`,
+            CMD_EDIT_VALUE_PROMPT: `Quelle est la **nouvelle valeur** pour ce champ ?`,
+
+
+
+
+
 
             AIDE_AIDE_DESCRIPTION_CONTENT: `Affiche ce message d'aide et une aide détaillée pour chaque commande`,
             AIDE_AIDE_DESCRIPTION_USAGE: `\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel

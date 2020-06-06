@@ -34,14 +34,14 @@ class ServerEditCommand extends Command {
             prompt: {
                 start: async message => { 
                     await message.channel.send(`**${server.servername}**\n\`\`\`json\n${inspect(server)}\n\`\`\``);
-                    return promptMessage(textes.get('GAMESERVER_SERVER_EDIT_FIELD_PROMPT')) 
+                    return promptMessage(textes.get('CMD_EDIT_FIELD_PROMPT')) 
             },
             }
         };
 
         const value = yield {
             prompt: {
-                start: message => promptMessage(textes.get('GAMESERVER_SERVER_EDIT_VALUE_PROMPT'))
+                start: message => promptMessage(textes.get('CMD_EDIT_VALUE_PROMPT'))
             }
         };
 
