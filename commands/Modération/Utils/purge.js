@@ -6,9 +6,6 @@ class PurgeCommand extends Command {
         super('purge', {
             aliases: ['purge', 'del', 'bulkdelete'],
             category: 'Modération',
-            args: [{
-                id: 'purge', type: 'number', default: 1,
-            }],
             description: {
                 usage: 'purge [ nombre ]',
                 examples: ['purge 2', 'purge 100'],
