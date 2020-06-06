@@ -73,7 +73,10 @@ class ServerSessCommand extends Command {
                 if (line == 20) line = 0;
             }
         }
-
+        
+        if (sessionsList.length == 0) {
+            sessionsList.push(`Aucune session depuis le ${moment(dateFrom).format('DD.MM.YYYY HH:mm')}`)
+        }
         await client.arrayToEmbed(sessionsList, 20, `Sessions sur ${args.server.servername}`, message.channel);
 
         if (message.channel.type === 'text') message.delete();

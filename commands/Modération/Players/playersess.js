@@ -74,6 +74,9 @@ class PlayerSessCommand extends Command {
             }
         }
 
+        if (sessionsList.length == 0) {
+            sessionsList.push(`Aucune session depuis le ${moment(dateFrom).format('DD.MM.YYYY HH:mm')}`)
+        }
         await client.arrayToEmbed(sessionsList, 20, `Sessions de ${args.player.steamName} (${args.player.id})`, message.channel);
 
         if (message.channel.type === 'text') message.delete();
