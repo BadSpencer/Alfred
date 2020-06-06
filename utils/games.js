@@ -535,7 +535,7 @@ module.exports = (client) => {
               client.gamePlayerQuitNotification(game, member, "PURGE");
               client.userdataAddLog(userdata, member, "GAMEQUIT", `Inactivité sur "${game.name}"`);
             } else {
-              // client.modLog(`**${member.displayName}** devrait être retiré du groupe "${game.name}" pour inactivité`);
+              client.modLog(`**${member.displayName}** devrait être retiré du groupe "${game.name}" pour inactivité`);
             }
           }
         }

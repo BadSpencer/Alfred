@@ -111,7 +111,8 @@ client.cron_ArkDWD = new cron.CronJob('00 00 06 * * 5', () => { // Tous les 2 jo
     client.gameServersArkDWD();
 });
 
-client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les jours à 14h30 et 20sec
+// client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les jours à 14h30 et 20sec
+client.cron_gamePurge = new cron.CronJob('20 * * * * *', () => { // Toutes les minutes après 20sec
     client.gamesPurge();
 });
 
