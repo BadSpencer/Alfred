@@ -42,6 +42,9 @@ client.db_userdata = new Enmap({
 client.db_games = new Enmap({
     name: "games"
 });
+client.db_gamealias = new Enmap({
+    name: "gamealias"
+});
 client.db_gameservers = new Enmap({
     name: "gameservers"
 });
@@ -105,14 +108,14 @@ client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous
     client.messageOfTheDay();
 });
 client.cron_gameList = new cron.CronJob('15 00 */1 * * *', () => { // Tous les heures après 15sec
-    client.gamesListPost();
+    client.gamesJoinListPost();
 });
 client.cron_ArkDWD = new cron.CronJob('00 00 06 * * 5', () => { // Tous les 2 jours à 6h00
     client.gameServersArkDWD();
 });
 
-// client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les jours à 14h30 et 20sec
-client.cron_gamePurge = new cron.CronJob('20 * * * * *', () => { // Toutes les minutes après 20sec
+client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les jours à 14h30 et 20sec
+    // client.cron_gamePurge = new cron.CronJob('20 * * * * *', () => { // Toutes les minutes après 20sec
     client.gamesPurge();
 });
 
@@ -120,11 +123,29 @@ client.cron_gamePurge = new cron.CronJob('20 * * * * *', () => { // Toutes les m
 client.commandHandler.resolver.addType('game', (message, phrase) => {
     if (!phrase) return null;
 
-    const game = client.db_games.find(game => game.name == phrase);
+    let game = client.db_games.get(phrase);
     if (game) {
         return game;
+    } else {
+        const gamealias = client.db_gamealias.get(phrase);
+        if (gamealias) {
+            game = client.db_games.get(gamealias.gamename);
+            if (game) {
+                return game;
+            }
+            return null;
+        }
+        return null;
+    };
+});
+client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
+    if (!phrase) return null;
+
+    const gamealias = client.db_gamealias.get(phrase);
+    if (gamealias) {
+        return null;
     }
-    return null;
+    return phrase;
 });
 client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     if (!phrase) return null;
