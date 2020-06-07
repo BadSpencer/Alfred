@@ -23,7 +23,10 @@ class GameEditCommand extends Command {
             type: "game",
             match: 'rest',
             prompt: {
-                start: message => promptMessage(textes.get('GAMES_GAME_EDIT_GAME_PROMPT')),
+                start: async message => { 
+                    await this.client.gamesListPost(message.channel, 'tout');
+                    return promptMessage(textes.get('GAMES_GAME_EDIT_GAME_PROMPT'))
+                },
                 retry: message => promptMessage(textes.get('GAMES_GAME_EDIT_GAME_RETRY')),
             }
         };

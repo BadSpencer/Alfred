@@ -605,14 +605,47 @@ module.exports = class {
                 `;
             },
 
-            GAMES_GAME_EDIT_DESCRIPTION_CONTENT: `Modifier les données d'un serveur`,
+            GAMES_GAMEALIAS_ADD_DESCRIPTION_CONTENT: `Ajouter un alias à un jeu`,
+            GAMES_GAMEALIAS_ADD_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider
+            
+            Les jeux sont identifiés par leur nom. Un alias permet d'identifier un jeu par un nom plus court.`,
+            GAMES_GAMEALIAS_ADD_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un alias ?`,
+            GAMES_GAMEALIAS_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
+            GAMES_GAMEALIAS_ADD_ALIAS_PROMPT: (game) => {
+                return `Quel est **l'alias** pour le jeu **${game.id}** ?`;
+            }, 
+            GAMES_GAMEALIAS_ADD_ALIAS_RETRY: `Cet alias est déjà utilisé, veuillez en choisir un autre`,
+            GAMES_GAMEALIAS_ADD_SUCCESS: (game, alias) => {
+                return `L'alias **${alias}** à été ajouté pour le jeu **${game.id}** avec succès.`;
+            }, 
+
+            GAMES_GAME_EDIT_DESCRIPTION_CONTENT: `Modifier les données d'un jeu`,
             GAMES_GAME_EDIT_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
-            GAMES_GAME_EDIT_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un serveur ?`,
+            GAMES_GAME_EDIT_GAME_PROMPT: `Quel **jeu** souhaitez vous éditer ?`,
             GAMES_GAME_EDIT_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
             GAMES_GAME_EDIT_SUCCESS: (game) => {
                 return `Le jeu  **${game.id}** à correctment été modifié.`;
             },
 
+            GAMES_GAME_LIST_DESCRIPTION_CONTENT: `Afficher la liste des jeux`,
+            GAMES_GAME_LIST_DESCRIPTION_USAGE: `Lancez cette commande sans paramètre pour obtenir la liste des jeux
+            Syntaxe: \`!game-list [option]\`
+            
+            Options:
+            "**actif**" seuls les jeux actifs seronts affichés
+            "**inactif**" seuls les jeux inactifs seront affichés`,
+            GAMES_GAME_LIST_OPTION_RETRY: `Cette option n'est pas valide.
+            Options valides: 'tout, 'actif ou 'inactif'.`,
+
+            GAMES_GAME_PLAYER_DESCRIPTION_CONTENT: `Afficher les membres d'un jeu`,
+            GAMES_GAME_PLAYER_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
+            GAMES_GAME_PLAYER_GAME_PROMPT: `Pour quel **jeu** souhaitez vous afficher la liste des joueurs ?`,
+            GAMES_GAME_PLAYER_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
+
+            GAMES_GAME_VIEW_DESCRIPTION_CONTENT: `Afficher les données d'un jeu`,
+            GAMES_GAME_VIEW_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+            GAMES_GAME_VIEW_GAME_PROMPT: `Quel **jeu** souhaitez vous afficher ?`,
+            GAMES_GAME_VIEW_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
 
             GAMESERVER_SERVER_HELP_DESCRIPTION: `Voici la liste des commandes qui permettent de gèrer les serveurs.
             

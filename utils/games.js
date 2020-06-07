@@ -6,8 +6,45 @@ const { successMessage, errorMessage, warnMessage, questionMessage, promptMessag
 
 module.exports = (client) => {
 
+  client.gamesGetAll = () => {
+    return client.db_games;
+  };
+  client.gamesGetActive = () => {
+    return client.db_games.filter(rec => rec.actif == true);
+  };
+  client.gamesGetInactive = () => {
+    return client.db_games.filter(rec => rec.actif == false);
+  };
+
+  client.gamesListPost = async (channel, option = 'tout') => {
+    let gameList = [];
+    switch (option) {
+      case 'tout':
+        gameList = client.gamesGetAll().array();
+        break;
+      case 'actif':
+        gameList = client.gamesGetActive().array();
+        break;
+      case 'inactif':
+        gameList = client.gamesGetInactive().array();
+        break;
+    }
+
+    let gameListOutput = [];
+    let iconStatut = '';
+    for (const game of gameList) {
+        if (game.actif) {
+            iconStatut = '◽️';
+        } else {
+            iconStatut = '◾️';
+        }
+        gameListOutput.push(`${iconStatut} **${game.id}**`);
+    };
+    await client.arrayToEmbed(gameListOutput, 20, `Liste de jeux (option: ${option})`, channel);
+  };
+
   client.gamesCreate = async (gamename) => {
-    let game = client.db_games.get("default");
+    let game = datamodel.tables.games;
 
     game.id = gamename;
     game.name = gamename;
@@ -83,7 +120,7 @@ module.exports = (client) => {
     return activeGamesScores;
   };
 
-  client.gamesListPost = async (clearReact = false) => {
+  client.gamesJoinListPost = async (clearReact = false) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const games = await client.db.gamesGetActive(client);
@@ -318,7 +355,7 @@ module.exports = (client) => {
           .setColor(colors['darkorange'])
           .setThumbnail(client.user.avatarURL())
           .setDescription(client.textes.get("GAMES_JOIN_INFORMATION_CHANNEL_NOTIFICATION", game, gameInfosChannel, member));
-        await gameTextChannel.send(informationsMessage);
+        await member.send(informationsMessage);
       };
     }
     client.modLog(client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
@@ -345,7 +382,6 @@ module.exports = (client) => {
       const notifChannelMessage = new Discord.MessageEmbed()
         .setColor(colors['yellow'])
         .setTimestamp()
-        .setThumbnail(avatar)
         .setDescription(client.textes.get(channelNotification, game, member));
       gameTextChannel.send(notifChannelMessage);
     };
@@ -427,10 +463,10 @@ module.exports = (client) => {
     const response = responses.first();
 
     if (response.content == "oui") {
-      response.delete();
+      // response.delete();
       member.roles.remove(gameRole);
       successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), messageReaction.message.channel);
-      client.gamesListPost();
+      client.gamesJoinListPost();
       client.gamePlayerQuitNotification(game, member);
       client.userdataAddLog(userdata, member, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
     } else {
@@ -497,7 +533,7 @@ module.exports = (client) => {
     return players;
   };
 
-  client.gamesListDelete = async () => {
+  client.gamesJoinListDelete = async () => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const gameJoinChannel = await guild.channels.cache.find(c => c.name === settings.gameJoinChannel);
@@ -546,10 +582,17 @@ module.exports = (client) => {
   client.gamesPurge = async () => {
     const games = await client.db.gamesGetActive(client);
     for (const game of games) {
-      client.gamePurgeMembers(game[1]);
+      client.gamePurgeMembers(game[1], false);
     }
-    client.gamesListPost();
-  }
+    client.gamesJoinListPost();
+  };
+
+  client.gamealiasAdd = (alias, gamename) => {
+    let gamealias = datamodel.tables.gamealias;
+    gamealias.id = alias.toLowerCase();
+    gamealias.gamename = gamename;
+    client.db_gamealias.set(gamealias.id, gamealias);
+  };
 
 
 }

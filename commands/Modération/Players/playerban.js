@@ -35,7 +35,7 @@ class PlayerBanCommand extends Command {
     
     async exec(message, args) {
         let client = this.client;
-        await client.gameServersPlayerBan(args.player.id, message);
+        await client.gameServersPlayerBan(args.player, message);
         if (message.channel.type === 'text') message.delete();
     }
 

@@ -20,6 +20,7 @@ class ModerationCheck extends Inhibitor {
 
         const modCategories = [
             'Modération',
+            'Jeux',
             'Serveurs',
             'Joueurs',
             'Admin'

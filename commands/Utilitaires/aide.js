@@ -52,12 +52,13 @@ class AideCommand extends Command {
         const roleAdm = guild.roles.cache.find(r => { return r.name == message.settings.adminRole });
 
         let ignoredCategories = [];
-        ignoredCategories.push("Auto");
+        ignoredCategories.push('Auto');
         if (!member.roles.cache.has(roleMod.id) && !member.roles.cache.has(roleAdm.id)) {
-            ignoredCategories.push("Admin");
-            ignoredCategories.push("Modération");
-            ignoredCategories.push("Serveurs");
-            ignoredCategories.push("Joueurs");
+            ignoredCategories.push('Admin');
+            ignoredCategories.push('Modération');
+            ignoredCategories.push('Jeux');
+            ignoredCategories.push('Serveurs');
+            ignoredCategories.push('Joueurs');
         }
 
         if (!args.command) {

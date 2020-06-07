@@ -35,7 +35,7 @@ class PlayerLinkCommand extends Command {
         let gameserversPlayer = client.db_gameserversPlayers.get(player.id);
         if (!gameserversPlayer.memberID == "") {
             let linkedUserdata = client.db_userdata.get(gameserversPlayer.memberID);
-            warnMessage(client.textes.get("GAMESERVER_ERROR_PLAYERID_ALREADY_LINKED", player.id, linkedUserdata), message.channel);
+            warnMessage(textes.get("GAMESERVER_ERROR_PLAYERID_ALREADY_LINKED", player.id, linkedUserdata), message.channel);
         };
 
         const userdata = yield {

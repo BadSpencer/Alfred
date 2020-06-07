@@ -10,6 +10,7 @@ const {
   promptMessage
 } = require('./messages');
 const fetch = require("node-fetch");
+const textes = new (require(`./textes.js`));
 
 module.exports = (client) => {
 
@@ -30,7 +31,7 @@ module.exports = (client) => {
   };
 
   client.gameServersGet = (serverID) => {
-      return client.db_gameservers.get(serverID);
+    return client.db_gameservers.get(serverID);
   };
 
   client.gameServersAddServer = async (message, gamename, name, ip, portrcon, pwdrcon, portftp, userftp, pwdftp) => {
@@ -478,31 +479,47 @@ module.exports = (client) => {
     return successMessage(client.textes.get("GAMESERVER_PLAYER_LINK_SUCCESS", gameserversPlayer, member), message.channel);
   };
 
-  client.gameServersPlayerBan = async (playerID, message = null) => {
+  client.gameServerPlayerBan = async (player, server) => {
+    let response = await client.gameRconQuery(server, `BanPlayer ${player.id}`);
+    if (response.includes("Banned")) {
+      player.isBanned = true;
+      client.db_gameserversPlayers.set(player.id, player);
+      client.modLog(textes.get('GAMESERVER_ARK_BAN_SUCCESS', player, server));
+      return true;
+    } else {
+      client.modLog(textes.get('GAMESERVER_ARK_BAN_ERROR', player, server));
+      return false;
+    }
+  };
 
-    let gameserversPlayer = await client.db_gameserversPlayers.get(playerID);
+  client.gameServerPlayerUnban = async (player, server) => {
+    let response = await client.gameRconQuery(server, `UnBanPlayer ${player.id}`);
+    if (response.includes("Unbanned")) {
+      player.isBanned = true;
+      client.db_gameserversPlayers.set(player.id, player);
+      client.modLog(textes.get('GAMESERVER_ARK_UNBAN_SUCCESS', player, server));
+      return true;
+    } else {
+      client.modLog(textes.get('GAMESERVER_ARK_UnBAN_ERROR', player, server));
+      return false;
+    }
+  };
 
-    if (!gameserversPlayer) return errorMessage(client.textes.get("GAMESERVER_ERROR_PLAYERID_NOT_FOUND", playerID), message.channel);
-
+  client.gameServersPlayerBan = async (player, message = null) => {
     let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved" && server.isActive == true);
     for (const server of servers) {
-      let response = await client.gameRconQuery(server, `BanPlayer ${playerID}`);
-      if (response.includes("Banned")) {
-        client.modLog(client.textes.get("GAMESERVER_ARK_BAN_SUCCESS", gameserversPlayer, server));
-        if (message !== null) {
-          successMessage(client.textes.get("GAMESERVER_ARK_BAN_SUCCESS", gameserversPlayer, server), message.channel);
-        }
-      } else {
-        client.modLog(client.textes.get("GAMESERVER_ARK_BAN_ERROR", gameserversPlayer, server));
-        if (message !== null) {
-          errorMessage(client.textes.get("GAMESERVER_ARK_BAN_ERROR", gameserversPlayer, server), message.channel);
+      let playerBan = await client.gameServerPlayerBan(player, server);
+      if (message !== null) {
+        if (playerBan == true) {
+          successMessage(textes.get('GAMESERVER_ARK_BAN_SUCCESS', player, server), message.channel);
+        } else {
+          errorMessage(textes.get('GAMESERVER_ARK_BAN_ERROR', player, server), message.channel);
         }
       }
     }
-    gameserversPlayer.isBanned = true;
-    await client.db_gameserversPlayers.set(playerID, gameserversPlayer);
-
   };
+
+
 
   client.gameServersPlayerUnban = async (playerID, message = null) => {
 
@@ -512,16 +529,13 @@ module.exports = (client) => {
 
     let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved" && server.isActive == true);
     for (const server of servers) {
-      let response = await client.gameRconQuery(server, `UnBanPlayer ${playerID}`);
-      if (response.includes("Unbanned")) {
-        client.modLog(client.textes.get("GAMESERVER_ARK_UNBAN_SUCCESS", gameserversPlayer, server));
-        if (message !== null) {
-          successMessage(client.textes.get("GAMESERVER_ARK_UNBAN_SUCCESS", gameserversPlayer, server), message.channel);
-        }
-      } else {
-        client.modLog(client.textes.get("GAMESERVER_ARK_UNBAN_ERROR", gameserversPlayer, server));
-        if (message !== null) {
-          errorMessage(client.textes.get("GAMESERVER_ARK_UNBAN_ERROR", gameserversPlayer, server), message.channel);
+
+      let playerUnban = await client.gameServerPlayerUnban(player, server);
+      if (message !== null) {
+        if (playerUnban == true) {
+          successMessage(textes.get('GAMESERVER_ARK_UNBAN_SUCCESS', player, server), message.channel);
+        } else {
+          errorMessage(textes.get('GAMESERVER_ARK_UNBAN_ERROR', player, server), message.channel);
         }
       }
     }
@@ -566,7 +580,8 @@ module.exports = (client) => {
         connected = `Connecté`
       }
 
-      listPlayersArray.push(`**${player.id}** ${player.steamName} - ${memberLinked} - ${connected}`);    })
+      listPlayersArray.push(`**${player.id}** ${player.steamName} - ${memberLinked} - ${connected}`);
+    })
 
     await client.arrayToEmbed(listPlayersArray, 15, "Liste des joueurs", message.channel);
 

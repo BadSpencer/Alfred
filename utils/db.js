@@ -244,24 +244,19 @@ exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename
 // GAMES
 exports.gamesCheck = async (client) => {
     client.log(`Vérification de la base de données des jeux`, "debug");
-    const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
-    await client.db_games.delete("default");
-    await client.db_games.set("default", datamodel.tables.games);
+    client.db_games.delete("default");
 
-    let games = await client.db.gamesGetAll(client);
-    for (const game of games) {
-        if (game.nbDaysInactive == undefined) {
-            game["nbDaysInactive"] = 30;
-            client.db_games.set(game.id, game);
-        }
-    }
+    // let games = client.gamesGetAll().array();
+    // for (const game of games) {
+    //     if (game.nbDaysInactive == undefined) {
+    //         game["nbDaysInactive"] = 30;
+    //         client.db_games.set(game.id, game);
+    //     }
+    // }
 
-
-    let gamesActive = await client.db.gamesGetActive(client);
+    let gamesActive = client.gamesGetActive();
     if (!gamesActive) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
-
-    await client.gamesListPost(true);
+    await client.gamesJoinListPost(true);
 };
 
 exports.gamesGetActive = async (client) => {

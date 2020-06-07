@@ -30,7 +30,7 @@ class guildMemberUpdateListener extends Listener {
         // Role ajouté
         if (newMember.roles.cache.size > oldMember.roles.cache.size) {
 
-            newMember.roles.cache.forEach(newRole => {
+            newMember.roles.cache.forEach( async newRole => {
                 if (!oldMember.roles.cache.has(newRole.id)) {
                     client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
 
@@ -45,12 +45,23 @@ class guildMemberUpdateListener extends Listener {
                     // Annonce rejoindre jeu
                     const game = client.db_games.find(game => game.roleID == newRole.id);
                     if (game) {
-                        client.gamesListPost();
+                        client.gamesJoinListPost();
 
                         client.usergameUpdateJoinedAt(game, newMember);
 
                         client.gameNewPlayerNotification(game, newMember);
                         client.userdataAddLog(userdata, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
+
+                        let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
+                        if (player) {
+                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,'debug');
+
+                            let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
+
+                            for (const server of servers) {
+                                let playerBan = await client.gameServerPlayerUnban(player, server);
+                            }
+                        }
                     }
                 }
             });
@@ -59,20 +70,28 @@ class guildMemberUpdateListener extends Listener {
 
         // Role retiré
         if (newMember.roles.cache.size < oldMember.roles.cache.size) {
+            oldMember.roles.cache.forEach( async oldRole => {
+                if (!newMember.roles.cache.has(oldRole.id)) {
+                    client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
 
+                    const game = client.db_games.find(game => game.roleID == oldRole.id);
+                    if (game) {
 
-            // oldMember.roles.cache.forEach(oldRole => {
-            //     if (!newMember.roles.cache.has(oldRole.id)) {
-            //         client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
+                        client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`,'debug');
 
-            //         const game = client.db_games.find(game => game.roleID == oldRole.id);
-            //         if (game) {
-            //             client.gamesListPost();
-            //             client.gamePlayerQuitNotification(game, newMember);
-            //             client.userdataAddLog(userdata, oldMember, "GAMEQUIT", `A quitté le groupe "${game.name}"`);
-            //         }
-            //     }
-            // })
+                        let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
+                        if (player) {
+                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,'debug');
+
+                            let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
+
+                            for (const server of servers) {
+                                let playerBan = await client.gameServerPlayerBan(player, server);
+                            }
+                        }
+                    }
+                }
+            })
         }
 
 

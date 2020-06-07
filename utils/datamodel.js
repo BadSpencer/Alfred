@@ -55,6 +55,10 @@ exports.tables = {
         "voiceChannelID": "",
         "serversStatusMessageID": ""
     },
+    gamealias: {
+        'id': "",
+        'gamename': ""
+    },
     gameservers:{
         "id": "default",
         "createdAt": "",
