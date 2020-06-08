@@ -33,12 +33,12 @@ module.exports = (client) => {
     let gameListOutput = [];
     let iconStatut = '';
     for (const game of gameList) {
-        if (game.actif) {
-            iconStatut = '◽️';
-        } else {
-            iconStatut = '◾️';
-        }
-        gameListOutput.push(`${iconStatut} **${game.id}**`);
+      if (game.actif) {
+        iconStatut = '◽️';
+      } else {
+        iconStatut = '◾️';
+      }
+      gameListOutput.push(`${iconStatut} **${game.id}**`);
     };
     await client.arrayToEmbed(gameListOutput, 20, `Liste de jeux (option: ${option})`, channel);
   };
@@ -200,78 +200,47 @@ module.exports = (client) => {
 
   client.gamesPlayersDetail = async (gamename, message) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const game = await client.db_games.get(gamename);
+    const game = client.db_games.get(gamename);
     const gameRole = guild.roles.cache.get(game.roleID);
 
-    let description = "";
-
-    let descActive = "**Joueurs actifs**\n";
-    let descInactivePlayed = "**Joueurs inactifs (jeu)**\n";
-    let descInactiveAction = "**Joueurs inactifs (discussion)**\n";
-    let descInactiveBoth = "**Joueurs inactifs (les deux)**\n";
-
-
-    const embed = new Discord.MessageEmbed();
-    embed.setTitle(gamename);
-    embed.setColor(colors['darkorange']);
+    let playerListOutput = [];
 
     for (const member of gameRole.members) {
       let usergameKey = `${gamename}-${member[1].id}`
       let usergame = client.db_usergame.get(usergameKey);
       let now = +new Date;
       let daysPlayed = 0;
+      let daysPlayedTxt = '';
       let daysAction = 0;
+      let daysActionTxt = '';
 
       if (usergame) {
-        if (usergame.lastAction == "") {
-          usergame.lastAction = 1587500080000;
-          client.db_usergame.set(usergameKey, usergame);
-        }
-      } else {
-        usergame = client.db_usergame.get("default");
-        usergame.id = usergameKey;
-        usergame.userid = member.id;
-        usergame.gameid = game.name;
-        usergame.lastPlayed = 1586000080000;
-        usergame.lastAction = 1587500080000;
-        client.db_usergame.set(usergameKey, usergame);
-      }
+        daysPlayed = client.msToDays(now - usergame.lastPlayed);
+        daysAction = client.msToDays(now - usergame.lastAction);
 
-      daysPlayed = client.msToDays(now - usergame.lastPlayed);
-      daysAction = client.msToDays(now - usergame.lastAction);
-
-      if (daysPlayed < 30 && daysAction < 30) {
-        descActive += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)}j Action: ${client.msToDays(now - usergame.lastAction)}j\n`;
-      } else {
-
-        if (daysPlayed > 29 && daysAction > 29) {
-          descInactiveBoth += `**${member[1].displayName}** Jeu: **${client.msToDays(now - usergame.lastPlayed)}j** Action: **${client.msToDays(now - usergame.lastAction)}j**\n`;
+        if (daysPlayed > game.nbDaysInactive) {
+          daysPlayedTxt = `**${daysPlayed}**`;
         } else {
-          if (daysPlayed > 29) {
-            descInactivePlayed += `**${member[1].displayName}** Jeu: **${client.msToDays(now - usergame.lastPlayed)}j** Action: ${client.msToDays(now - usergame.lastAction)}j\n`;
-          }
-          if (daysAction > 29) {
-            descInactiveAction += `**${member[1].displayName}** Jeu: ${client.msToDays(now - usergame.lastPlayed)}j Action: **${client.msToDays(now - usergame.lastAction)}j**\n`;
-          }
+          daysPlayedTxt = `${daysPlayed}`;
         }
-      }
 
+        if (daysAction > game.nbDaysInactive) {
+          daysActionTxt = `**${daysAction}**`;
+        } else {
+          daysActionTxt = `${daysAction}`;
+        }
 
-
+        playerListOutput.push(`**${member[1].displayName}** - Act: ${daysPlayedTxt} - ${daysActionTxt}`);
+      };
     }
-    description = `${descActive}\n${descInactivePlayed}\n${descInactiveAction}\n${descInactiveBoth}`;
-
-    embed.setDescription(description);
-
-    message.channel.send(embed);
-
+    await client.arrayToEmbed(playerListOutput, 20, `Joueurs de ${gamename}`, message.channel);
   };
 
   client.usergameUpdateLastPlayed = async (game, member) => {
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
-      usergame = client.db_usergame.get("default");
+      usergame = datamodel.tables.usergame;
       usergame.id = usergameKey;
       usergame.userid = member.id;
       usergame.gameid = game.name;
@@ -288,7 +257,7 @@ module.exports = (client) => {
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
-      usergame = client.db_usergame.get("default");
+      usergame = datamodel.tables.usergame;
       usergame.id = usergameKey;
       usergame.userid = member.id;
       usergame.gameid = game.name;
@@ -301,7 +270,7 @@ module.exports = (client) => {
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
-      usergame = client.db_usergame.get("default");
+      usergame = datamodel.tables.usergame;
       usergame.id = usergameKey;
       usergame.userid = member.id;
       usergame.gameid = game.name;
