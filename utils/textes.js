@@ -647,13 +647,8 @@ module.exports = class {
             GAMES_GAME_VIEW_GAME_PROMPT: `Quel **jeu** souhaitez vous afficher ?`,
             GAMES_GAME_VIEW_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
 
-            GAMESERVER_SERVER_HELP_DESCRIPTION: `Voici la liste des commandes qui permettent de gèrer les serveurs.
-            
-            `,
             GAMESERVER_SERVER_DESCRIPTION_CONTENT: `Informations et aide sur les serveurs`,
             GAMESERVER_SERVER_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
-
-
 
             GAMESERVER_SERVER_ADD_SUCCESS: (serverID) => {
                 return `Le serveur à correctment été ajouté avec l\'id ${serverID}.`;

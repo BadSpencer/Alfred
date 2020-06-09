@@ -529,7 +529,12 @@ module.exports = (client) => {
 
     let players = await client.gameGetPlayerList(game);
 
+    
+
+    let playersPurgedList = '';
+
     for (const player of players) {
+      
       if (player.usergame && player.isActive == false) {
         if (player.daysPlayed >= game.nbDaysInactive && player.daysAction >= game.nbDaysInactive) {
           let member = guild.members.cache.get(player.id);
@@ -540,18 +545,23 @@ module.exports = (client) => {
               client.gamePlayerQuitNotification(game, member, "PURGE");
               client.userdataAddLog(userdata, member, "GAMEQUIT", `Inactivité sur "${game.name}"`);
             } else {
-              client.modLog(`**${member.displayName}** devrait être retiré du groupe "${game.name}" pour inactivité`);
+              //client.modLog(`**${member.displayName}** devrait être retiré du groupe "${game.name}" pour inactivité`);
+              playersPurgedList += `${member.displayName}\n`;
             }
           }
         }
       }
     };
+    if (test == true && playersPurgedList !== '') {
+      client.modLog(`Joueurs inactifs pour **${game.name}**\n${playersPurgedList}`);
+    };
+
   };
 
   client.gamesPurge = async () => {
-    const games = await client.db.gamesGetActive(client);
+    const games = client.gamesGetActive();
     for (const game of games) {
-      client.gamePurgeMembers(game[1], false);
+      client.gamePurgeMembers(game[1], true);
     }
     client.gamesJoinListPost();
   };
