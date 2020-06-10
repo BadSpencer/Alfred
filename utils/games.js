@@ -21,12 +21,21 @@ module.exports = (client) => {
     switch (option) {
       case 'tout':
         gameList = client.gamesGetAll().array();
+        gameList.sort(function (a, b) {
+          return a.actif - b.actif;
+        }).reverse();
         break;
       case 'actif':
         gameList = client.gamesGetActive().array();
+        gameList.sort(function (a, b) {
+          return a.id - b.id;
+        }).reverse();
         break;
       case 'inactif':
         gameList = client.gamesGetInactive().array();
+        gameList.sort(function (a, b) {
+          return a.name - b.name;
+        });
         break;
     }
 
@@ -529,12 +538,12 @@ module.exports = (client) => {
 
     let players = await client.gameGetPlayerList(game);
 
-    
+
 
     let playersPurgedList = '';
 
     for (const player of players) {
-      
+
       if (player.usergame && player.isActive == false) {
         if (player.daysPlayed >= game.nbDaysInactive && player.daysAction >= game.nbDaysInactive) {
           let member = guild.members.cache.get(player.id);
@@ -561,7 +570,7 @@ module.exports = (client) => {
   client.gamesPurge = async () => {
     const games = client.gamesGetActive();
     for (const game of games) {
-      client.gamePurgeMembers(game[1], true);
+      client.gamePurgeMembers(game[1], false);
     }
     client.gamesJoinListPost();
   };
