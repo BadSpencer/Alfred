@@ -72,6 +72,7 @@ exports.tables = {
         "portftp": "",
         "pwdrcon": "",
         "pwdftp": "",
+        "userftp": "",
         "status": "",
         "steamlink": "",
         "connected": 0,

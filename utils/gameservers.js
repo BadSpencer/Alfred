@@ -530,12 +530,12 @@ module.exports = (client) => {
     let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved" && server.isActive == true);
     for (const server of servers) {
 
-      let playerUnban = await client.gameServerPlayerUnban(player, server);
+      let playerUnban = await client.gameServerPlayerUnban(gameserversPlayer, server);
       if (message !== null) {
         if (playerUnban == true) {
-          successMessage(textes.get('GAMESERVER_ARK_UNBAN_SUCCESS', player, server), message.channel);
+          successMessage(textes.get('GAMESERVER_ARK_UNBAN_SUCCESS', gameserversPlayer, server), message.channel);
         } else {
-          errorMessage(textes.get('GAMESERVER_ARK_UNBAN_ERROR', player, server), message.channel);
+          errorMessage(textes.get('GAMESERVER_ARK_UNBAN_ERROR', gameserversPlayer, server), message.channel);
         }
       }
     }

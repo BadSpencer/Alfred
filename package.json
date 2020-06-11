@@ -13,6 +13,8 @@
     "dotenv": "^8.2.0",
     "enmap": "^5.2.4",
     "ffmpeg": "^0.0.4",
+    "ftp": "^0.3.10",
+    "ftp-client": "^0.2.2",
     "hex-color-regex": "^1.1.0",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
