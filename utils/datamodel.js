@@ -75,8 +75,18 @@ exports.tables = {
         "userftp": "",
         "status": "",
         "steamlink": "",
+        "version":"",
+        "maxNumberOfPlayers": 0,
         "connected": 0,
         "playerlist": []
+    },
+    gameserverconfig:{
+        'id': "",
+        'serverID': "",
+        'filename': "",
+        'section': "",
+        'parameter': "",
+        'value': ""
     },
     gameserversPlayers: {
         "id": "default",

@@ -11,6 +11,7 @@ const {
 } = require('./messages');
 const fetch = require("node-fetch");
 const textes = new (require(`./textes.js`));
+const steamServerStatus = require('steam-server-status');
 
 module.exports = (client) => {
 
@@ -57,10 +58,47 @@ module.exports = (client) => {
     gameserver.pwdftp = pwdftp;
     gameserver.steamlink = steamlink;
 
+    steamServerStatus.getServerStatus(
+      ip, portrcon, function (serverInfo) {
+        if (serverInfo.error) {
+          client.log(serverInfo.error, 'error');
+        } else {
+          let regExp = /\(([^)]+)\)/;
+          let matches = regExp.exec(serverInfo.serverName);
+          gameserver.version = matches[1];
+          gameserver.maxNumberOfPlayers = serverInfo.maxNumberOfPlayers;
+        }
+      });
+
     client.db_gameservers.set(serverID, gameserver);
     client.log(`Le serveur **${name}** pour **${gamename}** à été ajouté à la base de données`);
     return successMessage(client.textes.get("GAMESERVER_SERVER_ADD_SUCCESS", serverID), message.channel);
   };
+
+  client.gameserverGetSteamInfos = (server) => {
+    steamServerStatus.getServerStatus(
+      server.ip, server.portrcon, function (serverInfo) {
+        if (serverInfo.error) {
+          client.log(serverInfo.error, 'error');
+        } else {
+          let regExp = /\(([^)]+)\)/;
+          let matches = regExp.exec(serverInfo.serverName);
+          server.version = matches[1];
+          server.maxNumberOfPlayers = serverInfo.maxNumberOfPlayers;
+          client.db_gameservers.set(server.id, server);
+        }
+      });
+
+  };
+
+  client.gameserverUpdateInfos = () => {
+    let servers = client.gameServersGetActive().array();
+
+    for (const server of servers) {
+      client.gameserverGetSteamInfos(server);
+    }
+
+  }
 
   client.gameServersDeleteServer = (message, server) => {
     client.db_gameservers.delete(server.id.toString());
@@ -224,30 +262,6 @@ module.exports = (client) => {
     }
   };
 
-  client.gameServerGetInfosEmbed = async (server, details = false) => {
-
-    let embed = new Discord.MessageEmbed();
-    let playerlist = [];
-    let description = "";
-
-    embed.addField('Paramètres', `Exp: **${server.xpRate}**x\nRécolte: **${server.recRate}**x\nAppriv.: **${server.apprRate}**x`, true);
-    embed.addField('\u200B', `Int. repro: **${server.reproRate}**x\nEclosion: **${server.ecloRate}**x\nMaturation: **${server.matRate}**x`, true);
-    embed.addField('Mods', server.description, true);
-
-    if (server.thumbnail) embed.setThumbnail(server.thumbnail);
-
-    description += `**Steam Connect**: steam://connect/${server.ip}:${server.port}/\n`;
-    description += `**Adresse**: ${server.ip}:${server.port}\n`;
-    description += `**Mot de passe**: ${server.clientpwd}\n`;
-    description += `\n`;
-
-    embed.setTitle(server.name);
-    embed.setDescription(description);
-
-    return embed;
-
-  };
-
   client.gameServersArkDWD = async (serverID = "*", message = null) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     let settings = client.db_settings.get(guild.id);
@@ -381,11 +395,7 @@ module.exports = (client) => {
 
         switch (server.status) {
           case 'online':
-            if (server.connected == 0) {
-              fieldDescription = `🟢 [**${server.servername}**](${server.steamlink})\n`;
-            } else {
-              fieldDescription = `🟢 [**${server.servername}**](${server.steamlink}) **${server.connected}**\n`;
-            }
+              fieldDescription = `🟢 [**${server.servername}**](${server.steamlink}) **${server.connected}**/${server.maxNumberOfPlayers}\n`;
             break;
           case 'offline':
             fieldDescription = `🔴 [**${server.servername}**](${server.steamlink})\n`;
@@ -412,7 +422,7 @@ module.exports = (client) => {
         }
 
         fieldDescription += '〰️〰️〰️〰️〰️〰️〰️〰️';
-        fieldServerAdressesDescription += `[**${server.servername}**](${server.steamlink}): ${server.ip}:${server.portrcon}\n`;
+        fieldServerAdressesDescription += `[**${server.servername}**](${server.steamlink}): ${server.ip}:${server.portrcon} - ${server.version} \n`;
 
         embed.addField(fieldTitle, fieldDescription, true);
 
