@@ -660,6 +660,8 @@ module.exports = class {
             - Adresse IP et port du serveur
             - Mot de passe RCON
             - User, port et mot de passe FTP`,
+            GAMESERVER_SERVER_ADD_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un serveur ?`,
+            GAMESERVER_SERVER_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
             GAMESERVER_SERVER_ADD_NAME_PROMPT: `Quel est le **nom** de ce serveur ?`,
             GAMESERVER_SERVER_ADD_IP_PROMPT: `Quelle est l'adresse **ip** du serveur ?`,
             GAMESERVER_SERVER_ADD_PORTRCON_PROMPT: `Quel est le **port RCON** du serveur ?`,
