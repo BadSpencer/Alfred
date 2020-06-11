@@ -1,6 +1,7 @@
 const { Command } = require('discord-akairo');
 const { inspect } = require("util");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const fetch = require("node-fetch");
 const textes = new (require(`../../../utils/textes.js`));
 
 class ServerEditCommand extends Command {
@@ -66,6 +67,10 @@ class ServerEditCommand extends Command {
                 args.server[args.field] = args.value;
             }
         }
+        if (args.field == 'ip' || args.field == 'portrcon' || args.filed == 'pwdrcon') {
+            let urlshortener = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURI(`steam://connect/${args.server.ip}:${args.server.portrcon}/`)}`);
+            args.server.steamlink = await urlshortener.text();
+        };
         client.db_gameservers.set(args.server.id, args.server);
 
         successMessage(client.textes.get('GAMESERVER_SERVER_EDIT_SUCCESS', args.server), message.channel);
