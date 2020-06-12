@@ -1,6 +1,7 @@
 const { Command } = require('discord-akairo');
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
 const textes = new (require(`../../../utils/textes.js`));
+const steamServerStatus = require('steam-server-status');
 
 class ServerAddCommand extends Command {
     constructor() {

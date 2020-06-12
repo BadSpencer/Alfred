@@ -232,7 +232,6 @@ module.exports = (client) => {
           if (server.status == "offline") {
             // Annonce serveur est revenu
             successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`, gameTextChannel, true, 600000);
-            client.gameserverUpdateInfos();
           };
           server.status = "online";
 
