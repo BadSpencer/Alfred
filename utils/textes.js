@@ -1084,6 +1084,15 @@ module.exports = class {
             MOD_NOTIF_MEMBER_PURGE_GAME: (member, game) => {
                 return `⚠️ **${member.displayName}** à été retiré du groupe du jeu ${game.name} pour inactivité.`;
             },
+
+            MOD_NOTIF_SERVER_VERSION_CHANGE: (server, oldVers, newVers) => {
+                return `⚠️ Le serveur **${server.servername}** à été mis à jour de la ${oldVers} vers la **${newVers}**`;
+            },
+            MOD_NOTIF_SERVER_SLOTS_CHANGE: (server, oldSlots, newSlots) => {
+                return `⚠️ Le serveur **${server.servername}** à changé de nombre de slots, il passe de ${oldSlots} slots à **${newSlots}** slots`;
+            },
+
+
             AIDE_EMBED_TITLE_1: `Casual Effect: Aide en ligne`,
             AIDE_EMBED_DESCRIPTION_1: `Ce livret d'aide apporte des informations sur les commandes que je peux exécuter.
 

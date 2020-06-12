@@ -81,10 +81,17 @@ module.exports = (client) => {
         if (serverInfo.error) {
           client.log(serverInfo.error, 'error');
         } else {
-          let regExp = /\(([^)]+)\)/;
+          let regExp = /\(v([^)]+)\)/;
           let matches = regExp.exec(serverInfo.serverName);
-          server.version = matches[1];
-          server.maxNumberOfPlayers = serverInfo.maxNumberOfPlayers;
+
+          if (matches[1] !== server.version) {
+            client.modLog(textes.get('MOD_NOTIF_SERVER_VERSION_CHANGE', server, server.version, matches[1] ));
+            server.version = matches[1];
+          }
+          if (serverInfo.maxNumberOfPlayers !== server.maxNumberOfPlayers) {
+            client.modLog(textes.get('MOD_NOTIF_SERVER_SLOTS_CHANGE', server, server.maxNumberOfPlayers, serverInfo.maxNumberOfPlayers ));
+            server.maxNumberOfPlayers = serverInfo.maxNumberOfPlayers;
+          }
           client.db_gameservers.set(server.id, server);
         }
       });
@@ -224,7 +231,8 @@ module.exports = (client) => {
         } else {
           if (server.status == "offline") {
             // Annonce serveur est revenu
-            successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`, gameTextChannel, true, 600000)
+            successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`, gameTextChannel, true, 600000);
+            client.gameserverUpdateInfos();
           };
           server.status = "online";
 
@@ -322,6 +330,7 @@ module.exports = (client) => {
     } else {
       await client.gameServersSetStatus(serverID, "maintenanceoff");
     };
+    client.gameserverUpdateInfos();
   };
 
   client.gameServersSetStatus = async (serverID = "*", status) => {
@@ -528,8 +537,6 @@ module.exports = (client) => {
       }
     }
   };
-
-
 
   client.gameServersPlayerUnban = async (playerID, message = null) => {
 
