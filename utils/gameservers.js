@@ -208,7 +208,7 @@ module.exports = (client) => {
   client.gameServersStatus = async () => {
     const guild = client.guilds.cache.get(client.config.guildID);
 
-    let servers = await client.db_gameservers.filterArray(server => server.id !== "default" && server.isActive == true);
+    let servers = await client.db_gameservers.filterArray(server => server.isActive == true);
     client.log(`Vérification RCON (${servers.length} serveurs)`);
 
     for (const server of servers) {
