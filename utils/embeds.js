@@ -24,7 +24,7 @@ module.exports = (client) => {
         let embedOthersLastDesc = "";
 
         embedOwned.sort(function (a, b) {
-            return a.changedAt + b.changedAt;
+            return a.changedAt - b.changedAt;
         });
         let embedOwnedLast = embedOwned.slice(0, 10);
         for (const embed of embedOwnedLast) {
