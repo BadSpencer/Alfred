@@ -642,6 +642,11 @@ module.exports = class {
             GAMES_GAME_PLAYER_GAME_PROMPT: `Pour quel **jeu** souhaitez vous afficher la liste des joueurs ?`,
             GAMES_GAME_PLAYER_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
 
+            GAMES_GAME_ADD_DESCRIPTION_CONTENT: `Ajouter un jeu avec son nom`,
+            GAMES_GAME_ADD_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
+            GAMES_GAME_ADD_GAME_PROMPT: `Quel **jeu** souhaitez vous ajouter ?`,
+
+
             GAMES_GAME_VIEW_DESCRIPTION_CONTENT: `Afficher les données d'un jeu`,
             GAMES_GAME_VIEW_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
             GAMES_GAME_VIEW_GAME_PROMPT: `Quel **jeu** souhaitez vous afficher ?`,
