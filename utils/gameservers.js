@@ -85,11 +85,11 @@ module.exports = (client) => {
           let matches = regExp.exec(serverInfo.serverName);
 
           if (matches[1] !== server.version) {
-            client.modLog(textes.get('MOD_NOTIF_SERVER_VERSION_CHANGE', server, server.version, matches[1] ));
+            client.modLog(textes.get('MOD_NOTIF_SERVER_VERSION_CHANGE', server, server.version, matches[1]));
             server.version = matches[1];
           }
           if (serverInfo.maxNumberOfPlayers !== server.maxNumberOfPlayers) {
-            client.modLog(textes.get('MOD_NOTIF_SERVER_SLOTS_CHANGE', server, server.maxNumberOfPlayers, serverInfo.maxNumberOfPlayers ));
+            client.modLog(textes.get('MOD_NOTIF_SERVER_SLOTS_CHANGE', server, server.maxNumberOfPlayers, serverInfo.maxNumberOfPlayers));
             server.maxNumberOfPlayers = serverInfo.maxNumberOfPlayers;
           }
           client.db_gameservers.set(server.id, server);
@@ -403,7 +403,7 @@ module.exports = (client) => {
 
         switch (server.status) {
           case 'online':
-              fieldDescription = `🟢 [**${server.servername}**](${server.steamlink}) **${server.connected}**/${server.maxNumberOfPlayers}\n`;
+            fieldDescription = `🟢 [**${server.servername}**](${server.steamlink}) **${server.connected}**/${server.maxNumberOfPlayers}\n`;
             break;
           case 'offline':
             fieldDescription = `🔴 [**${server.servername}**](${server.steamlink})\n`;
