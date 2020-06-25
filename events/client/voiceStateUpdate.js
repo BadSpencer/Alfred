@@ -29,6 +29,7 @@ class voiceStateUpdateListener extends Listener {
 
         // Rejoint un salon vocal
         if (!oldState.channel && newState.channel) {
+            client.log(`voiceStateUpdate: Rejoint un salon`, 'debug');
             if (newState.channel.members.size == "1") {
 
                 const game = client.db_games.find(game => game.voiceChannelID == newState.channel.id);
@@ -52,6 +53,7 @@ class voiceStateUpdateListener extends Listener {
 
         // Quitte un salon vocal
         if (oldState.channel && !newState.channel) {
+            client.log(`voiceStateUpdate: Quitte un salon`, 'debug');
             if (oldState.channel.members.size == "0") {
 
                 const game = client.db_games.find(game => game.voiceChannelID == oldState.channel.id);
@@ -78,6 +80,7 @@ class voiceStateUpdateListener extends Listener {
 
         // Change de salon
         if (oldState.channel && newState.channel) {
+            client.log(`voiceStateUpdate: Change de salon`, 'debug');
             if (oldState.channel.members.size == "0") {
                 const game = client.db_games.find(game => game.voiceChannelID == oldState.channel.id);
                 if (game) {

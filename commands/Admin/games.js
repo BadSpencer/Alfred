@@ -189,6 +189,7 @@ class GamesCommand extends Command {
                 await gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`);
                 await gameTextChannel.setName(`${settings.gameTextPrefix}discussions`);
                 await gameTextChannel.createOverwrite(gameRole, {
+                    'VIEW_CHANNEL': true,
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
                     'SEND_TTS_MESSAGES': true,
@@ -200,6 +201,7 @@ class GamesCommand extends Command {
                     'ADD_REACTIONS': true,
                 });
                 await gameTextChannel.createOverwrite(roleMembers, {
+                    'VIEW_CHANNEL': true,
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
                     'SEND_TTS_MESSAGES': true,
@@ -211,6 +213,7 @@ class GamesCommand extends Command {
                     'ADD_REACTIONS': true,
                 });
                 await gameTextChannel.createOverwrite(roleMod, {
+                    'VIEW_CHANNEL': true,
                     'READ_MESSAGES': true,
                     'SEND_MESSAGES': true,
                     'SEND_TTS_MESSAGES': true,
@@ -228,6 +231,7 @@ class GamesCommand extends Command {
                         'VIEW_CHANNEL': false,
                     });
                     await gameInfosChannel.createOverwrite(gameRole, {
+                        'VIEW_CHANNEL': true,
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -240,6 +244,7 @@ class GamesCommand extends Command {
                     });
 
                     await gameInfosChannel.createOverwrite(roleMembers, {
+                        'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -251,6 +256,7 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': false,
                     });
                     await gameInfosChannel.createOverwrite(roleMod, {
+                        'VIEW_CHANNEL': true,
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': true,
                         'MANAGE_MESSAGES': true,
@@ -269,6 +275,7 @@ class GamesCommand extends Command {
                         'VIEW_CHANNEL': false,
                     });
                     await gameStatutChannel.createOverwrite(gameRole, {
+                        'VIEW_CHANNEL': true,
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -281,6 +288,7 @@ class GamesCommand extends Command {
                     });
 
                     await gameStatutChannel.createOverwrite(roleMembers, {
+                        'VIEW_CHANNEL': false,
                         'READ_MESSAGES': false,
                         'SEND_MESSAGES': false,
                         'SEND_TTS_MESSAGES': false,
@@ -292,6 +300,7 @@ class GamesCommand extends Command {
                         'ADD_REACTIONS': false,
                     });
                     await gameStatutChannel.createOverwrite(roleMod, {
+                        'VIEW_CHANNEL': true,
                         'READ_MESSAGES': true,
                         'SEND_MESSAGES': true,
                         'MANAGE_MESSAGES': true,

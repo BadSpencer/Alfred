@@ -161,12 +161,17 @@ module.exports = (client) => {
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
-        channel.setParent(voiceChannelsCategory);
-        channel.setName(`🔊${game.name}`);
-        channel.createOverwrite(roleMembers, {
-            'VIEW_CHANNEL': true,
-            'CONNECT': true,
-        });
+        try {
+            await channel.setParent(voiceChannelsCategory);
+            await channel.setName(`🔊${game.name}`);
+            await channel.createOverwrite(roleMembers, {
+                'VIEW_CHANNEL': true,
+                'CONNECT': true,
+            });
+		} catch (error) {
+			client.log(error, 'error');
+		};
+
     };
     client.gameVoiceChannelQuit = async (game, channel) => {
         client.log(`Méthode: gameVoiceChannelQuit`, 'debug');
@@ -175,12 +180,18 @@ module.exports = (client) => {
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const gameCategory = guild.channels.cache.get(game.categoryID);
 
-        channel.setParent(gameCategory);
-        channel.setName(`🔈${game.name}`);
-        channel.createOverwrite(roleMembers, {
-            'VIEW_CHANNEL': false,
-            'CONNECT': false,
-        });
+        try {
+			await channel.setParent(gameCategory);
+			await channel.setName(`🔈${game.name}`);
+			await channel.createOverwrite(roleMembers, {
+                'VIEW_CHANNEL': false,
+                'CONNECT': false,
+            });
+		} catch (error) {
+			client.log(error, 'error');
+		};
+
+
     };
     client.messageOfTheDay = async () => {
         client.log(`Méthode: messageOfTheDay`, 'debug');
