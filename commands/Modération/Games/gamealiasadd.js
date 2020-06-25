@@ -23,7 +23,7 @@ class GamealiasAddCommand extends Command {
             match: 'rest',
             prompt: {
                 start: async message => { 
-                    await this.client.gamesListPost(message.channel, 'actif');
+                    await this.client.gamesListPost(message.channel, 'tout');
                     return promptMessage(textes.get('GAMES_GAMEALIAS_ADD_GAME_PROMPT'))
                 },
 
