@@ -451,7 +451,7 @@ module.exports = class {
                 return `Aucun membre trouvé avec l'ID **${memberID}** sur le serveur.`;
             },
 
-     
+
 
 
             USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
@@ -613,11 +613,56 @@ module.exports = class {
             GAMES_GAMEALIAS_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
             GAMES_GAMEALIAS_ADD_ALIAS_PROMPT: (game) => {
                 return `Quel est **l'alias** pour le jeu **${game.id}** ?`;
-            }, 
+            },
             GAMES_GAMEALIAS_ADD_ALIAS_RETRY: `Cet alias est déjà utilisé, veuillez en choisir un autre`,
             GAMES_GAMEALIAS_ADD_SUCCESS: (game, alias) => {
                 return `L'alias **${alias}** à été ajouté pour le jeu **${game.id}** avec succès.`;
-            }, 
+            },
+
+            GAMES_GAME_ACTIVE_DESCRIPTION_CONTENT: `Activer un jeu`,
+            GAMES_GAME_ACTIVE_DESCRIPTION_USAGE: `Description à écrire`,
+            GAMES_GAME_ACTIVE_ERROR_GAME_ACTIVE: (game) => {
+                return `Le jeu **${game.id}** est déjà actif`;
+            },
+            GAMES_GAME_ACTIVE_SUCCESS: (game) => {
+                return `Le jeu  **${game.id}** à été activé.`;
+            },
+            GAMES_GAME_ACTIVE_STATE_START: (game) => {
+                return `Activation du jeu **${game.id}**
+                `;
+            },
+
+            GAMES_GAME_INFOS_DESCRIPTION_CONTENT: `Ajouter un salon "informations" à un jeu`,
+            GAMES_GAME_INFOS_DESCRIPTION_USAGE: `Description à écrire`,
+            GAMES_GAME_INFOS_GAME_PROMPT: `Pour quel **jeu** souhaitez ajouter un salon informations ?`,
+            GAMES_GAME_INFOS_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom ou un alias de jeu`,
+
+            GAMES_GAME_INACTIVE_DESCRIPTION_CONTENT: `Désactiver un jeu`,
+            GAMES_GAME_INACTIVE_DESCRIPTION_USAGE: `Description à écrire`,
+            GAMES_GAME_INACTIVE_ERROR_GAME_INACTIVE: (game) => {
+                return `Le jeu **${game.id}** est déjà désactivé`;
+            },
+            GAMES_GAME_INACTIVE_STATE_START: (game) => {
+                return `Désactivation du jeu **${game.id}**
+                `;
+            },
+            GAMES_GAME_INACTIVE_SUCCESS: (game) => {
+                return `Le jeu  **${game.id}** à été désactivé.`;
+            },
+
+            GAMES_GAME_DELETE_DESCRIPTION_CONTENT: `Supprimer un jeu`,
+            GAMES_GAME_DELETE_DESCRIPTION_USAGE: `Description à écrire`,
+            GAMES_GAME_DELETE_ERROR_GAME_ACTIVE: (game) => {
+                return `Le jeu **${game.id}** est actif. Le jeu doit être désactivé avant d'être supprimé.`;
+            },
+            GAMES_GAME_DELETE_SUCCESS: (game) => {
+                return `Le jeu  **${game.id}** à été supprimé.`;
+            },
+            GAMES_GAME_DELETE_STATE_START: (game) => {
+                return `Suppression rôles et salons du jeu **${game.id}**
+                `;
+            },
+
 
             GAMES_GAME_EDIT_DESCRIPTION_CONTENT: `Modifier les données d'un jeu`,
             GAMES_GAME_EDIT_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
@@ -711,7 +756,7 @@ module.exports = class {
             GAMESERVER_SERVER_EDIT_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
             GAMESERVER_SERVER_EDIT_SERVER_PROMPT: `Quel **serveur** souhaitez vous modifier ? (ID)`,
             GAMESERVER_SERVER_EDIT_SERVER_RETRY: `Je ne trouve pas ce serveur ! Veuillez saisir son ID`,
-            
+
             GAMESERVER_SERVER_LIST_DESCRIPTION_CONTENT: `Afficher la liste des serveurs`,
             GAMESERVER_SERVER_LIST_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
 
@@ -767,7 +812,7 @@ module.exports = class {
             GAMESERVER_ERROR_SERVER_NOT_FOUND: (serverID) => {
                 return `Aucun serveur trouvé avec l'ID **${serverID}**. Lancez la commande \`!servers\` pour obtenir la liste des serveurs disponibles.`;
             },
-            
+
             GAMESERVER_ERROR_PLAYERID_ALREADY_LINKED: (playerID, userdata) => {
                 return `Le joueur avec l'ID **${playerID}** est déjà lié au membre **${userdata.displayName}**. Si vous continuez, le lien sera mis à jour.`;
             },
@@ -839,7 +884,7 @@ module.exports = class {
 
             CMD_USERDATA_PROMPT: `Quel est l'ID du membre ?`,
             CMD_USERDATA_RETRY: `Je ne trouve aucun membre avec cet ID, êtes vous sûr de votre saisie ?`,
-            
+
             CMD_STEAMID_PROMPT: `Quel est le SteamID du joueur ?`,
             CMD_STEAMID_RETRY: `Ce n'est pas un SteamID valide. Il doit commencer par "7656" et comporte 17 caractères en tout`,
 
@@ -869,8 +914,8 @@ module.exports = class {
 
             PLAYER_ADD_DESCRIPTION_CONTENT: `Ajouter manuellement un joueur.`,
             PLAYER_ADD_DESCRIPTION_USAGE: `Les joueurs sont ajoutés automatiquement. Cette commande ne sert qu'en cas de test/maintnenance`,
-            
-            
+
+
             PLAYER_ADD_PLAYERNAME_PROMPT: `Quel est le compte Steam du joueur ?`,
 
             PLAYER_BAN_DESCRIPTION_CONTENT: `Bannir un joueur des serveurs privés`,
@@ -921,7 +966,7 @@ module.exports = class {
             EMBED_USERBOARD_TITLE: (name) => {
                 return `Gestion des embeds de ${name}`;
             },
-            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds, editEmbed, ) => {
+            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds, editEmbed,) => {
                 let texte = `Total: **${totalEmbeds}** embeds\n`;
                 if (editEmbed) {
                     texte += `En cours d'édition: **${editEmbed.titre}** (id:${editEmbed.id})\n\n`;

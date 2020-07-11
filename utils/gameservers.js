@@ -329,7 +329,6 @@ module.exports = (client) => {
     } else {
       await client.gameServersSetStatus(serverID, "maintenanceoff");
     };
-    client.gameserverUpdateInfos();
   };
 
   client.gameServersSetStatus = async (serverID = "*", status) => {

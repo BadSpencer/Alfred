@@ -135,9 +135,12 @@ class GamesCommand extends Command {
                         textchannel.createOverwrite(roleEveryone, {
                             'VIEW_CHANNEL': false,
                             'READ_MESSAGES': false,
+                            'READ_MESSAGE_HISTORY': false,
                         });
                         textchannel.createOverwrite(roleMembers, {
+                            'VIEW_CHANNEL': true,
                             'READ_MESSAGES': true,
+                            'READ_MESSAGE_HISTORY': true,
                         });
                         statusMessage.edit(`Salon ${textchannel.name} créé`);
                     })

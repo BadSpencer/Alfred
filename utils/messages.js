@@ -54,3 +54,10 @@ module.exports.promptMessage = async (question) => {
 
     return questMsg;
 };
+
+module.exports.stateMessage = (content) => {
+    const stateMsg = new MessageEmbed()
+        .setColor(colors['darkviolet'])
+        .setDescription(`${content}`);
+    return stateMsg;
+};

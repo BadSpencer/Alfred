@@ -106,6 +106,8 @@ class ServerMaintCommand extends Command {
             }
         };
 
+        client.gameserverUpdateInfos();
+
         if (message.channel.type === 'text') message.delete();
     }
 
