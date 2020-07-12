@@ -39,6 +39,7 @@ class ReadyListener extends Listener {
         if (!client.cron_serversStatus.running) client.cron_serversStatus.start();
         if (!client.cron_serverMaintenanceOn.running) client.cron_serverMaintenanceOn.start();
         if (!client.cron_serverMaintenanceOff.running) client.cron_serverMaintenanceOff.start();
+        if (!client.cron_serverUpdateInfos.running) client.cron_serverUpdateInfos.start();
 
         if (!client.cron_serversInfos.running) client.cron_serversInfos.start();
         if (!client.cron_ArkDWD.running) client.cron_ArkDWD.start();

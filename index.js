@@ -99,6 +99,9 @@ client.cron_serverMaintenanceOn = new cron.CronJob('00 25 05 * * *', () => { // 
 
 client.cron_serverMaintenanceOff = new cron.CronJob('00 45 05 * * *', () => { // Tous les jours à 5h45
     client.gameServersSetMaintenanceOff("*");
+});
+
+client.cron_serverUpdateInfos = new cron.CronJob('00 50 05 * * *', () => { // Tous les jours à 5h50
     client.gameserverUpdateInfos();
 });
 
