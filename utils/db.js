@@ -246,13 +246,13 @@ exports.gamesCheck = async (client) => {
     client.log(`Vérification de la base de données des jeux`, "debug");
     client.db_games.delete("default");
 
-    // let games = client.gamesGetAll().array();
-    // for (const game of games) {
-    //     if (game.nbDaysInactive == undefined) {
-    //         game["nbDaysInactive"] = 30;
-    //         client.db_games.set(game.id, game);
-    //     }
-    // }
+    let games = client.gamesGetAll().array();
+    for (const game of games) {
+        if (game.eventsChannelID == undefined) {
+            game["eventsChannelID"] = "";
+            client.db_games.set(game.id, game);
+        }
+    }
 
     let gamesActive = client.gamesGetActive();
     if (!gamesActive) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");

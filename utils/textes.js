@@ -632,10 +632,16 @@ module.exports = class {
                 `;
             },
 
-            GAMES_GAME_INFOS_DESCRIPTION_CONTENT: `Ajouter un salon "informations" à un jeu`,
-            GAMES_GAME_INFOS_DESCRIPTION_USAGE: `Description à écrire`,
-            GAMES_GAME_INFOS_GAME_PROMPT: `Pour quel **jeu** souhaitez ajouter un salon informations ?`,
-            GAMES_GAME_INFOS_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom ou un alias de jeu`,
+            GAMES_GAME_CHAN_DESCRIPTION_CONTENT: `Ajouter un salon à un jeu`,
+            GAMES_GAME_CHAN_DESCRIPTION_USAGE: `Description à écrire`,
+            GAMES_GAME_CHAN_GAME_PROMPT: `Pour quel **jeu** souhaitez ajouter un salon ?`,
+            GAMES_GAME_CHAN_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom ou un alias de jeu`,
+            GAMES_GAME_CHAN_CHAN_PROMPT: `Quel **type de salon** souhaitez vous ajouter ?
+            infos
+            event`,
+            GAMES_GAME_CHAN_GAME_RETRY: `Ce n'est pas un type de salon valide. Veuillez me donner un type valide.
+            infos
+            event`,
 
             GAMES_GAME_INACTIVE_DESCRIPTION_CONTENT: `Désactiver un jeu`,
             GAMES_GAME_INACTIVE_DESCRIPTION_USAGE: `Description à écrire`,

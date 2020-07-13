@@ -31,6 +31,7 @@ exports.tables = {
         "gameTextPrefix": "💬",
         "gameInfosPrefix": "📌",
         "gameStatusPrefix": "🚥",
+        "gameEventPrefix": "📆",
         "gameMainRoleColor": "0xF1C40F",
         "gameModRoleColor": "0xCC7900",
         "gamePlayRoleColor": "0xC27C0E",
@@ -52,6 +53,7 @@ exports.tables = {
         "textChannelID": "",
         "infosChannelID": "",
         "statusChannelID": "",
+        "eventsChannelID": "",
         "voiceChannelID": "",
         "serversStatusMessageID": ""
     },
