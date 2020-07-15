@@ -1,7 +1,18 @@
-const { Command } = require('discord-akairo');
-const { inspect } = require("util");
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage, stateMessage } = require('../../../utils/messages');
-const textes = new (require(`../../../utils/textes.js`));
+const {
+    Command
+} = require('discord-akairo');
+const {
+    inspect
+} = require("util");
+const {
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage,
+    promptMessage,
+    stateMessage
+} = require('../../../utils/messages');
+const textes = new(require(`../../../utils/textes.js`));
 
 class GameActiveCommand extends Command {
     constructor() {
@@ -33,7 +44,9 @@ class GameActiveCommand extends Command {
 
 
 
-        return { game };
+        return {
+            game
+        };
     }
 
     async exec(message, args) {
@@ -56,6 +69,19 @@ class GameActiveCommand extends Command {
 
 
         // Vérification présence Catégorie
+        if (args.game.categoryID !== "") {
+            let gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+            if (!gameCategory) {
+                args.game.categoryID = "";
+            };
+        };
+
+        if (args.game.textChannelID !== "") {
+            let textChannel = message.guild.channels.cache.get(args.game.textChannelID);
+            if (!textChannel) {
+                args.game.textChannelID = "";
+            };
+        };
 
 
         let gameRole;
@@ -153,65 +179,68 @@ class GameActiveCommand extends Command {
                 stateMsg.edit(stateMessage(state));
 
                 let gameCategory = message.guild.channels.cache.get(args.game.categoryID);
-                await gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`)
-                state += `Catégorie: ✅ (réactivation)\n`;
-                stateMsg.edit(stateMessage(state));
+                if (gameCategory) {
+                    await gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`)
+                    state += `Catégorie: ✅ (réactivation)\n`;
+                    stateMsg.edit(stateMessage(state));
+                }
 
                 let textChannel = message.guild.channels.cache.get(args.game.textChannelID);
-                await textChannel.setName(`${settings.gameTextPrefix}discussions`)
-                state += `Salon discussions: ✅ (réactivation)\n`;
-                stateMsg.edit(stateMessage(state));
-
-                textChannel.createOverwrite(roleEveryone, {
-                    CREATE_INSTANT_INVITE: false,
-                    MANAGE_CHANNELS: false,
-                    ADD_REACTIONS: false,
-                    VIEW_CHANNEL: false,
-                    SEND_MESSAGES: false,
-                    SEND_TTS_MESSAGES: false,
-                    MANAGE_MESSAGES: false,
-                    EMBED_LINKS: false,
-                    ATTACH_FILES: false,
-                    READ_MESSAGE_HISTORY: false,
-                    MENTION_EVERYONE: false,
-                    USE_EXTERNAL_EMOJIS: false,
-                    MANAGE_ROLES: false,
-                    MANAGE_WEBHOOKS: false
-                });
-                textChannel.createOverwrite(mainRole, {
-                    CREATE_INSTANT_INVITE: false,
-                    MANAGE_CHANNELS: false,
-                    ADD_REACTIONS: true,
-                    VIEW_CHANNEL: true,
-                    SEND_MESSAGES: true,
-                    SEND_TTS_MESSAGES: true,
-                    MANAGE_MESSAGES: false,
-                    EMBED_LINKS: true,
-                    ATTACH_FILES: true,
-                    READ_MESSAGE_HISTORY: true,
-                    MENTION_EVERYONE: false,
-                    USE_EXTERNAL_EMOJIS: true,
-                    MANAGE_ROLES: false,
-                    MANAGE_WEBHOOKS: false
-                });
-                textChannel.createOverwrite(roleMembers, {
-                    CREATE_INSTANT_INVITE: false,
-                    MANAGE_CHANNELS: false,
-                    ADD_REACTIONS: true,
-                    VIEW_CHANNEL: true,
-                    SEND_MESSAGES: true,
-                    SEND_TTS_MESSAGES: true,
-                    MANAGE_MESSAGES: false,
-                    EMBED_LINKS: true,
-                    ATTACH_FILES: true,
-                    READ_MESSAGE_HISTORY: true,
-                    MENTION_EVERYONE: false,
-                    USE_EXTERNAL_EMOJIS: true,
-                    MANAGE_ROLES: false,
-                    MANAGE_WEBHOOKS: false
-                });
-                state += `Permissions: ✅\n`;
-                stateMsg.edit(stateMessage(state));
+                if (textChannel) {
+                    await textChannel.setName(`${settings.gameTextPrefix}discussions`)
+                    state += `Salon discussions: ✅ (réactivation)\n`;
+                    stateMsg.edit(stateMessage(state));
+                    textChannel.createOverwrite(roleEveryone, {
+                        CREATE_INSTANT_INVITE: false,
+                        MANAGE_CHANNELS: false,
+                        ADD_REACTIONS: false,
+                        VIEW_CHANNEL: false,
+                        SEND_MESSAGES: false,
+                        SEND_TTS_MESSAGES: false,
+                        MANAGE_MESSAGES: false,
+                        EMBED_LINKS: false,
+                        ATTACH_FILES: false,
+                        READ_MESSAGE_HISTORY: false,
+                        MENTION_EVERYONE: false,
+                        USE_EXTERNAL_EMOJIS: false,
+                        MANAGE_ROLES: false,
+                        MANAGE_WEBHOOKS: false
+                    });
+                    textChannel.createOverwrite(mainRole, {
+                        CREATE_INSTANT_INVITE: false,
+                        MANAGE_CHANNELS: false,
+                        ADD_REACTIONS: true,
+                        VIEW_CHANNEL: true,
+                        SEND_MESSAGES: true,
+                        SEND_TTS_MESSAGES: true,
+                        MANAGE_MESSAGES: false,
+                        EMBED_LINKS: true,
+                        ATTACH_FILES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        MENTION_EVERYONE: false,
+                        USE_EXTERNAL_EMOJIS: true,
+                        MANAGE_ROLES: false,
+                        MANAGE_WEBHOOKS: false
+                    });
+                    textChannel.createOverwrite(roleMembers, {
+                        CREATE_INSTANT_INVITE: false,
+                        MANAGE_CHANNELS: false,
+                        ADD_REACTIONS: true,
+                        VIEW_CHANNEL: true,
+                        SEND_MESSAGES: true,
+                        SEND_TTS_MESSAGES: true,
+                        MANAGE_MESSAGES: false,
+                        EMBED_LINKS: true,
+                        ATTACH_FILES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        MENTION_EVERYONE: false,
+                        USE_EXTERNAL_EMOJIS: true,
+                        MANAGE_ROLES: false,
+                        MANAGE_WEBHOOKS: false
+                    });
+                    state += `Permissions: ✅\n`;
+                    stateMsg.edit(stateMessage(state));
+                }
             })
         };
 
