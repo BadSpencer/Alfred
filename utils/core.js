@@ -168,9 +168,9 @@ module.exports = (client) => {
                 'VIEW_CHANNEL': true,
                 'CONNECT': true,
             });
-		} catch (error) {
-			client.log(error, 'error');
-		};
+        } catch (error) {
+            client.log(error, 'error');
+        };
 
     };
     client.gameVoiceChannelQuit = async (game, channel) => {
@@ -181,15 +181,15 @@ module.exports = (client) => {
         const gameCategory = guild.channels.cache.get(game.categoryID);
 
         try {
-			await channel.setParent(gameCategory);
-			await channel.setName(`🔈${game.name}`);
-			await channel.createOverwrite(roleMembers, {
+            await channel.setParent(gameCategory);
+            await channel.setName(`🔈${game.name}`);
+            await channel.createOverwrite(roleMembers, {
                 'VIEW_CHANNEL': false,
                 'CONNECT': false,
             });
-		} catch (error) {
-			client.log(error, 'error');
-		};
+        } catch (error) {
+            client.log(error, 'error');
+        };
 
 
     };
@@ -214,7 +214,11 @@ module.exports = (client) => {
 
         let citations = client.db_citations.array();
 
-        let sortedCitations = citations.sort(function (a, b) {
+        let shuffleCitations = citations.sort(function (a, b) {
+            return 0.5 - Math.random()
+        });
+
+        let sortedCitations = shuffleCitations.sort(function (a, b) {
             return a.count - b.count;
         });
 
@@ -302,7 +306,9 @@ module.exports = (client) => {
         let last_id;
 
         while (true) {
-            const options = { limit: 100 };
+            const options = {
+                limit: 100
+            };
             if (last_id) {
                 options.before = last_id;
             }

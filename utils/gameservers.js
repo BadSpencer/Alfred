@@ -212,7 +212,6 @@ module.exports = (client) => {
     client.log(`Vérification RCON (${servers.length} serveurs)`);
 
     for (const server of servers) {
-      if (server.status !== "maintenance") {
         let response = await client.gameRconQuery(server, "listplayers");
         let playerlist = [];
 
@@ -265,7 +264,6 @@ module.exports = (client) => {
 
         client.gameServerCheckPlayerOffline(server);
         client.db_gameservers.set(server.id, server);
-      }
     }
   };
 
