@@ -80,6 +80,7 @@ exports.tables = {
         "version":"",
         "maxNumberOfPlayers": 0,
         "connected": 0,
+        "mods": [],
         "playerlist": []
     },
     gameserverconfig:{

@@ -3,6 +3,7 @@ const moment = require("moment");
 const colors = require('./colors');
 const constants = require('./constants');
 const datamodel = require('./datamodel');
+const ftpClient = require('ftp');
 
 module.exports = (client) => {
     client.createVoiceChannel = async (name = "") => {
@@ -545,4 +546,57 @@ module.exports = (client) => {
 
 
     };
-}
+
+    client.datamodelCheck = async () => {
+        client.log(`Vérification structure "gameservers"`, "debug");
+
+        let gameserverModel = datamodel.tables.gameservers;
+        let Datamodelkeys = Object.keys(gameserverModel);
+        let gameservers = client.gameServersGetAll(true);
+
+        for (const gameserver of gameservers) {
+            let gameserverNew = gameserverModel;
+            for (const key of Datamodelkeys) {
+                gameserverNew[key]
+                if (gameserver[key] !== undefined) {
+                    gameserverNew[key] = gameserver[key];
+                } else {
+                    gameserverNew[key] = gameserverModel[key];
+                };
+            };
+            client.db_gameservers.set(gameserver.id, gameserverNew);
+        };
+    };
+
+    client.getFileByFTP = async (ip, port, user, pwd, filepath) => {
+        let config = {
+            host: ip,
+            port: port,
+            user: user,
+            password: pwd
+        }
+
+        let content = '';
+        let ftp = new ftpClient();
+
+        ftp.on('ready', function () {
+            ftp.get(filepath, function (err, stream) {
+                if (err) return console.log(err);
+
+                stream.on('data', function (chunk) {
+                    content += chunk.toString();
+                });
+                stream.on('end', function () {
+                    let contentSplit = content.split(`\n`);
+                    return contentSplit;
+                });
+            });
+        });
+        ftp.connect(config);
+
+    };
+
+
+
+
+};
