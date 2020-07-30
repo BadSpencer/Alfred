@@ -30,14 +30,18 @@ class PlayerSessCommand extends Command {
                 retry: message => promptMessage(textes.get('CMD_PLAYER_RETRY'))
             }
         };
-        return { player };
+        const nbDays = yield {
+            type: 'number',
+            default: 2
+        };
+        return { player, nbDays };
     }
 
     async exec(message, args) {
         let client = this.client;
         let sessionsList = [];
         let dateNow = +new Date;
-        let dateFrom = moment().subtract(2, 'days');
+        let dateFrom = moment().subtract(args.nbDays, 'days');
 
         let entries = client.db_playersLogs.filterArray(record =>
             record.playerID == args.player.id &&
