@@ -1,12 +1,22 @@
-const { Command } = require('discord-akairo');
-const { inspect } = require("util");
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
-const textes = new (require(`../../../utils/textes.js`));
+const {
+    Command
+} = require('discord-akairo');
+const {
+    inspect
+} = require("util");
+const {
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage,
+    promptMessage
+} = require('../../../utils/messages');
+const textes = new(require(`../../../utils/textes.js`));
 const datamodel = require('../../../utils/datamodel');
 const ftpClient = require('ftp');
 const steamServerStatus = require('steam-server-status');
 
-class ServerViewCommand extends Command {
+class ServerConfigCommand extends Command {
     constructor() {
         super('server-config', {
             aliases: ['server-config', 'sconfig'],
@@ -32,7 +42,9 @@ class ServerViewCommand extends Command {
                 retry: message => promptMessage(textes.get('GAMESERVER_SERVER_VIEW_SERVER_RETRY')),
             }
         };
-        return { server };
+        return {
+            server
+        };
     }
 
     async exec(message, args) {
@@ -45,58 +57,37 @@ class ServerViewCommand extends Command {
             password: args.server.pwdftp
         }
 
-        steamServerStatus.getServerStatus(
-            args.server.ip, args.server.portrcon, function(serverInfo) {
-                if (serverInfo.error) {
-                    console.log(serverInfo.error);
-                } else {
-                    console.log(`Jeu: ${serverInfo.gameName}`);
-                    console.log(`Nom: ${serverInfo.serverName}`);
-                    console.log(`Nb joueurs: ${serverInfo.numberOfPlayers}/${serverInfo.maxNumberOfPlayers}`)
-                }
-        });
+        let fileGamePath = '/ShooterGame/Saved/Config/WindowsServer/Game.ini';
+       // let fileGameUserPath = '/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini';
 
-        let content = '';
-        let ftp = new ftpClient();
-        ftp.on('ready', function () {
-            ftp.get('/ShooterGame/Saved/Config/WindowsServer/Game.ini', function (err, stream) {
-                if (err) throw err;
+      client.getFileByFTP(args.server.ip, args.server.portftp, args.server.userftp, args.server.pwdftp, fileGamePath).then( content => {
+        for (const line of content) {
+            var i = line. indexOf('=');
+            var splits = [line.slice(0, i), line.slice(i + 1)];
 
-                stream.on('data', function (chunk) {
-                    content += chunk.toString();
-                });
-                stream.on('end', function () {
-                    //client.log(content);
-                    let contentSplit = content.split(`\n`);
+            let parameter = splits[0];
+            let value = splits[1].slice(0, splits[1] - 1);
 
-                    for (const line of contentSplit) {
+            let gameserverConfig = datamodel.tables.gameserverConfig;
+ 
+            gameserverConfig.id = `${args.server.id}-${parameter}`;
+            gameserverConfig.serverID = args.server.id;
+            gameserverConfig.filename = "Game.ini";
+            gameserverConfig.section = "";
+            gameserverConfig.parameter = parameter;
+            gameserverConfig.value = value;
 
-                        if (line == "[/script/shootergame.shootergamemode]") continue;
+            client.db_gameserverconfig.set(gameserverConfig.id, gameserverConfig);
 
-                        let gameserverconfig = datamodel.tables.gameserverconfig;
-
-                        var i = line.indexOf('=');
-                        var splits = [line.slice(0, i), line.slice(i + 1)];
-
-                        let parameter = splits[0];
-                        let value = splits[1];
-
-
-                        // let record = client.db_gameserverconfig.find(rec =>
-                        //     rec.serverID == args.server.id &&
-                        //     rec.filename == "Game.ini" &&
-                        //     rec.parameter == parameter
-                        // );
+        };
+      })
 
 
 
-                    }
-                });
-            });
-        });
-        ftp.connect(config);
+    //    let fileGameUserContent = await client.getFileByFTP(args.server.ip, args.server.portftp, args.server.userftp, args.server.pwdftp, fileGameUserPath);
 
-
+     //   for (const line of fileGameUserContent) {
+    //    };
 
 
 
@@ -104,4 +95,4 @@ class ServerViewCommand extends Command {
     }
 
 }
-module.exports = ServerViewCommand;
+module.exports = ServerConfigCommand;
