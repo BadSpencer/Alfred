@@ -2,11 +2,19 @@ const {
     AkairoClient
 } = require('discord-akairo');
 const {
-    owner, token, prefix
+    owner,
+    token,
+    prefix
 } = require('./config.js');
 const Enmap = require("enmap");
 const cron = require('cron');
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('./utils/messages');
+const {
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage,
+    promptMessage
+} = require('./utils/messages');
 
 const AlfredClient = require('./utils/AlfredClient');
 const config = require('./config.js');
@@ -26,10 +34,17 @@ require("./utils/users.js")(client);
 require("./utils/aide.js")(client);
 require("./utils/exp.js")(client);
 
-client.textes = new (require(`./utils/textes.js`));
+client.textes = new(require(`./utils/textes.js`));
 
 client.on('shardDisconnect', () => client.log('Connection perdue...', 'warn'))
-    .on('shardReconnecting', () => client.log('Tentative de reconnexion...', 'warn'))
+    .on('shardReconnecting', () => {
+        client.log('Tentative de reconnexion...', 'warn');
+        const pjson = require('../../package.json');
+        client.user.setActivity(`R${pjson.version}`, {
+            type: "PLAYING"
+        });
+    })
+
     .on('error', err => client.log(err, 'error'))
     .on('warn', info => client.log(info, 'warn'));
 
@@ -47,6 +62,9 @@ client.db_gamealias = new Enmap({
 });
 client.db_gameservers = new Enmap({
     name: "gameservers"
+});
+client.db_gameserverconfig = new Enmap({
+    name: "gameserverconfig"
 });
 
 client.db_gameserversPlayers = new Enmap({
