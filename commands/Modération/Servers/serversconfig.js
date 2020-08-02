@@ -58,38 +58,107 @@ class ServerConfigCommand extends Command {
         }
 
         let fileGamePath = '/ShooterGame/Saved/Config/WindowsServer/Game.ini';
-       // let fileGameUserPath = '/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini';
+        let fileGameUserPath = '/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini';
 
-      client.getFileByFTP(args.server.ip, args.server.portftp, args.server.userftp, args.server.pwdftp, fileGamePath).then( content => {
-        for (const line of content) {
-            var i = line. indexOf('=');
-            var splits = [line.slice(0, i), line.slice(i + 1)];
+        let gameContent;
+        let gameuserContent;
 
-            let parameter = splits[0];
-            let value = splits[1].slice(0, splits[1] - 1);
+        let ftpGame = new ftpClient();
 
-            let gameserverConfig = datamodel.tables.gameserverConfig;
- 
-            gameserverConfig.id = `${args.server.id}-${parameter}`;
-            gameserverConfig.serverID = args.server.id;
-            gameserverConfig.filename = "Game.ini";
-            gameserverConfig.section = "";
-            gameserverConfig.parameter = parameter;
-            gameserverConfig.value = value;
+        ftpGame.on('ready', function () {
+            ftpGame.get(fileGamePath, function (err, stream) {
+                if (err) return console.log(err);
 
-            client.db_gameserverconfig.set(gameserverConfig.id, gameserverConfig);
+                stream.on('data', function (chunk) {
+                    gameContent += chunk.toString();
+                });
+                stream.on('end', function () {
+                    let sectionFull;
+                    let section;
+                    let contentSplit = gameContent.split(`\n`);
+                    for (const line of contentSplit) {
 
-        };
-      })
+                        var i = line.indexOf('=');
+                        var splits = [line.slice(0, i), line.slice(i + 1)];
+
+                        if (line.startsWith("undefined[")) {
+                            section = line.slice(9, line.length - 1);
+                        };
+                        if (line.startsWith("[")) {
+                            section = line.slice(0, line.length - 1);
+                        };
+
+                        if (!line.startsWith("undefined[") && !line.startsWith("[")) {
+                            let parameter = splits[0];
+                            let value = splits[1].slice(0, splits[1] - 1);
+
+                            if (parameter !== "") {
+                                let gameserverConfig = datamodel.tables.gameserverConfig;
+                                let id = `${args.server.id}-${section}-${parameter}`;
+
+                                gameserverConfig.serverID = args.server.id;
+                                gameserverConfig.filename = "Game.ini";
+                                gameserverConfig.section = section;
+                                gameserverConfig.parameter = parameter;
+                                gameserverConfig.value = value;
+
+                                client.db_gameserverconfig.set(id, gameserverConfig);
+                            };
+                        };
+                    };
+                });
+            });
+        });
+        ftpGame.connect(config);
 
 
+        let ftpGameUser = new ftpClient();
 
-    //    let fileGameUserContent = await client.getFileByFTP(args.server.ip, args.server.portftp, args.server.userftp, args.server.pwdftp, fileGameUserPath);
+        ftpGameUser.on('ready', function () {
+            ftpGameUser.get(fileGameUserPath, function (err, stream) {
+                if (err) return console.log(err);
 
-     //   for (const line of fileGameUserContent) {
-    //    };
+                stream.on('data', function (chunk) {
+                    gameuserContent += chunk.toString();
+                });
+                stream.on('end', function () {
+                    let sectionFull;
+                    let section;
+                    let contentSplit = gameuserContent.split(`\n`);
+                    for (const line of contentSplit) {
 
+                        var i = line.indexOf('=');
+                        var splits = [line.slice(0, i), line.slice(i + 1)];
 
+                        if (line.startsWith("undefined[")) {
+                            section = line.slice(9, line.length - 1);
+                        };
+                        if (line.startsWith("[")) {
+                            section = line.slice(0, line.length - 1);
+                        };
+
+                        if (!line.startsWith("undefined[") && !line.startsWith("[")) {
+                            let parameter = splits[0];
+                            let value = splits[1].slice(0, splits[1] - 1);
+
+                            if (parameter !== "") {
+                                let gameserverConfig = datamodel.tables.gameserverConfig;
+                                let id = `${args.server.id}-${section}-${parameter}`;
+
+                                gameserverConfig.serverID = args.server.id;
+                                gameserverConfig.filename = "GameUserSettings.ini";
+                                gameserverConfig.section = section;
+                                gameserverConfig.parameter = parameter;
+                                gameserverConfig.value = value;
+
+                                client.db_gameserverconfig.set(id, gameserverConfig);
+                            };
+                        };
+                    };
+                });
+            });
+        });
+        ftpGameUser.connect(config);
 
         if (message.channel.type === 'text') message.delete();
     }

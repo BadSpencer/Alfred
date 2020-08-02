@@ -10,8 +10,9 @@ const {
   promptMessage
 } = require('./messages');
 const fetch = require("node-fetch");
-const textes = new (require(`./textes.js`));
+const textes = new(require(`./textes.js`));
 const steamServerStatus = require('steam-server-status');
+const ftpClient = require('ftp');
 
 module.exports = (client) => {
 
@@ -59,7 +60,8 @@ module.exports = (client) => {
     gameserver.steamlink = steamlink;
 
     steamServerStatus.getServerStatus(
-      ip, portrcon, function (serverInfo) {
+      ip, portrcon,
+      function (serverInfo) {
         if (serverInfo.error) {
           client.log(serverInfo.error, 'error');
         } else {
@@ -77,7 +79,8 @@ module.exports = (client) => {
 
   client.gameserverGetSteamInfos = (server) => {
     steamServerStatus.getServerStatus(
-      server.ip, server.portrcon, function (serverInfo) {
+      server.ip, server.portrcon,
+      function (serverInfo) {
         if (serverInfo.error) {
           client.log(serverInfo.error, 'error');
         } else {
@@ -98,11 +101,125 @@ module.exports = (client) => {
 
   };
 
+  client.gameserverGetConfig = (server) => {
+    let config = {
+      host: server.ip,
+      port: server.portftp,
+      user: server.userftp,
+      password: server.pwdftp
+    }
+
+    let fileGamePath = '/ShooterGame/Saved/Config/WindowsServer/Game.ini';
+    let fileGameUserPath = '/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini';
+
+    let gameContent;
+    let gameuserContent;
+
+    let ftpGame = new ftpClient();
+
+    ftpGame.on('ready', function () {
+      ftpGame.get(fileGamePath, function (err, stream) {
+        if (err) return console.log(err);
+
+        stream.on('data', function (chunk) {
+          gameContent += chunk.toString();
+        });
+        stream.on('end', function () {
+          let sectionFull;
+          let section;
+          let contentSplit = gameContent.split(`\n`);
+          for (const line of contentSplit) {
+
+            var i = line.indexOf('=');
+            var splits = [line.slice(0, i), line.slice(i + 1)];
+
+            if (line.startsWith("undefined[")) {
+              section = line.slice(9, line.length - 1);
+            };
+            if (line.startsWith("[")) {
+              section = line.slice(0, line.length - 1);
+            };
+
+            if (!line.startsWith("undefined[") && !line.startsWith("[")) {
+              let parameter = splits[0];
+              let value = splits[1].slice(0, splits[1] - 1);
+
+              if (parameter !== "") {
+                let gameserverConfig = datamodel.tables.gameserverConfig;
+                let id = `${server.id}-${section}-${parameter}`;
+
+                gameserverConfig.serverID = server.id;
+                gameserverConfig.filename = "Game.ini";
+                gameserverConfig.section = section;
+                gameserverConfig.parameter = parameter;
+                gameserverConfig.value = value;
+
+                client.db_gameserverconfig.set(id, gameserverConfig);
+              };
+            };
+          };
+        });
+      });
+    });
+    ftpGame.connect(config);
+
+
+    let ftpGameUser = new ftpClient();
+
+    ftpGameUser.on('ready', function () {
+      ftpGameUser.get(fileGameUserPath, function (err, stream) {
+        if (err) return console.log(err);
+
+        stream.on('data', function (chunk) {
+          gameuserContent += chunk.toString();
+        });
+        stream.on('end', function () {
+          let sectionFull;
+          let section;
+          let contentSplit = gameuserContent.split(`\n`);
+          for (const line of contentSplit) {
+
+            var i = line.indexOf('=');
+            var splits = [line.slice(0, i), line.slice(i + 1)];
+
+            if (line.startsWith("undefined[")) {
+              section = line.slice(9, line.length - 1);
+            };
+            if (line.startsWith("[")) {
+              section = line.slice(0, line.length - 1);
+            };
+
+            if (!line.startsWith("undefined[") && !line.startsWith("[")) {
+              let parameter = splits[0];
+              let value = splits[1].slice(0, splits[1] - 1);
+
+              if (parameter !== "") {
+                let gameserverConfig = datamodel.tables.gameserverConfig;
+                let id = `${server.id}-${section}-${parameter}`;
+
+                gameserverConfig.serverID = server.id;
+                gameserverConfig.filename = "GameUserSettings.ini";
+                gameserverConfig.section = section;
+                gameserverConfig.parameter = parameter;
+                gameserverConfig.value = value;
+
+                client.db_gameserverconfig.set(id, gameserverConfig);
+              };
+            };
+          };
+        });
+      });
+    });
+    ftpGameUser.connect(config);
+
+  };
+
   client.gameserverUpdateInfos = () => {
     let servers = client.gameServersGetActive().array();
 
     for (const server of servers) {
       client.gameserverGetSteamInfos(server);
+      // client.gameserverGetConfig(server);
     }
 
   }
@@ -212,58 +329,62 @@ module.exports = (client) => {
     client.log(`Vérification RCON (${servers.length} serveurs)`);
 
     for (const server of servers) {
-        let response = await client.gameRconQuery(server, "listplayers");
-        let playerlist = [];
+      let response = await client.gameRconQuery(server, "listplayers");
+      let playerlist = [];
 
-        let game = client.db_games.get(server.gamename);
-        const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
+      let game = client.db_games.get(server.gamename);
+      const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
 
-        if (response == undefined) {
-          if (server.status == "online") {
-            // Annonce serveur est tombé
-            warnMessage(`Le serveur ${server.servername} est tombé.`, gameTextChannel, true, 600000);
-          };
+      if (response == undefined) {
+        if (server.status == "online") {
+          // Annonce serveur est tombé
+          warnMessage(`Le serveur ${server.servername} est tombé.`, gameTextChannel, true, 600000);
+        };
+        if (server.status !== "maintenance") {
           server.status = "offline";
+        }
+        server.connected = 0;
+        server.playerlist = [];
+
+      } else {
+        if (server.status == "offline") {
+          // Annonce serveur est revenu
+          successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`, gameTextChannel, true, 600000);
+        };
+        if (server.status !== "maintenance") {
+          server.status = "online";
+        }
+
+        if (response.startsWith(`No Players Connected`)) {
           server.connected = 0;
           server.playerlist = [];
-
         } else {
-          if (server.status == "offline") {
-            // Annonce serveur est revenu
-            successMessage(`Le serveur ${server.servername} est à nouveau en ligne !`, gameTextChannel, true, 600000);
-          };
-          server.status = "online";
+          let entries = response.split("\n");
+          const regex = /(?<=\.)(.*?)(?=\,)/;
+          let m;
+          entries.forEach(entry => {
+            if ((m = regex.exec(entry)) !== null) {
+              let user = m[1];
+              let id = entry.split(",")[1].trim();
 
-          if (response.startsWith(`No Players Connected`)) {
-            server.connected = 0;
-            server.playerlist = [];
-          } else {
-            let entries = response.split("\n");
-            const regex = /(?<=\.)(.*?)(?=\,)/;
-            let m;
-            entries.forEach(entry => {
-              if ((m = regex.exec(entry)) !== null) {
-                let user = m[1];
-                let id = entry.split(",")[1].trim();
-
-                let player = client.db_gameserversPlayers.get(id);
-                if (player) {
-                  playerlist.push([user, id, player.memberID]);
-                } else {
-                  playerlist.push([user, id, ""]);
-                }
+              let player = client.db_gameserversPlayers.get(id);
+              if (player) {
+                playerlist.push([user, id, player.memberID]);
+              } else {
+                playerlist.push([user, id, ""]);
               }
-            });
-            server.connected = playerlist.length;
-            server.playerlist = playerlist;
-          }
+            }
+          });
+          server.connected = playerlist.length;
+          server.playerlist = playerlist;
         }
-        for (const player of playerlist) {
-          await client.gameServersPlayerLog(player[1], player[0], server)
-        };
+      }
+      for (const player of playerlist) {
+        await client.gameServersPlayerLog(player[1], player[0], server)
+      };
 
-        client.gameServerCheckPlayerOffline(server);
-        client.db_gameservers.set(server.id, server);
+      client.gameServerCheckPlayerOffline(server);
+      client.db_gameservers.set(server.id, server);
     }
   };
 
@@ -322,10 +443,10 @@ module.exports = (client) => {
     if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
-        await client.gameServersSetStatus(server.id, "maintenanceoff");
+        await client.gameServersSetStatus(server.id, "offline");
       }
     } else {
-      await client.gameServersSetStatus(serverID, "maintenanceoff");
+      await client.gameServersSetStatus(serverID, "offline");
     };
   };
 

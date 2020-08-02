@@ -83,8 +83,7 @@ exports.tables = {
         "mods": [],
         "playerlist": []
     },
-    gameserverconfig:{
-        'id': "",
+    gameserverConfig:{
         'serverID': "",
         'filename': "",
         'section': "",
