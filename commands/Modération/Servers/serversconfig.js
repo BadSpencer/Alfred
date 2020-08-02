@@ -163,7 +163,7 @@ class ServerConfigCommand extends Command {
         let servers = client.gameServersGetActive().array();
 
         for (const server of servers) {
-            client.gameserverGetConfig(server, true);
+            client.gameserverGetConfig(server, false);
         }
 
         if (message.channel.type === 'text') message.delete();
