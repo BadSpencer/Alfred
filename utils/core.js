@@ -568,34 +568,6 @@ module.exports = (client) => {
         };
     };
 
-    client.getFileByFTP = async (ip, port, user, pwd, filepath) => {
-        let config = {
-            host: ip,
-            port: port,
-            user: user,
-            password: pwd
-        }
-
-        let content = '';
-        let ftp = new ftpClient();
-
-        ftp.on('ready', function () {
-            ftp.get(filepath, function (err, stream) {
-                if (err) return console.log(err);
-
-                stream.on('data', function (chunk) {
-                    content += chunk.toString();
-                });
-                stream.on('end', function () {
-                    let contentSplit = content.split(`\n`);
-                    return contentSplit;
-                });
-            });
-        });
-        ftp.connect(config);
-
-    };
-
 
 
 
