@@ -883,6 +883,17 @@ module.exports = class {
                 return `Le joueur **${gameserversPlayer.steamName}** (${gameserversPlayer.id}) à correctement été lié au membre **${member.displayName}**`
             },
 
+            GAMESERVER_CONFIG_NEW_PARAMETER: (gameserverConfig, server) => {
+                return `Nouveau paramètre détecté **${gameserverConfig.parameter}** dans le fichier ${gameserverConfig.filename} (serveur: ${server.servername})`
+            },
+            
+            GAMESERVER_CONFIG_CHANGED_PARAMETER: (gameserverConfigCurrent, gameserverConfig, server) => {
+                return `Le paramètre **${gameserverConfig.parameter}** à été modifié.
+                Ancienne valeur: ${gameserverConfig.value}
+                Nouvelle valeur: ${gameserverConfigCurrent.value}
+                Serveur: ${server.servername}`
+            },
+
 
             CMD_CMDALIAS_PROMPT: `Quel est l'ID du membre ?`,
             CMD_CMDALIAS_RETRY: `Je ne connais pas cette commande. Veuillez spécifier une commande ou un alias valide.

@@ -101,13 +101,15 @@ module.exports = (client) => {
 
   };
 
-  client.gameserverGetConfig = (server) => {
+  client.gameserverGetConfig = (server, notif = true) => {
     let config = {
       host: server.ip,
       port: server.portftp,
       user: server.userftp,
       password: server.pwdftp
     }
+
+    let noNotifParameters = ["ConfigOverrideItemMaxQuantity"];
 
     let fileGamePath = '/ShooterGame/Saved/Config/WindowsServer/Game.ini';
     let fileGameUserPath = '/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini';
@@ -142,11 +144,14 @@ module.exports = (client) => {
 
             if (!line.startsWith("undefined[") && !line.startsWith("[")) {
               let parameter = splits[0];
-              let value = splits[1].slice(0, splits[1] - 1);
+              let value = splits[1].trim();
+
 
               if (parameter !== "") {
                 let gameserverConfig = datamodel.tables.gameserverConfig;
                 let id = `${server.id}-${section}-${parameter}`;
+
+                let gameserverConfigCurrent = client.db_gameserverconfig.get(id);
 
                 gameserverConfig.serverID = server.id;
                 gameserverConfig.filename = "Game.ini";
@@ -155,6 +160,18 @@ module.exports = (client) => {
                 gameserverConfig.value = value;
 
                 client.db_gameserverconfig.set(id, gameserverConfig);
+
+                if (notif && !noNotifParameters.includes(parameter)) {
+                  if (!gameserverConfigCurrent) {
+                    client.modLog(client.textes.get("GAMESERVER_CONFIG_NEW_PARAMETER", gameserverConfig, server));
+                  };
+
+                  if (gameserverConfigCurrent.value !== gameserverConfig.value) {
+                    client.modLog(client.textes.get("GAMESERVER_CONFIG_CHANGED_PARAMETER", gameserverConfigCurrent, gameserverConfig, server));
+                  };
+                };
+
+
               };
             };
           };
@@ -191,11 +208,13 @@ module.exports = (client) => {
 
             if (!line.startsWith("undefined[") && !line.startsWith("[")) {
               let parameter = splits[0];
-              let value = splits[1].slice(0, splits[1] - 1);
+              let value = splits[1].trim();
 
               if (parameter !== "") {
                 let gameserverConfig = datamodel.tables.gameserverConfig;
                 let id = `${server.id}-${section}-${parameter}`;
+
+                let gameserverConfigCurrent = client.db_gameserverconfig.get(id);
 
                 gameserverConfig.serverID = server.id;
                 gameserverConfig.filename = "GameUserSettings.ini";
@@ -204,6 +223,19 @@ module.exports = (client) => {
                 gameserverConfig.value = value;
 
                 client.db_gameserverconfig.set(id, gameserverConfig);
+
+
+                if (notif && !noNotifParameters.includes(parameter)) {
+                  if (!gameserverConfigCurrent) {
+                    client.modLog(client.textes.get("GAMESERVER_CONFIG_NEW_PARAMETER", gameserverConfig, server));
+                  };
+
+                  if (gameserverConfigCurrent.value !== gameserverConfig.value) {
+                    client.modLog(client.textes.get("GAMESERVER_CONFIG_CHANGED_PARAMETER", gameserverConfigCurrent, gameserverConfig, server));
+                  };
+                };
+
+
               };
             };
           };
@@ -212,6 +244,7 @@ module.exports = (client) => {
     });
     ftpGameUser.connect(config);
 
+
   };
 
   client.gameserverUpdateInfos = () => {
@@ -219,7 +252,7 @@ module.exports = (client) => {
 
     for (const server of servers) {
       client.gameserverGetSteamInfos(server);
-      // client.gameserverGetConfig(server);
+      client.gameserverGetConfig(server);
     }
 
   }
