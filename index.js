@@ -39,12 +39,15 @@ client.textes = new(require(`./utils/textes.js`));
 client.on('shardDisconnect', () => client.log('Connection perdue...', 'warn'))
     .on('shardReconnecting', () => {
         client.log('Tentative de reconnexion...', 'warn');
-        const pjson = require('../../package.json');
-        client.user.setActivity(`R${pjson.version}`, {
+
+    })
+    .on('shardResume', () => {
+        client.log('Reconnexion effectuée', 'warn');
+        const pjson = require('./package.json');
+        client.user.setActivity(`${pjson.version}`, {
             type: "PLAYING"
         });
     })
-
     .on('error', err => client.log(err, 'error'))
     .on('warn', info => client.log(info, 'warn'));
 
