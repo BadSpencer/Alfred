@@ -3,6 +3,7 @@ const moment = require("moment");
 const colors = require('./colors');
 const constants = require('./constants');
 const datamodel = require('./datamodel');
+const textes = new(require(`./textes.js`));
 const ftpClient = require('ftp');
 
 module.exports = (client) => {
@@ -548,20 +549,35 @@ module.exports = (client) => {
     };
 
     client.datamodelCheck = async () => {
+        const guild = client.guilds.cache.get(client.config.guildID);
+
+
+        client.log(`Vérification structure "settings"`, "debug");
+
+        let settingsModel = datamodel.tables.settings;
+        let setingsKeys = Object.keys(settingsModel);
+        let settings = client.db_settings.get(guild.id);
+
+        let settingsNew = settingsModel;
+        for (const key of setingsKeys) {
+            if (settings[key] !== undefined) {
+                settingsNew[key] = settings[key];
+            };
+        };
+        client.db_settings.set(guild.id, settingsNew);
+
+
         client.log(`Vérification structure "gameservers"`, "debug");
 
         let gameserverModel = datamodel.tables.gameservers;
-        let Datamodelkeys = Object.keys(gameserverModel);
+        let gameserverKeys = Object.keys(gameserverModel);
         let gameservers = client.gameServersGetAll(true);
 
         for (const gameserver of gameservers) {
             let gameserverNew = gameserverModel;
-            for (const key of Datamodelkeys) {
-                gameserverNew[key]
+            for (const key of gameserverKeys) {
                 if (gameserver[key] !== undefined) {
                     gameserverNew[key] = gameserver[key];
-                } else {
-                    gameserverNew[key] = gameserverModel[key];
                 };
             };
             client.db_gameservers.set(gameserver.id, gameserverNew);
