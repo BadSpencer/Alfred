@@ -43,7 +43,7 @@ class GamesCommand extends Command {
                 "infos",
                 "players"
             ],
-            default: 'liste'
+             
         };
 
         const game = yield {
