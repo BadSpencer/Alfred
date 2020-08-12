@@ -8,9 +8,9 @@ const path = require('path');
 class AlfredClient extends AkairoClient {
 	constructor(config) {
 		super({ ownerID: config.owner }, {
-			messageCacheMaxSize: 50,
-			messageCacheLifetime: 300,
-			messageSweepInterval: 900,
+			messageCacheMaxSize: 500,
+			messageCacheLifetime: 10800,
+			messageSweepInterval: 21600,
 			disableEveryone: true,
 			disabledEvents: ['TYPING_START'],
 			partials: ['MESSAGE']
