@@ -6,8 +6,12 @@ const { successMessage, errorMessage, warnMessage, questionMessage, promptMessag
 
 module.exports = (client) => {
 
-  client.gamesGetAll = () => {
-    return client.db_games;
+  client.gamesGetAll = (toArray = false) => {
+    if (toArray == false) {
+      return client.db_games.fetchEverything();
+    } else {
+      return client.db_games.array();
+    };
   };
   client.gamesGetActive = () => {
     return client.db_games.filter(rec => rec.actif == true);

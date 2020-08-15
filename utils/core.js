@@ -582,6 +582,22 @@ module.exports = (client) => {
             };
             client.db_gameservers.set(gameserver.id, gameserverNew);
         };
+
+        client.log(`Vérification structure "games"`, "debug");
+
+        let gamesModel = datamodel.tables.games;
+        let gamesKeys = Object.keys(gamesModel);
+        let games = client.gamesGetAll(true);
+
+        for (const game of games) {
+            let gameNew = gamesModel;
+            for (const key of gamesKeys) {
+                if (game[key] !== undefined) {
+                    gameNew[key] = game[key];
+                };
+            };
+            client.db_games.set(game.id, gameNew);
+        };
     };
 
 
