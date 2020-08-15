@@ -205,6 +205,22 @@ module.exports = (client) => {
 
         let generalChannel = guild.channels.cache.find(c => c.name === settings.welcomeMemberChannel);
 
+        let messages = await generalChannel.messages.fetch({
+            limit: 100
+        }).then(messages => {
+            messages = messages.array();
+            messages = messages.filter((m) => m.author.bot === true);
+            messages = messages.filter((m) => m.content === "");
+            messages = messages.filter((m) => m.embeds[0].title === "Bonne journée à tous sur Casual Effect");
+            
+
+            generalChannel.bulkDelete(messages, true);
+            client.log(`Suppression de ${messages.length} messages `, "debug");
+        });
+
+
+
+
         let astuces = client.db_astuces.array();
         astuces.sort(function (a, b) {
             return a.count - b.count;
@@ -581,7 +597,7 @@ module.exports = (client) => {
             };
             client.db_games.set(game.id, gameNew);
         };
-        
+
         client.log(`Vérification structure "gameservers"`, "debug");
 
         let gameserverModel = datamodel.tables.gameservers;
