@@ -383,31 +383,31 @@ module.exports = (client) => {
         let eventText = "";
         switch (event) {
             case 'JOIN':
-                eventText = " nous a rejoint";
+                eventText = "rejoint le discord";
                 break;
             case 'QUIT':
-                eventText = "nous a quitté";
+                eventText = "quitté le discord";
                 break;
             case 'KICK':
-                eventText = "a été expulsé";
+                eventText = "été expulsé";
                 break;
             case 'BAN':
-                eventText = "a été banni";
+                eventText = "été banni";
                 break;
             case 'MEMBER':
-                eventText = "a été accepté";
+                eventText = "été accepté";
                 break;
             case 'NOTE':
-                eventText = "a reçu une note";
+                eventText = "reçu une note";
                 break;
             case 'NICK':
-                eventText = "a changé de pseudo";
+                eventText = "changé de pseudo";
                 break;
             case 'GAMEJOIN':
-                eventText = "a rejoint un jeu";
+                eventText = "rejoint un jeu";
                 break;
             case 'GAMEQUIT':
-                eventText = "a quitté un jeu";
+                eventText = "quitté un jeu";
                 break;
         }
         return eventText;

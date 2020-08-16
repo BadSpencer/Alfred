@@ -916,6 +916,8 @@ module.exports = class {
 
 
 
+
+
             AIDE_AIDE_DESCRIPTION_CONTENT: `Affiche ce message d'aide et une aide détaillée pour chaque commande`,
             AIDE_AIDE_DESCRIPTION_USAGE: `\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel
             Lancée sans paramètre, j\'afficherai ce menu d\'aide
@@ -956,6 +958,9 @@ module.exports = class {
             PLAYER_LIST_DESCRIPTION_CONTENT: `Afficher la liste des joueurs.`,
             PLAYER_LIST_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner
             La liste est trièe avec les joueurs qui se sont connectés récement en premier.`,
+
+            USER_INFOS_DESCRIPTION_CONTENT: `Informations sur un membre`,
+            USER_INFOS_DESCRIPTION_USAGE: `Permet d'afficher les informations détaillées d'un membre`,
 
 
 

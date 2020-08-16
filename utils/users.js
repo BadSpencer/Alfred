@@ -352,17 +352,73 @@ module.exports = (client) => {
 
     };
 
-    client.userdataShowInfos = async (memberID, channel) => {
+    client.userdataShowInfos = async (userdata, channel) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        let member = guild.members.cache.get(memberID);
-        let userdata = client.db_userdata.get(memberID);
+        let member = guild.members.cache.get(userdata.id);
+
+        let usersLastEvents = "";
 
         if (!userdata) return;
 
         if (channel) {
+
+
+            let logEntriesLast = [];
+
+                for (const log of userdata.logs) {
+                    logEntriesLast.push({
+                        "id": userdata.id,
+                        "createdAt": log.createdAt,
+                        "event": log.event,
+                        "displayName": userdata.displayName,
+                        "commentaire": log.commentaire
+                    })
+                }
+
+            logEntriesLast.sort(function (a, b) {
+                return a.createdAt - b.createdAt;
+            });
+            logEntriesLast.reverse();
+
+            let dateNow = +new Date;
+            for (const logEntry of logEntriesLast) {
+                let eventText = client.logEventToText(logEntry.event);
+
+                switch (logEntry.event) {
+                    case 'JOIN':
+                        break;
+                    case 'QUIT':
+                        break;
+                    case 'KICK':
+
+                        break;
+                    case 'BAN':
+
+                        break;
+                    case 'MEMBER':
+
+                        break;
+                    case 'NOTE':
+
+                        break;
+                    case 'NICK':
+                        // let nicks = logEntry.commentaire.split(" -> ");
+                        eventText = `${client.logEventToEmoji(logEntry.event)} ${logEntry.commentaire}`;
+                        break;
+                    case 'GAMEJOIN':
+                        eventText = `${client.logEventToEmoji(logEntry.event)} ${logEntry.commentaire}`;
+                        break;
+                    case 'GAMEQUIT':
+                        eventText = `${client.logEventToEmoji(logEntry.event)} ${logEntry.commentaire}`;
+                        break;
+                }
+                usersLastEvents += `${moment(logEntry.createdAt).format('DD.MM.YY')}: ${eventText}\n`;
+            }
+
             const userInfosMessage = new Discord.MessageEmbed();
             userInfosMessage.setTitle(`${userdata.displayName}`);
             userInfosMessage.setColor(colors['darkorange']);
+            userInfosMessage.addField("Derniers évènements", usersLastEvents, false);
             // userInfosMessage.setThumbnail();
             // userInfosMessage.setDescription();
             channel.send(userInfosMessage);
