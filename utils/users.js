@@ -385,30 +385,30 @@ module.exports = (client) => {
                 let eventText = client.logEventToText(logEntry.event);
 
                 switch (logEntry.event) {
-                    case 'JOIN':
+                    case "JOIN":
                         break;
-                    case 'QUIT':
+                    case "QUIT":
                         break;
-                    case 'KICK':
+                    case "KICK":
 
                         break;
-                    case 'BAN':
+                    case "BAN":
 
                         break;
-                    case 'MEMBER':
+                    case "MEMBER":
 
                         break;
-                    case 'NOTE':
+                    case "NOTE":
 
                         break;
-                    case 'NICK':
+                    case "NICK":
                         // let nicks = logEntry.commentaire.split(" -> ");
                         eventText = `${client.logEventToEmoji(logEntry.event)} ${logEntry.commentaire}`;
                         break;
-                    case 'GAMEJOIN':
+                    case "GAMEJOIN":
                         eventText = `${client.logEventToEmoji(logEntry.event)} ${logEntry.commentaire}`;
                         break;
-                    case 'GAMEQUIT':
+                    case "GAMEQUIT":
                         eventText = `${client.logEventToEmoji(logEntry.event)} ${logEntry.commentaire}`;
                         break;
                 }

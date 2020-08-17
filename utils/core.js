@@ -348,31 +348,31 @@ module.exports = (client) => {
         client.log(`Méthode: logEventToEmoji`, 'debug');
         let emoji = "";
         switch (event) {
-            case 'JOIN':
+            case "JOIN":
                 emoji = "🤝";
                 break;
-            case 'QUIT':
+            case "QUIT":
                 emoji = "🚪";
                 break;
-            case 'KICK':
+            case "KICK":
                 emoji = "🤜";
                 break;
-            case 'BAN':
+            case "BAN":
                 emoji = "🖕";
                 break;
-            case 'MEMBER':
+            case "MEMBER":
                 emoji = "👍";
                 break;
-            case 'NOTE':
+            case "NOTE":
                 emoji = "📝";
                 break;
-            case 'NICK':
+            case "NICK":
                 emoji = "📧";
                 break;
-            case 'GAMEJOIN':
+            case "GAMEJOIN":
                 emoji = "🔸";
                 break;
-            case 'GAMEQUIT':
+            case "GAMEQUIT":
                 emoji = "🔹";
                 break;
         }
@@ -382,31 +382,31 @@ module.exports = (client) => {
         client.log(`Méthode: logEventToText`, 'debug');
         let eventText = "";
         switch (event) {
-            case 'JOIN':
+            case "JOIN":
                 eventText = "rejoint le discord";
                 break;
-            case 'QUIT':
+            case "QUIT":
                 eventText = "quitté le discord";
                 break;
-            case 'KICK':
+            case "KICK":
                 eventText = "été expulsé";
                 break;
-            case 'BAN':
+            case "BAN":
                 eventText = "été banni";
                 break;
-            case 'MEMBER':
+            case "MEMBER":
                 eventText = "été accepté";
                 break;
-            case 'NOTE':
+            case "NOTE":
                 eventText = "reçu une note";
                 break;
-            case 'NICK':
+            case "NICK":
                 eventText = "changé de pseudo";
                 break;
-            case 'GAMEJOIN':
+            case "GAMEJOIN":
                 eventText = "rejoint un jeu";
                 break;
-            case 'GAMEQUIT':
+            case "GAMEQUIT":
                 eventText = "quitté un jeu";
                 break;
         }
