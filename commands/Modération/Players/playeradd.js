@@ -43,7 +43,7 @@ class PlayerAddCommand extends Command {
         let client = this.client;
 
         let dateNow = +new Date;
-        let gameserversPlayerNew = datamodel.tables.gameserversPlayers;
+        let gameserversPlayerNew = Object.assign({}, datamodel.tables.gameserversPlayers);
 
         let playerCheck = client.db_gameserversPlayers.get(args.playerID);
         if (playerCheck) return errorMessage(`Le joueur **${args.playerName}** (${args.playerID}) est déjà dans la base de données`, message.channel)

@@ -21,7 +21,7 @@ exports.settingsCheck = async (client) => {
     if (!settings) {
         guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`)
         client.logger.debug(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`)
-        settings = datamodel.tables.settings;
+        settings = Object.assign({}, datamodel.tables.settings);
         settings.id = guild.id;
         settings.guildName = guild.name;
         client.db_settings.set(guild.id, settings);
@@ -68,31 +68,14 @@ exports.textesCheck = async (client) => {
 };
 
 
-exports.userlogsCheck = async (client) => {
-    client.log(`Vérification des logs`, "debug");
-    const guild = client.guilds.cache.get(client.config.guildID);
 
 
-    await client.db_userxplogs.delete("default");
-    await client.db_userxplogs.set("default", datamodel.tables.userxplogs);
-};
-exports.embedsCheck = async (client) => {
-    client.log(`Vérification des embeds`, "debug");
-    const guild = client.guilds.cache.get(client.config.guildID);
-    await client.db_embeds.delete("default");
-    await client.db_embeds.set("default", datamodel.tables.embeds);
-};
 exports.usergameCheck = async (client) => {
     client.log(`Vérification des données de jeux des membres`, "debug");
     const guild = client.guilds.cache.get(client.config.guildID);
     let games = await client.db.gamesGetActive(client);
 
     if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
-
-    await client.db_usergame.delete("default");
-    await client.db_usergame.set("default", datamodel.tables.usergame);
-
-
 
     guild.members.cache.forEach(async member => {
         if (member.user.bot) return; // Ne pas enregistrer les bots
@@ -272,12 +255,7 @@ exports.gamesGetAll = async (client) => {
     return games;
 };
 
-// POSTED EMBEDS
-exports.postedEmbedsCheck = async (client) => {
-    client.log(`Vérification des Embeds postés`, "debug");
-    await client.db_postedEmbeds.deleteAll();
-    await client.db_postedEmbeds.set("default", datamodel.tables.postedEmbeds);
-};
+
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {
     await client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
     client.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)

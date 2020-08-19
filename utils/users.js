@@ -271,9 +271,6 @@ module.exports = (client) => {
         client.log(`Vérification de la base des membres`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
 
-        await client.db_userdata.delete("default");
-        await client.db_userdata.set("default", datamodel.tables.userdata);
-
         client.log(`Membres actuellement sur le serveur discord: ${guild.members.cache.size}`, "debug");
         client.log(`Membres actuellement dans la base de données: ${client.db_userdata.count}`, "debug");
 
@@ -312,7 +309,7 @@ module.exports = (client) => {
         const guild = client.guilds.cache.get(client.config.guildID);
         let member = guild.members.cache.get(userdata.id);
 
-        let userdataLogs = datamodel.tables.userdataLogs;
+        let userdataLogs = Object.assign({}, datamodel.tables.userdataLogs);
 
         if (!userdata) return;
 

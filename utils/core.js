@@ -287,7 +287,7 @@ module.exports = (client) => {
         if (message.author.bot) return false;
         if (message.content.startsWith("!")) return false;
 
-        let messagesLogs = datamodel.tables.messagesLogs;
+        let messagesLogs = Object.assign({}, datamodel.tables.messagesLogs);
         messagesLogs.messageID = message.id;
         messagesLogs.channelID = message.channel.id;
         messagesLogs.createdBy = message.author.id;
@@ -300,7 +300,7 @@ module.exports = (client) => {
     };
     client.commandLog = async (message, command) => {
         client.log(`Méthode: commandLog`, 'debug');
-        let commandsLogs = datamodel.tables.commandsLogs;
+        let commandsLogs = Object.assign({}, datamodel.tables.commandsLogs);
         commandsLogs.messageID = message.id;
         commandsLogs.command = command.id;
         commandsLogs.channelID = message.channel.id;
@@ -570,7 +570,7 @@ module.exports = (client) => {
 
         client.log(`Vérification structure "settings"`, "debug");
 
-        let settingsModel = datamodel.tables.settings;
+        let settingsModel = Object.assign({}, datamodel.tables.settings);
         let setingsKeys = Object.keys(settingsModel);
         let settings = client.db_settings.get(guild.id);
 
@@ -582,9 +582,10 @@ module.exports = (client) => {
         };
         client.db_settings.set(guild.id, settingsNew);
 
+        
         client.log(`Vérification structure "games"`, "debug");
 
-        let gamesModel = datamodel.tables.games;
+        let gamesModel = Object.assign({}, datamodel.tables.games);
         let gamesKeys = Object.keys(gamesModel);
         let games = client.gamesGetAll(true);
 
@@ -597,10 +598,11 @@ module.exports = (client) => {
             };
             client.db_games.set(game.id, gameNew);
         };
+        
 
         client.log(`Vérification structure "gameservers"`, "debug");
 
-        let gameserverModel = datamodel.tables.gameservers;
+        let gameserverModel = Object.assign({}, datamodel.tables.gameservers);
         let gameserverKeys = Object.keys(gameserverModel);
         let gameservers = client.gameServersGetAll(true);
 

@@ -57,7 +57,7 @@ module.exports = (client) => {
   };
 
   client.gamesCreate = async (gamename) => {
-    let game = datamodel.tables.games;
+    let game = Object.assign({}, datamodel.tables.games);
 
     game.id = gamename;
     game.name = gamename;
@@ -253,7 +253,7 @@ module.exports = (client) => {
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
-      usergame = datamodel.tables.usergame;
+      usergame = Object.assign({}, datamodel.tables.usergame);
       usergame.id = usergameKey;
       usergame.userid = member.id;
       usergame.gameid = game.name;
@@ -270,7 +270,7 @@ module.exports = (client) => {
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
-      usergame = datamodel.tables.usergame;
+      usergame = Object.assign({}, datamodel.tables.usergame);
       usergame.id = usergameKey;
       usergame.userid = member.id;
       usergame.gameid = game.name;
@@ -283,7 +283,7 @@ module.exports = (client) => {
     let usergameKey = `${game.name}-${member.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
-      usergame = datamodel.tables.usergame;
+      usergame = Object.assign({}, datamodel.tables.usergame);
       usergame.id = usergameKey;
       usergame.userid = member.id;
       usergame.gameid = game.name;
@@ -580,7 +580,7 @@ module.exports = (client) => {
   };
 
   client.gamealiasAdd = (alias, gamename) => {
-    let gamealias = datamodel.tables.gamealias;
+    let gamealias = Object.assign({}, datamodel.tables.gamealias);
     gamealias.id = alias.toLowerCase();
     gamealias.gamename = gamename;
     client.db_gamealias.set(gamealias.id, gamealias);

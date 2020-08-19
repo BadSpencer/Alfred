@@ -38,7 +38,7 @@ module.exports = (client) => {
 
   client.gameServersAddServer = async (message, gamename, name, ip, portrcon, pwdrcon, portftp, userftp, pwdftp) => {
     let serverID = client.db_gameservers.autonum;
-    let gameserver = datamodel.tables.gameservers;
+    let gameserver = Object.assign({}, datamodel.tables.gameservers);
     let dateNow = +new Date;
 
     let urlshortener = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURI(`steam://connect/${ip}:${portrcon}/`)}`);
@@ -148,7 +148,7 @@ module.exports = (client) => {
 
 
               if (parameter !== "") {
-                let gameserverConfig = datamodel.tables.gameserverConfig;
+                let gameserverConfig = Object.assign({}, datamodel.tables.gameserverConfig);
                 let id = `${server.id}-${section}-${parameter}`;
 
                 let gameserverConfigCurrent = client.db_gameserverconfig.get(id);
@@ -211,7 +211,7 @@ module.exports = (client) => {
               let value = splits[1].trim();
 
               if (parameter !== "") {
-                let gameserverConfig = datamodel.tables.gameserverConfig;
+                let gameserverConfig = Object.assign({}, datamodel.tables.gameserverConfig);
                 let id = `${server.id}-${section}-${parameter}`;
 
                 let gameserverConfigCurrent = client.db_gameserverconfig.get(id);
@@ -296,7 +296,7 @@ module.exports = (client) => {
       client.db_playersLogs.set(playersLog.id, playersLog);
     } else {
       let playersLogID = client.db_playersLogs.autonum;
-      let playersLogNew = datamodel.tables.playersLogs;
+      let playersLogNew = Object.assign({}, datamodel.tables.playersLogs);
       playersLogNew.id = playersLogID;
       playersLogNew.serverID = server.id;
       playersLogNew.servername = server.servername;
@@ -339,7 +339,7 @@ module.exports = (client) => {
 
     } else {
 
-      let gameserversPlayerNew = datamodel.tables.gameserversPlayers;
+      let gameserversPlayerNew = Object.assign({}, datamodel.tables.gameserversPlayers);
       gameserversPlayerNew.id = playerID;
       gameserversPlayerNew.steamName = playerName;
       gameserversPlayerNew.firstSeenAt = dateNow;
