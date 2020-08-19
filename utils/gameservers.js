@@ -368,6 +368,13 @@ module.exports = (client) => {
       let game = client.db_games.get(server.gamename);
       const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
 
+      /*
+      if (server.servername == "Ebenus Astrum") {
+        response = undefined;
+      }
+      */
+ 
+
       if (response == undefined) {
         if (server.status == "online") {
           // Annonce serveur est tombé
@@ -476,10 +483,10 @@ module.exports = (client) => {
     if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
       for (const server of servers) {
-        await client.gameServersSetStatus(server.id, "offline");
+        await client.gameServersSetStatus(server.id, "maintenanceoff");
       }
     } else {
-      await client.gameServersSetStatus(serverID, "offline");
+      await client.gameServersSetStatus(serverID, "maintenanceoff");
     };
   };
 
