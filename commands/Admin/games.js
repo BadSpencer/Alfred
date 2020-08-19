@@ -2,7 +2,7 @@ const fs = require('fs');
 const Discord = require("discord.js");
 const {
     Permissions, MessageAttachment
-} = require('discord.js');
+} = require("discord.js");
 const {
     Command
 } = require("discord-akairo");
@@ -74,7 +74,7 @@ class GamesCommand extends Command {
                 client.db.enmapDisplay(client, client.db_games, message.channel);
                 break;
             }
-            case 'players': {
+            case "players": {
                 if (!args.game) return errorMessage(`Veuillez spécifier un jeu pour cette action\nLancez la commande \`!games\` pour connaitre la liste des jeux`)
                 client.gamesPlayersDetail(args.game.name, message);
                 break;

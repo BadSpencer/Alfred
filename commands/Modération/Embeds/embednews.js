@@ -8,7 +8,7 @@ const {
 
 
 // Required things for using Embeds and extending Akairo Command
-const { Permissions } = require('discord.js');
+const { Permissions } = require("discord.js");
 const {
     Command
 } = require("discord-akairo");

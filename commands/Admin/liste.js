@@ -5,9 +5,9 @@ const {
 class ListeCommand extends Command {
     constructor() {
         super('liste', {
-            aliases: ['liste', 'list', 'ls'],
+            aliases: ["liste", "list", "ls"],
             enabled: false,
-            category: 'Admin',
+            category: "Admin",
         });
     }
 
@@ -15,7 +15,7 @@ class ListeCommand extends Command {
         let client = this.client;
         client.gamesJoinListPost(true);
 
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;;
+        if (message.channel.type === "text") if (message.channel.type === "text") message.delete();;;
     }
 }
 

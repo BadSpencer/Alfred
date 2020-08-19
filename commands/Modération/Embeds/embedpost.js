@@ -6,7 +6,7 @@ const {
     questionMessage
 } = require('../../../utils/messages');
 
-const { Permissions } = require('discord.js');
+const { Permissions } = require("discord.js");
 const {
     Command
 } = require("discord-akairo");

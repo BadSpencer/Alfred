@@ -1,7 +1,7 @@
 const {
     Command
 } = require("discord-akairo");
-const { Permissions } = require('discord.js');
+const { Permissions } = require("discord.js");
 const steamServerStatus = require('steam-server-status');
 
 class TestCommand extends Command {

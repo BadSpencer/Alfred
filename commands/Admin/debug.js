@@ -9,7 +9,7 @@ const {
     errorMessage,
     warnMessage
 } = require('../../utils/messages');
-const { Permissions } = require('discord.js');
+const { Permissions } = require("discord.js");
 
 class debugCommand extends Command {
     constructor() {

@@ -5,7 +5,7 @@ const {
     Message,
     MessageEmbed,
     Permissions
-} = require('discord.js');
+} = require("discord.js");
 const {
     Command,
     PrefixSupplier

@@ -1,7 +1,7 @@
 const {
     Command
 } = require("discord-akairo");
-const { Permissions } = require('discord.js');
+const { Permissions } = require("discord.js");
 
 class LogsCommand extends Command {
     constructor() {

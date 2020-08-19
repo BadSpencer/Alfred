@@ -1,6 +1,6 @@
 const {
     MessageEmbed
-} = require('discord.js');
+} = require("discord.js");
 const colors = require('./colors');
 const {
     client
