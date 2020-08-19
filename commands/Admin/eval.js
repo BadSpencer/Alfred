@@ -1,4 +1,6 @@
-const { Command } = require('discord-akairo');
+const {
+	Command
+} = require('discord-akairo');
 const util = require('util');
 
 
@@ -9,12 +11,10 @@ class EvalCommand extends Command {
 			category: 'Admin',
 			ownerOnly: true,
 			quoted: false,
-			args: [
-				{
-					id: 'code',
-					match: 'content'
-				}
-			],
+			args: [{
+				id: 'code',
+				match: 'content'
+			}],
 			description: {
 				content: 'Evaluates code.',
 				usage: '<code>'
@@ -22,9 +22,13 @@ class EvalCommand extends Command {
 		});
 	}
 
-	async exec(message, { code }) {
-        let client = this.client;
-		if (!code) return message.util.reply('No code provided!');
+	async exec(message, {
+		code
+	}) {
+		let client = this.client;
+		if (!code) {
+			return message.util.reply('No code provided!');
+		};
 
 		const evaled = {};
 		const logs = [];
@@ -36,7 +40,9 @@ class EvalCommand extends Command {
 
 		const print = (...a) => { // eslint-disable-line no-unused-vars
 			const cleaned = a.map(obj => {
-				if (typeof o !== 'string') obj = util.inspect(obj, { depth: 1 });
+				if (typeof o !== 'string') obj = util.inspect(obj, {
+					depth: 1
+				});
 				return obj.replace(tokenRegex, '[TOKEN]');
 			});
 
@@ -48,7 +54,9 @@ class EvalCommand extends Command {
 			evaled.output += evaled.output.endsWith('\n') ? cleaned.join(' ') : `\n${cleaned.join(' ')}`;
 			const title = evaled.errored ? '☠\u2000**Error**' : '📤\u2000**Output**';
 
-			if (evaled.output.length + code.length > 1900) evaled.output = 'Output too long.';
+			if (evaled.output.length + code.length > 1900) {
+				evaled.output = 'Output too long.';
+			};
 			evaled.message.edit([
 				`📥\u2000**Input**${cb}js`,
 				code,
@@ -64,13 +72,21 @@ class EvalCommand extends Command {
 			let output = eval(code);
 
 			// eslint-disable-next-line eqeqeq
-			if (output != null && typeof output.then === 'function') output = await output;
+			if (output != null && typeof output.then === 'function') {
+				output = await output;
+			};
 
-			if (typeof output !== 'string') output = util.inspect(output, { depth: 0 });
+			if (typeof output !== 'string') {
+				output = util.inspect(output, {
+					depth: 0
+				})
+			};
 			output = `${logs.join('\n')}\n${logs.length && output === 'undefined' ? '' : output}`;
 			output = output.replace(tokenRegex, '[TOKEN]');
 
-			if (output.length + code.length > 1900) output = 'Output too long.';
+			if (output.length + code.length > 1900) {
+				output = 'Output too long.';
+			};
 
 			const sent = await message.util.send([
 				`📥\u2000**Input**${cb}js`,
@@ -87,7 +103,7 @@ class EvalCommand extends Command {
 
 			return sent;
 		} catch (err) {
-            client.log(err, 'error');
+			client.log(err, 'error');
 			let error = err;
 
 			error = error.toString();
