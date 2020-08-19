@@ -26,13 +26,13 @@ class VocalCommand extends Command {
     let channelName = "";
     if (message.util.alias === 'ce') {
       channelName = "🏰Casual Effect";
-    };
+    }
     if (message.util.alias === 'edl') {
       channelName = "🌘 🎭 EDL-Rôle-Play";
-    };
+    }
     if (message.util.alias === 'fj') {
       channelName = "🥶Tribu des Fjords";
-    };
+    }
 
     if (args.nom) channelName = args.nom;
 

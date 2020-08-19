@@ -39,7 +39,6 @@ class AutoRepCommand extends Command {
         }]);
 
         regs.forEach(reg => {
-            console.log(reg)
             regexp = new RegExp(reg.pattern);
             if (regexp.test(message.content) == true) {
                 message.channel.send(client.textes.get(reg.texte));

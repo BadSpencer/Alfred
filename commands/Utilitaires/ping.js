@@ -17,11 +17,11 @@ class PingCommand extends Command {
     }
 
     exec(message) {
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
+        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();
         return message.util.send('Pong!').then(sent => {
             const timeDiff = (sent.editedAt || sent.createdAt) - (message.editedAt || message.createdAt);
             const text = `🔂\u2000**API Discord**: ${timeDiff} ms\n💟\u2000**Ping**: ${Math.round(this.client.ws.ping)} ms`;
-            return message.channel.send(`Pong!\n${text}`);
+            return sent.edit(`Pong!\n${text}`);
         });
 
     }

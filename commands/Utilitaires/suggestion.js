@@ -63,7 +63,7 @@ class SuggestionCommand extends Command {
         embed.setFooter(client.textes.get("SUGG_NOTIF_PROPOSED_BY", member), avatar);
         embed.setTimestamp();
 
-        if (message.channel.type === 'text') message.delete();;
+        if (message.channel.type === 'text') message.delete();
 
         return suggChannel.send(embed).then(async msgSent => {
             await msgSent.react("💚");
