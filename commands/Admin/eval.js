@@ -1,23 +1,23 @@
 const {
 	Command
 } = require("discord-akairo");
-const util = require('util');
+const util = require("util");
 
 
 class EvalCommand extends Command {
 	constructor() {
-		super('eval', {
-			aliases: ['eval'],
-			category: 'Admin',
+		super("eval", {
+			aliases: ["eval"],
+			category: "Admin",
 			ownerOnly: true,
 			quoted: false,
 			args: [{
-				id: 'code',
-				match: 'content'
+				id: "code",
+				match: "content"
 			}],
 			description: {
-				content: 'Evaluates code.',
-				usage: '<code>'
+				content: "Evaluates code.",
+				usage: "<code>"
 			}
 		});
 	}
@@ -33,9 +33,9 @@ class EvalCommand extends Command {
 		const evaled = {};
 		const logs = [];
 
-		const token = this.client.token.split('').join('[^]{0,2}');
-		const rev = this.client.token.split('').reverse().join('[^]{0,2}');
-		const tokenRegex = new RegExp(`${token}|${rev}`, 'g');
+		const token = this.client.token.split("").join("[^]{0,2}");
+		const rev = this.client.token.split("").reverse().join("[^]{0,2}");
+		const tokenRegex = new RegExp(`${token}|${rev}`, "g");
 		const cb = '```';
 
 		const print = (...a) => { // eslint-disable-line no-unused-vars
@@ -43,7 +43,7 @@ class EvalCommand extends Command {
 				if (typeof o !== "string") obj = util.inspect(obj, {
 					depth: 1
 				});
-				return obj.replace(tokenRegex, '[TOKEN]');
+				return obj.replace(tokenRegex, "[TOKEN]");
 			});
 
 			if (!evaled.output) {
@@ -51,8 +51,8 @@ class EvalCommand extends Command {
 				return;
 			}
 
-			evaled.output += evaled.output.endsWith('\n') ? cleaned.join(' ') : `\n${cleaned.join(' ')}`;
-			const title = evaled.errored ? '☠\u2000**Error**' : '📤\u2000**Output**';
+			evaled.output += evaled.output.endsWith("\n") ? cleaned.join(" ") : `\n${cleaned.join(' ')}`;
+			const title = evaled.errored ? "☠\u2000**Error**" : "📤\u2000**Output**";
 
 			if (evaled.output.length + code.length > 1900) {
 				evaled.output = "Résultat en sortie trop long.";
@@ -81,8 +81,8 @@ class EvalCommand extends Command {
 					depth: 0
 				})
 			};
-			output = `${logs.join('\n')}\n${logs.length && output === 'undefined' ? '' : output}`;
-			output = output.replace(tokenRegex, '[TOKEN]');
+			output = `${logs.join('\n')}\n${logs.length && output === "undefined" ? "" : output}`;
+			output = output.replace(tokenRegex, "[TOKEN]");
 
 			if (output.length + code.length > 1900) {
 				output = "Résultat en sortie trop long.";
@@ -107,8 +107,8 @@ class EvalCommand extends Command {
 			let error = err;
 
 			error = error.toString();
-			error = `${logs.join('\n')}\n${logs.length && error === 'undefined' ? '' : error}`;
-			error = error.replace(tokenRegex, '[TOKEN]');
+			error = `${logs.join("\n")}\n${logs.length && error === "undefined" ? "" : error}`;
+			error = error.replace(tokenRegex, "[TOKEN]");
 
 			const sent = await message.util.send([
 				`📥\u2000**Input**${cb}js`,
