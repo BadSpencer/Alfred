@@ -1,6 +1,6 @@
 const {
     Command
-} = require('discord-akairo');
+} = require("discord-akairo");
 const Discord = require("discord.js");
 
 class SuggestionCommand extends Command {

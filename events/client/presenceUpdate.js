@@ -1,4 +1,4 @@
-const { Listener } = require('discord-akairo');
+const { Listener } = require("discord-akairo");
 
 class presenceUpdateListener extends Listener {
     constructor() {

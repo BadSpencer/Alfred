@@ -1,6 +1,6 @@
 const {
     Listener
-} = require('discord-akairo');
+} = require("discord-akairo");
 
 
 class guildMemberUpdateListener extends Listener {

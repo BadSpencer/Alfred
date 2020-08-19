@@ -1,6 +1,6 @@
 const {
     Command
-} = require('discord-akairo');
+} = require("discord-akairo");
 const { Permissions } = require('discord.js');
 const steamServerStatus = require('steam-server-status');
 

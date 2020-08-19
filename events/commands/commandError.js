@@ -1,4 +1,4 @@
-const { Listener } = require('discord-akairo');
+const { Listener } = require("discord-akairo");
 const { errorMessage } = require('../../utils/messages');
 
 class CommandErrorListener extends Listener {

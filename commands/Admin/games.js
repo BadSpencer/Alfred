@@ -5,7 +5,7 @@ const {
 } = require('discord.js');
 const {
     Command
-} = require('discord-akairo');
+} = require("discord-akairo");
 const {
     inspect
 } = require("util");

@@ -1,4 +1,4 @@
-const { Inhibitor } = require('discord-akairo');
+const { Inhibitor } = require("discord-akairo");
 
 class ModerationCheck extends Inhibitor {
     constructor() {

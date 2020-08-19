@@ -1,6 +1,6 @@
 const {
     Listener
-} = require('discord-akairo');
+} = require("discord-akairo");
 const {
     successMessage,
     errorMessage,

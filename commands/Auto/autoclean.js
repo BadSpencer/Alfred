@@ -1,6 +1,6 @@
 const {
     Command
-} = require('discord-akairo');
+} = require("discord-akairo");
 const colors = require('../../utils/colors');
 const Discord = require("discord.js");
 

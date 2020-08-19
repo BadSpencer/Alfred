@@ -9,7 +9,7 @@ const {
 const {
     Command,
     PrefixSupplier
-} = require('discord-akairo');
+} = require("discord-akairo");
 const textes = new (require(`../../utils/textes.js`));
 
 class AideCommand extends Command {

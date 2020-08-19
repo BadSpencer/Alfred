@@ -11,7 +11,7 @@ const {
 const { Permissions } = require('discord.js');
 const {
     Command
-} = require('discord-akairo');
+} = require("discord-akairo");
 
 class EmbedNewsCommand extends Command {
     constructor() {

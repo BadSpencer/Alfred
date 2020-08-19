@@ -4,7 +4,7 @@ const datamodel = require('../../../utils/datamodel');
 const colors = require('../../../utils/colors');
 const {
     Command
-} = require('discord-akairo');
+} = require("discord-akairo");
 const {
     successMessage,
     errorMessage,

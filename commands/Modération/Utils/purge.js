@@ -1,4 +1,4 @@
-const { Command } = require('discord-akairo');
+const { Command } = require("discord-akairo");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
 
 class PurgeCommand extends Command {

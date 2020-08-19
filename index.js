@@ -1,6 +1,6 @@
 const {
     AkairoClient
-} = require('discord-akairo');
+} = require("discord-akairo");
 const {
     owner,
     token,

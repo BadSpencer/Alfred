@@ -1,4 +1,4 @@
-const { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } = require('discord-akairo');
+const { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } = require("discord-akairo");
 // const { Collection } = require('discord.js');
 // const Database = require('./Database');
 const path = require('path');

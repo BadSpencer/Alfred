@@ -4,7 +4,7 @@ const {
 const colors = require('./colors');
 const {
     client
-} = require('discord-akairo');
+} = require("discord-akairo");
 
 module.exports.errorMessage = async (error, channel, del = true, timer = 10000) => {
     const errorMsg = new MessageEmbed()

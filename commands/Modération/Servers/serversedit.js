@@ -1,4 +1,4 @@
-const { Command } = require('discord-akairo');
+const { Command } = require("discord-akairo");
 const { inspect } = require("util");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
 const fetch = require("node-fetch");
