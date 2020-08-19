@@ -27,8 +27,8 @@ class EvalCommand extends Command {
 	}) {
 		let client = this.client;
 		if (!code) {
-			return message.util.reply('No code provided!');
-		};
+			return message.util.reply("Aucun code fourni...");
+		}
 
 		const evaled = {};
 		const logs = [];
@@ -40,7 +40,7 @@ class EvalCommand extends Command {
 
 		const print = (...a) => { // eslint-disable-line no-unused-vars
 			const cleaned = a.map(obj => {
-				if (typeof o !== 'string') obj = util.inspect(obj, {
+				if (typeof o !== "string") obj = util.inspect(obj, {
 					depth: 1
 				});
 				return obj.replace(tokenRegex, '[TOKEN]');
@@ -55,7 +55,7 @@ class EvalCommand extends Command {
 			const title = evaled.errored ? '☠\u2000**Error**' : '📤\u2000**Output**';
 
 			if (evaled.output.length + code.length > 1900) {
-				evaled.output = 'Output too long.';
+				evaled.output = "Résultat en sortie trop long.";
 			};
 			evaled.message.edit([
 				`📥\u2000**Input**${cb}js`,
@@ -72,11 +72,11 @@ class EvalCommand extends Command {
 			let output = eval(code);
 
 			// eslint-disable-next-line eqeqeq
-			if (output != null && typeof output.then === 'function') {
+			if (output != null && typeof output.then === "function") {
 				output = await output;
 			};
 
-			if (typeof output !== 'string') {
+			if (typeof output !== "string") {
 				output = util.inspect(output, {
 					depth: 0
 				})
@@ -85,7 +85,7 @@ class EvalCommand extends Command {
 			output = output.replace(tokenRegex, '[TOKEN]');
 
 			if (output.length + code.length > 1900) {
-				output = 'Output too long.';
+				output = "Résultat en sortie trop long.";
 			};
 
 			const sent = await message.util.send([
@@ -103,7 +103,7 @@ class EvalCommand extends Command {
 
 			return sent;
 		} catch (err) {
-			client.log(err, 'error');
+			client.log(err, "error");
 			let error = err;
 
 			error = error.toString();
