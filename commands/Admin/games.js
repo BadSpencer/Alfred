@@ -478,7 +478,9 @@ class GamesCommand extends Command {
                 break;
             }
             case "statut": {
-                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n'est pas actif`, message.channel);
+                if (!args.game.actif) {
+                    return errorMessage(`Le jeu ${args.game.name} n'est pas actif`, message.channel);
+                }
 
                 const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
                 const gameRole = message.guild.roles.cache.get(args.game.roleID);
