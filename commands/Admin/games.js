@@ -1,7 +1,8 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const {
-    Permissions, MessageAttachment
+    Permissions,
+    MessageAttachment
 } = require("discord.js");
 const {
     Command
@@ -26,7 +27,7 @@ class GamesCommand extends Command {
         });
     }
 
-    *args(message) {
+    * args(message) {
         const action = yield {
             type: [
                 "liste",
@@ -43,7 +44,7 @@ class GamesCommand extends Command {
                 "infos",
                 "players"
             ],
-             
+
         };
 
         const game = yield {
@@ -51,7 +52,10 @@ class GamesCommand extends Command {
             match: "rest",
             default: null,
         };
-        return { action, game };
+        return {
+            action,
+            game
+        };
     }
 
 
@@ -92,17 +96,17 @@ class GamesCommand extends Command {
 
                 // Création du rôle principal
                 await message.guild.roles.create({
-                        data: {
-                            name: args.game.name,
-                            color: settings.gameMainRoleColor,
-                            hoist: false,
-                            mentionable: true
-                        },
-                        reason: `Création du jeu ${args.game.name}`
-                    }).then(mainRole => {
-                        args.game.roleID = mainRole.id;
-                        statusMessage.edit(`Rôle principal ${mainRole.name} créé`);
-                    })
+                    data: {
+                        name: args.game.name,
+                        color: settings.gameMainRoleColor,
+                        hoist: false,
+                        mentionable: true
+                    },
+                    reason: `Création du jeu ${args.game.name}`
+                }).then(mainRole => {
+                    args.game.roleID = mainRole.id;
+                    statusMessage.edit(`Rôle principal ${mainRole.name} créé`);
+                })
 
                 // Création du rôle "Joue à"
                 await message.guild.roles.create({
@@ -474,7 +478,7 @@ class GamesCommand extends Command {
                 break;
             }
             case "statut": {
-                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n"est pas actif`, message.channel);
+                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n'est pas actif`, message.channel);
 
                 const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
                 const gameRole = message.guild.roles.cache.get(args.game.roleID);
@@ -530,7 +534,9 @@ class GamesCommand extends Command {
                 break;
             }
             case "infos": {
-                if (!args.game.actif) return errorMessage(`Le jeu ${args.game.name} n"est pas actif`, message.channel);
+                if (!args.game.actif) {
+                    return errorMessage(`Le jeu ${args.game.name} n"est pas actif`, message.channel);
+                }
 
                 const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
                 const gameRole = message.guild.roles.cache.get(args.game.roleID);
@@ -587,7 +593,9 @@ class GamesCommand extends Command {
             }
         }
 
-        if (message.channel.type === "text") if (message.channel.type === "text") message.delete();;;
+        if (message.channel.type === "text") {
+            message.delete();
+        }
     }
 
 }
