@@ -22,20 +22,10 @@ class VocalCommand extends Command {
 
   async exec(message, args) {
     let client = this.client;
-
+    
     let channelName = "";
-    if (message.util.alias === 'ce') {
-      channelName = "🏰Casual Effect";
-    }
-    if (message.util.alias === 'edl') {
-      channelName = "🌘 🎭 EDL-Rôle-Play";
-    }
-    if (message.util.alias === 'fj') {
-      channelName = "🥶Tribu des Fjords";
-    }
 
     if (args.nom) channelName = args.nom;
-
 
     await client.createVoiceChannel(channelName);
 
