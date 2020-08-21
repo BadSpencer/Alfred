@@ -6,9 +6,9 @@ const {
     errorMessage,
     warnMessage,
     questionMessage
-} = require('../../utils/messages');
+} = require("../../utils/messages");
 
-const emojis = require('../../utils/emojis');
+const emojis = require("../../utils/emojis");
 
 class MessageReactionAddListener extends Listener {
     constructor() {
@@ -21,7 +21,8 @@ class MessageReactionAddListener extends Listener {
     async exec(messageReaction, user) {
 
         let gameGroupsBlacklist = [
-            '191993511543832577' // Albator
+            "000000000000000000" // Null
+            //'191993511543832577' // Albator
         ];
 
 
@@ -48,16 +49,20 @@ class MessageReactionAddListener extends Listener {
 
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     await messageReaction.message.edit(newEmbed);
-                    // await messageReaction.message.reactions.removeAll();
+
+                    if (messageReaction.message.channel.type === "text") {
+                        await messageReaction.message.reactions.removeAll();
+                        if (postedEmbed.currentPage !== totalPages) {
+                            await messageReaction.message.react(`◀️`);
+                            await messageReaction.message.react(`▶️`);
+                        } else {
+                            await messageReaction.message.react(`◀️`);
+                            await messageReaction.message.react(`⏹`);
+                        }
+                    }
+
 
                     postedEmbed.currentPage = indexNewPage + 1;
-                    // if (postedEmbed.currentPage !== totalPages) {
-                    //     await messageReaction.message.react(`◀️`);
-                    //     await messageReaction.message.react(`▶️`);
-                    // } else {
-                    //     await messageReaction.message.react(`◀️`);
-                    //     await messageReaction.message.react(`⏹`);
-                    // }
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;
                 }
@@ -67,15 +72,18 @@ class MessageReactionAddListener extends Listener {
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     await messageReaction.message.edit(newEmbed);
-                    // await messageReaction.message.reactions.removeAll();
+
+                    if (messageReaction.message.channel.type === "text") {
+                        await messageReaction.message.reactions.removeAll();
+                        if (postedEmbed.currentPage !== 1) {
+                            await messageReaction.message.react(`◀️`);
+                            await messageReaction.message.react(`▶️`);
+                        } else {
+                            await messageReaction.message.react(`⏹`);
+                            await messageReaction.message.react(`▶️`);
+                        }
+                    }
                     postedEmbed.currentPage = indexNewPage + 1;
-                    // if (postedEmbed.currentPage !== 1) {
-                    //     await messageReaction.message.react(`◀️`);
-                    //     await messageReaction.message.react(`▶️`);
-                    // } else {
-                    //     await messageReaction.message.react(`⏹`);
-                    //     await messageReaction.message.react(`▶️`);
-                    // }
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;
                 }

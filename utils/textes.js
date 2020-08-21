@@ -886,7 +886,7 @@ module.exports = class {
             GAMESERVER_CONFIG_NEW_PARAMETER: (gameserverConfig, server) => {
                 return `Nouveau paramètre détecté **${gameserverConfig.parameter}** dans le fichier ${gameserverConfig.filename} (serveur: ${server.servername})`
             },
-            
+
             GAMESERVER_CONFIG_CHANGED_PARAMETER: (gameserverConfigCurrent, gameserverConfig, server) => {
                 return `Le paramètre **${gameserverConfig.parameter}** à été modifié.
                 Ancienne valeur: ${gameserverConfig.value}
@@ -988,7 +988,7 @@ module.exports = class {
             EMBED_USERBOARD_TITLE: (name) => {
                 return `Gestion des embeds de ${name}`;
             },
-            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds, editEmbed,) => {
+            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds, editEmbed, ) => {
                 let texte = `Total: **${totalEmbeds}** embeds\n`;
                 if (editEmbed) {
                     texte += `En cours d'édition: **${editEmbed.titre}** (id:${editEmbed.id})\n\n`;
@@ -1098,10 +1098,18 @@ module.exports = class {
 
 
             LOG_EVENT_REACTION_ADD: (messageReaction, member) => {
-                return `${member.displayName} à réagi avec ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
+                if (messageReaction.message.channel.type === "dm") {
+                    return `${member.displayName} à réagi avec ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) via message privé`;
+                } else {
+                    return `${member.displayName} à réagi avec ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
+                }
             },
             LOG_EVENT_REACTION_REMOVE: (messageReaction, member) => {
+                if (messageReaction.message.channel.type === "dm") {
+                    return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) via message privé`;
+                } else {
                 return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
+                }
             },
             LOG_EVENT_USER_JOIN_SERVER: (member) => {
                 return `${member.displayName} à rejoint le serveur`;
