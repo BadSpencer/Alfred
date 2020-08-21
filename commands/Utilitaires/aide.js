@@ -1,6 +1,12 @@
 const Discord = require("discord.js");
 const colors = require("../../utils/colors");
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require("../../utils/messages");
+const {
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage,
+    promptMessage
+} = require("../../utils/messages");
 const {
     Message,
     MessageEmbed,
@@ -10,7 +16,7 @@ const {
     Command,
     PrefixSupplier
 } = require("discord-akairo");
-const textes = new (require("../../utils/textes.js"));
+const textes = new(require("../../utils/textes.js"));
 
 class AideCommand extends Command {
     constructor() {
@@ -31,13 +37,15 @@ class AideCommand extends Command {
             type: "commandAlias",
             match: "rest",
             prompt: {
-                start: message => promptMessage(textes.get("CMD_CMDALIAS_PROMPT")),
-                retry: message => promptMessage(textes.get("CMD_CMDALIAS_RETRY")),
+                start: (message) => promptMessage(textes.get("CMD_CMDALIAS_PROMPT")),
+                retry: (message) => promptMessage(textes.get("CMD_CMDALIAS_RETRY")),
                 optional: true
             }
         };
-        return { command };
-    };
+        return {
+            command
+        };
+    }
 
 
     async exec(message, args) {
@@ -48,8 +56,12 @@ class AideCommand extends Command {
 
         //const roleEve = guild.roles.cache.find(r => { return r.name == "@everyone" });
         //const roleMem = guild.roles.cache.find(r => { return r.name == message.settings.memberRole });
-        const roleMod = guild.roles.cache.find(r => { return r.name == message.settings.modRole });
-        const roleAdm = guild.roles.cache.find(r => { return r.name == message.settings.adminRole });
+        const roleMod = guild.roles.cache.find((r) => {
+            return r.name == message.settings.modRole
+        });
+        const roleAdm = guild.roles.cache.find((r) => {
+            return r.name == message.settings.adminRole
+        });
 
         let ignoredCategories = [];
         ignoredCategories.push("Auto");

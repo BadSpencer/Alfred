@@ -56,9 +56,9 @@ class debugCommand extends Command {
         successMessage(`Mode debug: ${args.action}`, message.channel);
 
 
-        if (message.channel.type === 'text')
-            if (message.channel.type === 'text')
-                if (message.channel.type === 'text') message.delete();;;
+        if (message.channel.type === "text") {
+            message.delete();
+        };
     }
 
 }
