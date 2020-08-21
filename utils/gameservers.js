@@ -1,18 +1,18 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-const datamodel = require('./datamodel');
-const colors = require('./colors');
+const datamodel = require("./datamodel");
+const colors = require("./colors");
 const {
   successMessage,
   errorMessage,
   warnMessage,
   questionMessage,
   promptMessage
-} = require('./messages');
+} = require("./messages");
 const fetch = require("node-fetch");
-const textes = new(require(`./textes.js`));
-const steamServerStatus = require('steam-server-status');
-const ftpClient = require('ftp');
+const textes = new(require("./textes.js"));
+const steamServerStatus = require("steam-server-status");
+const ftpClient = require("ftp");
 
 module.exports = (client) => {
 
