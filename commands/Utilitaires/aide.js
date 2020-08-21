@@ -57,10 +57,10 @@ class AideCommand extends Command {
         //const roleEve = guild.roles.cache.find(r => { return r.name == "@everyone" });
         //const roleMem = guild.roles.cache.find(r => { return r.name == message.settings.memberRole });
         const roleMod = guild.roles.cache.find((r) => {
-            return r.name == message.settings.modRole
+            return r.name === message.settings.modRole;
         });
         const roleAdm = guild.roles.cache.find((r) => {
-            return r.name == message.settings.adminRole
+            return r.name === message.settings.adminRole;
         });
 
         let ignoredCategories = [];
