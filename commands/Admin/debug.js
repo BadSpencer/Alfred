@@ -9,7 +9,9 @@ const {
     errorMessage,
     warnMessage
 } = require('../../utils/messages');
-const { Permissions } = require("discord.js");
+const {
+    Permissions
+} = require("discord.js");
 
 class debugCommand extends Command {
     constructor() {
@@ -23,7 +25,7 @@ class debugCommand extends Command {
         });
     }
 
-    *args(message) {
+    * args(message) {
         const action = yield {
             type: ['on', 'off'],
             prompt: {
@@ -31,7 +33,9 @@ class debugCommand extends Command {
                 retry: message => promptMessage(`Veuillez répondre avec "on" ou "off`)
             },
         };
-        return { action };
+        return {
+            action
+        };
     }
 
 
@@ -52,7 +56,9 @@ class debugCommand extends Command {
         successMessage(`Mode debug: ${args.action}`, message.channel);
 
 
-        if (message.channel.type === 'text') if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;;
+        if (message.channel.type === 'text')
+            if (message.channel.type === 'text')
+                if (message.channel.type === 'text') message.delete();;;
     }
 
 }

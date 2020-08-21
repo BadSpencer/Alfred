@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
-const colors = require('../../utils/colors');
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../utils/messages');
+const colors = require("../../utils/colors");
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require("../../utils/messages");
 const {
     Message,
     MessageEmbed,
@@ -10,17 +10,17 @@ const {
     Command,
     PrefixSupplier
 } = require("discord-akairo");
-const textes = new (require(`../../utils/textes.js`));
+const textes = new (require("../../utils/textes.js"));
 
 class AideCommand extends Command {
     constructor() {
-        super('aide', {
-            aliases: ['aide', 'help', 'h'],
-            category: 'Utilitaires',
+        super("aide", {
+            aliases: ["aide", "help", "h"],
+            category: "Utilitaires",
             description: {
-                content: textes.get('AIDE_AIDE_DESCRIPTION_CONTENT'),
-                usage: textes.get('AIDE_AIDE_DESCRIPTION_USAGE'),
-                examples: ['!aide', '!help ping', '!h']
+                content: textes.get("AIDE_AIDE_DESCRIPTION_CONTENT"),
+                usage: textes.get("AIDE_AIDE_DESCRIPTION_USAGE"),
+                examples: ["!aide", "!help ping", "!h"]
             }
         });
     }
@@ -28,11 +28,11 @@ class AideCommand extends Command {
     async *args(message) {
         let client = this.client;
         const command = yield {
-            type: 'commandAlias',
-            match: 'rest',
+            type: "commandAlias",
+            match: "rest",
             prompt: {
-                start: message => promptMessage(textes.get('CMD_CMDALIAS_PROMPT')),
-                retry: message => promptMessage(textes.get('CMD_CMDALIAS_RETRY')),
+                start: message => promptMessage(textes.get("CMD_CMDALIAS_PROMPT")),
+                retry: message => promptMessage(textes.get("CMD_CMDALIAS_RETRY")),
                 optional: true
             }
         };
@@ -52,13 +52,13 @@ class AideCommand extends Command {
         const roleAdm = guild.roles.cache.find(r => { return r.name == message.settings.adminRole });
 
         let ignoredCategories = [];
-        ignoredCategories.push('Auto');
+        ignoredCategories.push("Auto");
         if (!member.roles.cache.has(roleMod.id) && !member.roles.cache.has(roleAdm.id)) {
-            ignoredCategories.push('Admin');
-            ignoredCategories.push('Modération');
-            ignoredCategories.push('Jeux');
-            ignoredCategories.push('Serveurs');
-            ignoredCategories.push('Joueurs');
+            ignoredCategories.push("Admin");
+            ignoredCategories.push("Modération");
+            ignoredCategories.push("Jeux");
+            ignoredCategories.push("Serveurs");
+            ignoredCategories.push("Joueurs");
         }
 
         if (!args.command) {
@@ -99,7 +99,7 @@ class AideCommand extends Command {
                             description += `**${cmd}** ${cmd.description.content}\n`;
                         });
                         embed.setTitle(`${category}`);
-                        embed.setColor(colors['darkgreen']);
+                        embed.setColor(colors["darkgreen"]);
                         embed.setDescription(description);
                         embed.setFooter(`Page: ${pageIndex}/${totalPages}`);
                         embeds.push(embed);
@@ -122,12 +122,12 @@ class AideCommand extends Command {
                 pagesArray.push(pagesRecord);
             });
 
-            if (message.channel.type === 'text') message.delete();
+            if (message.channel.type === "text") message.delete();
 
             return message.author.send(embeds[0]).then(async msgSent => {
                 postedEmbeds.id = msgSent.id;
                 postedEmbeds.channelID = msgSent.channel.id;
-                postedEmbeds.name = `Aide`;
+                postedEmbeds.name = "Aide";
                 postedEmbeds.currentPage = 1;
                 postedEmbeds.totalPages = pagesArray.length;
                 postedEmbeds.pages = pagesArray;
@@ -143,18 +143,18 @@ class AideCommand extends Command {
         embed.setColor(colors.darkgreen);
         embed.setTitle(`Aide sur la commande: **${args.command.aliases[0]}**`);
         embed.setDescription(description)
-        embed.addField('Description', args.command.description.content || '\u200b');
-        embed.addField('Utilisation', args.command.description.usage || '\u200b');
+        embed.addField("Description", args.command.description.content || "\u200b");
+        embed.addField("Utilisation", args.command.description.usage || "\u200b");
 
-        if (args.command.aliases.length > 1) embed.addField('Alias', `\n\`${args.command.aliases.join('` `')}\``, true);
+        if (args.command.aliases.length > 1) embed.addField("Alias", `\n\`${args.command.aliases.join('` `')}\``, true);
         if (args.command.description.examples.length)
             embed.addField(
-                'Exemples',
+                "Exemples",
                 `\`${args.command.description.examples.join(`\`\n\``)}\``,
                 false,
             );
 
-        if (message.channel.type === 'text') message.delete();
+        if (message.channel.type === "text") message.delete();
         return message.util.send(embed);
     }
 
