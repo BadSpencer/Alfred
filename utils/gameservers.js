@@ -17,19 +17,19 @@ const ftpClient = require("ftp");
 module.exports = (client) => {
 
   client.gameServersGetAll = (toArray = false) => {
-    if (toArray == false) {
+    if (toArray === false) {
       return client.db_gameservers.fetchEverything();
     } else {
       return client.db_gameservers.array();
-    };
+    }
   };
 
   client.gameServersGetActive = (toArray = false) => {
-    if (toArray == false) {
-      return client.db_gameservers.filter(rec => rec.isActive == true);
+    if (toArray === false) {
+      return client.db_gameservers.filter((rec) => rec.isActive === true);
     } else {
-      return client.db_gameservers.filterArray(rec => rec.isActive == true);
-    };
+      return client.db_gameservers.filterArray((rec) => rec.isActive === true);
+    }
   };
 
   client.gameServersGet = (serverID) => {
@@ -373,7 +373,7 @@ module.exports = (client) => {
         response = undefined;
       }
       */
- 
+
 
       if (response == undefined) {
         if (server.status == "online") {
