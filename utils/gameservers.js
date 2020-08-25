@@ -281,7 +281,7 @@ module.exports = (client) => {
 
     let dateNow = +new Date;
     let gameserversPlayer = client.db_gameserversPlayers.get(playerID);
-    let gamePlayed = client.db_games.get(server.gamename);
+    let gamePlayed = client.gamesGet(server.gamename);
 
 
     let playersLog = client.db_playersLogs.find(record =>
@@ -365,7 +365,7 @@ module.exports = (client) => {
       let response = await client.gameRconQuery(server, "listplayers");
       let playerlist = [];
 
-      let game = client.db_games.get(server.gamename);
+      let game = client.gamesGet(server.gamename);
       const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
 
       /*
@@ -634,7 +634,7 @@ module.exports = (client) => {
       } else {
         let message = await gameInfosChannel.send(embed);
         game["serversStatusMessageID"] = message.id;
-        client.db_games.set(game.name, game);
+        client.db_games.set(game.id, game);
         client.log(`Message statut serveurs "${game.name}" créé`, 'warn');
       }
 

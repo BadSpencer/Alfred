@@ -59,7 +59,7 @@ exports.tables = {
     },
     gamealias: {
         'id': "",
-        'gamename': ""
+        'gameID': ""
     },
     gameservers:{
         "id": "default",

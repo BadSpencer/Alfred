@@ -88,7 +88,7 @@ exports.usergameCheck = async (client) => {
     // let usergames = client.db_usergame.array();
     // for (const usergame of usergames) {
     //     if (usergame !== null) {
-    //         let game = client.db_games.get(usergame.gameid);
+    //         let game = client.gamesGet(usergame.gameid);
     //         if (game) {
     //             let gameRole = guild.roles.cache.get(game.roleID);
 
@@ -143,7 +143,7 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
 
 
-    let usergame = client.db_usergame.get(`${game.name}-${member.id}`);
+    let usergame = client.db_usergame.get(`${member.id}-${game.id}`);
     if (usergame) {
         usergame.xp += xpAmount;
         client.db.userxplogAdd(client, member, "GAMEXP", xpAmount, "Joue", game.name);
@@ -153,7 +153,7 @@ exports.usergameAddXP = async (client, member, xpAmount, game) => {
             usergame.level = newLevel;
             client.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
         };
-        client.db_usergame.set(`${game.name}-${member.id}`, usergame);
+        client.db_usergame.set(`${member.id}-${game.id}`, usergame);
     }
 };
 exports.userdataAddXP = async (client, member, xpAmount, reason) => {

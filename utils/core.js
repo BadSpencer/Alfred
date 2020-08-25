@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-const colors = require('./colors');
-const constants = require('./constants');
-const datamodel = require('./datamodel');
-const textes = new(require(`./textes.js`));
-const ftpClient = require('ftp');
+const colors = require("./colors");
+const constants = require("./constants");
+const datamodel = require("./datamodel");
+const textes = new(require("./textes.js"));
+const ftpClient = require("ftp");
 
 module.exports = (client) => {
     client.createVoiceChannel = async (name = "") => {
@@ -41,7 +41,7 @@ module.exports = (client) => {
 
         let presenceGame = await client.presenceGetGameName(member.presence);
         if (presenceGame) {
-            let game = client.db_games.get(presenceGame);
+            let game = client.gamesGet(presenceGame);
             if (game) {
                 channelName = `🔊 ${game.name}`
             }
@@ -212,7 +212,7 @@ module.exports = (client) => {
             messages = messages.filter((m) => m.author.bot === true);
             messages = messages.filter((m) => m.content === "");
             messages = messages.filter((m) => m.embeds[0].title === "Bonne journée à tous sur Casual Effect");
-            
+
 
             generalChannel.bulkDelete(messages, true);
             client.log(`Suppression de ${messages.length} messages `, "debug");
@@ -582,7 +582,7 @@ module.exports = (client) => {
         };
         client.db_settings.set(guild.id, settingsNew);
 
-        
+
         client.log(`Vérification structure "games"`, "debug");
 
         let gamesModel = Object.assign({}, datamodel.tables.games);
@@ -590,7 +590,7 @@ module.exports = (client) => {
         let games = client.gamesGetAll(true);
 
         for (const game of games) {
-            let gameNew = gamesModel;
+            let gameNew = Object.assign({}, datamodel.tables.games);
             for (const key of gamesKeys) {
                 if (game[key] !== undefined) {
                     gameNew[key] = game[key];
@@ -598,7 +598,56 @@ module.exports = (client) => {
             };
             client.db_games.set(game.id, gameNew);
         };
-        
+
+
+
+        for (const game of games) {
+            if (game.id !== client.gamesGetGameID(game.name)) {
+                if (!game.id.includes("'")) {
+                    if (game.actif === true) {
+                        client.db_games.delete(game.id);
+                        game.id = client.gamesGetGameID(game.name);
+                        client.db_games.set(game.id, game);
+                        client.log(`Adaptation ${game.name}`);
+
+                    } else {
+                        client.db_games.delete(game.id);
+                        game.id = client.gamesGetGameID(game.name);
+                        client.db_games.set(game.id, game);
+                        client.log(`Adaptation ${game.name}`, "debug");
+                    }
+                } else {
+                    game.id = client.gamesGetGameID(game.name);
+                    client.db_games.set(game.id, game);
+                    client.log(`Adaptation ${game.name} Attention doublon`);
+                };
+            }
+        };
+
+        let usergames = client.db_usergame.fetchEverything();
+
+        for (const usergame of usergames) {
+            if (usergame[0] == "default") {
+                client.db_usergame.delete(usergame[0]);
+            } else {
+                if (usergame[1] !== null) {
+                    if (usergame[1].id !== `${usergame[1].userid}-${usergame[1].gameid}`) {
+                        if (!usergame[0].includes("'")) {
+                            client.db_usergame.delete(usergame[0]);
+                        }
+                        let gameID = client.gamesGetGameID(usergame[1].gameid);
+                        usergame[1].id = `${usergame[1].userid}-${gameID}`;
+                        usergame[1].gameid = gameID;
+                        client.db_usergame.set(usergame[1].id, usergame[1]);
+                    }
+                } else {
+                    if (!usergame[0].includes("'")) {
+                        client.db_usergame.delete(usergame[0]);
+                    }
+                }
+            }
+        }
+
 
         client.log(`Vérification structure "gameservers"`, "debug");
 

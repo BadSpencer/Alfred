@@ -27,7 +27,7 @@ class presenceUpdateListener extends Listener {
 
         // Ajout du jeu dans la base s'il n'ets pas trouvé
         if (newPresenceGame !== null) {
-            let gamePlayed = client.db_games.get(newPresenceGame);
+            let gamePlayed = client.gamesGet(newPresenceGame);
             if (!gamePlayed) {
                 await client.gamesCreate(newPresenceGame);
             }
@@ -37,7 +37,7 @@ class presenceUpdateListener extends Listener {
         /*                       Le membre se met à jouer à quelque chose                              */
         /*---------------------------------------------------------------------------------------------*/
         if (oldPresenceGame == null && newPresenceGame !== null) {
-            let gamePlayed = client.db_games.get(newPresenceGame);
+            let gamePlayed = client.gamesGet(newPresenceGame);
             if (gamePlayed && gamePlayed.actif) {
 
                 await client.usergameUpdateLastPlayed(gamePlayed, newPresence.member);
@@ -62,7 +62,7 @@ class presenceUpdateListener extends Listener {
         /*                           Membre a arreté de jouer à un jeu                                 */
         /*---------------------------------------------------------------------------------------------*/
         if (oldPresenceGame !== null && newPresenceGame == null) {
-            let gamePlayed = client.db_games.get(oldPresenceGame);
+            let gamePlayed = client.gamesGet(oldPresenceGame);
             if (gamePlayed) {
                 if (gamePlayed.actif) {
                     let gamePlayRole = oldPresence.member.guild.roles.cache.get(gamePlayed.playRoleID);
@@ -78,14 +78,14 @@ class presenceUpdateListener extends Listener {
         /*                                 Membre a changé de jeu                                      */
         /*---------------------------------------------------------------------------------------------*/
         if (oldPresenceGame !== null && newPresenceGame !== null) {
-            let gamePlayedOld = client.db_games.get(oldPresenceGame);
+            let gamePlayedOld = client.gamesGet(oldPresenceGame);
             if (gamePlayedOld) {
                 let gamePlayRole = oldPresence.guild.roles.cache.get(gamePlayedOld.playRoleID);
                 if (oldPresence.member.roles.cache.has(gamePlayedOld.roleID)) {
                     await oldPresence.member.roles.remove(gamePlayRole);
                 }
             }
-            let gamePlayedNew = client.db_games.get(newPresenceGame);
+            let gamePlayedNew = client.gamesGet(newPresenceGame);
             if (gamePlayedNew) {
 
                 await client.usergameUpdateLastPlayed(gamePlayedNew, newPresence.member);

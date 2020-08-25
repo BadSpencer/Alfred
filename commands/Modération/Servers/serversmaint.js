@@ -67,7 +67,7 @@ class ServerMaintCommand extends Command {
 
         if (args.serverID == "*") {
             for (const game of games) {
-                let dbgame = client.db_games.get(game.gamename);
+                let dbgame = client.gamesGet(game.gamename);
                 if (dbgame) {
                     const gameTextChannel = guild.channels.cache.get(dbgame.textChannelID);
                     if (args.mode == 'on') {
@@ -89,7 +89,7 @@ class ServerMaintCommand extends Command {
             };
         } else {
             let server = client.gameServersGet(args.serverID);
-            let dbgame = client.db_games.get(server.gamename);
+            let dbgame = client.gamesGet(server.gamename);
             if (dbgame) {
 
                 const gameTextChannel = guild.channels.cache.get(dbgame.textChannelID);

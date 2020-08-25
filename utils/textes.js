@@ -605,6 +605,19 @@ module.exports = class {
                 `;
             },
 
+            GAMES_ADD_ERROR_GAME_ALREADY_EXIST: (gamename) => {
+                return `Le jeu **${gamename}** est déjà enregistré dans la base`;
+            },
+            GAMES_ADD_ERROR_GAME_ALREADY_EXIST_ALIAS: (gamename, game) => {
+                return `Le nom de jeu **${gamename}** est associé à un jeu déjà dans la base: **${game.name}**`;
+            },
+            GAMES_ADD_SUCCESS: (gamename) => {
+                return `Le jeu **${gamename}** a correctement été ajouté à la base de données`;
+            },
+
+
+
+
             GAMES_GAMEALIAS_ADD_DESCRIPTION_CONTENT: `Ajouter un alias à un jeu`,
             GAMES_GAMEALIAS_ADD_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider
             
@@ -631,6 +644,10 @@ module.exports = class {
                 return `Activation du jeu **${game.id}**
                 `;
             },
+            GAMES_GAME_ACTIVE_CATEGORY_NOT_FOUND: `La catégorie enregistrée pour le jeu n'a pas été trouvée. Elle sera recréée`,
+            GAMES_GAME_ACTIVE_TEXTCHANNEL_NOT_FOUND: `La salon de discussions enregistrée pour le jeu n'a pas été trouvé. Il sera recréé`,
+            GAMES_GAME_ACTIVE_MAINROLE_ALREADY_EXIST: `Le rôle principal pour le jeu existe déjà (ce n'est pas normal). Il va être réutilisé`,
+
 
             GAMES_GAME_CHAN_DESCRIPTION_CONTENT: `Ajouter un salon à un jeu`,
             GAMES_GAME_CHAN_DESCRIPTION_USAGE: `Description à écrire`,
@@ -697,7 +714,7 @@ module.exports = class {
             GAMES_GAME_ADD_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
             GAMES_GAME_ADD_GAME_PROMPT: `Quel **jeu** souhaitez vous ajouter ?`,
 
-
+        
             GAMES_GAME_VIEW_DESCRIPTION_CONTENT: `Afficher les données d'un jeu`,
             GAMES_GAME_VIEW_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
             GAMES_GAME_VIEW_GAME_PROMPT: `Quel **jeu** souhaitez vous afficher ?`,
@@ -1084,6 +1101,10 @@ module.exports = class {
                 return `Le champ "${field}" n'existe pas`;
             },
 
+            ERROR_SETTINGS_ROLE_MEMBERS_NOT_FOUND: (rolename) => {
+                return `Erreur de configuration: Aucun rôle avec le nom "${rolename} n'a été trouvé sur ce serveur.`;
+            },
+
             // DEBUG
 
             DEBUG_EVENT_GUILD_MEMBER_UPDATE: (member) => {
@@ -1108,7 +1129,7 @@ module.exports = class {
                 if (messageReaction.message.channel.type === "dm") {
                     return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) via message privé`;
                 } else {
-                return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
+                    return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
                 }
             },
             LOG_EVENT_USER_JOIN_SERVER: (member) => {

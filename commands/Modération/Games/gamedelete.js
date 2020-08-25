@@ -158,7 +158,7 @@ class GameInactiveCommand extends Command {
 
         args.game.actif = false;
         args.game.emoji = "";
-        client.db_games.set(args.game.name, args.game);
+        client.db_games.set(args.game.id, args.game);
 
         successMessage(textes.get('GAMES_GAME_DELETE_SUCCESS', args.game), message.channel);
         if (message.channel.type === 'text') message.delete();

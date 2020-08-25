@@ -2,22 +2,55 @@ const Discord = require("discord.js");
 const moment = require("moment");
 const datamodel = require('./datamodel');
 const colors = require('./colors');
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('./messages');
+const {
+  successMessage,
+  errorMessage,
+  warnMessage,
+  questionMessage,
+  promptMessage
+} = require('./messages');
 
 module.exports = (client) => {
 
   client.gamesGetAll = (toArray = false) => {
-    if (toArray == false) {
+    if (toArray === false) {
       return client.db_games.fetchEverything();
     } else {
       return client.db_games.array();
     };
   };
-  client.gamesGetActive = () => {
-    return client.db_games.filter(rec => rec.actif == true);
+  client.gamesGetActive = (toArray = false) => {
+    if (toArray === false) {
+      return client.db_games.filter((rec) => rec.actif == true);
+    } else {
+      return client.db_games.filterArray((rec) => rec.actif == true);
+    }
   };
-  client.gamesGetInactive = () => {
-    return client.db_games.filter(rec => rec.actif == false);
+  client.gamesGetInactive = (toArray = false) => {
+    if (toArray === false) {
+      return client.db_games.filter((rec) => rec.actif === false);
+    } else {
+      return client.db_games.filterArray((rec) => rec.actif === false);
+    }
+  };
+
+  client.gamesGet = (phrase) => {
+    let gameID = phrase.replace(/[^a-zA-Z]+/g, '').toLowerCase();
+    let alias = phrase.toLowerCase();
+
+    let game = client.db_games.get(gameID);
+    if (game) {
+      return game;
+    } else {
+      const gamealias = client.db_gamealias.get(alias);
+      if (gamealias) {
+        game = client.db_games.get(gamealias.gameID);
+        if (game) {
+          return game;
+        }
+      }
+    }
+    return null;
   };
 
   client.gamesListPost = async (channel, option = 'tout') => {
@@ -51,26 +84,576 @@ module.exports = (client) => {
       } else {
         iconStatut = '◾️';
       }
-      gameListOutput.push(`${iconStatut} **${game.id}**`);
+      gameListOutput.push(`${iconStatut} **${game.name}** (${game.id})`);
     };
     await client.arrayToEmbed(gameListOutput, 20, `Liste de jeux (option: ${option})`, channel);
+  };
+
+  client.gamesGetGameID = (phrase) => {
+    return phrase.replace(/[^A-Za-z0-9]+/g, '').toLowerCase();
   };
 
   client.gamesCreate = async (gamename) => {
     let game = Object.assign({}, datamodel.tables.games);
 
-    game.id = gamename;
+    game.id = client.gamesGetGameID(gamename);
     game.name = gamename;
     game.createdAt = +new Date;
 
     client.db_games.set(game.id, game);
-    client.log(`Le jeu ${gamename} à été ajouté à la base de données`)
+    client.log(`Le jeu ${gamename} à été ajouté à la base de données. ID: ${game.id}`);
   };
 
-  client.gameGetScore = async (nbDays = 5) => {
+  client.gamesUpdateGame = (game) => {
+    client.db_games.set(game.id, game);
+  }
+
+  client.gamesCreateMainCategory = async (game) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = client.db.getSettings(client);
+
+    await guild.channels.create(`${settings.gameCategoryPrefix}${args.game.name}`, {
+      type: "category"
+    }).then(category => {
+      game.categoryID = category.id;
+      client.gamesUpdateGame(game);
+      return category;
+    });
+  };
+
+  client.gamesCreateMainRole = async (game) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = client.db.getSettings(client);
+
+    await message.guild.roles.create({
+      data: {
+        name: args.game.name,
+        color: settings.gameMainRoleColor,
+        hoist: false,
+        mentionable: true
+      },
+      reason: `Création du jeu ${args.game.name}`
+    }).then(async gameRole => {
+      game.roleID = gameRole.id;
+      client.gamesUpdateGame(game);
+      return gameRole;
+    })
+  };
+
+  client.gamesCreateTextChannel = async (game) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = client.db.getSettings(client);
+
+    const gameCategory = guild.channels.cache.get(game.categoryID);
+
+    await guild.channels.create(`${settings.gameTextPrefix}discussions`, {
+      type: 'text'
+    }).then(textChannel => {
+      game.textChannelID = textChannel.id;
+      client.gamesUpdateGame(game);
+      return textChannel;
+    });
+
+  };
+
+  client.gamesCreateVoiceChannel = async (game) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = client.db.getSettings(client);
+
+    const gameCategory = guild.channels.cache.get(game.categoryID);
+
+
+    await guild.channels.create(`🔈${args.game.name}`, {
+      type: 'voice'
+    }).then(gameVoiceChannel => {
+      game.voiceChannelID = gameVoiceChannel.id;
+      client.gamesUpdateGame(game);
+      gameVoiceChannel.setParent(category)
+
+    })
+  };
+
+  client.gamesTextChannelSetPerm = async (game, mode) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
+    const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
+
+    const gameMainRole = guild.roles.cache.get(game.roleID);
+
+    const gameTextChannel = guild.channels.cache.get(game.textChannelID);
+
+    if (mode === "active") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu : peut voir poster des messages etc...
+      gameTextChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres: Doit pouvoir voir et juste poster un message
+      gameTextChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+    if (mode === "inactive") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu ne doit pas voir le salon
+      gameTextChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+
+  };
+  client.gamesInfosChannelSetPerm = async (game, mode) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
+    const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
+
+    const gameMainRole = guild.roles.cache.get(game.roleID);
+
+    const gameInfosChannel = guild.channels.cache.get(game.infosChannelID);
+
+    if (mode === "active") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameInfosChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu : peut voir poster des messages etc...
+      gameInfosChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres: Doit pouvoir voir et juste poster un message
+      gameInfosChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+    if (mode === "inactive") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameInfosChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu ne doit pas voir le salon
+      gameInfosChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres ne doit pas voir le salon
+      gameInfosChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+
+  };
+  client.gamesEventChannelSetPerm = async (game, mode) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
+    const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
+
+    const gameMainRole = guild.roles.cache.get(game.roleID);
+
+    const gameEventChannel = guild.channels.cache.get(game.eventsChannelID);
+
+    if (mode === "active") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu : peut voir poster des messages etc...
+      gameTextChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres: Doit pouvoir voir et juste poster un message
+      gameTextChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+    if (mode === "inactive") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu ne doit pas voir le salon
+      gameTextChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+
+  };
+  client.gamesVoiceChannelSetPerm = async (game, mode) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    const settings = await client.db.getSettings(client);
+
+    const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
+    const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
+
+    const gameMainRole = guild.roles.cache.get(game.roleID);
+
+    const gameEventChannel = guild.channels.cache.get(game.voiceChannelID);
+
+    if (mode === "active") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu : peut voir poster des messages etc...
+      gameTextChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres: Doit pouvoir voir et juste poster un message
+      gameTextChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: true,
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: true,
+        ATTACH_FILES: true,
+        READ_MESSAGE_HISTORY: true,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: true,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+    if (mode === "inactive") {
+      // Rôle @everyone ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleEveryone, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle principal jeu ne doit pas voir le salon
+      gameTextChannel.createOverwrite(gameMainRole, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+      // Rôle Membres ne doit pas voir le salon
+      gameTextChannel.createOverwrite(roleMembers, {
+        CREATE_INSTANT_INVITE: false,
+        MANAGE_CHANNELS: false,
+        ADD_REACTIONS: false,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+        EMBED_LINKS: false,
+        ATTACH_FILES: false,
+        READ_MESSAGE_HISTORY: false,
+        MENTION_EVERYONE: false,
+        USE_EXTERNAL_EMOJIS: false,
+        MANAGE_ROLES: false,
+        MANAGE_WEBHOOKS: false
+      });
+    }
+
+  };
+
+  client.gamesGetScores = async (nbDays = 5) => {
 
     const guild = client.guilds.cache.get(client.config.guildID);
-    let activeGames = client.db_games.filterArray(game => game.actif === true);
+    let activeGames = client.gamesGetActive(true);
 
     let activeGamesScores = [];
 
@@ -133,11 +716,83 @@ module.exports = (client) => {
     return activeGamesScores;
   };
 
+  client.gamesGetGameScore = async (nbDays = 5) => {
+
+
+  };
+
+  client.gamesGetGameInfosEmbed = (game) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+
+    let embed = new Discord.MessageEmbed();
+
+    let description = "";
+    let memberList1 = "";
+    let memberList2 = "";
+    let memberList3 = "";
+
+    if (game.actif === false) {
+      description += "Ce jeu n'est pas actif\n"
+    } else {
+      const gameRole = guild.roles.cache.get(game.roleID);
+
+      if (gameRole) {
+        if (gameRole.members.size > 0) {
+          let index = 1;
+          for (const member of gameRole.members) {
+            if (index == 1) {
+              memberList1 += `<@${member[1].id}>\n`;
+            }
+            if (index == 2) {
+              memberList2 += `<@${member[1].id}>\n`;
+            }
+            if (index == 3) {
+              memberList3 += `<@${member[1].id}>\n`;
+            }
+            if (index !== 3) {
+              index += 1;
+            } else {
+              index = 1;
+            }
+          }
+          embed.addField("\u200b", memberList1 || "\u200b", true)
+          embed.addField("Membres", memberList2 || "\u200b", true);
+          embed.addField("\u200b", memberList3 || "\u200b", true)
+        } else {
+          embed.addField("\u200b", "\u200b", true)
+          embed.addField("Membres", "Aucun membre", true);
+          embed.addField("\u200b", "\u200b", true)
+        }
+
+
+      } else {
+        description += "Attention: Problème avec le rôle principal de ce jeu\n"
+      }
+
+
+    }
+
+
+    embed.addField("Créé le", moment(game.createdAt).format('DD.MM.YYYY'), true);
+
+    embed.setTitle(game.name);
+    embed.setColor(0xF1C40F);
+    embed.setDescription(description);
+
+    return embed;
+
+  };
+
+  client.gamesPostGameInfos = (game, channel) => {
+    let embed = new Discord.MessageEmbed(client.gamesGetGameInfosEmbed(game));
+    channel.send(embed)
+  };
+
   client.gamesJoinListPost = async (clearReact = false) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
     const games = await client.db.gamesGetActive(client);
-    const gamesXP = await client.gameGetScore();
+    const gamesXP = await client.gamesGetScores();
 
     if (!gamesXP) return;
 
@@ -213,13 +868,13 @@ module.exports = (client) => {
 
   client.gamesPlayersDetail = async (gamename, message) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const game = client.db_games.get(gamename);
+    const game = client.gamesGet(gamename);
     const gameRole = guild.roles.cache.get(game.roleID);
 
     let playerListOutput = [];
 
     for (const member of gameRole.members) {
-      let usergameKey = `${gamename}-${member[1].id}`
+      let usergameKey = `${member[1].id}-${game.id}`;
       let usergame = client.db_usergame.get(usergameKey);
       let now = +new Date;
       let daysPlayed = 0;
@@ -250,7 +905,7 @@ module.exports = (client) => {
   };
 
   client.usergameUpdateLastPlayed = async (game, member) => {
-    let usergameKey = `${game.name}-${member.id}`;
+    let usergameKey = `${member.id}-${game.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
       usergame = Object.assign({}, datamodel.tables.usergame);
@@ -267,7 +922,7 @@ module.exports = (client) => {
   };
 
   client.usergameUpdateLastAction = async (game, member) => {
-    let usergameKey = `${game.name}-${member.id}`;
+    let usergameKey = `${member.id}-${game.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
       usergame = Object.assign({}, datamodel.tables.usergame);
@@ -280,7 +935,7 @@ module.exports = (client) => {
   };
 
   client.usergameUpdateJoinedAt = async (game, member) => {
-    let usergameKey = `${game.name}-${member.id}`;
+    let usergameKey = `${member.id}-${game.id}`;
     let usergame = client.db_usergame.get(usergameKey);
     if (!usergame) {
       usergame = Object.assign({}, datamodel.tables.usergame);
@@ -483,7 +1138,7 @@ module.exports = (client) => {
         "level": "",
         "xp": ""
       };
-      let usergameKey = `${game.name}-${member[1].id}`
+      let usergameKey = `${member[1].id}-${game.id}`;
       let usergame = client.db_usergame.get(usergameKey);
 
       if (usergame) {
@@ -579,10 +1234,10 @@ module.exports = (client) => {
     client.gamesJoinListPost();
   };
 
-  client.gamealiasAdd = (alias, gamename) => {
+  client.gamealiasAdd = (alias, gameID) => {
     let gamealias = Object.assign({}, datamodel.tables.gamealias);
     gamealias.id = alias.toLowerCase();
-    gamealias.gamename = gamename;
+    gamealias.gameID = gameID;
     client.db_gamealias.set(gamealias.id, gamealias);
   };
 

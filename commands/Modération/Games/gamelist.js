@@ -32,7 +32,7 @@ class GameListCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         await client.gamesListPost(message.channel, args.option);
-        if (message.channel.type === 'text') message.delete();
+        //if (message.channel.type === 'text') message.delete();
     }
 
 }

@@ -146,21 +146,7 @@ client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les
 
 client.commandHandler.resolver.addType('game', (message, phrase) => {
     if (!phrase) return null;
-
-    let game = client.db_games.get(phrase);
-    if (game) {
-        return game;
-    } else {
-        const gamealias = client.db_gamealias.get(phrase);
-        if (gamealias) {
-            game = client.db_games.get(gamealias.gamename);
-            if (game) {
-                return game;
-            }
-            return null;
-        }
-        return null;
-    };
+    return client.gamesGet(phrase);
 });
 client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
     if (!phrase) return null;

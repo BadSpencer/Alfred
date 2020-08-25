@@ -68,23 +68,98 @@
          let stateMsg = await message.channel.send(embedState);
 
 
-         // Vérification présence Catégorie
+         // Gestion du rôle principal
+         let gameMainRole;
+         if (args.game.roleID !== "") {
+
+             gameMainRole = guild.roles.cache.get(args.game.roleID);
+
+             if (!gameMainRole) {
+                 // Le rôle principal n'existe pas (cas normal)
+                 gameMainRole = await client.gamesCreateMainRole(args.game);
+                 state += `Rôle principal créé: ✅\n`;
+                 args.game.roleID = gameMainRole.id;
+             } else {
+                 client.log(textes.get("GAMES_GAME_ACTIVE_MAINROLE_ALREADY_EXIST"));
+             }
+             gameMainRole = await client.gamesCreateMainRole(args.game);
+             state += `Rôle principal créé: ✅\n`;
+             args.game.roleID = gameMainRole.id;
+         }
+         stateMsg.edit(stateMessage(state));
+
+
+         // Gestion de la catégorie
+         let gameCategory;
          if (args.game.categoryID !== "") {
-             let gameCategory = message.guild.channels.cache.get(args.game.categoryID);
+             // Une catégorie est déjà renseignée pour le jeu (jeu actif par le passé)
+             gameCategory = guild.channels.cache.get(args.game.categoryID);
              if (!gameCategory) {
-                 args.game.categoryID = "";
-             };
-         };
+                 // La catégorie n'existe pas
+                 client.log(textes.get("GAMES_GAME_ACTIVE_CATEGORY_NOT_FOUND"));
+                 state += `Catégorie créée: ✅\n`;
+                 gameCategory = await client.gamesCreateMainCategory(args.game);
+                 args.game.categoryID = gameCategory.id;
+             } else {
+                 // La catégorie existe. On change son nom avec les règles de nommage par défaut
+                 gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`);
+                 state += `Catégorie réactivée: ✅\n`;
+             }
+         } else {
+             gameCategory = await client.gamesCreateMainCategory(args.game);
+             state += `Catégorie créée: ✅\n`;
+             args.game.categoryID = gameCategory.id;
+         }
+         stateMsg.edit(stateMessage(state));
 
+
+         // Gestion du salon de discussions
+         let gameTextChannel;
          if (args.game.textChannelID !== "") {
-             let textChannel = message.guild.channels.cache.get(args.game.textChannelID);
-             if (!textChannel) {
-                 args.game.textChannelID = "";
-             };
-         };
+             // Un salon de discussions est déjà renseigné pour le jeu (jeu actif par le passé)
+             gameTextChannel = guild.channels.cache.get(args.game.textChannelID);
+             if (!gameTextChannel) {
+                 // Le salon spécifié n'existe pas. On le recréé
+                 client.log(textes.get("GAMES_GAME_ACTIVE_TEXTCHANNEL_NOT_FOUND"));
+                 gameTextChannel = await client.gamesCreateTextChannel(args.game);
+                 await client.gamesTextChannelSetPerm(args.game, "active");
+                 state += `Salon discussions créé: ✅\n`;
+                 args.game.textChannelID = gameTextChannel.id;
+             } else {
+                 // Le salon existe. On change son nom avec les règles de nommage par défaut
+                 gameTextChannel.setName(`${settings.gameCategoryPrefix}${args.game.name}`);
+                 await client.gamesTextChannelSetPerm(args.game, "active");
+                 state += `Salon discussions réactivé: ✅\n`;
+             }
+         } else {
+             gameTextChannel = await client.gamesCreateTextChannel(args.game);
+             await client.gamesTextChannelSetPerm(args.game, "active");
+             state += `Salon discussions créé: ✅\n`;
+             args.game.textChannelID = gameTextChannel.id;
+         }
+         stateMsg.edit(stateMessage(state));
 
 
-         let gameRole;
+         // Gestion salon vocal
+         let gameVoiceChannel;
+         if (args.game.voiceChannelID !== "") {
+             // Un salon vocal existe déjà pour ce jeu (pas normal)
+             gameVoiceChannel = guild.channels.cache.get(args.game.voiceChannelID);
+
+             if (!gameVoiceChannel) {
+                // Le salon spécifié n'existe pas. On le recréé
+                gameVoiceChannel = await client.gamesCreateVoiceChannel(args.game);
+             } else {
+
+             }
+
+
+
+         }
+
+
+
+
          if (args.game.categoryID == "" && args.game.textChannelID == "") {
              let gameCategory = await message.guild.channels.create(`${settings.gameCategoryPrefix}${args.game.name}`, {
                  type: "category"
@@ -95,7 +170,7 @@
                  state += `Catégorie: ✅\n`;
                  stateMsg.edit(stateMessage(state));
 
-                 gameRole = await message.guild.roles.create({
+                 gameMainRole = await message.guild.roles.create({
                      data: {
                          name: args.game.name,
                          color: settings.gameMainRoleColor,
@@ -186,7 +261,7 @@
                              });
 
                              args.game.voiceChannelID = gameVoiceChannel.id;
-                             client.db_games.set(args.game.name, args.game);
+                             client.db_games.set(args.game.id, args.game);
                          })
 
 
@@ -194,7 +269,7 @@
                  })
              })
          } else {
-             gameRole = await message.guild.roles.create({
+             gameMainRole = await message.guild.roles.create({
                  data: {
                      name: args.game.name,
                      color: settings.gameMainRoleColor,
@@ -295,13 +370,12 @@
 
          args.game.actif = true;
          args.game.emoji = await client.gameGetFreeEmoji();
-         client.db_games.set(args.game.name, args.game);
+         client.db_games.set(args.game.id, args.game);
 
          state += `Salons et rôles pour ${args.game.name} correctement créés\n`;
          stateMsg.edit(stateMessage(state));
 
          if (message.channel.type === 'text') message.delete();
      }
-
  }
  module.exports = GameActiveCommand;

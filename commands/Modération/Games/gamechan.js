@@ -116,7 +116,7 @@ class GameChanCommand extends Command {
                     });
                     successMessage(`Salon ${gameInfosChannel.name} créé`, message.channel);
                 })
-                client.db_games.set(args.game.name, args.game);
+                client.db_games.set(args.game.id, args.game);
                 break;
 
                 case 'event':
@@ -177,7 +177,7 @@ class GameChanCommand extends Command {
                         });
                         successMessage(`Salon ${gameEventsChannel.name} créé`, message.channel);
                     })
-                    client.db_games.set(args.game.name, args.game);
+                    client.db_games.set(args.game.id, args.game);
                 break;
         }
 
