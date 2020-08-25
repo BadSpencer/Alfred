@@ -35,7 +35,7 @@ module.exports = (client) => {
   };
 
   client.gamesGet = (phrase) => {
-    let gameID = phrase.replace(/[^a-zA-Z]+/g, '').toLowerCase();
+    let gameID = client.gamesGetGameID(phrase);
     let alias = phrase.toLowerCase();
 
     let game = client.db_games.get(gameID);
