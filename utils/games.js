@@ -911,7 +911,7 @@ module.exports = (client) => {
       usergame = Object.assign({}, datamodel.tables.usergame);
       usergame.id = usergameKey;
       usergame.userid = member.id;
-      usergame.gameid = game.name;
+      usergame.gameid = game.id;
       client.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member, game));
       if (game.actif && !member.roles.cache.has(game.roleID)) {
         client.usergameNotifyPlayerActiveGame(game, member);

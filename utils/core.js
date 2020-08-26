@@ -600,7 +600,42 @@ module.exports = (client) => {
         };
 
 
+        // Vérification usergame
+        for (const game of games) {
+            if (game.roleID !== "") {
+                let gameMainRole = guild.roles.cache.get(game.roleID);
+                if (gameMainRole) {
+                    for (const member of gameMainRole.members) {
+                        let usergameKey = `${member[1].id}-${game.id}`;
 
+                        let usergame = client.db_usergame.get(usergameKey);
+                        let date = +new Date;
+                        date = +new Date(moment(date).subtract(30, 'days'));
+
+                        if (!usergame) {
+                            client.log(`Les données du jeu ${game.name} pour ${member[1].displayName} n'ont pas été trouvées. Elle vont être créées`, "warn");
+                            usergame = Object.assign({}, datamodel.tables.usergame);
+                            usergame.id = usergameKey;
+                            usergame.userid = member[1].id;
+                            usergame.gameid = game.id;
+                            usergame.joinedAt = date;
+                            usergame.joinedDate = moment(date).format('DD.MM.YYYY');
+                            usergame.joinedTime = moment(date).format('HH:mm');
+                            usergame.lastPlayed = date;
+                            usergame.lastAction = date;
+                            client.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member[1], game));
+                            client.db_usergame.set(usergame.id, usergame);
+                        }
+                    }
+                } else {
+                    client.log(`Le rôle principal de ${game.name} n'a pas été trouvé sur le serveur`, "error");
+                }
+            }
+        };
+
+
+
+        /*
         for (const game of games) {
             if (game.id !== client.gamesGetGameID(game.name)) {
                 if (!game.id.includes("'")) {
@@ -623,7 +658,9 @@ module.exports = (client) => {
                 };
             }
         };
+        */
 
+        /*
         let usergames = client.db_usergame.fetchEverything();
 
         for (const usergame of usergames) {
@@ -647,6 +684,7 @@ module.exports = (client) => {
                 }
             }
         }
+        */
 
 
         client.log(`Vérification structure "gameservers"`, "debug");
@@ -664,6 +702,8 @@ module.exports = (client) => {
             };
             client.db_gameservers.set(gameserver.id, gameserverNew);
         };
+
+
 
 
     };
