@@ -38,6 +38,32 @@ module.exports = (client) => {
 
     };
 
+    client.textesCheck = () => {
+        let astuces = client.textes.getAstuces(client);
+        astuces.forEach(astuce => {
+            let currAst = client.db_astuces.find(ast => ast.texte == astuce);
+            if (!currAst) {
+                let newAstuce = Object.assign({}, datamodel.tables.astuce);
+                newAstuce.id = client.db_astuces.autonum;
+                newAstuce.texte = astuce;
+                newAstuce.count = 0;
+                client.db_astuces.set(newAstuce.id, newAstuce);
+            }
+        });
+    
+        let citations = client.textes.getCitations(client);
+        citations.forEach(citation => {
+            let currCit = client.db_citations.find(ast => ast.texte == citation);
+            if (!currCit) {
+                let newCitation = Object.assign({}, datamodel.tables.citation);
+                newCitation.id = client.db_citations.autonum;
+                newCitation.texte = citation;
+                newCitation.count = 0;
+                client.db_citations.set(newCitation.id, newCitation);
+            }
+        });
+    };
+
 
     client.createVoiceChannel = async (name = "") => {
         client.log(`Méthode: createVoiceChannel`, 'debug');
@@ -596,7 +622,7 @@ module.exports = (client) => {
 
     };
 
-    client.datamodelCheck = async () => {
+    client.datamodelCheck = () => {
         const guild = client.guilds.cache.get(client.config.guildID);
 
 

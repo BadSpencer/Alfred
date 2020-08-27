@@ -195,7 +195,12 @@ exports.tables = {
         "showTitle": true,
         "showFooter": true
     },
-    astuces: {
+    astuce: {
+        "id": "",
+        "texte": "",
+        "count": 0
+    },
+    citation: {
         "id": "",
         "texte": "",
         "count": 0

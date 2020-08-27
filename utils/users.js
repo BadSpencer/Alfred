@@ -267,7 +267,7 @@ module.exports = (client) => {
         message.channel.send(embed);
     };
 
-    client.userdataCheck = async () => {
+    client.userdataCheck = () => {
         client.log(`Vérification de la base des membres`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
 

@@ -20,14 +20,12 @@ class ReadyListener extends Listener {
             type: "PLAYING"
         });
 
-        await client.settingsCheck();
+        client.settingsCheck();
         // Normalisation des enregistrements de la BD pour qu'ils aient la même 
         // structure que définie dans datamodel
-        await client.datamodelCheck();
-        await client.userdataCheck();
-        
-        
-        await client.db.textesCheck(client);
+        client.datamodelCheck();
+        client.userdataCheck();
+        client.textesCheck();
 
 
         if (!client.cron_activityCheck.running) client.cron_activityCheck.start();
