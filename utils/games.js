@@ -57,19 +57,19 @@ module.exports = (client) => {
     let gameList = [];
     switch (option) {
       case 'tout':
-        gameList = client.gamesGetAll().array();
+        gameList = client.gamesGetAll(true);
         gameList.sort(function (a, b) {
           return a.actif - b.actif;
         }).reverse();
         break;
       case 'actif':
-        gameList = client.gamesGetActive().array();
+        gameList = client.gamesGetActive(true);
         gameList.sort(function (a, b) {
           return a.id - b.id;
         }).reverse();
         break;
       case 'inactif':
-        gameList = client.gamesGetInactive().array();
+        gameList = client.gamesGetInactive(true);
         gameList.sort(function (a, b) {
           return a.name - b.name;
         });

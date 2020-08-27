@@ -70,72 +70,6 @@ exports.textesCheck = async (client) => {
 
 
 
-exports.usergameCheck = async (client) => {
-    client.log(`Vérification des données de jeux des membres`, "debug");
-    const guild = client.guilds.cache.get(client.config.guildID);
-    let games = await client.db.gamesGetActive(client);
-
-    if (!games) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
-
-    guild.members.cache.forEach(async member => {
-        if (member.user.bot) return; // Ne pas enregistrer les bots
-        let userdata = client.db_userdata.get(member.id);
-        if (!userdata) {
-            await client.db.usergameCreate(client, member, game);
-        }
-    })
-
-    // let usergames = client.db_usergame.array();
-    // for (const usergame of usergames) {
-    //     if (usergame !== null) {
-    //         let game = client.gamesGet(usergame.gameid);
-    //         if (game) {
-    //             let gameRole = guild.roles.cache.get(game.roleID);
-
-    //             if (usergame.userid == undefined) {
-    //                 let text = usergame.id.split("-");
-    //                 usergame["userid"] = text[1];
-    //             }
-
-    //             if (usergame.joinedAt == "") {
-    //                 usergame.joinedAt = 0;
-    //             }
-    //             if (usergame.lastPlayed == "") {
-    //                 usergame.lastPlayed = 0;
-    //             }
-    //             if (usergame.lastAction == "") {
-    //                 usergame.lastAction = 0;
-    //             }
-    //             if (usergame.xp == "") {
-    //                 usergame.xp = 0;
-    //             }
-    //             if (usergame.level == "") {
-    //                 usergame.level = 0;
-    //             }
-    //             if (gameRole) {
-    //                 if (gameRole.members.has(usergame.userid)) {
-    //                     if (usergame.joinedAt == 0) {
-    //                         usergame.joinedAt = game.createdAt + 90000;
-    //                         usergame.joinedDate = moment(usergame.joinedAt).format('DD.MM.YYYY');
-    //                         usergame.joinedTime = moment(usergame.joinedAt).format('HH:mm');
-    //                     }
-    //                 } else {
-    //                     usergame.joinedAt = 0;
-    //                     usergame.joinedDate = "";
-    //                     usergame.joinedTime = "";
-    //                 }
-    //             } else {
-    //                 usergame.joinedAt = 0;
-    //                 usergame.joinedDate = "";
-    //                 usergame.joinedTime = "";
-    //             }
-    //             client.db_usergame.set(usergame.id, usergame);
-    //         }
-    //     }
-    // }
-
-
-};
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
@@ -224,36 +158,14 @@ exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename
     }
     client.db_userxplogs.set(id, userxplogs);
 };
-// GAMES
-exports.gamesCheck = async (client) => {
-    client.log(`Vérification de la base de données des jeux`, "debug");
-    client.db_games.delete("default");
 
-    let games = client.gamesGetAll().array();
-    for (const game of games) {
-        if (game.eventsChannelID == undefined) {
-            game["eventsChannelID"] = "";
-            client.db_games.set(game.id, game);
-        }
-    }
-
-    let gamesActive = client.gamesGetActive();
-    if (!gamesActive) return client.log(`Aucun jeu actif sur ce serveur. Vérification interrompue.`, "warn");
-    await client.gamesJoinListPost(true);
-};
 
 exports.gamesGetActive = async (client) => {
     const games = client.db_games.filter(game => game.actif === true);
     return games;
 };
-exports.gamesGetActiveArray = async (client) => {
-    const games = client.db_games.filterArray(game => game.actif === true);
-    return games;
-};
-exports.gamesGetAll = async (client) => {
-    const games = client.db_games.filterArray(game => game.name !== "default");
-    return games;
-};
+
+
 
 
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {

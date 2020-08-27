@@ -527,7 +527,7 @@ module.exports = (client) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = await client.db.getSettings(client);
 
-    let games = await client.db.gamesGetActiveArray(client);
+    let games = client.gamesGetActive(true);
 
     for (const game of games) {
       if (!game.infosChannelID) continue;

@@ -24,10 +24,9 @@ class ReadyListener extends Listener {
         // Normalisation des enregistrements de la BD pour qu'ils aient la même 
         // structure que définie dans datamodel
         await client.datamodelCheck();
-
         await client.userdataCheck();
-        await client.db.gamesCheck(client);
-        await client.db.usergameCheck(client);
+        
+        
         await client.db.textesCheck(client);
 
 
