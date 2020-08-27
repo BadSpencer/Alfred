@@ -13,7 +13,30 @@ module.exports = (client) => {
         if (!guild) return console.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
         let settings = client.db_settings.get(guild.id);
         return settings;
-    }
+    };
+
+    client.settingsCheck = () => {
+        client.log(`Vérification de la configuration serveur`, "debug");
+        const guild = client.guilds.cache.get(client.config.guildID);
+
+        if (!guild) return client.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
+    
+        let settings = client.getSettings();
+    
+        if (!settings) {
+            guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`);
+            client.log(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`);
+        
+            settings = Object.assign({}, datamodel.tables.settings);
+            settings.id = guild.id;
+            settings.guildName = guild.name;
+            client.db_settings.set(guild.id, settings);
+        } else {
+
+            client.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`);
+        }
+
+    };
 
 
     client.createVoiceChannel = async (name = "") => {

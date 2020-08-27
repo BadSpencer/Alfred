@@ -3,26 +3,6 @@ const moment = require("moment");
 const datamodel = require('./datamodel');
 
 
-exports.settingsCheck = async (client) => {
-    client.logger.debug(`Vérification de la configuration serveur`);
-    const guild = client.guilds.cache.get(client.config.guildID);
-
-    if (!guild) return client.logger.debug(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`);
-
-    let settings = client.db_settings.get(guild.id);
-
-    if (!settings) {
-        guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`)
-        client.logger.debug(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`)
-        settings = Object.assign({}, datamodel.tables.settings);
-        settings.id = guild.id;
-        settings.guildName = guild.name;
-        client.db_settings.set(guild.id, settings);
-    } else {
-        client.logger.debug(`Configuration serveur ${guild.name} (${guild.id}) chargée`)
-    }
-};
-
 exports.textesCheck = async (client) => {
     let astuces = client.textes.getAstuces(client);
     let newAstuce = {
