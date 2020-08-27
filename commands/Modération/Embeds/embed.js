@@ -70,7 +70,7 @@ class EmbedCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
         let embedEdit = await client.embedGetCureentEdit(message.author.id);
 
         switch (args.action) {

@@ -8,10 +8,10 @@ module.exports = (client) => {
     client.activityCheck = async () => {
 
         const guild = client.guilds.cache.get(client.config.guildID);
-        const games = await client.db.gamesGetActive(client);
+        const games = client.gamesGetActive();
 
 
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
 
         if (!games) return;

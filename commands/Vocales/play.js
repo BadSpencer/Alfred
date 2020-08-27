@@ -26,7 +26,7 @@ class PlayCommand extends Command {
 
   async exec(message, args) {
     let client = this.client;
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
     const youtube = require("ytdl-core");
     let argument = args.id;
     const streamOptions = {

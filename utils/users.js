@@ -14,7 +14,7 @@ module.exports = (client) => {
     // Message d'annonce lorsque quelqu'un rejoint le serveur
     client.serverJoinNotification = async (member) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 
@@ -40,7 +40,7 @@ module.exports = (client) => {
     // Message d'acceuil du nouvel utilisateur (lien vers site)
     client.serverJoinInformation = async (member) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
@@ -58,7 +58,7 @@ module.exports = (client) => {
     };
     client.serverJoinInformationAgain = async (member) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
@@ -77,7 +77,7 @@ module.exports = (client) => {
     // Message d'annonce lorsque quelqu'un quitte le serveur
     client.serverQuitNotification = async (member) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -103,7 +103,7 @@ module.exports = (client) => {
     };
     client.serverKickNotification = async (member, memberBy, raison) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -126,7 +126,7 @@ module.exports = (client) => {
     };
     client.serverBanNotification = async (member, memberBy, raison) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 

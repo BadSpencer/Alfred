@@ -1,7 +1,7 @@
 module.exports = (client) => {
 
   client.log = async (msg, type = "log") => {
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
     if (!settings) {
       console.log(msg);
     } else {

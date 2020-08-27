@@ -15,7 +15,7 @@ class MessageListener extends Listener {
         client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
         if (message.author.bot) return;
 
-        message.settings = await client.db.getSettings(client);
+        message.settings = client.getSettings();
     }
 }
 

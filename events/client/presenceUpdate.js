@@ -12,7 +12,7 @@ class presenceUpdateListener extends Listener {
         let client = this.client;
         client.log(`EVENT: ${this.emitter}/${this.event} pour ${newPresence.member.displayName}`, 'debug');
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         if (newPresence.member.bot) return;
 

@@ -16,7 +16,7 @@ class guildMemberUpdateListener extends Listener {
         client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
 
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
         const roleMembers = newMember.guild.roles.cache.find(r => r.name == settings.memberRole);
 
         client.log(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember), "debug");

@@ -28,7 +28,7 @@ class MessageReactionRemoveListener extends Listener {
         ];
 
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
         const member = guild.members.cache.get(user.id);
 
         client.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));

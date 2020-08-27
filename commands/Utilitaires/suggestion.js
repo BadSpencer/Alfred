@@ -34,7 +34,7 @@ class SuggestionCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         let suggChannel = guild.channels.cache.find(c => c.name === settings.suggChannel);
 

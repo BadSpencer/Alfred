@@ -175,7 +175,7 @@ module.exports = (client) => {
 
   client.gamesTextChannelSetPerm = async (game, mode) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
     const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
     const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
@@ -294,7 +294,7 @@ module.exports = (client) => {
   };
   client.gamesInfosChannelSetPerm = async (game, mode) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
     const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
     const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
@@ -413,7 +413,7 @@ module.exports = (client) => {
   };
   client.gamesEventChannelSetPerm = async (game, mode) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
     const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
     const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
@@ -532,7 +532,7 @@ module.exports = (client) => {
   };
   client.gamesVoiceChannelSetPerm = async (game, mode) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
     const roleEveryone = guild.roles.cache.find((role) => role.name == "@everyone");
     const roleMembers = guild.roles.cache.find((role) => role.name == settings.memberRole);
@@ -790,15 +790,15 @@ module.exports = (client) => {
 
   client.gamesJoinListPost = async (clearReact = false) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
-    const games = await client.db.gamesGetActive(client);
+    const settings = client.getSettings();
+    const games = await client.gamesGetActive();
     const gamesXP = await client.gamesGetScores();
 
     if (!gamesXP) return;
 
     const gameJoinChannel = await guild.channels.cache.find(c => c.name === settings.gameJoinChannel);
 
-    if (games.size == 0) return;
+    if (!games) return;
 
     let embed = new Discord.MessageEmbed();
 
@@ -952,7 +952,7 @@ module.exports = (client) => {
 
   client.usergameNotifyPlayerActiveGame = async (game, member) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
     const gameRole = guild.roles.cache.get(game.roleID);
     const gameJoinChannel = await guild.channels.cache.find(c => c.name === settings.gameJoinChannel);
@@ -967,7 +967,7 @@ module.exports = (client) => {
 
   client.gameNewPlayerNotification = async (game, member) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
 
     const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
@@ -1000,7 +1000,7 @@ module.exports = (client) => {
 
   client.gamePlayerQuitNotification = async (game, member, type = 'QUIT') => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
 
     let channelNotification = `GAMES_${type}_NOTIFICATION`;
     let modNotification = `MOD_NOTIF_MEMBER_${type}_GAME`;
@@ -1084,7 +1084,7 @@ module.exports = (client) => {
 
   client.gameQuitConfirmation = async (messageReaction, game, member) => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
     const gameRole = guild.roles.cache.get(game.roleID);
     let userdata = client.db_userdata.get(member.id);
     let statusMessage = await questionMessage(client.textes.get("GAMES_JOIN_WANT_TO_QUIT", game.name), messageReaction.message.channel);
@@ -1172,7 +1172,7 @@ module.exports = (client) => {
 
   client.gamesJoinListDelete = async () => {
     const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = await client.db.getSettings(client);
+    const settings = client.getSettings();
     const gameJoinChannel = await guild.channels.cache.find(c => c.name === settings.gameJoinChannel);
 
     if (!gameJoinChannel) return;

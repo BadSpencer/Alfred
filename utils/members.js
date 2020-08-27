@@ -15,7 +15,7 @@ module.exports = (client) => {
         client.log(textes.get("LOG_EVENT_MEMBER_JOIN_MEMBERS", member));
 
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         if (settings.welcomeMemberEnabled !== "true") return client.log(textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 
@@ -34,7 +34,7 @@ module.exports = (client) => {
     // Message d'acceuil lorsqu'un utilisateur est passé membre
     client.newMemberWelcome = async (member) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = await client.db.getSettings(client);
+        const settings = client.getSettings();
 
         if (settings.welcomeMemberEnabled !== "true") return client.log(textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 

@@ -52,7 +52,7 @@
      async exec(message, args) {
          let client = this.client;
          const guild = client.guilds.cache.get(client.config.guildID);
-         const settings = await client.db.getSettings(client);
+         const settings = client.getSettings();
 
          const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
          const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
