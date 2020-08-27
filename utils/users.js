@@ -285,7 +285,7 @@ module.exports = (client) => {
     };
 
     client.userdataCreate = async (member) => {
-        let userdata = client.db_userdata.get("default");
+        let userdata = Object.assign({}, datamodel.tables.userdata);
 
         userdata.id = member.id;
         userdata.username = member.user.username;
