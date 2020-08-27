@@ -25,24 +25,6 @@ class JeuxCommand extends Command {
                     prompt: {
                         start: 'Veuillez spécifier un nom de jeu',
                         retry: 'Veuillez spécifier un nom de jeu'
-                        // start: async message => {
-                        //     let games = await this.client.db.gamesGetActiveArray(this.client);
-                        //     let returnMessage = "Veuillez spécifier un nom de jeu:\n";
-                        //     for (const game of games) {
-                        //         returnMessage += `${game.name}\n`
-                        //     }
-
-                        //     return returnMessage;
-                        // },
-                        // retry: async message => {
-                        //     let games = await this.client.db.gamesGetActiveArray(this.client);
-                        //     let returnMessage = "Veuillez spécifier un nom de jeu:\n";
-                        //     for (const game of games) {
-                        //         returnMessage += `${game.name}\n`
-                        //     }
-
-                        //     return returnMessage;
-                        // }
                     },
                 }
             ],
