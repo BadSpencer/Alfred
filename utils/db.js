@@ -3,46 +3,6 @@ const moment = require("moment");
 const datamodel = require('./datamodel');
 
 
-exports.textesCheck = async (client) => {
-    let astuces = client.textes.getAstuces(client);
-    let newAstuce = {
-        "id": "",
-        "texte": "",
-        "count": 0
-    };
-
-    let newCitation = {
-        "id": "",
-        "texte": "",
-        "count": 0
-    };
-    astuces.forEach(astuce => {
-        let currAst = client.db_astuces.find(ast => ast.texte == astuce);
-        if (!currAst) {
-            newAstuce.id = client.db_astuces.autonum;
-            newAstuce.texte = astuce;
-            newAstuce.count = 0;
-            client.db_astuces.set(newAstuce.id, newAstuce);
-        }
-    });
-
-    let citations = client.textes.getCitations(client);
-
-    citations.forEach(citation => {
-        let currCit = client.db_citations.find(ast => ast.texte == citation);
-        if (!currCit) {
-            newCitation.id = client.db_citations.autonum;
-            newCitation.texte = citation;
-            newCitation.count = 0;
-            client.db_citations.set(newCitation.id, newCitation);
-        }
-    });
-
-};
-
-
-
-
 exports.usergameAddXP = async (client, member, xpAmount, game) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
