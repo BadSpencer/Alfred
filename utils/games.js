@@ -921,52 +921,12 @@ module.exports = (client) => {
     return usergame;
   };
 
-  client.usergameAddXP = (member, game, type, amount = 1) => {
-    const guild = client.getGuild();
-    const settings = client.getSettings(guild);
-    const usergame = client.usergameGet(member, game);
-
-    client.log(`XP de jeu pour ${member.displayName} sur ${game.name} (${type}:${amount})`,"debug");
-
-    let date = moment().format('DD.MM.YYYY');
-    let key = `${date}-${member.id}-${game.id}`;
-
-    let usergameXP = client.db_usergameXP.get(key)
-    if (!usergameXP) {
-      usergameXP = Object.assign({}, datamodel.tables.usergameXP);
-      usergameXP.key = key;
-      usergameXP.date = date;
-      usergameXP.memberID = member.id;
-      usergameXP.gameID = game.id;
-      switch (type) {
-        case "PLAY":
-          usergameXP.playXP = amount;
-          break;
-        case "VOICE":
-          usergameXP.voiceXP = amount;
-          break;
-        case "TEXT":
-          usergameXP.textXP = amount;
-          break;
-      }
-      usergameXP.totalXP = amount;
-      client.db_usergameXP.set(key, usergameXP);
-    } else {
-      switch (type) {
-        case "PLAY":
-          usergameXP.playXP += amount;
-          break;
-        case "VOICE":
-          usergameXP.voiceXP += amount;
-          break;
-        case "TEXT":
-          usergameXP.textXP += amount;
-          break;
-      }
-      usergameXP.totalXP += amount;
-      client.db_usergameXP.set(key, usergameXP);
-    }
+  client.usergameSet = (usergame) => {
+    client.log(`Méthode: usergameSet`, 'debug');
+    client.db_usergame.set(usergame.id, usergame);
   };
+
+
 
   client.usergameUpdateLastPlayed = async (game, member) => {
     let usergameKey = `${member.id}-${game.id}`;

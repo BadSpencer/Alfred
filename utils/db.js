@@ -3,26 +3,7 @@ const moment = require("moment");
 const datamodel = require('./datamodel');
 
 
-exports.usergameAddXP = async (client, member, xpAmount, game) => {
-    const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = client.db_settings.get(guild.id);
-    const userdata = client.db_userdata.get(member.id);
-    const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
 
-
-    let usergame = client.db_usergame.get(`${member.id}-${game.id}`);
-    if (usergame) {
-        usergame.xp += xpAmount;
-        client.db.userxplogAdd(client, member, "GAMEXP", xpAmount, "Joue", game.name);
-        usergame.lastPlayed = +new Date;
-        let newLevel = await client.xpGetLevel(usergame.xp);
-        if (newLevel > usergame.level) {
-            usergame.level = newLevel;
-            client.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
-        };
-        client.db_usergame.set(`${member.id}-${game.id}`, usergame);
-    }
-};
 exports.userdataAddXP = async (client, member, xpAmount, reason) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = client.db_settings.get(guild.id);
@@ -194,12 +175,3 @@ exports.enampCreateEmbed = async (client, enmap, name, page, fieldlist = []) => 
     if (nbPages > 1) embed.setFooter(`Page: ${page}/${nbPages}`);
     return embed;
 };
-
-
-// <Array>.random() returns a single random element from an array
-// [1, 2, 3, 4, 5].random() can return 1, 2, 3, 4 or 5.
-Object.defineProperty(Array.prototype, "random", {
-    value: function () {
-        return this[Math.floor(Math.random() * this.length)];
-    }
-});

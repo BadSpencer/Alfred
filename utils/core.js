@@ -266,8 +266,8 @@ module.exports = (client) => {
     };
     client.messageOfTheDay = async () => {
         client.log(`Méthode: messageOfTheDay`, 'debug');
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         let embed = new Discord.MessageEmbed();
         let description = "";
