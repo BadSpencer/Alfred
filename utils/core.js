@@ -8,21 +8,33 @@ const ftpClient = require("ftp");
 
 module.exports = (client) => {
 
-    client.getSettings = () => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        if (!guild) return console.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
+    client.getGuild = () => {
+        let guild = client.guilds.cache.get(client.config.guildID);
+        if (!guild) {
+            return client.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
+        } else {
+            return guild;
+        }
+    };
+
+    client.getSettings = (guild = null) => {
+        if (!guild) {
+            guild = client.guilds.cache.get(client.config.guildID);
+        }
         let settings = client.db_settings.get(guild.id);
-        return settings;
+        if (!settings) {
+            return client.log(`Configuration du Serveur discord "${client.config.guildID}" non trouvée.`, "error");
+        } else {
+            return settings;
+        }
+        
     };
 
     client.settingsCheck = () => {
         client.log(`Vérification de la configuration serveur`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
-        if (!guild) return client.log(`Serveur discord "${client.config.guildID}" non trouvé. Vérifiez la configuration d\'Alfred`, "error");
-    
-        let settings = client.getSettings();
-    
         if (!settings) {
             guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`);
             client.log(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`);
@@ -32,7 +44,6 @@ module.exports = (client) => {
             settings.guildName = guild.name;
             client.db_settings.set(guild.id, settings);
         } else {
-
             client.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`);
         }
 

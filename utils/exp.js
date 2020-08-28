@@ -24,6 +24,7 @@ module.exports = (client) => {
                     if (game) {
                         client.usergameUpdateLastPlayed(game, member);
                         client.db.usergameAddXP(client, member, 1, game);
+                        client.usergameAddXP(member, game, "PLAY");
 
                         if (member.voice.channel && member.roles.cache.has(game.roleID)) {
                             if (member.voice.channel.name !== settings.AFKChannel) {
@@ -42,7 +43,7 @@ module.exports = (client) => {
         });
 
     };
-    client.xpGetLevel = async (xp) => {
+    client.xpGetLevel = (xp) => {
         let coef = 600;
         // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
         let level = Math.floor(Math.floor(coef + Math.sqrt(coef * coef - 4 * coef * (-xp))) / (coef * 2));

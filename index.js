@@ -104,6 +104,10 @@ client.db_playersLogs = new Enmap({
     name: "playersLogs"
 });
 
+client.db_usergameXP = new Enmap({
+    name: "usergameXP"
+});
+
 
 
 

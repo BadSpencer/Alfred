@@ -225,5 +225,25 @@ exports.tables = {
         "createdDate": "",
         "createdTime": "",
         "content": ""
+    },
+    usergameXP: {
+        "key": "",
+        "date": "",
+        "memberID": "",
+        "gameID": "",
+        "playXP": 0,
+        "voiceXP": 0,
+        "textXP": 0,
+        "totalXP": 0
+    },
+    memberXP: {
+        "key": "",
+        "date": "",
+        "memberID": "",
+        "gameID": "",
+        "mainXP": 0,
+        "voiceXP": 0,
+        "textXP": 0,
+        "totalXP": 0
     }
 }
