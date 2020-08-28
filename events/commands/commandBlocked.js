@@ -17,7 +17,7 @@ class CommandBlockedListener extends Listener {
 
     async exec(message, command, reason) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
 
         let guild;
         let blocked;

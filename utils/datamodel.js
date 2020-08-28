@@ -37,6 +37,9 @@ exports.tables = {
         "gamePlayRoleColor": "0xC27C0E",
         "postedCitations": [],
         "postedAstuces": [],
+        "maxVoiceXPPerDay": 200,
+        "maxGameXPPerDay": 200,
+        "maxTextXPPerDay": 1000,
         "mediaPath": "/root/Alfred/media/"
     },
     games: {

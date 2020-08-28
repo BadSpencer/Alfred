@@ -1,14 +1,14 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-const datamodel = require('./datamodel');
-const colors = require('./colors');
+const datamodel = require("./datamodel");
+const colors = require("./colors");
 const {
   successMessage,
   errorMessage,
   warnMessage,
   questionMessage,
   promptMessage
-} = require('./messages');
+} = require("./messages");
 
 module.exports = (client) => {
 
@@ -904,7 +904,6 @@ module.exports = (client) => {
     await client.arrayToEmbed(playerListOutput, 20, `Joueurs de ${gamename}`, message.channel);
   };
 
-
   client.usergameGet = (member, game) => {
     let usergameKey = `${member.id}-${game.id}`;
     let usergame = client.db_usergame.get(usergameKey);
@@ -922,11 +921,9 @@ module.exports = (client) => {
   };
 
   client.usergameSet = (usergame) => {
-    client.log(`Méthode: usergameSet`, 'debug');
+    client.log(`Méthode: usergameSet`, "debug");
     client.db_usergame.set(usergame.id, usergame);
   };
-
-
 
   client.usergameUpdateLastPlayed = async (game, member) => {
     let usergameKey = `${member.id}-${game.id}`;

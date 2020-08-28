@@ -15,7 +15,7 @@ class guildMemberRemoveListener extends Listener {
 
     exec(member) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
 
         client.log(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member));
 

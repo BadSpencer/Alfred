@@ -20,7 +20,7 @@ class MessageReactionRemoveListener extends Listener {
 
     async exec(messageReaction, user) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         if (user.bot) return;
 
         let gameGroupsBlacklist = [

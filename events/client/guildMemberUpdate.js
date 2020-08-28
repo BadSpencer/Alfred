@@ -13,7 +13,7 @@ class guildMemberUpdateListener extends Listener {
 
     async exec(oldMember, newMember) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
 
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
@@ -54,7 +54,7 @@ class guildMemberUpdateListener extends Listener {
 
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {
-                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,'debug');
+                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,"debug");
 
                             let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
 
@@ -77,11 +77,11 @@ class guildMemberUpdateListener extends Listener {
                     const game = client.db_games.find(game => game.roleID == oldRole.id);
                     if (game) {
 
-                        client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`,'debug');
+                        client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`,"debug");
 
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {
-                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,'debug');
+                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,"debug");
 
                             let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
 

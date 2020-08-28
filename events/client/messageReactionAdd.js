@@ -29,7 +29,7 @@ class MessageReactionAddListener extends Listener {
 
 
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         if (user.bot) return;
 
         const guild = client.guilds.cache.get(client.config.guildID);

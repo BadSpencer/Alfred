@@ -63,7 +63,7 @@ module.exports = (client) => {
       ip, portrcon,
       function (serverInfo) {
         if (serverInfo.error) {
-          client.log(serverInfo.error, 'error');
+          client.log(serverInfo.error, "error");
         } else {
           let regExp = /\(([^)]+)\)/;
           let matches = regExp.exec(serverInfo.serverName);
@@ -82,7 +82,7 @@ module.exports = (client) => {
       server.ip, server.portrcon,
       function (serverInfo) {
         if (serverInfo.error) {
-          client.log(serverInfo.error, 'error');
+          client.log(serverInfo.error, "error");
         } else {
           let regExp = /\(v([^)]+)\)/;
           let matches = regExp.exec(serverInfo.serverName);

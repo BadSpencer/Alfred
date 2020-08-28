@@ -6,15 +6,15 @@ const moment = require('moment');
 
 class ErrorListener extends Listener {
     constructor() {
-        super('error', {
+        super("error", {
             emitter: 'client',
-            event: 'error'
+            event: "error"
         })
     }
 
     async exec(error) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         if (error) {
             client.log(`${error.message}\n${error.stack}`, "error");
         }

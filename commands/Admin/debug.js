@@ -15,8 +15,8 @@ const {
 
 class debugCommand extends Command {
     constructor() {
-        super('debug', {
-            aliases: ['debug'],
+        super("debug", {
+            aliases: ["debug"],
             category: 'Admin',
             description: {
                 content: 'Activation/désactivation du debug',

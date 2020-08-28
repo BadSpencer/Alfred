@@ -48,7 +48,7 @@ client.on('shardDisconnect', () => client.log('Connection perdue...', 'warn'))
             type: "PLAYING"
         });
     })
-    .on('error', err => client.log(err, 'error'))
+    .on("error", err => client.log(err, "error"))
     .on('warn', info => client.log(info, 'warn'));
 
 client.db_settings = new Enmap({
@@ -243,5 +243,5 @@ Object.defineProperty(Array.prototype, "random", {
 client.start();
 
 process.on('unhandledRejection', error => {
-    client.log(`${error.message}\n${error.stack}`, 'error');
+    client.log(`${error.message}\n${error.stack}`, "error");
 });

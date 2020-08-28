@@ -31,7 +31,7 @@ module.exports = (client) => {
     };
 
     client.settingsCheck = () => {
-        client.log(`Vérification de la configuration serveur`, "debug");
+        client.log(`Méthode: core/settingsCheck`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
@@ -47,7 +47,39 @@ module.exports = (client) => {
             client.log(`Configuration serveur ${guild.name} (${guild.id}) chargée`);
         }
 
+        client.log(`settingsCheck: Rôles`, "debug");
+
+        const memberRole = guild.roles.cache.find((r) => {
+            return r.name === settings.memberRole;
+        });
+        if (!memberRole) {
+            client.log(`settingsCheck: Rôle "Membres" non trouvé`, "error");
+        } else {
+            client.log(`settingsCheck: Rôle "Membres" OK`, "debug");
+        }
+
+        const modRole = guild.roles.cache.find((r) => {
+            return r.name === settings.modRole;
+        });
+        if (!modRole) {
+            client.log(`settingsCheck: Rôle "Modérateurs" non trouvé`, "error");
+        } else {
+            client.log(`settingsCheck: Rôle "Modérateurs" OK`, "debug");
+        }
+
+        const adminRole = guild.roles.cache.find((r) => {
+            return r.name === settings.adminRole;
+        });
+        if (!adminRole) {
+            client.log(`settingsCheck: Rôle "Admins" non trouvé`, "error");
+        } else {
+            client.log(`settingsCheck: Rôle "Admins" OK`, "debug");
+        }
+
+
     };
+
+
 
     client.textesCheck = () => {
         let astuces = client.textes.getAstuces(client);
@@ -77,7 +109,7 @@ module.exports = (client) => {
 
 
     client.createVoiceChannel = async (name = "") => {
-        client.log(`Méthode: createVoiceChannel`, 'debug');
+        client.log(`Méthode: createVoiceChannel`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
@@ -105,7 +137,7 @@ module.exports = (client) => {
 
     };
     client.renameFreeVoiceChannel = async (member) => {
-        client.log(`Méthode: renameFreeVoiceChannel`, 'debug');
+        client.log(`Méthode: renameFreeVoiceChannel`, "debug");
         let channelName = client.textes.get("VOICE_NEW_VOICE_CHANNEL");
 
         let presenceGame = await client.presenceGetGameName(member.presence);
@@ -134,7 +166,7 @@ module.exports = (client) => {
     };
 
     client.contactVoiceChannelJoin = async (member) => {
-        client.log(`Méthode: contactVoiceChannelJoin`, 'debug');
+        client.log(`Méthode: contactVoiceChannelJoin`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
 
@@ -186,7 +218,7 @@ module.exports = (client) => {
 
     };
     client.contactVoiceChannelQuit = async (channel) => {
-        client.log(`Méthode: contactVoiceChannelQuit`, 'debug');
+        client.log(`Méthode: contactVoiceChannelQuit`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
 
@@ -226,7 +258,7 @@ module.exports = (client) => {
         }
     };
     client.gameVoiceChannelJoin = async (game, channel) => {
-        client.log(`Méthode: gameVoiceChannelJoin`, 'debug');
+        client.log(`Méthode: gameVoiceChannelJoin`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
@@ -240,12 +272,12 @@ module.exports = (client) => {
                 'CONNECT': true,
             });
         } catch (error) {
-            client.log(error, 'error');
+            client.log(error, "error");
         };
 
     };
     client.gameVoiceChannelQuit = async (game, channel) => {
-        client.log(`Méthode: gameVoiceChannelQuit`, 'debug');
+        client.log(`Méthode: gameVoiceChannelQuit`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
@@ -259,13 +291,13 @@ module.exports = (client) => {
                 'CONNECT': false,
             });
         } catch (error) {
-            client.log(error, 'error');
+            client.log(error, "error");
         };
 
 
     };
     client.messageOfTheDay = async () => {
-        client.log(`Méthode: messageOfTheDay`, 'debug');
+        client.log(`Méthode: messageOfTheDay`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
@@ -340,7 +372,7 @@ module.exports = (client) => {
 
     };
     client.modLog = async (content) => {
-        client.log(`Méthode: modLog`, 'debug');
+        client.log(`Méthode: modLog`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
 
@@ -351,7 +383,7 @@ module.exports = (client) => {
         }
     };
     client.messageLog = async (message) => {
-        client.log(`Méthode: messageLog`, 'debug');
+        client.log(`Méthode: messageLog`, "debug");
 
         if (message.author.bot) return false;
         if (message.content.startsWith("!")) return false;
@@ -368,7 +400,7 @@ module.exports = (client) => {
         return true;
     };
     client.commandLog = async (message, command) => {
-        client.log(`Méthode: commandLog`, 'debug');
+        client.log(`Méthode: commandLog`, "debug");
         let commandsLogs = Object.assign({}, datamodel.tables.commandsLogs);
         commandsLogs.messageID = message.id;
         commandsLogs.command = command.id;
@@ -383,7 +415,7 @@ module.exports = (client) => {
         client.db_commandsLogs.set(message.id, commandsLogs);
     };
     client.channelGetAllMessages = async (channelID) => {
-        client.log(`Méthode: channelGetAllMessages`, 'debug');
+        client.log(`Méthode: channelGetAllMessages`, "debug");
 
         const guild = client.guilds.cache.get(client.config.guildID);
         let channel = guild.channels.cache.get(channelID);
@@ -414,7 +446,7 @@ module.exports = (client) => {
         return messagesAll;
     };
     client.logEventToEmoji = (event) => {
-        client.log(`Méthode: logEventToEmoji`, 'debug');
+        client.log(`Méthode: logEventToEmoji`, "debug");
         let emoji = "";
         switch (event) {
             case "JOIN":
@@ -448,7 +480,7 @@ module.exports = (client) => {
         return emoji;
     };
     client.logEventToText = (event) => {
-        client.log(`Méthode: logEventToText`, 'debug');
+        client.log(`Méthode: logEventToText`, "debug");
         let eventText = "";
         switch (event) {
             case "JOIN":
@@ -482,7 +514,7 @@ module.exports = (client) => {
         return eventText;
     };
     client.msToDays = (milliseconds) => {
-        client.log(`Méthode: msToDays`, 'debug');
+        client.log(`Méthode: msToDays`, "debug");
         let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
         let days = roundTowardsZero(milliseconds / 86400000),
             hours = roundTowardsZero(milliseconds / 3600000) % 24,
@@ -494,7 +526,7 @@ module.exports = (client) => {
         return days;
     };
     client.msToDaysText = (milliseconds) => {
-        client.log(`Méthode: msToDaysText`, 'debug');
+        client.log(`Méthode: msToDaysText`, "debug");
         let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
         let days = roundTowardsZero(milliseconds / 86400000),
             hours = roundTowardsZero(milliseconds / 3600000) % 24,
@@ -530,7 +562,7 @@ module.exports = (client) => {
         return sentence;
     };
     client.msToHours = (milliseconds) => {
-        client.log(`Méthode: msToHours`, 'debug');
+        client.log(`Méthode: msToHours`, "debug");
         let roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
         let days = roundTowardsZero(milliseconds / 86400000),
             hours = roundTowardsZero(milliseconds / 3600000) % 24,
@@ -559,7 +591,7 @@ module.exports = (client) => {
         return sentence;
     };
     client.arrayToEmbed = async (array, recordsByPage = 10, titre, channel) => {
-        client.log(`Méthode: arrayToEmbed`, 'debug');
+        client.log(`Méthode: arrayToEmbed`, "debug");
         let postedEmbeds = client.db_postedEmbeds.get("default");
 
         let nbPages = Math.ceil(array.length / recordsByPage);

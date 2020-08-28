@@ -12,7 +12,7 @@ class MessageInvalidListener extends Listener {
 
     async exec(message) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
 
         if (message.author.bot) return;
 

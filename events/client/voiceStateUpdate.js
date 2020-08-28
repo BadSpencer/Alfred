@@ -20,7 +20,7 @@ class voiceStateUpdateListener extends Listener {
 
     async exec(oldState, newState) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
@@ -29,7 +29,7 @@ class voiceStateUpdateListener extends Listener {
 
         // Rejoint un salon vocal
         if (!oldState.channel && newState.channel) {
-            client.log(`voiceStateUpdate: Rejoint un salon`, 'debug');
+            client.log(`voiceStateUpdate: Rejoint un salon`, "debug");
             if (newState.channel.members.size == "1") {
 
                 const game = client.db_games.find(game => game.voiceChannelID == newState.channel.id);
@@ -53,7 +53,7 @@ class voiceStateUpdateListener extends Listener {
 
         // Quitte un salon vocal
         if (oldState.channel && !newState.channel) {
-            client.log(`voiceStateUpdate: Quitte un salon`, 'debug');
+            client.log(`voiceStateUpdate: Quitte un salon`, "debug");
             if (oldState.channel.members.size == "0") {
 
                 const game = client.db_games.find(game => game.voiceChannelID == oldState.channel.id);
@@ -80,7 +80,7 @@ class voiceStateUpdateListener extends Listener {
 
         // Change de salon
         if (oldState.channel && newState.channel) {
-            client.log(`voiceStateUpdate: Change de salon`, 'debug');
+            client.log(`voiceStateUpdate: Change de salon`, "debug");
             if (oldState.channel.members.size == "0") {
                 const game = client.db_games.find(game => game.voiceChannelID == oldState.channel.id);
                 if (game) {

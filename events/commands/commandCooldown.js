@@ -15,7 +15,7 @@ class commandCooldownListener extends Listener {
 
     exec(message, command, remaining) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, 'debug');
+        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         errorMessage(client.textes.get("COMMAND_COOLDOWN_MESSAGE", command, remaining), message.channel);
         if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
     }
