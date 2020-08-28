@@ -93,14 +93,6 @@ exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename
 };
 
 
-exports.gamesGetActive = async (client) => {
-    const games = client.db_games.filter(game => game.actif === true);
-    return games;
-};
-
-
-
-
 exports.postedEmbedsCreate = async (client, postedEmbeds) => {
     await client.db_postedEmbeds.set(postedEmbeds.id, postedEmbeds);
     client.log(`L'embed ${postedEmbeds.name} à été ajouté à la base de données`)

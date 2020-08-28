@@ -791,7 +791,7 @@ module.exports = (client) => {
   client.gamesJoinListPost = async (clearReact = false) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const settings = client.getSettings();
-    const games = await client.gamesGetActive();
+    const games = client.gamesGetActive();
     const gamesXP = await client.gamesGetScores();
 
     if (!gamesXP) return;
