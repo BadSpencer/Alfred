@@ -155,6 +155,11 @@ module.exports = (client) => {
     client.userdataGet = (memberID) => {
         return userdata = client.db_userdata.get(memberID);
     };
+
+    client.userdataSet = (userdata) => {
+        client.db_userdata.set(userdata.id, userdata);
+    };
+
     client.userdataUserboard = async (message) => {
         const guild = client.guilds.cache.get(client.config.guildID);
 

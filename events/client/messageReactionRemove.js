@@ -24,7 +24,8 @@ class MessageReactionRemoveListener extends Listener {
         if (user.bot) return;
 
         let gameGroupsBlacklist = [
-            '191993511543832577' // Albator
+            "000000000000000000" // Null
+            //'191993511543832577' // Albator
         ];
 
         const guild = client.guilds.cache.get(client.config.guildID);

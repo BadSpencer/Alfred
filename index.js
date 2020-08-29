@@ -108,6 +108,10 @@ client.db_usergameXP = new Enmap({
     name: "usergameXP"
 });
 
+client.db_memberXP = new Enmap({
+    name: "memberXP"
+});
+
 
 
 

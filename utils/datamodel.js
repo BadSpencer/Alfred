@@ -37,9 +37,12 @@ exports.tables = {
         "gamePlayRoleColor": "0xC27C0E",
         "postedCitations": [],
         "postedAstuces": [],
-        "maxVoiceXPPerDay": 200,
-        "maxGameXPPerDay": 200,
+        "maxPlayXPPerDay": 240,
+        "maxVoiceXPPerDay": 240,
         "maxTextXPPerDay": 1000,
+        "maxCmdXPPerDay": 200,
+        "maxReactInXPPerDay": 500,
+        "maxReactOutXPPerDay": 300,
         "mediaPath": "/root/Alfred/media/"
     },
     games: {
@@ -243,10 +246,20 @@ exports.tables = {
         "key": "",
         "date": "",
         "memberID": "",
-        "gameID": "",
-        "mainXP": 0,
+        "comment": "",
+        "playXP": 0,
+        "playXPnolimit": 0,
         "voiceXP": 0,
+        "voiceXPnolimit": 0,
         "textXP": 0,
+        "textXPnolimit": 0,
+        "cmdXP": 0,
+        "cmdXPnolimit": 0,
+        "reactInXP": 0,
+        "reactInXPnolimit": 0,
+        "reactOutXP": 0,
+        "reactOutXPnolimit": 0,
+        "totalXPnolimit": 0,
         "totalXP": 0
     }
 }

@@ -32,35 +32,104 @@ module.exports = (client) => {
                     if (game) {
                         client.usergameUpdateLastPlayed(game, member);
                         client.usergameAddXP(member, game, "PLAY");
-
-                        if (member.voice.channel && member.roles.cache.has(game.roleID)) {
-                            if (member.voice.channel.name !== settings.AFKChannel) {
-                                client.db.userdataAddXP(client, member, 2, `Joue à ${game.name}`);
-                                client.usergameAddXP(member, game, "VOICE");
-                            }
-                        }
+                        if (member.roles.cache.has(game.roleID)) {
+                            client.userdataAddXP(member, "PLAY");
+                        };
+                        if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel) {
+                            client.userdataAddXP(member, "VOICE");
+                            client.usergameAddXP(member, game, "VOICE");
+                        };
                     }
                 } else {
-                    if (member.voice.channel) {
-                        if (member.voice.channel.name !== settings.AFKChannel) {
-                            client.db.userdataAddXP(client, member, 1, `En vocal`);
-                        }
-                    }
+                    if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel) {
+                        client.userdataAddXP(member, "VOICE");
+                    };
                 }
             }
         });
 
     };
 
-    client.userdataAddXP = (member) => {
+    client.userdataAddXP = (member, type, amount = 1) => {
         client.log(`Méthode: exp/userdataAddXP`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const userdata = client.userdataGet(member.id);
+        const roleMembers = client.roleMemberGet(guild, settings);
+
+        if (member.roles.cache.has(roleMembers.id)) {
+            userdata.xp += amount;
+            let newLevel = client.xpGetLevel(userdata.xp);
+            if (newLevel > userdata.level) {
+                userdata.level = newLevel;
+                client.userLevelUp(member, newLevel);
+                client.log(`Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
+            };
+            client.userdataSet(userdata);
+
+            client.log(`XP pour ${member.displayName} (${type}:${amount})`, "debug");
+
+            let date = moment().format('DD.MM.YYYY');
+            let key = `${date}-${member.id}`;
+
+            let memberXP = client.db_memberXP.get(key);
+            if (!memberXP) {
+                memberXP = Object.assign({}, datamodel.tables.memberXP);
+                memberXP.key = key;
+                memberXP.date = date;
+                memberXP.memberID = member.id;
+            }
+            switch (type) {
+                case "PLAY":
+                    if (memberXP.playXP < settings.maxPlayXPPerDay) {
+                        memberXP.playXP += amount;
+                        memberXP.totalXP += amount;
+                    }
+                    memberXP.playXPnolimit += amount;
+                    break;
+                case "VOICE":
+                    if (memberXP.voiceXP < settings.maxVoiceXPPerDay) {
+                        memberXP.voiceXP += amount;
+                        memberXP.totalXP += amount;
+                    }
+                    memberXP.voiceXPnolimit += amount;
+                    break;
+                case "TEXT":
+                    if (memberXP.textXP < settings.maxTextXPPerDay) {
+                        memberXP.textXP += amount;
+                        memberXP.totalXP += amount;
+                    }
+                    memberXP.textXPnolimit += amount;
+                    break;
+                case "CMD":
+                    if (memberXP.cmdXP < settings.maxCmdXPPerDay) {
+                        memberXP.cmdXP += amount;
+                        memberXP.totalXP += amount;
+                    }
+                    memberXP.cmdXPnolimit += amount;
+                    break;
+                case "REACTIN":
+                    if (memberXP.reactInXP < settings.maxReactInXPPerDay) {
+                        memberXP.reactInXP += amount;
+                        memberXP.totalXP += amount;
+                    }
+                    memberXP.reactInXPnolimit += amount;
+                    break;
+                case "REACTOUT":
+                    if (memberXP.reactOutXP < settings.maxReactOutXPPerDay) {
+                        memberXP.reactOutXP += amount;
+                        memberXP.totalXP += amount;
+                    }
+                    memberXP.reactOutXPnolimit += amount;
+                    break;
+            }
+            memberXP.totalXPnolimit += amount;
+            client.db_memberXP.set(memberXP.key, memberXP);
 
 
 
 
+        }
     };
 
     client.usergameAddXP = (member, game, type, amount = 1) => {
@@ -82,7 +151,7 @@ module.exports = (client) => {
         let date = moment().format('DD.MM.YYYY');
         let key = `${date}-${member.id}-${game.id}`;
 
-        let usergameXP = client.db_usergameXP.get(key)
+        let usergameXP = client.db_usergameXP.get(key);
         if (!usergameXP) {
             client.log(`usergameXP créé`, "debug");
             usergameXP = Object.assign({}, datamodel.tables.usergameXP);

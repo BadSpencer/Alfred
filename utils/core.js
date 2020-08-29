@@ -27,7 +27,7 @@ module.exports = (client) => {
         } else {
             return settings;
         }
-        
+
     };
 
     client.settingsCheck = () => {
@@ -38,7 +38,7 @@ module.exports = (client) => {
         if (!settings) {
             guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`);
             client.log(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`);
-        
+
             settings = Object.assign({}, datamodel.tables.settings);
             settings.id = guild.id;
             settings.guildName = guild.name;
@@ -49,34 +49,58 @@ module.exports = (client) => {
 
         client.log(`settingsCheck: Rôles`, "debug");
 
-        const memberRole = guild.roles.cache.find((r) => {
-            return r.name === settings.memberRole;
-        });
-        if (!memberRole) {
+        const roleMembers = client.roleMemberGet(guild, settings);
+        if (!roleMembers) {
             client.log(`settingsCheck: Rôle "Membres" non trouvé`, "error");
         } else {
             client.log(`settingsCheck: Rôle "Membres" OK`, "debug");
-        }
+        };
 
-        const modRole = guild.roles.cache.find((r) => {
-            return r.name === settings.modRole;
-        });
-        if (!modRole) {
+        const roleMod = client.roleModGet(guild, settings);
+        if (!roleMod) {
             client.log(`settingsCheck: Rôle "Modérateurs" non trouvé`, "error");
         } else {
             client.log(`settingsCheck: Rôle "Modérateurs" OK`, "debug");
-        }
+        };
 
-        const adminRole = guild.roles.cache.find((r) => {
-            return r.name === settings.adminRole;
-        });
-        if (!adminRole) {
+        const roleAdmin = client.roleAdminGet(guild, settings);
+        if (!roleAdmin) {
             client.log(`settingsCheck: Rôle "Admins" non trouvé`, "error");
         } else {
             client.log(`settingsCheck: Rôle "Admins" OK`, "debug");
+        };
+
+
+    };
+
+    client.roleMemberGet = (guild = null, settings = null) => {
+        if (!guild) {
+            guild = client.guilds.cache.get(client.config.guildID);
         }
+        if (!settings) {
+            client.getSettings(guild)
+        }
+        return guild.roles.cache.find(r => r.name == settings.memberRole);
+    };
 
+    client.roleModGet = (guild = null, settings = null) => {
+        if (!guild) {
+            guild = client.guilds.cache.get(client.config.guildID);
+        }
+        if (!settings) {
+            client.getSettings(guild)
+        }
+        return guild.roles.cache.find(r => r.name == settings.modRole);
+    };
 
+    client.roleAdminGet = (guild = null, settings = null) => {
+        if (!guild) {
+            guild = client.guilds.cache.get(client.config.guildID);
+        }
+        if (!settings) {
+            client.getSettings(guild)
+        }
+        return guild.roles.cache.find(r => r.name == settings.adminRole);
     };
 
 
@@ -93,7 +117,7 @@ module.exports = (client) => {
                 client.db_astuces.set(newAstuce.id, newAstuce);
             }
         });
-    
+
         let citations = client.textes.getCitations(client);
         citations.forEach(citation => {
             let currCit = client.db_citations.find(ast => ast.texte == citation);

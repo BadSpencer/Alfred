@@ -17,7 +17,7 @@ class CommandFinishedListener extends Listener {
 
         let member = guild.members.cache.get(message.author.id);
 
-        client.db.userdataAddXP(client, member, 5, `Commande`);
+        client.userdataAddXP(member, "CMD", 5);
 
     }
 };

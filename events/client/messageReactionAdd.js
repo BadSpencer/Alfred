@@ -118,23 +118,80 @@ class MessageReactionAddListener extends Listener {
 
 
         if (messageReaction.message.member !== member) {
-            client.db.userdataAddXP(client, member, 5, `Réaction à un message`);
+            client.userdataAddXP(member, "REACTOUT", 5);
 
 
-            if (emojis.positive.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 20, `Réaction "positive" reçue`);
-            if (emojis.positiveHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 20, `Réaction "positiveHand" reçue`);
-            if (emojis.positivePlus.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 30, `Réaction "positivePlus" reçue`);
-            if (emojis.neutral.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "neutral" reçue`);
-            if (emojis.neutralHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "neutralHand" reçue`);
-            if (emojis.bad.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 5, `Réaction "bad" reçue`);
-            if (emojis.badHand.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 5, `Réaction "badHand" reçue`);
-            if (emojis.sad.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "sad" reçue`);
-            if (emojis.love.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 50, `Réaction "love" reçue`);
-            if (emojis.sweet.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 25, `Réaction "sweet" reçue`);
-            if (emojis.drink.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 15, `Réaction "drink" reçue`);
-            if (emojis.flower.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 20, `Réaction "flower" reçue`);
-            if (emojis.event.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 10, `Réaction "event" reçue`);
-            if (emojis.medal.includes(messageReaction.emoji.name)) client.db.userdataAddXP(client, messageReaction.message.member, 100, `Réaction "medal" reçue`);
+            // Réaction positive
+            if (emojis.positive.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "positive" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (20)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 20);
+            };
+
+            if (emojis.positiveHand.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "positiveHand" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (20)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 20);
+            };
+
+            if (emojis.positivePlus.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "positivePlus" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (30)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 30);
+            };
+
+            if (emojis.neutral.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "neutral" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (10)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 10);
+            };
+            
+            if (emojis.neutralHand.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "neutralHand" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (10)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 10);
+            };
+
+            if (emojis.bad.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "bad" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (5)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 5);
+            };
+
+            if (emojis.badHand.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "badHand" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (5)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 5);
+            };
+            
+            if (emojis.sad.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "sad" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (10)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 10);
+            };
+
+            if (emojis.love.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "love" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (50)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 50);
+            };
+
+            if (emojis.sweet.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "sweet" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (25)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 25);
+            };
+
+            if (emojis.drink.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "drink" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (15)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 15);
+            };
+
+            if (emojis.flower.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "flower" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (20)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 20);
+            };
+
+            if (emojis.event.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "event" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (10)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 10);
+            };
+
+            if (emojis.medal.includes(messageReaction.emoji.name)) {
+                client.log(`Réaction "medal" reçue pour ${messageReaction.message.member.displayName} par ${member.displayName} (100)`, "debug");
+                client.userdataAddXP(messageReaction.message.member, "REACTIN", 100);
+            };
+
 
 
 

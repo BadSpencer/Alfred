@@ -19,19 +19,18 @@ class MessageInvalidListener extends Listener {
         if (message.channel.type === 'text') {
             await client.messageLog(message);
             if (message.content.length > 150) {
-                client.db.userdataAddXP(client, message.member, 10, `Message 150+`);
+                client.userdataAddXP(message.member, "TEXT", 20);
             } else {
-                client.db.userdataAddXP(client, message.member, 5, `Message`);
+                client.userdataAddXP(message.member, "TEXT", 10);
             }
         };
 
-        let game = client.db_games.find(game => game.textChannelID == message.channel.id);
-        if (game) {
+        let games = client.db_games.filterArray((game) => game.textChannelID == message.channel.id);
+        for (const game of games) {
             if (message.member.roles.cache.has(game.roleID)) {
                 await client.usergameUpdateLastAction(game, message.member);
             };
         };
-
     };
 
 }
