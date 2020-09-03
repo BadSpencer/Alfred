@@ -61,12 +61,12 @@ class KickCommand extends Command {
         const response = responses.first();
 
         if (response.content == "oui") {
-            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
-            if (message.channel.type === 'text') response.delete();
+            if (message.channel.type === 'text') {
+                message.delete();;
+                response.delete();
+            }
 
-
-            client.userdataAddLog(args.userdata, message.member, "KICK", args.raison);
-            // await member.send(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison))
+            client.memberLogKick(member, message.member, args.raison);
             await warnMessage(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
             await member.kick(args.raison);
 
@@ -74,8 +74,10 @@ class KickCommand extends Command {
             client.serverKickNotification(member, message.member, args.raison);
             successMessage(client.textes.get("USER_KICK_CHECK_SUCCESS", member), message.channel);
         } else {
-            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
-            if (message.channel.type === 'text') response.delete();
+            if (message.channel.type === 'text') {
+                message.delete();;
+                response.delete();
+            }
 
             warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
             return null;

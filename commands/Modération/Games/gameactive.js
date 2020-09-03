@@ -51,8 +51,8 @@
 
      async exec(message, args) {
          let client = this.client;
-         const guild = client.guilds.cache.get(client.config.guildID);
-         const settings = client.getSettings();
+         const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
          const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
          const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
@@ -106,7 +106,7 @@
                  state += `Catégorie réactivée: ✅\n`;
              }
          } else {
-             gameCategory = await client.gamesCreateMainCategory(args.game);
+             gameCategory = client.gamesCreateMainCategory(args.game);
              state += `Catégorie créée: ✅\n`;
              args.game.categoryID = gameCategory.id;
          }
@@ -132,8 +132,8 @@
                  state += `Salon discussions réactivé: ✅\n`;
              }
          } else {
-             gameTextChannel = await client.gamesCreateTextChannel(args.game);
-             await client.gamesTextChannelSetPerm(args.game, "active");
+             gameTextChannel = client.gamesCreateTextChannel(args.game);
+             client.gamesTextChannelSetPerm(args.game, "active");
              state += `Salon discussions créé: ✅\n`;
              args.game.textChannelID = gameTextChannel.id;
          }

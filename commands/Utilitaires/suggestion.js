@@ -33,18 +33,12 @@ class SuggestionCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         let suggChannel = guild.channels.cache.find(c => c.name === settings.suggChannel);
 
         if (!suggChannel) return;
-
-        /*
-        if (message.channel.type !== "dm") {
-            if (message.channel.type === 'text') message.delete();;
-        }
-        */
 
         let member = guild.members.cache.get(message.author.id);
 
@@ -70,10 +64,7 @@ class SuggestionCommand extends Command {
             await msgSent.react("💛");
             await msgSent.react("💔");
         })
-
     }
-
-
 }
 
 

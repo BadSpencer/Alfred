@@ -38,8 +38,8 @@ class GameInactiveCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (!args.game.actif) {
             return errorMessage(textes.get("GAMES_GAME_INACTIVE_ERROR_GAME_INACTIVE", args.game.name), message.channel);

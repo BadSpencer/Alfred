@@ -28,8 +28,8 @@ class MessageReactionRemoveListener extends Listener {
             //'191993511543832577' // Albator
         ];
 
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
         const member = guild.members.cache.get(user.id);
 
         client.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));

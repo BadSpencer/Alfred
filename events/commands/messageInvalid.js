@@ -18,11 +18,7 @@ class MessageInvalidListener extends Listener {
 
         if (message.channel.type === 'text') {
             await client.messageLog(message);
-            if (message.content.length > 150) {
-                client.userdataAddXP(message.member, "TEXT", 20);
-            } else {
-                client.userdataAddXP(message.member, "TEXT", 10);
-            }
+            client.memberLogText(message.member, message);
         };
 
         let games = client.db_games.filterArray((game) => game.textChannelID == message.channel.id);

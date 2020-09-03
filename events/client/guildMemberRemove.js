@@ -22,18 +22,46 @@ class guildMemberRemoveListener extends Listener {
         let userdata = client.db_userdata.get(member.id);
         let date = moment().format('DD.MM.YYYY');
 
-        if (userdata.logs.find(log => log.event == "KICK" && log.date == date)) {
-            client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", member));
-        } else {
-            if (userdata.logs.find(log => log.event == "BAN" && log.date == date)) {
-                //client.serverBanNotification(member);
+        let memberLogKick = client.db_memberLog.find(memberLog =>
+            memberLog.memberID === member.id &&
+            memberLog.createdDate === date &&
+            memberLog.type === "SERVERKICK");
+
+            
+        let memberLogBan = client.db_memberLog.find(memberLog =>
+            memberLog.memberID === member.id &&
+            memberLog.createdDate === date &&
+            memberLog.type === "SERVERBAN");
+
+
+            if (memberLogKick) {
+                client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", member));
+            };
+
+            if (memberLogBan) {
                 client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", member));
-            } else {
+            };
+
+            if (!memberLogBan && !memberLogKick) {
                 client.serverQuitNotification(member);
-                client.userdataAddLog(userdata, member, "QUIT", "A quitté le discord");
+                client.memberLogServerQuit(member);
                 client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
             }
-        }
+
+
+
+        // if (userdata.logs.find(log => log.event == "KICK" && log.date == date)) {
+        //     client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", member));
+        // } else {
+        //     if (userdata.logs.find(log => log.event == "BAN" && log.date == date)) {
+        //         //client.serverBanNotification(member);
+        //         client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", member));
+        //     } else {
+        //         client.serverQuitNotification(member);
+        //         client.memberLogServerQuit(member);
+        //         client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
+        //     }
+        // }
 
 
 

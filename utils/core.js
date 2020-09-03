@@ -134,8 +134,8 @@ module.exports = (client) => {
 
     client.createVoiceChannel = async (name = "") => {
         client.log(`Méthode: createVoiceChannel`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
@@ -191,8 +191,8 @@ module.exports = (client) => {
 
     client.contactVoiceChannelJoin = async (member) => {
         client.log(`Méthode: contactVoiceChannelJoin`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         const roleEve = guild.roles.cache.find(r => r.name == "@everyone");
         const roleMem = guild.roles.cache.find(r => r.name == settings.memberRole);
@@ -243,8 +243,8 @@ module.exports = (client) => {
     };
     client.contactVoiceChannelQuit = async (channel) => {
         client.log(`Méthode: contactVoiceChannelQuit`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         const roleEve = guild.roles.cache.find(r => r.name == "@everyone");
         const roleMem = guild.roles.cache.find(r => r.name == settings.memberRole);
@@ -283,8 +283,8 @@ module.exports = (client) => {
     };
     client.gameVoiceChannelJoin = async (game, channel) => {
         client.log(`Méthode: gameVoiceChannelJoin`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
@@ -302,8 +302,8 @@ module.exports = (client) => {
     };
     client.gameVoiceChannelQuit = async (game, channel) => {
         client.log(`Méthode: gameVoiceChannelQuit`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const gameCategory = guild.channels.cache.get(game.categoryID);
 
@@ -397,8 +397,8 @@ module.exports = (client) => {
     };
     client.modLog = async (content) => {
         client.log(`Méthode: modLog`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         let modNotifChannel = guild.channels.cache.find(c => c.name === settings.modNotifChannel);
 

@@ -19,8 +19,8 @@ class StopCommand extends Command {
   async exec(message, args) {
 
     let client = this.client;
-    const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = client.getSettings();
+    const guild = client.getGuild();
+        const settings = client.getSettings(guild);
     
     let channel = guild.channels.cache.find(c => c.name === settings.AFKChannel);
 

@@ -29,8 +29,8 @@ class LogsCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (message.channel.type === 'text') message.delete();;
         message.channel.send("Logs", { files: ["/root/.pm2/logs/index-out.log"] });

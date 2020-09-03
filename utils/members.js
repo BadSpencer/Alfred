@@ -14,8 +14,8 @@ module.exports = (client) => {
     client.newMemberNotification = async (member) => {
         client.log(textes.get("LOG_EVENT_MEMBER_JOIN_MEMBERS", member));
 
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (settings.welcomeMemberEnabled !== "true") return client.log(textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 
@@ -33,8 +33,8 @@ module.exports = (client) => {
     };
     // Message d'acceuil lorsqu'un utilisateur est passé membre
     client.newMemberWelcome = async (member) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (settings.welcomeMemberEnabled !== "true") return client.log(textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 

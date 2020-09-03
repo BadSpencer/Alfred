@@ -4,29 +4,7 @@ const datamodel = require('./datamodel');
 
 
 
-exports.userdataAddXP = async (client, member, xpAmount, reason) => {
-    const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = client.db_settings.get(guild.id);
-    const userdata = client.db_userdata.get(member.id);
-    const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
-    if (roleMembers) {
-        if (member.roles.cache.has(roleMembers.id)) {
-            if (xpAmount > 0) {
-                userdata.xp += xpAmount;
-                client.db.userxplogAdd(client, member, "XP", xpAmount, reason);
-                client.log(client.textes.get("EXP_LOG_ADDXP", member, xpAmount, reason), "debug");
-                let newLevel = await client.xpGetLevel(userdata.xp);
-                if (newLevel > userdata.level) {
-                    userdata.level = newLevel;
-                    client.userLevelUp(member, newLevel);
-                };
-                client.db_userdata.set(member.id, userdata);
-            }
-        }
-    } else {
-        client.log(`Configuration serveur: impossible de trouver le rôle ${settings.memberRole}. Vérifiez la configuration en base de donnée`, "error")
-    }
-};
+
 exports.userxplogAdd = async (client, member, type, xpgained, xpreason, gamename = "n/a") => {
     let date = moment().format('DD.MM.YYYY');
     let id = `${member.id}-${date}`;

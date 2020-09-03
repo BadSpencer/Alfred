@@ -11,8 +11,8 @@ class presenceUpdateListener extends Listener {
     async exec(oldPresence, newPresence) {
         let client = this.client;
         client.log(`EVENT: ${this.emitter}/${this.event} pour ${newPresence.member.displayName}`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (newPresence.member.bot) return;
 

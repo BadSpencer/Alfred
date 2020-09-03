@@ -47,8 +47,8 @@ class GameChanCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
         const gameRole = message.guild.roles.cache.get(args.game.roleID);

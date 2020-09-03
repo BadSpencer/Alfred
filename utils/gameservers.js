@@ -524,8 +524,8 @@ module.exports = (client) => {
   };
 
   client.gameServersPostStatusMessage = async () => {
-    const guild = client.guilds.cache.get(client.config.guildID);
-    const settings = client.getSettings();
+    const guild = client.getGuild();
+    const settings = client.getSettings(guild);
 
     let games = client.gamesGetActive(true);
 

@@ -21,8 +21,8 @@ class voiceStateUpdateListener extends Listener {
     async exec(oldState, newState) {
         let client = this.client;
         client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);

@@ -13,8 +13,8 @@ const {
 module.exports = (client) => {
     // Message d'annonce lorsque quelqu'un rejoint le serveur
     client.serverJoinNotification = async (member) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 
@@ -39,8 +39,8 @@ module.exports = (client) => {
     };
     // Message d'acceuil du nouvel utilisateur (lien vers site)
     client.serverJoinInformation = async (member) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
@@ -57,8 +57,8 @@ module.exports = (client) => {
         };
     };
     client.serverJoinInformationAgain = async (member) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
@@ -76,8 +76,8 @@ module.exports = (client) => {
     };
     // Message d'annonce lorsque quelqu'un quitte le serveur
     client.serverQuitNotification = async (member) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -102,8 +102,8 @@ module.exports = (client) => {
 
     };
     client.serverKickNotification = async (member, memberBy, raison) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -122,11 +122,13 @@ module.exports = (client) => {
                 .setDescription(client.textes.get("MESSAGES_SERVER_KICK", member, memberBy, raison))
                 .setFooter(client.textes.get("LOG_EVENT_USER_KICK_SERVER", member), avatar);
             welcomeChannel.send(welcomeMessage);
-        };
+        } else {
+            client.log("Salon acceuil non trouvé", "error");
+        }
     };
     client.serverBanNotification = async (member, memberBy, raison) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.getSettings();
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -147,9 +149,12 @@ module.exports = (client) => {
             welcomeChannel.send(banMessage);
         };
     };
-    client.userdataGetAll = async () => {
-        let userdatas = client.db_userdata.filter(rec => rec.id !== "default");
-        return userdatas;
+    client.userdataGetAll = (toArray = false) => {
+        if (toArray === false) {
+            return client.db_userdata.fetchEverything();
+        } else {
+            return client.db_userdata.array();
+        };
     };
 
     client.userdataGet = (memberID) => {
@@ -280,17 +285,81 @@ module.exports = (client) => {
         client.log(`Vérification de la base des membres`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
 
-        client.log(`Membres actuellement sur le serveur discord: ${guild.members.cache.size}`, "debug");
-        client.log(`Membres actuellement dans la base de données: ${client.db_userdata.count}`, "debug");
-
+        client.log(`Membres Discord: ${guild.members.cache.size} BD: ${client.db_userdata.count}`, "debug");
         guild.members.cache.forEach(async member => {
             if (member.user.bot) return; // Ne pas enregistrer les bots
             let userdata = client.db_userdata.get(member.id);
 
             if (!userdata) {
-                await client.userdataCreate(member);
+                userdata = client.userdataCreate(member);
+            };
+        });
+
+        let memberLog = client.db_memberLog.array();
+
+        if (memberLog.length === 0) {
+            let userdatas = client.userdataGetAll(true);
+            const regex = /"(.*?)"/m;
+
+            for (const userdata of userdatas) {
+
+                let member = guild.members.cache.get(userdata.id);
+                if (member) {
+                    for (const log of userdata.logs) {
+                        switch (log.event) {
+                            case "JOIN":
+                                client.memberLogServerJoin(member, log.createdAt);
+                                break;
+                            case "QUIT":
+                                client.memberLogServerQuit(member, log.createdAt);
+                                break;
+                            case "NICK":
+                                let nickSplit = log.commentaire.split(" -> ");
+                                let nickOld = nickSplit[0];
+                                let nickNew = nickSplit[1];
+                                client.memberLogNick(member, nickOld, nickNew, log.createdAt)
+                                break;
+                            case "GAMEJOIN":
+                                let gamejoinPhrase = regex.exec(log.commentaire);
+                                let gamejoin = client.gamesGet(gamejoinPhrase[0]);
+                                if (gamejoin) {
+                                    client.memberLogGameJoin(member, gamejoin, log.createdAt);
+                                }
+                                break;
+
+                            case "GAMEQUIT":
+                                if (log.commentaire.includes("Inactivité")) {
+                                    let gamequitPhrase = regex.exec(log.commentaire);
+                                    let gamequit = client.gamesGet(gamequitPhrase[0]);
+                                    if (gamequit) {
+                                        client.memberLogGameIdle(member, gamequit, log.createdAt);
+                                    }
+                                } else {
+                                    let gamequitPhrase = regex.exec(log.commentaire);
+                                    let gamequit = client.gamesGet(gamequitPhrase[0]);
+                                    if (gamequit) {
+                                        client.memberLogGameQuit(member, gamequit, log.createdAt);
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
             }
-        })
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     };
 
     client.userdataCreate = async (member) => {
@@ -309,9 +378,9 @@ module.exports = (client) => {
         userdata.level = 0;
         userdata.xp = 0;
 
-        await client.db_userdata.set(member.id, userdata);
+        client.db_userdata.set(member.id, userdata);
         client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);
-        client.userdataAddLog(userdata, member, "JOIN", "A rejoint le discord");
+
     };
 
     client.userdataAddLog = async (userdata, memberBy, event, commentaire) => {
@@ -371,15 +440,15 @@ module.exports = (client) => {
 
             let logEntriesLast = [];
 
-                for (const log of userdata.logs) {
-                    logEntriesLast.push({
-                        "id": userdata.id,
-                        "createdAt": log.createdAt,
-                        "event": log.event,
-                        "displayName": userdata.displayName,
-                        "commentaire": log.commentaire
-                    })
-                }
+            for (const log of userdata.logs) {
+                logEntriesLast.push({
+                    "id": userdata.id,
+                    "createdAt": log.createdAt,
+                    "event": log.event,
+                    "displayName": userdata.displayName,
+                    "commentaire": log.commentaire
+                })
+            }
 
             logEntriesLast.sort(function (a, b) {
                 return a.createdAt - b.createdAt;

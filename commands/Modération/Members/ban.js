@@ -1,7 +1,9 @@
 const {
     Command
 } = require("discord-akairo");
-const { Permissions } = require("discord.js");
+const {
+    Permissions
+} = require("discord.js");
 const {
     successMessage,
     errorMessage,
@@ -25,23 +27,26 @@ class BanCommand extends Command {
         });
     }
 
-    *args(message) {
+    * args(message) {
         const userdata = yield {
-            type: 'userdata', 
+            type: 'userdata',
             prompt: {
                 start: message => promptMessage('Quel membre souhaitez vous bannir ?'),
                 retry: message => promptMessage('Mentionnez un membre avec son ID')
             }
         };
         const raison = yield {
-            type: 'content', 
+            type: 'content',
             match: 'rest',
             prompt: {
                 start: message => promptMessage(`Pour quelle raison souhaitez vous bannir **${userdata.displayName}** ?`),
                 retry: message => promptMessage(`Pour quelle raison souhaitez vous bannir **${userdata.displayName}** ?`)
             }
         };
-        return { userdata, raison };
+        return {
+            userdata,
+            raison
+        };
     }
 
     async exec(message, args) {
@@ -66,19 +71,21 @@ class BanCommand extends Command {
         const response = responses.first();
 
         if (response.content == "oui") {
-            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
-            if (message.channel.type === 'text') response.delete();
+            if (message.channel.type === 'text') {
+                message.delete();;
+                response.delete();
+            }
 
-
-            client.userdataAddLog(args.userdata, message.member, "BAN", args.raison);
-            // await member.send(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison))
+            client.memberLogBan(member, message.member, args.raison);
             await errorMessage(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
-            await member.ban(args.raison);
-            client.serverBanNotification(amember, message.member, args.raison);
+            await member.ban({ days: 0, reason: args.raison });
+            client.serverBanNotification(member, message.member, args.raison);
             successMessage(client.textes.get("USER_BAN_CHECK_SUCCESS", member), message.channel);
         } else {
-            if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
-            if (message.channel.type === 'text') response.delete();
+            if (message.channel.type === 'text') {
+                message.delete();;
+                response.delete();
+            }
 
             warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
             return null;

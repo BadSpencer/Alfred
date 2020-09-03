@@ -61,38 +61,6 @@ class usersCommand extends Command {
                     client.db_userdata.set(userdata.id, "level", 0);
                 }
                 break;
-            case 'initlogs':
-                for (const userdata of userdatas) {
-                    let member = guild.members.cache.get(userdata.id);
-                    if (member) {
-                        await client.userdataClearLogs(member.id);
-                        await client.userdataAddLog(userdata, member, "JOIN", "A rejoint le discord");
-                        message.channel.send(client.textes.get("MEMBER_INIT_LOGS_MEMBER_SUCCESS", member.displayName));
-                    } else {
-                        message.channel.send(client.textes.get("MEMBER_INIT_LOGS_MEMBER_NOTFOUND", userdata.id));
-                    }
-                }
-                break;
-            case 'initmesslogs':
-                client.log(`Réinitialisation des logs des messages`);
-                await client.db_messageslogs.deleteAll()
-                client.log(`Table des logs des messages vidée`, "debug");
-                let textChannels = guild.channels.cache.filter(record => record.type == "text");
-                let messageCountTotal = 0;
-
-                for (const channel of textChannels) {
-
-                    let channelMessages = await client.channelGetAllMessages(channel[1].id);
-                    let messageCount = 0;
-                    for (const mess of channelMessages) {
-                        let messageLoggued = await client.messageLog(mess[1]);
-                        if (messageLoggued) messageCount += 1;
-                    };
-                    messageCountTotal += messageCount;
-                    client.log(`${messageCount} sur ${channelMessages.length} messages récupérés dans ${channel[1].name}`, "debug");
-                }
-                client.log(client.textes.get("COM_USERS_INITMESSLOGS_RESULT", messageCountTotal));
-                successMessage(client.textes.get("COM_USERS_INITMESSLOGS_RESULT", messageCountTotal), message.channel);
         }
         if (message.channel.type === 'text') message.delete();
     }
