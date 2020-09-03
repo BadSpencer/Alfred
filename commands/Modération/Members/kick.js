@@ -38,7 +38,7 @@ class KickCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
+        const guild = client.getGuild();
         let member = guild.members.cache.get(args.userdata.id);
 
 

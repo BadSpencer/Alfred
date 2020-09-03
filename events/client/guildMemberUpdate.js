@@ -23,7 +23,11 @@ class guildMemberUpdateListener extends Listener {
         let userdata = client.db_userdata.get(newMember.id);
 
         if (newMember.displayName !== oldMember.displayName) {
-            client.userdataAddLog(userdata, newMember, "NICK", `${oldMember.displayName} -> ${newMember.displayName}`);
+            client.memberLogNick(newMember, oldMember.displayName, newMember.displayName);
+            client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NICK_CHANGE", oldMember.displayName, newMember.displayName));
+            userdata.displayName = newMember.displayName;
+            userdata.username = newMember.username;
+            client.db_userdata.set(member.id, userdata);
         }
 
 
@@ -36,21 +40,22 @@ class guildMemberUpdateListener extends Listener {
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id) {
-                        client.userdataAddLog(userdata, newMember, "MEMBER", "A été ajouté au groupe des membres");
+                        client.memberLogMember(newMember);
                     }
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
                         client.newMemberNotification(newMember);
                         client.newMemberWelcome(newMember);
                     }
                     // Annonce rejoindre jeu
-                    const game = client.db_games.find(game => game.roleID == newRole.id);
+                    const game = client.gamesGetByRole(newRole);
                     if (game) {
                         client.gamesJoinListPost();
 
                         client.usergameUpdateJoinedAt(game, newMember);
 
                         client.gameNewPlayerNotification(game, newMember);
-                        client.userdataAddLog(userdata, newMember, "GAMEJOIN", `A rejoint le groupe "${game.name}"`);
+
+                        client.memberLogGameJoin(newMember, game);
 
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {
@@ -59,7 +64,7 @@ class guildMemberUpdateListener extends Listener {
                             let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
 
                             for (const server of servers) {
-                                let playerBan = await client.gameServerPlayerUnban(player, server);
+                                client.gameServerPlayerUnban(player, server);
                             }
                         }
                     }
@@ -74,7 +79,7 @@ class guildMemberUpdateListener extends Listener {
                 if (!newMember.roles.cache.has(oldRole.id)) {
                     client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
 
-                    const game = client.db_games.find(game => game.roleID == oldRole.id);
+                    const game = client.gamesGetByRole(oldRole);
                     if (game) {
 
                         client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`,"debug");
@@ -86,7 +91,7 @@ class guildMemberUpdateListener extends Listener {
                             let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
 
                             for (const server of servers) {
-                                let playerBan = await client.gameServerPlayerBan(player, server);
+                                client.gameServerPlayerBan(player, server);
                             }
                         }
                     }

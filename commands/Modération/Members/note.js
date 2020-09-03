@@ -45,7 +45,13 @@ class NoteCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-        await client.userdataAddLog(args.userdata, message.member, "NOTE", args.note);
+        const guild = client.getGuild();
+        let member = guild.members.cache.get(args.userdata.id);
+
+        if (!member) return errorMessage(client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName), message.channel);
+
+        client.memberLogNote(member, message.member, args.note);
+        client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NEW_NOTE", member, message.member, args.note));
     }
 }
 

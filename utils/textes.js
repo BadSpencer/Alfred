@@ -1176,6 +1176,14 @@ module.exports = class {
             MOD_NOTIF_NEW_MEMBER: (member) => {
                 return `✅ **${member.displayName}** à été accepté et ajouté au groupe des membres`;
             },
+            MOD_NOTIF_MEMBER_NICK_CHANGE: (oldNick, newNick) => {
+                return `⚠️ **${oldNick}** à changé de pseudo, c'est désormais: **${newNick}**`;
+            },
+            MOD_NOTIF_MEMBER_NEW_NOTE: (member, partyMember, note) => {
+                return `⚠️ Une nouvelle à été ajoutée pour **${member.displayName}** par **${partyMember.displayName}**
+                
+                **Note**: ${note}`;
+            },
             MOD_NOTIF_MEMBER_JOIN_GAME: (member, game) => {
                 return `✅ **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;
             },

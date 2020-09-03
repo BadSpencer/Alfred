@@ -292,7 +292,15 @@ module.exports = (client) => {
 
             if (!userdata) {
                 userdata = client.userdataCreate(member);
-            };
+            } else {
+                if (userdata.displayName !== member.displayName) {
+                    client.memberLogNick(member, userdata.displayName, member.displayName);
+                    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NICK_CHANGE", userdata.displayName, member.displayName));
+                    userdata.displayName = member.displayName;
+                    userdata.username = member.username;
+                    client.db_userdata.set(member.id, userdata);
+                };
+            }
         });
 
         let memberLog = client.db_memberLog.array();
@@ -313,6 +321,17 @@ module.exports = (client) => {
                             case "QUIT":
                                 client.memberLogServerQuit(member, log.createdAt);
                                 break;
+                            case "MEMBER":
+                                client.memberLogMember(member, log.createdAt);
+                                break;
+                            case "NOTE":
+                                let partyMemberNote = guild.members.cache.get(log.createdBy);
+                                client.memberLogNote(member, partyMemberNote, log.commentaire, log.createdAt);
+                                break;
+                            case "KICK":
+                                let partyMemberKick = guild.members.cache.get(log.createdBy);
+                                client.memberLogKick(member, partyMemberKick, log.commentaire, log.createdAt);
+                                break;
                             case "NICK":
                                 let nickSplit = log.commentaire.split(" -> ");
                                 let nickOld = nickSplit[0];
@@ -326,7 +345,6 @@ module.exports = (client) => {
                                     client.memberLogGameJoin(member, gamejoin, log.createdAt);
                                 }
                                 break;
-
                             case "GAMEQUIT":
                                 if (log.commentaire.includes("Inactivité")) {
                                     let gamequitPhrase = regex.exec(log.commentaire);
@@ -381,38 +399,6 @@ module.exports = (client) => {
         client.db_userdata.set(member.id, userdata);
         client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);
 
-    };
-
-    client.userdataAddLog = async (userdata, memberBy, event, commentaire) => {
-        const guild = client.guilds.cache.get(client.config.guildID);
-        let member = guild.members.cache.get(userdata.id);
-
-        let userdataLogs = Object.assign({}, datamodel.tables.userdataLogs);
-
-        if (!userdata) return;
-
-        let date;
-        if (event == "JOIN") {
-            date = +new Date(member.joinedAt);
-        } else {
-            date = +new Date;
-        }
-
-        if (member) {
-            userdata.displayName = member.displayName;
-            userdata.nickname = member.nickname;
-        };
-
-        userdataLogs.createdAt = date;
-        userdataLogs.createdBy = memberBy.id;
-        userdataLogs.date = moment(date).format('DD.MM.YYYY');
-        userdataLogs.heure = moment(date).format('HH:mm');
-        userdataLogs.event = event;
-        userdataLogs.commentaire = commentaire;
-        userdata.logs.push(userdataLogs);
-
-        client.db_userdata.set(userdata.id, userdata);
-        client.log(`Log membre **${event}** pour ${userdata.displayName}`, "debug");
     };
 
     client.userdataClearLogs = async (memberID) => {

@@ -108,6 +108,13 @@ module.exports = (client) => {
         client.userdataLog(timestamp, member, "SERVERQUIT", `${member.displayName} à quitté le serveur`, null, null, null, null, null, null, null, null, null, null, 0);
     };
 
+    client.memberLogNote = (member, partyMember, note, timestamp = null) => {
+        if (timestamp === null) {
+            timestamp = +new Date;
+        };
+        client.userdataLog(timestamp, member, "NOTE", `Note pour ${member.displayName} par ${partyMember.displayName}`, null, null, null, null, null, partyMember.id, null, null, null, note, 0);
+    };
+
     client.memberLogKick = (member, partyMember, note, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
@@ -148,6 +155,13 @@ module.exports = (client) => {
             timestamp = +new Date;
         };
         client.userdataLog(timestamp, member, "GAMEIDLE", `${member.displayName} à été retiré du groupe de ${game.name} pour inactivité`, game.id, null, null, null, null, null, null, null, null, null, xpGained);
+    };
+
+    client.memberLogMember = (member, timestamp = null) => {
+        if (timestamp === null) {
+            timestamp = +new Date;
+        };
+        client.userdataLog(timestamp, member, "MEMBER", `${member.displayName} à été accepté en tant que membre`, null, null, null, null, null, null, null, null, null, null, 0);
     };
 
 
@@ -335,6 +349,7 @@ module.exports = (client) => {
 
             case "SERVERKICK":
             case "SERVERBAN":
+            case "NOTE":
                 let memberLogServerKickBan = Object.assign({}, datamodel.tables.memberLog);
                 memberLogServerKickBan.key = client.db_memberLog.autonum;
                 memberLogServerKickBan.createdAt = timestamp;
@@ -348,6 +363,19 @@ module.exports = (client) => {
                 client.db_memberLog.set(memberLogServerKickBan.key, memberLogServerKickBan);
 
                 break;
+
+            case "MEMBER":
+                let memberLogServerMember = Object.assign({}, datamodel.tables.memberLog);
+                memberLogServerMember.key = client.db_memberLog.autonum;
+                memberLogServerMember.createdAt = timestamp;
+                memberLogServerMember.createdDate = date;
+                memberLogServerMember.createdTime = time;
+                memberLogServerMember.memberID = member.id;
+                memberLogServerMember.type = type;
+                memberLogServerMember.comment = comment;
+                memberLogServerMember.note = note;
+                memberLogServerMember.partyMemberID = partyMemberID;
+                client.db_memberLog.set(memberLogServerMember.key, memberLogServerMember);
 
             case "NICK":
                 let memberLogServerNick = Object.assign({}, datamodel.tables.memberLog);
@@ -383,83 +411,6 @@ module.exports = (client) => {
             default:
                 break;
         }
-    };
-
-    client.userdataLogToDate = (member, date, type, comment, playGameID, voiceChannelName, textMessageID, cmdCommandID, cmdCommandParameters, reactInMessageID, reactInFromMemberID, reactInEmoji, reactOutMessageID, reactOutOnMemberID, reactOutEmoji, xpGained) => {
-        const guild = client.getGuild();
-        const settings = client.getSettings(guild);
-        const userdata = client.userdataGet(member.id);
-
-
-        if (date === null) {
-            date = +new Date;
-        };
-        let key = client.db_memberLog.autonum;
-
-        let memberLog = Object.assign({}, datamodel.tables.memberLog);
-        memberLog.createdAt = date;
-        memberLog.createdDate = moment(date).format('DD.MM.YYYY');
-        memberLog.createdTime = moment(date).format('HH:mm');
-        memberLog.memberID = member.id;
-        memberLog.type = type;
-        if (comment) {
-            memberLog.comment = comment;
-        } else {
-            memberLog.comment = comment;
-        }
-        memberLog.playGameID = playGameID;
-        memberLog.voiceChannelName = voiceChannelName;
-        memberLog.textMessageID = textMessageID;
-        memberLog.cmdCommandID = cmdCommandID;
-        memberLog.cmdCommandParameters = cmdCommandParameters;
-        memberLog.reactInMessageID = reactInMessageID;
-        memberLog.reactInFromMemberID = reactInFromMemberID;
-        memberLog.reactInEmoji = reactInEmoji;
-        memberLog.reactOutMessageID = reactOutMessageID;
-        memberLog.reactOutOnMemberID = reactOutOnMemberID;
-        memberLog.reactOutEmoji = reactOutEmoji;
-        memberLog.xpGained = xpGained;
-        let currentTypeXP = client.userdataGetCurrentXP(member.id, type);
-        switch (type) {
-            case "PLAY":
-                if (currentTypeXP >= settings.maxPlayXPPerDay) {
-                    memberLog.xpMaxReached = true;
-                }
-                break;
-            case "VOICE":
-                if (currentTypeXP >= settings.maxVoiceXPPerDay) {
-                    memberLog.xpMaxReached = true;
-                }
-                break;
-            case "TEXT":
-                if (currentTypeXP >= settings.maxTextXPPerDay) {
-                    memberLog.xpMaxReached = true;
-                }
-                break;
-            case "CMD":
-                if (currentTypeXP >= settings.maxCmdXPPerDay) {
-                    memberLog.xpMaxReached = true;
-                }
-                break;
-            case "REACTIN":
-                if (currentTypeXP >= settings.maxReactInXPPerDay) {
-                    memberLog.xpMaxReached = true;
-                }
-                break;
-            case "REACTOUT":
-                if (currentTypeXP >= settings.maxReactOutXPPerDay) {
-                    memberLog.xpMaxReached = true;
-                }
-                break;
-        }
-
-        if (memberLog.xpMaxReached === false && xpGained > 0) {
-            client.userdataAddXP(member, xpGained);
-        }
-
-        client.db_memberLog.set(key, memberLog);
-        client.log(`${member.displayName}: ${type} ${comment}`, "debug");
-
     };
 
     client.userdataAddXP = (member, amount = 1) => {
