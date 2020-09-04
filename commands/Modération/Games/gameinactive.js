@@ -99,11 +99,11 @@ class GameInactiveCommand extends Command {
         if (gameCategory) {
             gameCategory.setName(`🔒${settings.gameCategoryPrefix}${args.game.name}`)
                 .then(deleted => {
-                    state += `Rôle "Joue à": ✅ supprimé\n`;
+                    state += `Catégorie: ✅ renommée\n`;
                     stateMsg.edit(stateMessage(state));
                 })
                 .catch(error => {
-                    state += `Rôle "Joue à": 🟥 ${error}\n`;
+                    state += `Catégorie: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
         };
