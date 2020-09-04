@@ -359,7 +359,10 @@ module.exports = (client) => {
     const guild = client.guilds.cache.get(client.config.guildID);
 
     let servers = await client.db_gameservers.filterArray(server => server.isActive == true);
-    client.log(`Vérification RCON (${servers.length} serveurs)`);
+
+    if (servers.length > 0) {
+      client.log(`Vérification RCON (${servers.length} serveurs)`);
+    }
 
     for (const server of servers) {
       let response = await client.gameRconQuery(server, "listplayers");
@@ -367,13 +370,6 @@ module.exports = (client) => {
 
       let game = client.gamesGet(server.gamename);
       const gameTextChannel = await guild.channels.cache.get(game.textChannelID);
-
-      /*
-      if (server.servername == "Ebenus Astrum") {
-        response = undefined;
-      }
-      */
-
 
       if (response == undefined) {
         if (server.status == "online") {
