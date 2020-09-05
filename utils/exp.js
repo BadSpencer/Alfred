@@ -310,7 +310,6 @@ module.exports = (client) => {
                 if (newLevel > userdata.level) {
                     userdata.level = newLevel;
                     client.userLevelUp(member, newLevel);
-                    client.log(`Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
                 };
                 client.userdataSet(userdata);
                 client.log(`XP pour ${member.displayName}: ${amount}`, "debug");
@@ -328,7 +327,7 @@ module.exports = (client) => {
         let newLevel = client.xpGetLevel(usergame.xp);
         if (newLevel > usergame.level) {
             usergame.level = newLevel;
-            client.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
+            client.log(`Jeu ${game.name}: Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel}`)
         };
         client.usergameSet(usergame);
 
