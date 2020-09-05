@@ -125,7 +125,7 @@ exports.tables = {
 
     },
     userdata: {
-        "id": "default",
+        "id": "",
         "username": "",
         "nickname": "",
         "displayName": "",
@@ -135,8 +135,8 @@ exports.tables = {
         "joinedAt": "",
         "joinedDate": "",
         "joinedTime": "",
-        "level": "",
-        "xp": "",
+        "level": 0,
+        "xp": 0,
         "logs": []
     },
     userdataLogs: {
@@ -218,7 +218,8 @@ exports.tables = {
         "createdByName": "",
         "createdAt": "",
         "createdDate": "",
-        "createdTime": ""
+        "createdTime": "",
+        "content": ""
     },
     commandsLogs: {
         "messageID": "",
@@ -249,15 +250,14 @@ exports.tables = {
         "comment": "",
         "gameID": "",
         "voiceChannelName": "",
-        "messageID": "",
-        "messageContent": "",
-        "commandID": "",
         "partyMemberID": "",
         "emoji": "",
         "nickOld": "",
         "nickNew": "",
         "note": "",
         "xpMaxReached": false,
-        "xpGained": 0
+        "hits": 0,
+        "xpGained": 0,
+        "xpNoLimit": 0
     }
 }

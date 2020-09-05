@@ -27,7 +27,7 @@ class CommandStartedListener extends Listener {
 
         // Log
         client.log(`${used}`);
-        await client.commandLog(message, command);
+        await client.commandLog(message, command.id);
 
     }
 };

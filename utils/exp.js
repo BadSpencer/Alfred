@@ -50,7 +50,7 @@ module.exports = (client) => {
         };
         let member = guild.members.cache.get(memberID);
         if (member) {
-            client.memberLog(timestamp, memberID, "VOICE", `${client.memberGetDisplayNameByID(memberID)} est dans le salon ${member.voice.channel.name}`, null, member.voice.channel.name, null, null, null, null, null, null, null, null, xpGained);
+            client.memberLog(timestamp, memberID, "VOICE", `${client.memberGetDisplayNameByID(memberID)} est dans le salon ${member.voice.channel.name}`, null, member.voice.channel.name, null, null, null, null, null, xpGained);
         }
     };
 
@@ -62,9 +62,9 @@ module.exports = (client) => {
         let member = guild.members.cache.get(memberID);
         if (member) {
             if (member.roles.cache.has(game.roleID)) {
-                client.memberLog(timestamp, memberID, "PLAY", `${client.memberGetDisplayNameByID(memberID)} joue à ${game.name}`, game.id, null, null, null, null, null, null, null, null, null, xpGained);
+                client.memberLog(timestamp, memberID, "PLAY", `${client.memberGetDisplayNameByID(memberID)} joue à ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
             } else {
-                client.memberLog(timestamp, memberID, "PLAY", `${client.memberGetDisplayNameByID(memberID)} joue à ${game.name} (pas dans le groupe)`, game.id, null, null, null, null, null, null, null, null, null, 0);
+                client.memberLog(timestamp, memberID, "PLAY", `${client.memberGetDisplayNameByID(memberID)} joue à ${game.name} (pas dans le groupe)`, game.id, null, null, null, null, null, null, 0);
             }
         }
     };
@@ -74,105 +74,105 @@ module.exports = (client) => {
             timestamp = +new Date;
         };
         if (message.content.length > 150) {
-            client.memberLog(timestamp, memberID, "TEXT", `Message long de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.name}`, null, null, message.id, message.content, null, null, null, null, null, null, 100);
+            client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.parent.name}/${message.channel.name}`, null, null, null, null, null, null, null, 100);
         } else {
-            client.memberLog(timestamp, memberID, "TEXT", `Message de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.name}`, null, null, message.id, message.content, null, null, null, null, null, null, 25);
+            client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.parent.name}/${message.channel.name}`, null, null, null, null, null, null, null, 25);
         }
     };
 
-    client.memberLogCmd = (memberID, commandID, message, timestamp = null, xpGained = 5) => {
+    client.memberLogCmd = (memberID, timestamp = null, xpGained = 5) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "CMD", `${client.memberGetDisplayNameByID(memberID)} à lancé la commande ${commandID}`, null, null, message.id, message.content, commandID, null, null, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "CMD", `Commandes par ${client.memberGetDisplayNameByID(memberID)}`, null, null, null, null, null, null, null, xpGained);
     };
 
     client.memberLogReactIn = (memberID, partyMemberID, message, emoji, timestamp = null, xpGained = 10) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "REACTIN", `${client.memberGetDisplayNameByID(memberID)} réaction reçue avec ${emoji} par ${client.memberGetDisplayNameByID(partyMemberID)} (${xpGained})`, null, null, message.id, message.content, null, partyMemberID, emoji, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "REACTIN", `${client.memberGetDisplayNameByID(memberID)} réaction reçue avec ${emoji} par ${client.memberGetDisplayNameByID(partyMemberID)} (${xpGained})`, null, null, partyMemberID, emoji, null, null, null, xpGained);
     };
 
     client.memberLogReactOut = (memberID, partyMemberID, message, emoji, timestamp = null, xpGained = 5) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "REACTOUT", `${client.memberGetDisplayNameByID(memberID)} réaction avec ${emoji} pour ${client.memberGetDisplayNameByID(partyMemberID)} (${xpGained})`, null, null, message.id, message.content, null, partyMemberID, emoji, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "REACTOUT", `${client.memberGetDisplayNameByID(memberID)} réaction avec ${emoji} pour ${client.memberGetDisplayNameByID(partyMemberID)} (${xpGained})`, null, null, partyMemberID, emoji, null, null, null, xpGained);
     };
 
     client.memberLogServerJoin = (memberID, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "SERVERJOIN", `${client.memberGetDisplayNameByID(memberID)} à rejoint le serveur`, null, null, null, null, null, null, null, null, null, null, 0);
+        client.memberLog(timestamp, memberID, "SERVERJOIN", `${client.memberGetDisplayNameByID(memberID)} à rejoint le serveur`, null, null, null, null, null, null, null, 0);
     };
 
     client.memberLogServerQuit = (memberID, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "SERVERQUIT", `${client.memberGetDisplayNameByID(memberID)} à quitté le serveur`, null, null, null, null, null, null, null, null, null, null, 0);
+        client.memberLog(timestamp, memberID, "SERVERQUIT", `${client.memberGetDisplayNameByID(memberID)} à quitté le serveur`, null, null, null, null, null, null, null, 0);
     };
 
     client.memberLogNote = (memberID, partyMemberID, note, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "NOTE", `Note pour ${client.memberGetDisplayNameByID(memberID)} par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, null, null, null, partyMemberID, null, null, null, note, 0);
+        client.memberLog(timestamp, memberID, "NOTE", `Note pour ${client.memberGetDisplayNameByID(memberID)} par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, partyMemberID, null, null, null, note, 0);
     };
 
     client.memberLogKick = (memberID, partyMemberID, note, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "SERVERKICK", `${client.memberGetDisplayNameByID(memberID)} à été kické du serveur par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, null, null, null, partyMemberID, null, null, null, note, 0);
+        client.memberLog(timestamp, memberID, "SERVERKICK", `${client.memberGetDisplayNameByID(memberID)} à été kické du serveur par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, partyMemberID, null, null, null, note, 0);
     };
 
     client.memberLogBan = (memberID, partyMemberID, note, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "SERVERBAN", `${client.memberGetDisplayNameByID(memberID)} à été banni du serveur par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, null, null, null, partyMemberID, null, null, null, note, 0);
+        client.memberLog(timestamp, memberID, "SERVERBAN", `${client.memberGetDisplayNameByID(memberID)} à été banni du serveur par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, partyMemberID, null, null, null, note, 0);
     };
 
     client.memberLogNick = (memberID, nickOld, nickNew, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "NICK", `${nickOld} s'appelle désormais ${nickNew}`, null, null, null, null, null, null, null, nickOld, nickNew, null, 0);
+        client.memberLog(timestamp, memberID, "NICK", `${nickOld} s'appelle désormais ${nickNew}`, null, null, null, null, nickOld, nickNew, null, 0);
     };
 
     client.memberLogGameJoin = (memberID, game, timestamp = null, xpGained = 20) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "GAMEJOIN", `${client.memberGetDisplayNameByID(memberID)} à rejoint le jeu ${game.name}`, game.id, null, null, null, null, null, null, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "GAMEJOIN", `${client.memberGetDisplayNameByID(memberID)} à rejoint le jeu ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
     };
 
     client.memberLogGameQuit = (memberID, game, timestamp = null, xpGained = 10) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "GAMEQUIT", `${client.memberGetDisplayNameByID(memberID)} à quitté le jeu ${game.name}`, game.id, null, null, null, null, null, null, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "GAMEQUIT", `${client.memberGetDisplayNameByID(memberID)} à quitté le jeu ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
     };
 
     client.memberLogGameIdle = (memberID, game, timestamp = null, xpGained = 10) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "GAMEIDLE", `${client.memberGetDisplayNameByID(memberID)} à été retiré du groupe de ${game.name} pour inactivité`, game.id, null, null, null, null, null, null, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "GAMEIDLE", `${client.memberGetDisplayNameByID(memberID)} à été retiré du groupe de ${game.name} pour inactivité`, game.id, null, null, null, null, null, null, xpGained);
     };
 
     client.memberLogMember = (memberID, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "MEMBER", `${client.memberGetDisplayNameByID(memberID)} à été accepté en tant que membre`, null, null, null, null, null, null, null, null, null, null, 0);
+        client.memberLog(timestamp, memberID, "MEMBER", `${client.memberGetDisplayNameByID(memberID)} à été accepté en tant que membre`, null, null, null, null, null, null, null, 0);
     };
 
 
-    client.memberLog = (timestamp, memberID, type, comment, gameID, voiceChannelName, messageID, messageContent, commandID, partyMemberID, emoji, nickOld, nickNew, note, xpGained) => {
+    client.memberLog = (timestamp, memberID, type, comment, gameID, voiceChannelName, partyMemberID, emoji, nickOld, nickNew, note, xpGained) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const userdata = client.userdataGet(memberID);
@@ -211,14 +211,28 @@ module.exports = (client) => {
                     memberLog.type === "PLAY" &&
                     memberLog.gameID === gameID);
                 if (memberLogPlay) {
-                    memberLogAdd = memberLogPlay
+                    memberLogAdd = memberLogPlay;
                 }
                 break;
             case "TEXT":
                 maxTypeXPperDay = settings.maxTextXPPerDay;
+                let memberLogText = client.db_memberLog.find(memberLog =>
+                    memberLog.memberID === memberID &&
+                    memberLog.createdDate === date &&
+                    memberLog.type === "TEXT");
+                    if (memberLogText) {
+                        memberLogAdd = memberLogText;
+                    }
                 break;
             case "CMD":
                 maxTypeXPperDay = settings.maxCmdXPPerDay;
+                let memberLogCmd = client.db_memberLog.find(memberLog =>
+                    memberLog.memberID === memberID &&
+                    memberLog.createdDate === date &&
+                    memberLog.type === "CMD");
+                    if (memberLogCmd) {
+                        memberLogAdd = memberLogCmd;
+                    }
                 break;
             case "REACTIN":
                 maxTypeXPperDay = settings.maxReactInXPPerDay;
@@ -242,14 +256,14 @@ module.exports = (client) => {
         memberLogAdd.comment = comment;
         memberLogAdd.gameID = gameID;
         memberLogAdd.voiceChannelName = voiceChannelName;
-        memberLogAdd.messageID = messageID;
-        memberLogAdd.messageContent = messageContent;
-        memberLogAdd.commandID = commandID;
         memberLogAdd.partyMemberID = partyMemberID;
         memberLogAdd.emoji = emoji;
         memberLogAdd.nickOld = nickOld;
         memberLogAdd.nickNew = nickNew;
         memberLogAdd.note = note;
+
+        memberLogAdd.xpNoLimit += xpGained;
+        memberLogAdd.hits += 1;
 
         if (currentTypeXP >= maxTypeXPperDay) {
             memberLogAdd.xpMaxReached = true;

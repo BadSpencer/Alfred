@@ -103,8 +103,6 @@ module.exports = (client) => {
         return guild.roles.cache.find(r => r.name == settings.adminRole);
     };
 
-
-
     client.textesCheck = () => {
         let astuces = client.textes.getAstuces(client);
         astuces.forEach(astuce => {
@@ -130,7 +128,6 @@ module.exports = (client) => {
             }
         });
     };
-
 
     client.createVoiceChannel = async (name = "") => {
         client.log(`Méthode: createVoiceChannel`, "debug");
@@ -160,6 +157,7 @@ module.exports = (client) => {
         });
 
     };
+
     client.renameFreeVoiceChannel = async (member) => {
         client.log(`Méthode: renameFreeVoiceChannel`, "debug");
         let channelName = client.textes.get("VOICE_NEW_VOICE_CHANNEL");
@@ -420,9 +418,11 @@ module.exports = (client) => {
         messagesLogs.createdAt = message.createdTimestamp;
         messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
         messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
+        messagesLogs.content = message.cleanContent;
         client.db_messageslogs.set(message.id, messagesLogs);
         return true;
     };
+
     client.commandLog = async (message, command) => {
         client.log(`Méthode: commandLog`, "debug");
         let commandsLogs = Object.assign({}, datamodel.tables.commandsLogs);
@@ -438,6 +438,7 @@ module.exports = (client) => {
         commandsLogs.content = message.content;
         client.db_commandsLogs.set(message.id, commandsLogs);
     };
+
     client.channelGetAllMessages = async (channelID) => {
         client.log(`Méthode: channelGetAllMessages`, "debug");
 
@@ -456,7 +457,7 @@ module.exports = (client) => {
                 options.before = last_id;
             }
 
-            const messages = await channel.messages.fetchs(options);
+            const messages = await channel.messages.fetch(options);
             if (messages.size > 0) {
                 messagesAll.push(...messages);
                 last_id = messages.last().id;

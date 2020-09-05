@@ -34,9 +34,6 @@ class LogsCommand extends Command {
 
         if (message.channel.type === 'text') message.delete();;
         message.channel.send("Logs", { files: ["/root/.pm2/logs/index-out.log"] });
-
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();
-
     }
 
 }
