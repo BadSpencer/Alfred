@@ -44,6 +44,7 @@ module.exports = (client) => {
     };
 
     client.memberLogVoice = (memberID, timestamp = null, xpGained = 1) => {
+        const guild = client.getGuild();
         if (timestamp === null) {
             timestamp = +new Date;
         };
