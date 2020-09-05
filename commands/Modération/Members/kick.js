@@ -66,7 +66,7 @@ class KickCommand extends Command {
                 response.delete();
             }
 
-            client.memberLogKick(member, message.member, args.raison);
+            client.memberLogKick(member.id, message.member.id, args.raison);
             await warnMessage(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
             await member.kick(args.raison);
 

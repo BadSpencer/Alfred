@@ -19,7 +19,7 @@ class guildMemberAddListener extends Listener {
 
         client.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", member));
 
-        client.memberLogServerJoin(member);
+        client.memberLogServerJoin(member.id);
 
 
         let userdata = client.db_userdata.get(member.id);

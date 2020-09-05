@@ -168,7 +168,7 @@ module.exports = (client) => {
     client.userdataUserboard = async (message) => {
         const guild = client.guilds.cache.get(client.config.guildID);
 
-        let userdatas = client.db_userdata.filterArray(rec => rec.id !== "default");
+        let userdatas = client.userdataGetAll(true);
 
         let usersTopXP = usersTopIn = usersTopOut = userdatas;
 
@@ -294,7 +294,7 @@ module.exports = (client) => {
                 userdata = client.userdataCreate(member);
             } else {
                 if (userdata.displayName !== member.displayName) {
-                    client.memberLogNick(member, userdata.displayName, member.displayName);
+                    client.memberLogNick(member.id, userdata.displayName, member.displayName);
                     client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NICK_CHANGE", userdata.displayName, member.displayName));
                     userdata.displayName = member.displayName;
                     userdata.username = member.username;
@@ -310,59 +310,56 @@ module.exports = (client) => {
             const regex = /"(.*?)"/m;
 
             for (const userdata of userdatas) {
-
-                let member = guild.members.cache.get(userdata.id);
-                if (member) {
-                    for (const log of userdata.logs) {
-                        switch (log.event) {
-                            case "JOIN":
-                                client.memberLogServerJoin(member, log.createdAt);
-                                break;
-                            case "QUIT":
-                                client.memberLogServerQuit(member, log.createdAt);
-                                break;
-                            case "MEMBER":
-                                client.memberLogMember(member, log.createdAt);
-                                break;
-                            case "NOTE":
-                                let partyMemberNote = guild.members.cache.get(log.createdBy);
-                                client.memberLogNote(member, partyMemberNote, log.commentaire, log.createdAt);
-                                break;
-                            case "KICK":
-                                let partyMemberKick = guild.members.cache.get(log.createdBy);
-                                client.memberLogKick(member, partyMemberKick, log.commentaire, log.createdAt);
-                                break;
-                            case "NICK":
-                                let nickSplit = log.commentaire.split(" -> ");
-                                let nickOld = nickSplit[0];
-                                let nickNew = nickSplit[1];
-                                client.memberLogNick(member, nickOld, nickNew, log.createdAt)
-                                break;
-                            case "GAMEJOIN":
-                                let gamejoinPhrase = regex.exec(log.commentaire);
-                                let gamejoin = client.gamesGet(gamejoinPhrase[0]);
-                                if (gamejoin) {
-                                    client.memberLogGameJoin(member, gamejoin, log.createdAt);
+                for (const log of userdata.logs) {
+                    switch (log.event) {
+                        case "JOIN":
+                            client.memberLogServerJoin(userdata.id, log.createdAt);
+                            break;
+                        case "QUIT":
+                            client.memberLogServerQuit(userdata.id, log.createdAt);
+                            break;
+                        case "MEMBER":
+                            client.memberLogMember(userdata.id, log.createdAt);
+                            break;
+                        case "NOTE":
+                            let partyMemberNote = guild.members.cache.get(log.createdBy);
+                            client.memberLogNote(userdata.id, partyMemberNote, log.commentaire, log.createdAt);
+                            break;
+                        case "KICK":
+                            let partyMemberKick = guild.members.cache.get(log.createdBy);
+                            client.memberLogKick(userdata.id, partyMemberKick, log.commentaire, log.createdAt);
+                            break;
+                        case "NICK":
+                            let nickSplit = log.commentaire.split(" -> ");
+                            let nickOld = nickSplit[0];
+                            let nickNew = nickSplit[1];
+                            client.memberLogNick(userdata.id, nickOld, nickNew, log.createdAt)
+                            break;
+                        case "GAMEJOIN":
+                            let gamejoinPhrase = regex.exec(log.commentaire);
+                            let gamejoin = client.gamesGet(gamejoinPhrase[0]);
+                            if (gamejoin) {
+                                client.memberLogGameJoin(userdata.id, gamejoin, log.createdAt);
+                            }
+                            break;
+                        case "GAMEQUIT":
+                            if (log.commentaire.includes("Inactivité")) {
+                                let gamequitPhrase = regex.exec(log.commentaire);
+                                let gamequit = client.gamesGet(gamequitPhrase[0]);
+                                if (gamequit) {
+                                    client.memberLogGameIdle(userdata.id, gamequit, log.createdAt);
                                 }
-                                break;
-                            case "GAMEQUIT":
-                                if (log.commentaire.includes("Inactivité")) {
-                                    let gamequitPhrase = regex.exec(log.commentaire);
-                                    let gamequit = client.gamesGet(gamequitPhrase[0]);
-                                    if (gamequit) {
-                                        client.memberLogGameIdle(member, gamequit, log.createdAt);
-                                    }
-                                } else {
-                                    let gamequitPhrase = regex.exec(log.commentaire);
-                                    let gamequit = client.gamesGet(gamequitPhrase[0]);
-                                    if (gamequit) {
-                                        client.memberLogGameQuit(member, gamequit, log.createdAt);
-                                    }
+                            } else {
+                                let gamequitPhrase = regex.exec(log.commentaire);
+                                let gamequit = client.gamesGet(gamequitPhrase[0]);
+                                if (gamequit) {
+                                    client.memberLogGameQuit(userdata.id, gamequit, log.createdAt);
                                 }
-                                break;
-                        }
+                            }
+                            break;
                     }
                 }
+
             }
         }
 

@@ -23,7 +23,7 @@ class guildMemberUpdateListener extends Listener {
         let userdata = client.db_userdata.get(newMember.id);
 
         if (newMember.displayName !== oldMember.displayName) {
-            client.memberLogNick(newMember, oldMember.displayName, newMember.displayName);
+            client.memberLogNick(newMember.id, oldMember.displayName, newMember.displayName);
             client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NICK_CHANGE", oldMember.displayName, newMember.displayName));
             userdata.displayName = newMember.displayName;
             userdata.username = newMember.username;
@@ -40,7 +40,7 @@ class guildMemberUpdateListener extends Listener {
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id) {
-                        client.memberLogMember(newMember);
+                        client.memberLogMember(newMember.id);
                     }
                     if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
                         client.newMemberNotification(newMember);
@@ -55,7 +55,7 @@ class guildMemberUpdateListener extends Listener {
 
                         client.gameNewPlayerNotification(game, newMember);
 
-                        client.memberLogGameJoin(newMember, game);
+                        client.memberLogGameJoin(newMember.id, game);
 
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {

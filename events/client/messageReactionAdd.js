@@ -115,49 +115,49 @@ class MessageReactionAddListener extends Listener {
 
 
         if (messageReaction.message.member !== member && !messageReaction.message.member.user.bot) {
-            client.memberLogReactOut(member, messageReaction.message.member, messageReaction.message, messageReaction.emoji.name);
+            client.memberLogReactOut(member.id, messageReaction.message.member.id, messageReaction.message, messageReaction.emoji.name);
 
             if (emojis.positive.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 20);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 20);
             };
             if (emojis.positiveHand.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 20);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 20);
             };
             if (emojis.positivePlus.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 30);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 30);
             };
             if (emojis.neutral.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.neutralHand.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.bad.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 5);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 5);
             };
             if (emojis.badHand.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 5);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 5);
             };
             if (emojis.sad.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.love.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 50);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 50);
             };
             if (emojis.sweet.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 25);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 25);
             };
             if (emojis.drink.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 15);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 15);
             };
             if (emojis.flower.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 20);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 20);
             };
             if (emojis.event.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.medal.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.member, member, messageReaction.message, messageReaction.emoji.name, null, 100);
+                client.memberLogReactIn(messageReaction.message.member.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 100);
             };
 
         }

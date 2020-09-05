@@ -1114,7 +1114,7 @@ module.exports = (client) => {
       successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), messageReaction.message.channel);
       client.gamesJoinListPost();
       client.gamePlayerQuitNotification(game, member);
-      client.memberLogGameQuit(member, game);
+      client.memberLogGameQuit(member.id, game);
     } else {
       response.delete();
       warnMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
@@ -1220,7 +1220,7 @@ module.exports = (client) => {
             if (test == false) {
               member.roles.remove(gameRole);
               client.gamePlayerQuitNotification(game, member, "PURGE");
-              client.memberLogGameIdle(member, game);
+              client.memberLogGameIdle(member.id, game);
             } else {
               //client.modLog(`**${member.displayName}** devrait être retiré du groupe "${game.name}" pour inactivité`);
               playersPurgedList += `${member.displayName}\n`;

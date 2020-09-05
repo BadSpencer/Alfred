@@ -44,26 +44,9 @@ class guildMemberRemoveListener extends Listener {
 
             if (!memberLogBan && !memberLogKick) {
                 client.serverQuitNotification(member);
-                client.memberLogServerQuit(member);
+                client.memberLogServerQuit(member.id);
                 client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
             }
-
-
-
-        // if (userdata.logs.find(log => log.event == "KICK" && log.date == date)) {
-        //     client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", member));
-        // } else {
-        //     if (userdata.logs.find(log => log.event == "BAN" && log.date == date)) {
-        //         //client.serverBanNotification(member);
-        //         client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", member));
-        //     } else {
-        //         client.serverQuitNotification(member);
-        //         client.memberLogServerQuit(member);
-        //         client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
-        //     }
-        // }
-
-
 
     }
 }
