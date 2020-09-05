@@ -70,9 +70,9 @@ module.exports = (client) => {
             timestamp = +new Date;
         };
         if (message.content.length > 150) {
-            client.memberLog(timestamp, memberID, "TEXT", `Message de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.name}`, null, null, message.id, message.content, null, null, null, null, null, null, 100);
+            client.memberLog(timestamp, memberID, "TEXT", `Message long de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.name}`, null, null, message.id, message.content, null, null, null, null, null, null, 100);
         } else {
-            client.memberLog(timestamp, memberID, "TEXT", `Message long de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.name}`, null, null, message.id, message.content, null, null, null, null, null, null, 25);
+            client.memberLog(timestamp, memberID, "TEXT", `Message de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.name}`, null, null, message.id, message.content, null, null, null, null, null, null, 25);
         }
     };
 
@@ -253,7 +253,9 @@ module.exports = (client) => {
         } else {
             memberLogAdd.xpMaxReached = false;
             memberLogAdd.xpGained += xpGained;
-            client.userdataAddXP(memberID, xpGained);
+            if (xpGained > 0) {
+                client.userdataAddXP(memberID, xpGained);
+            }
         }
 
         client.db_memberLog.set(memberLogAdd.key, memberLogAdd);
@@ -283,16 +285,18 @@ module.exports = (client) => {
         const roleMembers = client.roleMemberGet(guild, settings);
         const member = guild.members.cache.get(memberID);
 
-        if (member.roles.cache.has(roleMembers.id)) {
-            userdata.xp += amount;
-            let newLevel = client.xpGetLevel(userdata.xp);
-            if (newLevel > userdata.level) {
-                userdata.level = newLevel;
-                client.userLevelUp(member, newLevel);
-                client.log(`Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
-            };
-            client.userdataSet(userdata);
-            client.log(`XP pour ${member.displayName}: ${amount}`, "debug");
+        if (member) {
+            if (member.roles.cache.has(roleMembers.id)) {
+                userdata.xp += amount;
+                let newLevel = client.xpGetLevel(userdata.xp);
+                if (newLevel > userdata.level) {
+                    userdata.level = newLevel;
+                    client.userLevelUp(member, newLevel);
+                    client.log(`Niveau supérieur pour ${member.displayName} qui est désormais level ${newLevel})`)
+                };
+                client.userdataSet(userdata);
+                client.log(`XP pour ${member.displayName}: ${amount}`, "debug");
+            }
         }
     };
 
