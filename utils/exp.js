@@ -47,7 +47,10 @@ module.exports = (client) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "VOICE", `${client.memberGetDisplayNameByID(memberID)} est dans le salon ${member.voice.channel.name}`, null, member.voice.channel.name, null, null, null, null, null, null, null, null, xpGained);
+        let member = guild.members.cache.get(memberID);
+        if (member) {
+            client.memberLog(timestamp, memberID, "VOICE", `${client.memberGetDisplayNameByID(memberID)} est dans le salon ${member.voice.channel.name}`, null, member.voice.channel.name, null, null, null, null, null, null, null, null, xpGained);
+        }
     };
 
     client.memberLogPlay = (memberID, game, timestamp = null, xpGained = 1) => {
