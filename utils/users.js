@@ -322,12 +322,10 @@ module.exports = (client) => {
                             client.memberLogMember(userdata.id, log.createdAt);
                             break;
                         case "NOTE":
-                            let partyMemberNote = guild.members.cache.get(log.createdBy);
-                            client.memberLogNote(userdata.id, partyMemberNote, log.commentaire, log.createdAt);
+                            client.memberLogNote(userdata.id, log.createdBy, log.commentaire, log.createdAt);
                             break;
                         case "KICK":
-                            let partyMemberKick = guild.members.cache.get(log.createdBy);
-                            client.memberLogKick(userdata.id, partyMemberKick, log.commentaire, log.createdAt);
+                            client.memberLogKick(userdata.id, log.createdBy, log.commentaire, log.createdAt);
                             break;
                         case "NICK":
                             let nickSplit = log.commentaire.split(" -> ");
