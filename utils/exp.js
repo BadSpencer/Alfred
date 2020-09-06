@@ -74,9 +74,9 @@ module.exports = (client) => {
             timestamp = +new Date;
         };
         if (message.content.length > 150) {
-            client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.parent.name}/${message.channel.name}`, null, null, null, null, null, null, null, 100);
+            client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)}`, null, null, null, null, null, null, null, 100);
         } else {
-            client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)} dans ${message.channel.parent.name}/${message.channel.name}`, null, null, null, null, null, null, null, 25);
+            client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)}`, null, null, null, null, null, null, null, 25);
         }
     };
 

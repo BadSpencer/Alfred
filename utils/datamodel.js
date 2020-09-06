@@ -215,12 +215,15 @@ exports.tables = {
     messagesLogs: {
         "messageID": "",
         "channelID": "",
+        "channelName": "",
+        "categoryName": "",
         "createdBy": "",
         "createdByName": "",
         "createdAt": "",
         "createdDate": "",
         "createdTime": "",
-        "content": ""
+        "content": "",
+        "url": ""
     },
     commandsLogs: {
         "messageID": "",

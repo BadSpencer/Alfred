@@ -407,22 +407,26 @@ module.exports = (client) => {
     client.messageLog = (message) => {
         if (message.author.bot) return false;
         if (message.content.startsWith("!")) return false;
+        if (message.content === "") return false;
         let messagesLogs = Object.assign({}, datamodel.tables.messagesLogs);
         messagesLogs.messageID = message.id;
         messagesLogs.channelID = message.channel.id;
+        messagesLogs.channelName = message.channel.name;
+        messagesLogs.categoryName = message.channel.parent.name;
         messagesLogs.createdBy = message.author.id;
         messagesLogs.createdByName = client.memberGetDisplayNameByID(message.author.id);
         messagesLogs.createdAt = message.createdTimestamp;
         messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
         messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
         messagesLogs.content = message.cleanContent;
+        messagesLogs.url = message.url;
         client.db_messageslogs.set(message.id, messagesLogs);
         client.log(`Message dans  ${message.channel.parent.name}/${message.channel.name} par ${messagesLogs.createdByName}`, "debug");
         return true;
+
     };
 
     client.commandLog = async (message, command) => {
-        client.log(`Méthode: commandLog`, "debug");
         let commandsLogs = Object.assign({}, datamodel.tables.commandsLogs);
         commandsLogs.messageID = message.id;
         commandsLogs.command = command.id;

@@ -56,6 +56,7 @@ class memberLogsInitCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
 
         client.db_memberLog.deleteAll();
@@ -65,8 +66,10 @@ class memberLogsInitCommand extends Command {
 
         let userdatas = client.userdataGetAll(true);
         for (const userdata of userdatas) {
-            userdata.xp = 0;
-            userdata.level = 0;
+            let now = +new Date;
+            let nbDays = client.msToDays(now - userdata.joinedAt);
+            userdata.xp = nbDays * 100;
+            userdata.level = client.xpGetLevel(userdata.xp);
             client.userdataSet(userdata);
         }
 
@@ -82,13 +85,16 @@ class memberLogsInitCommand extends Command {
                                         ParsedComponentData => {
                                             if (ParsedComponentData.command) {
                                                 client.commandLog(message, ParsedComponentData.command);
-                                                client.memberLogCmd(message.author.id, message.createdTimestamp, 5);
+                                                // client.memberLogCmd(message.author.id, message.createdTimestamp, 5);
                                             }
                                         }
                                     )
                                 } else {
-                                    client.messageLog(message);
-                                    client.memberLogText(message.author.id, message, message.createdTimestamp);
+                                    if (message.channel.name !== settings.commandsChannel &&
+                                        message.channel.name !== settings.commandsTestChannel) {
+                                        client.messageLog(message);
+                                    }
+                                    // client.memberLogText(message.author.id, message, message.createdTimestamp);
                                 }
                             }
                         }

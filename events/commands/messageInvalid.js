@@ -12,9 +12,12 @@ class MessageInvalidListener extends Listener {
 
     async exec(message) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (message.author.bot) return;
+        if (message.channel.name === settings.commandsChannel) return;
+        // if (message.channel.name === settings.commandsTestChannel) return;
 
         if (message.channel.type === 'text') {
             await client.messageLog(message);
