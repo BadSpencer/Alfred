@@ -404,22 +404,20 @@ module.exports = (client) => {
             modNotifChannel.send(content);
         }
     };
-    client.messageLog = async (message) => {
-        client.log(`Méthode: messageLog`, "debug");
-
+    client.messageLog = (message) => {
         if (message.author.bot) return false;
         if (message.content.startsWith("!")) return false;
-
         let messagesLogs = Object.assign({}, datamodel.tables.messagesLogs);
         messagesLogs.messageID = message.id;
         messagesLogs.channelID = message.channel.id;
         messagesLogs.createdBy = message.author.id;
-        messagesLogs.createdByName = message.author.username;
+        messagesLogs.createdByName = client.memberGetDisplayNameByID(message.author.id);
         messagesLogs.createdAt = message.createdTimestamp;
         messagesLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
         messagesLogs.createdTime = moment(message.createdAt).format('HH:mm');
         messagesLogs.content = message.cleanContent;
         client.db_messageslogs.set(message.id, messagesLogs);
+        client.log(`Message dans  ${message.channel.parent.name}/${message.channel.name} par ${messagesLogs.createdByName}`, "debug");
         return true;
     };
 
@@ -431,12 +429,13 @@ module.exports = (client) => {
         commandsLogs.channelID = message.channel.id;
         commandsLogs.channelType = message.channel.type;
         commandsLogs.createdBy = message.author.id;
-        commandsLogs.createdByName = message.author.username;
+        commandsLogs.createdByName = client.memberGetDisplayNameByID(message.author.id);;
         commandsLogs.createdAt = message.createdTimestamp;
         commandsLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
         commandsLogs.createdTime = moment(message.createdAt).format('HH:mm');
         commandsLogs.content = message.content;
         client.db_commandsLogs.set(message.id, commandsLogs);
+        client.log(`Commande ${command.id} par ${commandsLogs.createdByName}`, "debug");
     };
 
     client.channelGetAllMessages = async (channelID) => {

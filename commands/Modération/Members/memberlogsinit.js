@@ -17,11 +17,11 @@ const Enmap = require("enmap");
 
 class KickCommand extends Command {
     constructor() {
-        super('member-initlogs', {
-            aliases: ['minit'],
+        super('member-logs-init', {
+            aliases: ['mlinit'],
             category: 'Modération',
             description: {
-                content: 'Réinitialiser les logs/xp',
+                content: 'Réinitialisations logs/xp',
                 usage: '',
                 examples: ['']
             }
@@ -29,6 +29,12 @@ class KickCommand extends Command {
     }
 
     * args(message) {
+        // const action = yield {
+        //     type: [
+        //         "init"
+        //     ]
+
+        // };
         // const userdata = yield {
         //     type: 'userdata', 
         //     prompt: {
@@ -44,27 +50,20 @@ class KickCommand extends Command {
         //         retry: message => promptMessage(`Pour quelle raison souhaitez vous expulser **${userdata.displayName}** ?`)
         //     }
         // };
-        // return { userdata, raison };
+        // return {
+        //     action
+        // };
     }
 
     async exec(message, args) {
         let client = this.client;
         const guild = client.getGuild();
 
-        client.db_memberLog.destroy();
-        client.db_memberLog = new Enmap({
-            name: "memberLog"
-        });
 
-        client.db_messageslogs.destroy();
-        client.db_messageslogs = new Enmap({
-            name: "messageslogs"
-        });
+        client.db_memberLog.deleteAll();
+        client.db_messageslogs.deleteAll();
+        client.db_commandsLogs.deleteAll();
 
-        client.db_commandsLogs.destroy();
-        client.db_commandsLogs = new Enmap({
-            name: "commandsLogs"
-        });
 
         let userdatas = client.userdataGetAll(true);
         for (const userdata of userdatas) {
@@ -90,8 +89,8 @@ class KickCommand extends Command {
                                         }
                                     )
                                 } else {
-                                    client.messageLog(message);
-                                    client.memberLogText(message.author.id, message, message.createdTimestamp);
+                                        client.messageLog(message);
+                                        client.memberLogText(message.author.id, message, message.createdTimestamp);
                                 }
                             }
                         }
@@ -100,9 +99,7 @@ class KickCommand extends Command {
             }
         });
 
-        
         const regex = /"(.*?)"/m;
-
         for (const userdata of userdatas) {
             for (const log of userdata.logs) {
                 switch (log.event) {
@@ -151,13 +148,7 @@ class KickCommand extends Command {
                         break;
                 }
             }
-
         }
-
-
-
-
-
 
 
     }
