@@ -318,7 +318,6 @@ module.exports = (client) => {
     };
 
     client.usergameAddXP = (member, game, amount = 1) => {
-        client.log(`Méthode: exp/usergameAddXP`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const usergame = client.usergameGet(member, game);
@@ -355,7 +354,7 @@ module.exports = (client) => {
         let createdDate = moment(date).format('DD.MM.YYYY');
         let memberLogs = client.db_memberLog.filterArray(
             (memberLog) => memberLog.memberID === memberID &&
-            memberLog.createdAt === createdDate &&
+            memberLog.createdDate === createdDate &&
             memberLog.type === type);
 
         let XP = 0;
@@ -367,17 +366,19 @@ module.exports = (client) => {
     };
 
     client.xpGetLevel = (xp) => {
-        client.log(`Méthode: exp/xpGetLevel`, "debug");
-        let coef = 600;
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
+        let c = settings.xpToLevelCoef;
         // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
-        let level = Math.floor(Math.floor(coef + Math.sqrt(coef * coef - 4 * coef * (-xp))) / (coef * 2));
+        let level = Math.floor(Math.floor(c + Math.sqrt(c * c - 4 * c * (-xp))) / (c * 2));
         return level;
     };
     client.levelGetXP = async (level) => {
-        client.log(`Méthode: exp/levelGetXP`, "debug");
-        let coef = 600;
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
+        let c = settings.xpToLevelCoef;
         // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
-        let xp = Math.floor((coef * (level * level)) - (coef * level));
+        let xp = Math.floor((c * (level * level)) - (c * level));
         return xp;
     };
     client.userLevelUp = async (member, level) => {
