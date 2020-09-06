@@ -11,6 +11,7 @@ const {
     promptMessage
 } = require('../../utils/messages');
 const Discord = require("discord.js");
+const moment = require("moment");
 
 class xpTopCommand extends Command {
     constructor() {
@@ -25,13 +26,13 @@ class xpTopCommand extends Command {
     }
 
     * args(message) {
-        // const coef = yield {
-        //     type: "number",
-        //     default: 0
-        // };
-        // return {
-        //     coef
-        // };
+        const mode = yield {
+            type: ["all", "cureent"],
+            default: 0
+        };
+        return {
+            mode
+        };
     }
 
 
@@ -41,16 +42,16 @@ class xpTopCommand extends Command {
         const settings = client.getSettings(guild);
 
 
-        let usersTopXP = client.userdataGetAll(true);
+        let userdatas = client.userdataGetAll(true);
 
 
         let userstopDesc = [];
 
-        usersTopXP.sort(function (a, b) {
+        userdatas.sort(function (a, b) {
             return a.xp - b.xp;
         });
-        usersTopXP.reverse();
-        for (const user of usersTopXP) {
+        userdatas.reverse();
+        for (const user of userdatas) {
             let member = guild.members.cache.get(user.id);
             if (member) {
                 userstopDesc.push(`**${user.displayName}**: ${user.level} (${user.xp})`);
@@ -59,7 +60,31 @@ class xpTopCommand extends Command {
             }
         }
 
-        await client.arrayToEmbed(userstopDesc, 20, `Classement XP/Levels`, message.channel);
+        await client.arrayToEmbed(userstopDesc, 10, `Classement XP/Levels`, message.channel);
+
+        let usersScoreDesc = [];
+        let now = +new Date;
+        let fromTimestamp = moment(now).subtract(5, 'days');
+
+        for (const userdata of userdatas) {
+            let memberLogs = client.db_memberLog.filterArray(memberLog =>
+                memberLog.memberID === userdata.id &&
+                memberLog.createdAt > fromTimestamp);
+            if (memberLogs) {
+                let userXP = 0;
+                for (const memberLog of memberLogs) {
+                    userXP += memberLog.xpGained;
+                }
+                if (userXP > 0) {
+                    usersScoreDesc.push(`${client.memberGetDisplayNameByID(userdata.id)}: ${userXP}`);
+                }
+            }
+
+        }
+
+
+        await client.arrayToEmbed(usersScoreDesc, 10, `Scores`, message.channel);
+
     }
 
 }
