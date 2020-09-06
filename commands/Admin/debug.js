@@ -7,7 +7,8 @@ const {
 const {
     successMessage,
     errorMessage,
-    warnMessage
+    warnMessage,
+    promptMessage
 } = require('../../utils/messages');
 const {
     Permissions
@@ -41,9 +42,8 @@ class debugCommand extends Command {
 
     async exec(message, args) {
         let client = this.client;
-
-        const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.db_settings.get(guild.id);
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
 
         if (args.action == "on") {
             settings.debug = "true";

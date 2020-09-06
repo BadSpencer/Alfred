@@ -2,9 +2,6 @@ const {
     Command
 } = require("discord-akairo");
 const {
-    Permissions
-} = require("discord.js");
-const {
     successMessage,
     errorMessage,
     warnMessage,
@@ -13,9 +10,10 @@ const {
 } = require('../../../utils/messages');
 const colors = require('../../../utils/colors');
 const Enmap = require("enmap");
+const Discord = require("discord.js");
 
 
-class KickCommand extends Command {
+class memberLogsInitCommand extends Command {
     constructor() {
         super('member-logs-init', {
             aliases: ['mlinit'],
@@ -89,8 +87,8 @@ class KickCommand extends Command {
                                         }
                                     )
                                 } else {
-                                        client.messageLog(message);
-                                        client.memberLogText(message.author.id, message, message.createdTimestamp);
+                                    client.messageLog(message);
+                                    client.memberLogText(message.author.id, message, message.createdTimestamp);
                                 }
                             }
                         }
@@ -149,10 +147,8 @@ class KickCommand extends Command {
                 }
             }
         }
-
-
     }
 }
 
 
-module.exports = KickCommand;
+module.exports = memberLogsInitCommand;

@@ -365,18 +365,28 @@ module.exports = (client) => {
         return XP;
     };
 
-    client.xpGetLevel = (xp) => {
+    client.xpGetLevel = (xp, coef = 0) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
-        let c = settings.xpToLevelCoef;
+        let c = 0;
+        if (coef === 0) {
+            c = settings.xpToLevelCoef;
+        } else {
+            c = coef;
+        }
         // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
         let level = Math.floor(Math.floor(c + Math.sqrt(c * c - 4 * c * (-xp))) / (c * 2));
         return level;
     };
-    client.levelGetXP = async (level) => {
+    client.levelGetXP = (level, coef = 0) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
-        let c = settings.xpToLevelCoef;
+        let c = 0;
+        if (coef === 0) {
+            c = settings.xpToLevelCoef;
+        } else {
+            c = coef;
+        }
         // L = (25 + sqrt(25 * 25 - 4 * 25 * (-X) ))/ (2 * 25)
         let xp = Math.floor((c * (level * level)) - (c * level));
         return xp;
