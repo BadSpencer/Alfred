@@ -68,7 +68,7 @@ class memberLogsInitCommand extends Command {
         for (const userdata of userdatas) {
             let now = +new Date;
             let nbDays = client.msToDays(now - userdata.joinedAt);
-            userdata.xp = nbDays * 100;
+            userdata.xp = nbDays * 10;
             userdata.level = client.xpGetLevel(userdata.xp);
             client.userdataSet(userdata);
         }
