@@ -80,7 +80,6 @@ class xpTopCommand extends Command {
                     "xpPlay": 0,
                     "xpReactOut": 0,
                     "xpReactIn": 0,
-                    "xpGameJoin": 0,
                     "xpCmd": 0,
                     "xpTotal": 0
                 };
@@ -120,20 +119,20 @@ class xpTopCommand extends Command {
             return b.xpTotal - a.xpTotal;
         });
 
-
         for (const usersScore of usersScores) {
-            usersScoreDesc.push(`**${usersScore.memberDisplayName}** ${usersScore.xpTotal}`);
-            usersScoreDesc.push(`Messages: ${usersScore.xpText}`);
-            usersScoreDesc.push(`Vocal: ${usersScore.xpVoice}`);
-            usersScoreDesc.push(`Jeu: ${usersScore.xpPlay}`);
-            usersScoreDesc.push(`Réactions données: ${usersScore.xpReactOut}`);
-            usersScoreDesc.push(`Réactions reçues: ${usersScore.xpReactIn}`);
-            usersScoreDesc.push(`Rejoindre jeu: ${usersScore.xpGameJoin}`);
-            usersScoreDesc.push(`Commandes: ${usersScore.xpCmd}`);
+            if (usersScore.xpTotal > 0) {
+                usersScoreDesc.push(`**${usersScore.memberDisplayName}** ${usersScore.xpTotal}`);
+                usersScoreDesc.push(`Messages: ${usersScore.xpText}`);
+                usersScoreDesc.push(`Vocal: ${usersScore.xpVoice}`);
+                usersScoreDesc.push(`Jeu: ${usersScore.xpPlay}`);
+                usersScoreDesc.push(`Réactions données: ${usersScore.xpReactOut}`);
+                usersScoreDesc.push(`Réactions reçues: ${usersScore.xpReactIn}`);
+                usersScoreDesc.push(`Commandes: ${usersScore.xpCmd}`);
+            }
         }
 
 
-        await client.arrayToEmbed(usersScoreDesc, 8, `Scores`, message.channel);
+        await client.arrayToEmbed(usersScoreDesc, 7, `Scores`, message.channel);
 
     }
 

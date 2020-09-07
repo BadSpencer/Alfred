@@ -143,21 +143,21 @@ module.exports = (client) => {
         client.memberLog(timestamp, memberID, "NICK", `${nickOld} s'appelle désormais ${nickNew}`, null, null, null, null, nickOld, nickNew, null, 0);
     };
 
-    client.memberLogGameJoin = (memberID, game, timestamp = null, xpGained = 20) => {
+    client.memberLogGameJoin = (memberID, game, timestamp = null, xpGained = 0) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
         client.memberLog(timestamp, memberID, "GAMEJOIN", `${client.memberGetDisplayNameByID(memberID)} à rejoint le jeu ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
     };
 
-    client.memberLogGameQuit = (memberID, game, timestamp = null, xpGained = 10) => {
+    client.memberLogGameQuit = (memberID, game, timestamp = null, xpGained = 0) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
         client.memberLog(timestamp, memberID, "GAMEQUIT", `${client.memberGetDisplayNameByID(memberID)} à quitté le jeu ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
     };
 
-    client.memberLogGameIdle = (memberID, game, timestamp = null, xpGained = 10) => {
+    client.memberLogGameIdle = (memberID, game, timestamp = null, xpGained = 0) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
