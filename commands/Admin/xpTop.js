@@ -62,28 +62,78 @@ class xpTopCommand extends Command {
 
         await client.arrayToEmbed(userstopDesc, 10, `Classement XP/Levels`, message.channel);
 
+        let usersScores = [];
         let usersScoreDesc = [];
         let now = +new Date;
-        let fromTimestamp = moment(now).subtract(5, 'days');
+        let fromTimestamp = +new Date(moment(now).subtract(5, 'days'));
 
         for (const userdata of userdatas) {
             let memberLogs = client.db_memberLog.filterArray(memberLog =>
                 memberLog.memberID === userdata.id &&
                 memberLog.createdAt > fromTimestamp);
             if (memberLogs) {
-                let userXP = 0;
+                let memberXP = {
+                    "memberID": userdata.id,
+                    "memberDisplayName": client.memberGetDisplayNameByID(userdata.id),
+                    "xpText": 0,
+                    "xpVoice": 0,
+                    "xpPlay": 0,
+                    "xpReactOut": 0,
+                    "xpReactIn": 0,
+                    "xpGameJoin": 0,
+                    "xpCmd": 0,
+                    "xpTotal": 0
+                };
                 for (const memberLog of memberLogs) {
-                    userXP += memberLog.xpGained;
+                    switch (memberLog.type) {
+                        case "VOICE":
+                            memberXP.xpVoice += memberLog.xpGained;
+                            break;
+                        case "PLAY":
+                            memberXP.xpPlay += memberLog.xpGained;
+                            break;
+                        case "TEXT":
+                            memberXP.xpText += memberLog.xpGained;
+                            break;
+                        case "CMD":
+                            memberXP.xpCmd += memberLog.xpGained;
+                            break;
+                        case "REACTIN":
+                            memberXP.xpReactIn += memberLog.xpGained;
+                            break;
+                        case "REACTOUT":
+                            memberXP.xpReactOut += memberLog.xpGained;
+                            break;
+                        case "GAMEJOIN":
+                            memberXP.xpGameJoin += memberLog.xpGained;
+                            break;
+                        default:
+                            break;
+                    }
+                    memberXP.xpTotal += memberLog.xpGained;
                 }
-                if (userXP > 0) {
-                    usersScoreDesc.push(`${client.memberGetDisplayNameByID(userdata.id)}: ${userXP}`);
-                }
+                usersScores.push(memberXP);
             }
+        }
 
+        usersScores.sort(function (a, b) {
+            return b.xpTotal - a.xpTotal;
+        });
+
+
+        for (const usersScore of usersScores) {
+            usersScoreDesc.push(`**${usersScore.memberDisplayName}** ${usersScore.xpTotal}`);
+            usersScoreDesc.push(`Messages: ${usersScore.xpText}`);
+            usersScoreDesc.push(`Vocal: ${usersScore.xpVoice}`);
+            usersScoreDesc.push(`Jeu: ${usersScore.xpPlay}`);
+            usersScoreDesc.push(`Réactions données: ${usersScore.xpReactOut}`);
+            usersScoreDesc.push(`Réactions reçues: ${usersScore.xpReactIn}`);
+            usersScoreDesc.push(`Rejoindre jeu: ${usersScore.xpGameJoin}`);
+            usersScoreDesc.push(`Commandes: ${usersScore.xpCmd}`);
         }
 
 
-        await client.arrayToEmbed(usersScoreDesc, 10, `Scores`, message.channel);
+        await client.arrayToEmbed(usersScoreDesc, 8, `Scores`, message.channel);
 
     }
 

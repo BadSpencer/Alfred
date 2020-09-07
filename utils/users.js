@@ -285,6 +285,8 @@ module.exports = (client) => {
         client.log(`Vérification de la base des membres`, "debug");
         const guild = client.guilds.cache.get(client.config.guildID);
 
+        client.db_userdata.delete("default");
+
         client.log(`Membres Discord: ${guild.members.cache.size} BD: ${client.db_userdata.count}`, "debug");
         guild.members.cache.forEach(async member => {
             if (member.user.bot) return; // Ne pas enregistrer les bots
