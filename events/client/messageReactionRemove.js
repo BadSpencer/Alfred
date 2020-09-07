@@ -32,7 +32,9 @@ class MessageReactionRemoveListener extends Listener {
         const settings = client.getSettings(guild);
         const member = guild.members.cache.get(user.id);
 
-        client.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));
+        if (!messageReaction.message.author.bot) {
+            client.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));
+        }
 
         let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
         if (postedEmbed) {
@@ -57,7 +59,7 @@ class MessageReactionRemoveListener extends Listener {
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
                     messageReaction.message.edit(newEmbed);
 
-                    
+
                     postedEmbed.currentPage = indexNewPage + 1;
                     this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
                     break;

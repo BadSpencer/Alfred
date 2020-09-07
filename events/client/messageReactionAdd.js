@@ -27,13 +27,15 @@ class MessageReactionAddListener extends Listener {
 
         let client = this.client;
         if (user.bot) return;
-        if (messageReaction.message.author.bot) return;
+
 
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const member = guild.members.cache.get(user.id);
 
-        client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
+        if (!messageReaction.message.author.bot) {
+            client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
+        }
 
 
         let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
