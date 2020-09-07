@@ -26,8 +26,8 @@ class MessageReactionAddListener extends Listener {
         ];
 
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         if (user.bot) return;
+        if (messageReaction.message.author.bot) return;
 
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
