@@ -36,7 +36,9 @@ class guildMemberUpdateListener extends Listener {
 
             newMember.roles.cache.forEach( async newRole => {
                 if (!oldMember.roles.cache.has(newRole.id)) {
+                    if (!newRole.name.startsWith("Joue à")) {
                     client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
+                    }
 
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
                     if (newRole.id == roleMembers.id) {
@@ -77,7 +79,9 @@ class guildMemberUpdateListener extends Listener {
         if (newMember.roles.cache.size < oldMember.roles.cache.size) {
             oldMember.roles.cache.forEach( async oldRole => {
                 if (!newMember.roles.cache.has(oldRole.id)) {
+                    if (!oldRole.name.startsWith("Joue à")) {
                     client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
+                    }
 
                     const game = client.gamesGetByRole(oldRole);
                     if (game) {
