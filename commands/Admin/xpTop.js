@@ -103,9 +103,6 @@ class xpTopCommand extends Command {
                         case "REACTOUT":
                             memberXP.xpReactOut += memberLog.xpGained;
                             break;
-                        case "GAMEJOIN":
-                            memberXP.xpGameJoin += memberLog.xpGained;
-                            break;
                         default:
                             break;
                     }
