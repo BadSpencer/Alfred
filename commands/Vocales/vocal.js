@@ -7,6 +7,8 @@ class VocalCommand extends Command {
     super('vocal', {
       aliases: ['vocal', 'salon'],
       category: 'Vocales',
+      cooldown: 60000,
+      ratelimit: 1,
       args: [
         {
           id: 'nom'
