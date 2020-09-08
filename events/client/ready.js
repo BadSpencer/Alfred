@@ -25,6 +25,7 @@ class ReadyListener extends Listener {
         // structure que définie dans datamodel
         client.datamodelCheck();
         client.userdataCheck();
+        // client.gamesCheck();
         client.textesCheck();
 
 

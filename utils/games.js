@@ -12,6 +12,16 @@ const {
 
 module.exports = (client) => {
 
+  client.gamesCheck = () => {
+    let games = client.gamesGetAll(true);
+
+
+    for (const game of games) {
+
+    };
+
+  };
+
   client.gamesGetAll = (toArray = false) => {
     if (toArray === false) {
       return client.db_games.fetchEverything();

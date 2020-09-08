@@ -7,9 +7,9 @@ const { errorMessage } = require('../../utils/messages');
 
 class commandCooldownListener extends Listener {
     constructor() {
-        super('commandCooldown', {
+        super('cooldown', {
             emitter: 'commandHandler',
-            event: 'commandCooldown'
+            event: 'cooldown'
         });
     }
 
