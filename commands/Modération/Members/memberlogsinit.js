@@ -85,7 +85,6 @@ class memberLogsInitCommand extends Command {
                                         ParsedComponentData => {
                                             if (ParsedComponentData.command) {
                                                 client.commandLog(message, ParsedComponentData.command);
-                                                // client.memberLogCmd(message.author.id, message.createdTimestamp, 5);
                                             }
                                         }
                                     )
@@ -94,7 +93,6 @@ class memberLogsInitCommand extends Command {
                                         message.channel.name !== settings.commandsTestChannel) {
                                         client.messageLog(message);
                                     }
-                                    // client.memberLogText(message.author.id, message, message.createdTimestamp);
                                 }
                             }
                         }
