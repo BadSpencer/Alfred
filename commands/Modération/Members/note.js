@@ -50,7 +50,7 @@ class NoteCommand extends Command {
 
         if (!member) return errorMessage(client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName), message.channel);
 
-        client.memberLogNote(member.id, message.member.id, args.note);
+        client.memberLogNote(member.id, message.author.id, args.note);
         client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NEW_NOTE", member, message.member, args.note));
     }
 }

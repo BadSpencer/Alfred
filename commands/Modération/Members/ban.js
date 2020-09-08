@@ -76,7 +76,7 @@ class BanCommand extends Command {
                 response.delete();
             }
 
-            client.memberLogBan(member.id, message.member.id, args.raison);
+            client.memberLogBan(member.id, message.author.id, args.raison);
             await errorMessage(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
             await member.ban({ days: 0, reason: args.raison });
             client.serverBanNotification(member, message.member, args.raison);
