@@ -14,9 +14,9 @@ class CommandFinishedListener extends Listener {
         let client = this.client;
         client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         client.commandLog(message, command);
-        client.memberLogCmd(message.auth.id);
+        client.memberLogCmd(message.author.id);
 
     }
 };
 
-module.exports = CommandFinishedListener;or
+module.exports = CommandFinishedListener;
