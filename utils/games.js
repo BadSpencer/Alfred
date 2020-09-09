@@ -752,13 +752,13 @@ module.exports = (client) => {
               index = 1;
             }
           }
-          embed.addField("\u200b", memberList1 || "\u200b", true)
+          embed.addField("\u200b", memberList1 || "\u200b", true);
           embed.addField("Membres", memberList2 || "\u200b", true);
-          embed.addField("\u200b", memberList3 || "\u200b", true)
+          embed.addField("\u200b", memberList3 || "\u200b", true);
         } else {
-          embed.addField("\u200b", "\u200b", true)
+          embed.addField("\u200b", "\u200b", true);
           embed.addField("Membres", "Aucun membre", true);
-          embed.addField("\u200b", "\u200b", true)
+          embed.addField("\u200b", "\u200b", true);
         }
 
 

@@ -379,9 +379,59 @@ module.exports = (client) => {
         description += client.textes.get("MOTD_CITATION");
         description += "\n";
         description += citation.texte;
-        description += "\n";
-        description += "\n";
 
+        embed.addField("\u200b", "\u200b", true);
+        embed.addField("Stats du jour", "\u200b", true);
+        embed.addField("\u200b", "\u200b", true);
+
+
+        let userScores = client.membersGetTopScores();
+
+
+        userScores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+        userScores = userScores.slice(0, 5);
+
+        let usersTopScore = "";
+
+        for (const userScore of userScores) {
+            usersTopScore += `${client.memberGetDisplayNameByID(userScore.memberID)}\n`
+        }
+        embed.addField(`Membres les plus actifs`, usersTopScore, true);
+
+        let games = client.gamesGetAll(true);
+
+        let gamesScores = [];
+        for (const game of games) {
+            let gameScore = {
+                "gameID": "",
+                "name": "",
+                "actif": false,
+                "score": 0
+            };
+            gameScore.gameID = game.id;
+            gameScore.name = game.name;
+            gameScore.actif = game.actif;
+            gameScore.score = client.gamesGetGameScore(game.id);
+            gamesScores.push(gameScore);
+        }
+        gamesScores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+        gamesScores = gamesScores.slice(0, 5);
+
+        let gamesTopScore = "";
+        for (const gamesScore of gamesScores) {
+            if (gamesScore.score > 0) {
+                if (gamesScore.actif === true) {
+                    gamesTopScore += `**${gamesScore.name}**\n`;
+                } else {
+                    gamesTopScore += `${gamesScore.name}\n`;
+                }
+            }
+        }
+        embed.addField(`Jeux les plus actifs`, gamesTopScore, true);
 
         embed.setTitle(client.textes.get("MOTD_TITRE"));
         embed.setColor(`0xCC7900`);
