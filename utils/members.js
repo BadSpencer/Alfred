@@ -105,4 +105,22 @@ module.exports = (client) => {
         return membersScores;
     };
 
+    client.membersGetTopXP = () => {
+        let userdatas = client.userdataGetAll(true);
+        let membersXP = [];
+
+        for (const userdata of userdatas) {
+            let memberXP = {
+                "memberID": "",
+                "level": 0,
+                "xp": 0
+            };
+            memberXP.memberID = userdata.id;
+            memberXP.level = userdata.level;
+            memberXP.xp = userdata.xp;
+            membersXP.push(memberXP)
+        }
+        return membersXP;
+    };
+
 }
