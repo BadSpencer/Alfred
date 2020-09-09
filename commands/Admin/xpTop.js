@@ -146,8 +146,9 @@ class xpTopCommand extends Command {
         });
 
         for (const userScore of userScores) {
-
-            usersScoreDesc.push(`${client.memberGetDisplayNameByID(userScore.memberID)}: ${userScore.score}`)
+            if (userScore.score > 0) {
+            usersScoreDesc.push(`${client.memberGetDisplayNameByID(userScore.memberID)}: ${userScore.score}`);
+            }
         }
         await client.arrayToEmbed(usersScoreDesc, 10, `Scores\nDonnées du ${dateFrom} au ${dateTo}`, message.channel);
 
