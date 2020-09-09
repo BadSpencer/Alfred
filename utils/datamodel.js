@@ -163,7 +163,9 @@ exports.tables = {
         "xp": 0,
         "level": 0,
         "lastPlayed": 0,
-        "lastAction": 0
+        "lastAction": 0,
+        "notInGroupWarns": 0,
+        "notInGroupNotifiedAt": ""
     },
     userxplogs: {
         "id": "",

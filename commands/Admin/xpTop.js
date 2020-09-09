@@ -41,6 +41,8 @@ class xpTopCommand extends Command {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
+        moment.locale('fr');
+
 
         let userdatas = client.userdataGetAll(true);
 
@@ -65,71 +67,90 @@ class xpTopCommand extends Command {
         let usersScores = [];
         let usersScoreDesc = [];
         let now = +new Date;
-        let fromTimestamp = +new Date(moment(now).subtract(5, 'days'));
+        let fromTimestamp = +new Date(moment(now).subtract(5, 'days').startOf('day'));
+        let toTimestamp = +new Date(moment(now).subtract(1, 'days').endOf('day'));
 
-        for (const userdata of userdatas) {
-            let memberLogs = client.db_memberLog.filterArray(memberLog =>
-                memberLog.memberID === userdata.id &&
-                memberLog.createdAt > fromTimestamp);
-            if (memberLogs) {
-                let memberXP = {
-                    "memberID": userdata.id,
-                    "memberDisplayName": client.memberGetDisplayNameByID(userdata.id),
-                    "xpText": 0,
-                    "xpVoice": 0,
-                    "xpPlay": 0,
-                    "xpReactOut": 0,
-                    "xpReactIn": 0,
-                    "xpCmd": 0,
-                    "xpTotal": 0
-                };
-                for (const memberLog of memberLogs) {
-                    switch (memberLog.type) {
-                        case "VOICE":
-                            memberXP.xpVoice += memberLog.xpGained;
-                            break;
-                        case "PLAY":
-                            memberXP.xpPlay += memberLog.xpGained;
-                            break;
-                        case "TEXT":
-                            memberXP.xpText += memberLog.xpGained;
-                            break;
-                        case "CMD":
-                            memberXP.xpCmd += memberLog.xpGained;
-                            break;
-                        case "REACTIN":
-                            memberXP.xpReactIn += memberLog.xpGained;
-                            break;
-                        case "REACTOUT":
-                            memberXP.xpReactOut += memberLog.xpGained;
-                            break;
-                        default:
-                            break;
-                    }
-                    memberXP.xpTotal += memberLog.xpGained;
-                }
-                usersScores.push(memberXP);
-            }
-        }
+        // var start = moment().startOf('day'); // set to 12:00 am today
+        // var end = moment().endOf('day'); // set to 23:59 pm today
 
-        usersScores.sort(function (a, b) {
-            return b.xpTotal - a.xpTotal;
+
+
+        // for (const userdata of userdatas) {
+        //     let memberLogs = client.db_memberLog.filterArray(memberLog =>
+        //         memberLog.memberID === userdata.id &&
+        //         memberLog.createdAt > fromTimestamp &&
+        //         memberLog.createdAt < toTimestamp);
+        //     if (memberLogs) {
+        //         let memberXP = {
+        //             "memberID": userdata.id,
+        //             "memberDisplayName": client.memberGetDisplayNameByID(userdata.id),
+        //             "xpText": 0,
+        //             "xpVoice": 0,
+        //             "xpPlay": 0,
+        //             "xpReactOut": 0,
+        //             "xpReactIn": 0,
+        //             "xpCmd": 0,
+        //             "xpTotal": 0
+        //         };
+        //         for (const memberLog of memberLogs) {
+        //             switch (memberLog.type) {
+        //                 case "VOICE":
+        //                     memberXP.xpVoice += memberLog.xpGained;
+        //                     break;
+        //                 case "PLAY":
+        //                     memberXP.xpPlay += memberLog.xpGained;
+        //                     break;
+        //                 case "TEXT":
+        //                     memberXP.xpText += memberLog.xpGained;
+        //                     break;
+        //                 case "CMD":
+        //                     memberXP.xpCmd += memberLog.xpGained;
+        //                     break;
+        //                 case "REACTIN":
+        //                     memberXP.xpReactIn += memberLog.xpGained;
+        //                     break;
+        //                 case "REACTOUT":
+        //                     memberXP.xpReactOut += memberLog.xpGained;
+        //                     break;
+        //                 default:
+        //                     break;
+        //             }
+        //             memberXP.xpTotal += memberLog.xpGained;
+        //         }
+        //         usersScores.push(memberXP);
+        //     }
+        // }
+
+        // usersScores.sort(function (a, b) {
+        //     return b.xpTotal - a.xpTotal;
+        // });
+
+        // for (const usersScore of usersScores) {
+        //     if (usersScore.xpTotal > 0) {
+        //         usersScoreDesc.push(`**${usersScore.memberDisplayName}** ${usersScore.xpTotal}`);
+        //         usersScoreDesc.push(`Messages: ${usersScore.xpText}`);
+        //         usersScoreDesc.push(`Vocal: ${usersScore.xpVoice}`);
+        //         usersScoreDesc.push(`Jeu: ${usersScore.xpPlay}`);
+        //         usersScoreDesc.push(`Réactions données: ${usersScore.xpReactOut}`);
+        //         usersScoreDesc.push(`Réactions reçues: ${usersScore.xpReactIn}`);
+        //         usersScoreDesc.push(`Commandes: ${usersScore.xpCmd}`);
+        //     }
+        // }
+        let dateFrom = moment(fromTimestamp).format('lll');
+        let dateTo = moment(toTimestamp).format('lll');
+        let userScores = client.membersGetTopScores();
+
+
+        userScores.sort(function (a, b) {
+            return b.score - a.score;
         });
 
-        for (const usersScore of usersScores) {
-            if (usersScore.xpTotal > 0) {
-                usersScoreDesc.push(`**${usersScore.memberDisplayName}** ${usersScore.xpTotal}`);
-                usersScoreDesc.push(`Messages: ${usersScore.xpText}`);
-                usersScoreDesc.push(`Vocal: ${usersScore.xpVoice}`);
-                usersScoreDesc.push(`Jeu: ${usersScore.xpPlay}`);
-                usersScoreDesc.push(`Réactions données: ${usersScore.xpReactOut}`);
-                usersScoreDesc.push(`Réactions reçues: ${usersScore.xpReactIn}`);
-                usersScoreDesc.push(`Commandes: ${usersScore.xpCmd}`);
-            }
+        for (const userScore of userScores) {
+
+            usersScoreDesc.push(`${client.memberGetDisplayNameByID(userScore.memberID)}: ${userScore.score}`)
         }
+        await client.arrayToEmbed(usersScoreDesc, 10, `Scores\nDonnées du ${dateFrom} au ${dateTo}`, message.channel);
 
-
-        await client.arrayToEmbed(usersScoreDesc, 7, `Scores`, message.channel);
 
     }
 

@@ -8,6 +8,7 @@ const {
 const colors = require("./colors");
 const Discord = require("discord.js");
 const textes = new(require("./textes.js"));
+const moment = require("moment");
 
 module.exports = (client) => {
     // Message d'annonce lorsqu'un utilisateur est passé membre
@@ -51,7 +52,6 @@ module.exports = (client) => {
 
     };
 
-
     client.memberExperienceAdd = async (member, type, amount, reason = null, game = null) => {
 
         const guild = client.guilds.cache.get(client.config.guildID);
@@ -67,7 +67,42 @@ module.exports = (client) => {
         } else {
             client.log(textes.get("ERROR_SETTINGS_ROLE_MEMBERS_NOT_FOUND", settings.memberRole), "error")
         }
-
-
     };
+
+    client.membersGetScore = (memberID) => {
+        let now = +new Date;
+        let fromTimestamp = +new Date(moment(now).subtract(5, 'days').startOf('day'));
+        let toTimestamp = +new Date(moment(now).subtract(1, 'days').endOf('day'));
+
+        let score = 0;
+
+        let memberLogs = client.db_memberLog.filterArray(memberLog =>
+            memberLog.memberID === memberID &&
+            memberLog.createdAt > fromTimestamp &&
+            memberLog.createdAt < toTimestamp);
+
+        if (memberLogs) {
+            for (const memberLog of memberLogs) {
+                score += memberLog.xpGained;
+            }
+        }
+        return score;
+    };
+
+    client.membersGetTopScores = () => {
+        let userdatas = client.userdataGetAll(true);
+        let membersScores = [];
+
+        for (const userdata of userdatas) {
+            let memberScore = {
+                "memberID": "",
+                "score": 0
+            };
+            memberScore.memberID = userdata.id;
+            memberScore.score = client.membersGetScore(userdata.id);
+            membersScores.push(memberScore);
+        }
+        return membersScores;
+    };
+
 }

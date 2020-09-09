@@ -728,92 +728,22 @@ module.exports = (client) => {
             client.db_games.set(game.id, gameNew);
         };
 
+        client.log(`Vérification structure "usergame"`, "debug");
 
-        // Vérification usergame
-        // for (const game of games) {
-        //     if (game.roleID !== "") {
-        //         let gameMainRole = guild.roles.cache.get(game.roleID);
-        //         if (gameMainRole) {
-        //             for (const member of gameMainRole.members) {
-        //                 let usergameKey = `${member[1].id}-${game.id}`;
-
-        //                 let usergame = client.db_usergame.get(usergameKey);
-        //                 let date = +new Date;
-        //                 date = +new Date(moment(date).subtract(30, 'days'));
-
-        //                 if (!usergame) {
-        //                     client.log(`Les données du jeu ${game.name} pour ${member[1].displayName} n'ont pas été trouvées. Elle vont être créées`, "warn");
-        //                     usergame = Object.assign({}, datamodel.tables.usergame);
-        //                     usergame.id = usergameKey;
-        //                     usergame.userid = member[1].id;
-        //                     usergame.gameid = game.id;
-        //                     usergame.joinedAt = date;
-        //                     usergame.joinedDate = moment(date).format('DD.MM.YYYY');
-        //                     usergame.joinedTime = moment(date).format('HH:mm');
-        //                     usergame.lastPlayed = date;
-        //                     usergame.lastAction = date;
-        //                     client.log(client.textes.get("LOG_EVENT_USERGAME_CREATED", member[1], game));
-        //                     client.db_usergame.set(usergame.id, usergame);
-        //                 }
-        //             }
-        //         } else {
-        //             client.log(`Le rôle principal de ${game.name} n'a pas été trouvé sur le serveur`, "error");
-        //         }
-        //     }
-        // };
-
-
-
-        /*
-        for (const game of games) {
-            if (game.id !== client.gamesGetGameID(game.name)) {
-                if (!game.id.includes("'")) {
-                    if (game.actif === true) {
-                        client.db_games.delete(game.id);
-                        game.id = client.gamesGetGameID(game.name);
-                        client.db_games.set(game.id, game);
-                        client.log(`Adaptation ${game.name}`);
-
-                    } else {
-                        client.db_games.delete(game.id);
-                        game.id = client.gamesGetGameID(game.name);
-                        client.db_games.set(game.id, game);
-                        client.log(`Adaptation ${game.name}`, "debug");
-                    }
-                } else {
-                    game.id = client.gamesGetGameID(game.name);
-                    client.db_games.set(game.id, game);
-                    client.log(`Adaptation ${game.name} Attention doublon`);
-                };
-            }
-        };
-        */
-
-        /*
-        let usergames = client.db_usergame.fetchEverything();
+        let usergamesModel = Object.assign({}, datamodel.tables.usergame);
+        let usergamesKeys = Object.keys(usergamesModel);
+        let usergames = client.db_usergame.array();
 
         for (const usergame of usergames) {
-            if (usergame[0] == "default") {
-                client.db_usergame.delete(usergame[0]);
-            } else {
-                if (usergame[1] !== null) {
-                    if (usergame[1].id !== `${usergame[1].userid}-${usergame[1].gameid}`) {
-                        if (!usergame[0].includes("'")) {
-                            client.db_usergame.delete(usergame[0]);
-                        }
-                        let gameID = client.gamesGetGameID(usergame[1].gameid);
-                        usergame[1].id = `${usergame[1].userid}-${gameID}`;
-                        usergame[1].gameid = gameID;
-                        client.db_usergame.set(usergame[1].id, usergame[1]);
-                    }
-                } else {
-                    if (!usergame[0].includes("'")) {
-                        client.db_usergame.delete(usergame[0]);
-                    }
-                }
-            }
-        }
-        */
+            let usergameNew = Object.assign({}, datamodel.tables.usergame);
+            for (const key of usergamesKeys) {
+                if (usergame[key] !== undefined) {
+                    usergameNew[key] = usergame[key];
+                };
+            };
+            client.db_usergame.set(usergame.id, usergameNew);
+        };
+
 
 
         client.log(`Vérification structure "gameservers"`, "debug");
