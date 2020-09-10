@@ -84,7 +84,7 @@ module.exports = (client) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        client.memberLog(timestamp, memberID, "CMD", `Commandes par ${client.memberGetDisplayNameByID(memberID)}`, null, null, null, null, null, null, null, xpGained);
+        client.memberLog(timestamp, memberID, "CMD", `Commandes par ${client.memberGetDisplayNameByID(memberID)}`, null, null, null, null, null, null, null, 0);
     };
 
     client.memberLogReactIn = (memberID, partyMemberID, message, emoji, timestamp = null, xpGained = 10) => {

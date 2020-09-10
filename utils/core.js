@@ -381,7 +381,7 @@ module.exports = (client) => {
         description += citation.texte;
 
         embed.addField("\u200b", "\u200b", true);
-        embed.addField("Stats du jour", "\u200b", true);
+        embed.addField("Activité du Discord", "\u200b", true);
         embed.addField("\u200b", "\u200b", true);
 
 
