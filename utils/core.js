@@ -80,7 +80,7 @@ module.exports = (client) => {
         if (!settings) {
             client.getSettings(guild)
         }
-        return guild.roles.cache.find(r => r.name == settings.memberRole);
+        return guild.roles.cache.find(r => r.name === settings.memberRole);
     };
 
     client.roleModGet = (guild = null, settings = null) => {
@@ -90,7 +90,7 @@ module.exports = (client) => {
         if (!settings) {
             client.getSettings(guild)
         }
-        return guild.roles.cache.find(r => r.name == settings.modRole);
+        return guild.roles.cache.find(r => r.name === settings.modRole);
     };
 
     client.roleAdminGet = (guild = null, settings = null) => {
@@ -100,7 +100,7 @@ module.exports = (client) => {
         if (!settings) {
             client.getSettings(guild)
         }
-        return guild.roles.cache.find(r => r.name == settings.adminRole);
+        return guild.roles.cache.find(r => r.name === settings.adminRole);
     };
 
     client.textesCheck = () => {
@@ -133,6 +133,7 @@ module.exports = (client) => {
         client.log(`Méthode: createVoiceChannel`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
+
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
@@ -144,7 +145,7 @@ module.exports = (client) => {
             channelName = name;
         }
 
-        await guild.channels.create(channelName, {
+        guild.channels.create(channelName, {
             type: 'voice'
         }).then(freeVoiceChannel => {
             freeVoiceChannel.createOverwrite(roleEveryone, {
@@ -173,6 +174,10 @@ module.exports = (client) => {
         await member.voice.channel.createOverwrite(member, {
             'MANAGE_CHANNELS': true,
         });
+    };
+
+    client.freeVoiceChannelCheck = () => {
+
     };
 
     client.presenceGetGameName = (presence) => {
@@ -398,7 +403,7 @@ module.exports = (client) => {
         for (const userScore of userScores) {
             usersTopScore += `${client.memberGetDisplayNameByID(userScore.memberID)}\n`
         }
-        embed.addField(`Membres les plus actifs`, usersTopScore, true);
+        // embed.addField(`Membres les plus actifs`, usersTopScore, true);
 
         let games = client.gamesGetAll(true);
 
@@ -419,7 +424,7 @@ module.exports = (client) => {
         gamesScores.sort(function (a, b) {
             return b.score - a.score;
         });
-        gamesScores = gamesScores.slice(0, 5);
+        gamesScores = gamesScores.slice(0, 10);
 
         let gamesTopScore = "";
         for (const gamesScore of gamesScores) {
