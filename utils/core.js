@@ -814,7 +814,7 @@ module.exports = (client) => {
                     gameserverNew[key] = gameserver[key];
                 };
             };
-            client.db_gameservers.set(gameserver.id, gameserverNew);
+            client.db_gameservers.set(gameserver.id.toString(), gameserverNew);
         };
 
 
