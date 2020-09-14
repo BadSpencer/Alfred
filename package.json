@@ -17,7 +17,7 @@
     "ftp-client": "^0.2.2",
     "hex-color-regex": "^1.1.0",
     "moment": "^2.27.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-opus": "^0.3.3",
     "node-superfetch": "^0.1.10",
     "opusscript": "0.0.7",
