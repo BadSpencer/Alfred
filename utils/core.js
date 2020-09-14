@@ -355,7 +355,7 @@ module.exports = (client) => {
         });
         let astuce = client.db_astuces.get(astuces[0].id);
         astuce.count += 1;
-        client.db_astuces.set(astuces[0].id, astuce);
+        client.db_astuces.set(astuces[0].id.toString(), astuce);
 
 
         let citations = client.db_citations.array();
@@ -371,7 +371,7 @@ module.exports = (client) => {
         let citation = client.db_citations.get(sortedCitations[0].id);
 
         citation.count += 1;
-        client.db_citations.set(sortedCitations[0].id, citation)
+        client.db_citations.set(sortedCitations[0].id.toString(), citation);
 
         description += client.textes.get("MOTD_BONJOUR");
         description += "\n";
