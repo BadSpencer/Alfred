@@ -355,7 +355,8 @@ module.exports = (client) => {
         });
         let astuce = client.db_astuces.get(astuces[0].id);
         astuce.count += 1;
-        client.db_astuces.set(astuces[0].id.toString(), astuce);
+        // client.db_astuces.set(astuces[0].id.toString(), astuce);
+        client.db_astuces.set(astuces[0].id, astuce);
 
 
         let citations = client.db_citations.array();

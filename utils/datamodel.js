@@ -69,7 +69,7 @@ exports.tables = {
         'gameID': ""
     },
     gameservers:{
-        "id": "default",
+        "id": "",
         "createdAt": "",
         "createdate": "",
         "createdTime": "",
