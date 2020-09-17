@@ -3,7 +3,7 @@ const moment = require("moment");
 const colors = require("./colors");
 const constants = require("./constants");
 const datamodel = require("./datamodel");
-const textes = new(require("./textes.js"));
+const textes = new (require("./textes.js"));
 const ftpClient = require("ftp");
 
 module.exports = (client) => {
@@ -355,7 +355,6 @@ module.exports = (client) => {
         });
         let astuce = client.db_astuces.get(astuces[0].id);
         astuce.count += 1;
-        // client.db_astuces.set(astuces[0].id.toString(), astuce);
         client.db_astuces.set(astuces[0].id, astuce);
 
 
@@ -372,7 +371,7 @@ module.exports = (client) => {
         let citation = client.db_citations.get(sortedCitations[0].id);
 
         citation.count += 1;
-        client.db_citations.set(sortedCitations[0].id.toString(), citation);
+        client.db_citations.set(sortedCitations[0].id, citation);
 
         description += client.textes.get("MOTD_BONJOUR");
         description += "\n";
@@ -809,16 +808,122 @@ module.exports = (client) => {
         let gameservers = client.gameServersGetAll(true);
 
         for (const gameserver of gameservers) {
-            let gameserverNew = gameserverModel;
+            let gameserverNew = Object.assign({}, datamodel.tables.gameservers);
             for (const key of gameserverKeys) {
                 if (gameserver[key] !== undefined) {
-                    gameserverNew[key] = gameserver[key];
+                    if (key === "id") {
+                        gameserverNew[key] = gameserver[key].toString();
+                    } else {
+                        gameserverNew[key] = gameserver[key];
+                    }
                 };
+
             };
             client.db_gameservers.set(gameserver.id.toString(), gameserverNew);
         };
 
+        client.log(`Vérification structure "citations"`, "debug");
 
+        let citationModel = Object.assign({}, datamodel.tables.citation);
+        let citationKeys = Object.keys(citationModel);
+        let citations = client.db_citations.array();
+
+        for (const citation of citations) {
+            let citationNew = Object.assign({}, datamodel.tables.citation);
+            for (const key of citationKeys) {
+                if (citation[key] !== undefined) {
+                    if (key === "id") {
+                        citationNew[key] = citation[key].toString();
+                    } else {
+                        citationNew[key] = citation[key];
+                    }
+                };
+            };
+            client.db_citations.set(citation.id.toString(), citationNew)
+        };
+
+        client.log(`Vérification structure "astuces"`, "debug");
+
+        let astuceModel = Object.assign({}, datamodel.tables.astuce);
+        let astuceKeys = Object.keys(astuceModel);
+        let astuces = client.db_astuces.array();
+
+        for (const astuce of astuces) {
+            let astuceNew = Object.assign({}, datamodel.tables.astuce);
+            for (const key of astuceKeys) {
+                if (astuce[key] !== undefined) {
+                    if (key === "id") {
+                        astuceNew[key] = astuce[key].toString();
+                    } else {
+                        astuceNew[key] = astuce[key];
+                    }
+                };
+            };
+            client.db_astuces.set(astuce.id.toString(), astuceNew)
+        };
+
+        client.log(`Vérification structure "embeds"`, "debug");
+
+        client.db_embeds.delete("");
+        client.db_embeds.delete("default");
+
+        let embedModel = Object.assign({}, datamodel.tables.embeds);
+        let embedKeys = Object.keys(embedModel);
+        let embeds = client.db_embeds.array();
+
+        for (const embed of embeds) {
+            let embedNew = Object.assign({}, datamodel.tables.embeds);
+            for (const key of embedKeys) {
+                if (embed[key] !== undefined) {
+                    if (key === "id") {
+                        embedNew[key] = embed[key].toString();
+                    } else {
+                        embedNew[key] = embed[key];
+                    }
+                };
+            };
+            client.db_embeds.set(embed.id.toString(), embedNew)
+        };
+
+        client.log(`Vérification structure "memberlogs"`, "debug");
+
+        let memberLogModel = Object.assign({}, datamodel.tables.memberLog);
+        let memberLogKeys = Object.keys(memberLogModel);
+        let memberLogs = client.db_memberLog.array();
+
+        for (const memberLog of memberLogs) {
+            let memberLogNew = Object.assign({}, datamodel.tables.memberLog);
+            for (const key of memberLogKeys) {
+                if (memberLog[key] !== undefined) {
+                    if (key === "key") {
+                        memberLogNew[key] = memberLog[key].toString();
+                    } else {
+                        memberLogNew[key] = memberLog[key];
+                    }
+                };
+            };
+            client.db_memberLog.set(memberLog.key.toString(), memberLogNew)
+        };
+
+        client.log(`Vérification structure "playersLogs"`, "debug");
+
+        let playersLogModel = Object.assign({}, datamodel.tables.playersLogs);
+        let playersLogKeys = Object.keys(playersLogModel);
+        let playersLogs = client.db_playersLogs.array();
+
+        for (const playersLog of playersLogs) {
+            let playersLogNew = Object.assign({}, datamodel.tables.playersLogs);
+            for (const key of playersLogKeys) {
+                if (playersLog[key] !== undefined) {
+                    if (key === "id") {
+                        playersLogNew[key] = playersLog[key].toString();
+                    } else {
+                        playersLogNew[key] = playersLog[key];
+                    }
+                };
+            };
+            client.db_playersLogs.set(playersLog.id.toString(), playersLogNew)
+        };
 
 
     };

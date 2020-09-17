@@ -24,7 +24,7 @@ class GameInfosCommand extends Command {
             match: 'rest',
             prompt: {
                 start: async message => {
-                    await this.client.gamesListPost(message.channel, 'tout');
+                    await this.client.gamesListPost(message.channel, 'actif');
                     return promptMessage(textes.get('GAMES_GAME_INFOS_GAME_PROMPT'))
                 },
                 retry: message => promptMessage(textes.get('GAMES_GAME_INFOS_GAME_RETRY')),

@@ -53,6 +53,7 @@ exports.tables = {
         "createdAt": "",
         "actif": false,
         "nbDaysInactive": 30,
+        "lastPlayed": 0,
         "roleID": "",
         "modRoleID": "",
         "playRoleID": "",
@@ -62,6 +63,7 @@ exports.tables = {
         "statusChannelID": "",
         "eventsChannelID": "",
         "voiceChannelID": "",
+        "infosMessageID": "",
         "serversStatusMessageID": ""
     },
     gamealias: {

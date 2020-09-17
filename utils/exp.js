@@ -171,7 +171,6 @@ module.exports = (client) => {
         client.memberLog(timestamp, memberID, "MEMBER", `${client.memberGetDisplayNameByID(memberID)} à été accepté en tant que membre`, null, null, null, null, null, null, null, 0);
     };
 
-
     client.memberLog = (timestamp, memberID, type, comment, gameID, voiceChannelName, partyMemberID, emoji, nickOld, nickNew, note, xpGained) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
@@ -296,7 +295,6 @@ module.exports = (client) => {
     };
 
     client.userdataAddXP = (memberID, amount = 1) => {
-        client.log(`Méthode: exp/userdataAddXP`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const userdata = client.userdataGet(memberID);

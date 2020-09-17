@@ -18,7 +18,8 @@ class TestCommand extends Command {
     async exec(message) {
         let client = this.client;
 
-        client.messageOfTheDay();
+        // client.messageOfTheDay();
+        client.gamesInfosPost();
 
         if (message.channel.type === 'text') message.delete();;
     }
