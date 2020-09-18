@@ -530,6 +530,11 @@ module.exports = class {
             GAMES_LIST_SUCCESS_DELETED: "Liste des jeux supprimée",
             GAMES_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
+            GAMES_LISTLINK_SUCCESS_LOADED: "Liste des liens d'informations des jeux chargée",
+            GAMES_LISTLINK_WARN_NOTFOUND: "Liste des liens d'informations des jeux non trouvée",
+            GAMES_LISTLINK_SUCCESS_CREATED: "Liste des liens d'informations des jeux créée",
+            GAMES_LISTLINK_SUCCESS_UPDATED: "Liste des liens d'informations des jeux mise à jour",
+            GAMES_LISTLINK_SUCCESS_DELETED: "Liste des liens d'informations des jeux supprimée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
 
             GAMES_SCORE_TITLE: "Activité des jeux",
