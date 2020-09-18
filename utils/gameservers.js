@@ -44,7 +44,7 @@ module.exports = (client) => {
     let urlshortener = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURI(`steam://connect/${ip}:${portrcon}/`)}`);
     let steamlink = await urlshortener.text();
 
-    gameserver.id = serverID;
+    gameserver.id = serverID.toString();
     gameserver.createdAt = dateNow;
     gameserver.createdate = moment(dateNow).format('DD.MM.YYYY');
     gameserver.createdTime = moment(dateNow).format('HH:mm');
@@ -258,7 +258,7 @@ module.exports = (client) => {
   }
 
   client.gameServersDeleteServer = (message, server) => {
-    client.db_gameservers.delete(server.id.toString());
+    client.db_gameservers.delete(server.id);
     successMessage(client.textes.get("GAMESERVER_SERVER_DELETE_SUCCESS", server), message.channel);
   };
 

@@ -27,6 +27,7 @@ exports.tables = {
         "quietChannel": "🔈Au calme",
         "gameJoinChannel": "🎮vos-jeux",
         "gameJoinMessage": "",
+        "gameInfosLinkMessage": "",
         "gameCategoryPrefix": "🟧",
         "gameTextPrefix": "💬",
         "gameInfosPrefix": "📌",
@@ -53,6 +54,9 @@ exports.tables = {
         "createdAt": "",
         "actif": false,
         "nbDaysInactive": 30,
+        "lastPlayed": 0,
+        "previousScore": 0,
+        "currentScore": 0,
         "roleID": "",
         "modRoleID": "",
         "playRoleID": "",
@@ -62,6 +66,7 @@ exports.tables = {
         "statusChannelID": "",
         "eventsChannelID": "",
         "voiceChannelID": "",
+        "infosMessageID": "",
         "serversStatusMessageID": ""
     },
     gamealias: {
@@ -69,7 +74,7 @@ exports.tables = {
         'gameID': ""
     },
     gameservers:{
-        "id": "default",
+        "id": "",
         "createdAt": "",
         "createdate": "",
         "createdTime": "",

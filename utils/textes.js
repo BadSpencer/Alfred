@@ -530,6 +530,11 @@ module.exports = class {
             GAMES_LIST_SUCCESS_DELETED: "Liste des jeux supprimée",
             GAMES_LIST_SUCCESS_LOADED: "Liste des jeux chargée",
             GAMES_LIST_WARN_NOTFOUND: "Liste des jeux non trouvée",
+            GAMES_LISTLINK_SUCCESS_LOADED: "Liste des liens d'informations des jeux chargée",
+            GAMES_LISTLINK_WARN_NOTFOUND: "Liste des liens d'informations des jeux non trouvée",
+            GAMES_LISTLINK_SUCCESS_CREATED: "Liste des liens d'informations des jeux créée",
+            GAMES_LISTLINK_SUCCESS_UPDATED: "Liste des liens d'informations des jeux mise à jour",
+            GAMES_LISTLINK_SUCCESS_DELETED: "Liste des liens d'informations des jeux supprimée",
             GAMES_LIST_WARN_NOTFOUND_DELETION: "Liste des jeux non trouvée (suppression)",
 
             GAMES_SCORE_TITLE: "Activité des jeux",
@@ -685,6 +690,12 @@ module.exports = class {
                 return `Suppression rôles et salons du jeu **${game.id}**
                 `;
             },
+
+            GAMES_GAME_INFOS_DESCRIPTION_CONTENT: `Afficher la fiche d'un jeu`,
+            GAMES_GAME_INFOS_DESCRIPTION_USAGE: `Lancez cette commande avec l'ID ou l'alias d'un jeu
+            Syntaxe: \`!game-infos [gameID]\`
+            `,
+            GAMES_GAME_INFOS_GAME_PROMPT: `Pour quel **jeu** souhaitez vous des informations ?`,
 
 
             GAMES_GAME_EDIT_DESCRIPTION_CONTENT: `Modifier les données d'un jeu`,
@@ -1180,7 +1191,7 @@ module.exports = class {
                 return `⚠️ **${oldNick}** à changé de pseudo, c'est désormais: **${newNick}**`;
             },
             MOD_NOTIF_MEMBER_NEW_NOTE: (member, partyMember, note) => {
-                return `⚠️ Une nouvelle à été ajoutée pour **${member.displayName}** par **${partyMember.displayName}**
+                return `⚠️ Une nouvelle note à été ajoutée pour **${member.displayName}** par **${partyMember.displayName}**
                 
                 **Note**: ${note}`;
             },
@@ -1199,6 +1210,10 @@ module.exports = class {
             },
             MOD_NOTIF_SERVER_SLOTS_CHANGE: (server, oldSlots, newSlots) => {
                 return `⚠️ Le serveur **${server.servername}** à changé de nombre de slots, il passe de ${oldSlots} slots à **${newSlots}** slots`;
+            },
+
+            MOD_NOTIF_GAME_NO_INFO_CHANNEL: (game) => {
+                return `⚠️ Le jeu **${game.name}** n'a pas de salon "informations"`;
             },
 
 

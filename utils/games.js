@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const moment = require("moment");
 const datamodel = require("./datamodel");
 const colors = require("./colors");
+const textes = new (require(`./textes.js`));
 const {
   successMessage,
   errorMessage,
@@ -698,6 +699,27 @@ module.exports = (client) => {
     return activeGamesScores;
   };
 
+  client.gameGetPlayerScore = (gameID, memberID, nbDays = 5) => {
+    let playerScore = 0;
+    let days = [];
+    for (var i = 0; i < nbDays; i++) {
+      days.push(moment().subtract(i, 'days').format('DD.MM.YYYY'));
+    };
+
+    for (const day of days) {
+      let gameXP = client.db_usergameXP.filterArray((usergameXP) =>
+        usergameXP.date === day &&
+        usergameXP.memberID === memberID &&
+        usergameXP.gameID === gameID);
+
+      for (const XP of gameXP) {
+        playerScore += XP.totalXP;
+      }
+    };
+
+    return playerScore;
+
+  };
   client.gamesGetGameScore = (gameID, nbDays = 5) => {
     let gameScore = 0;
     let days = [];
@@ -728,23 +750,70 @@ module.exports = (client) => {
     let memberList2 = "";
     let memberList3 = "";
 
+
+
     if (game.actif === false) {
       description += "Ce jeu n'est pas actif\n"
     } else {
       const gameRole = guild.roles.cache.get(game.roleID);
 
+      let gameScore = client.gamesGetGameScore(game.id);
+
+
+
+      let players = [];
+
       if (gameRole) {
         if (gameRole.members.size > 0) {
           let index = 1;
+
+          let playersActiveCount = 0;
+          let playersInactiveCount = 0;
+
+          let now = +new Date;
+          let lastPlayed = "";
+          if (game.lastPlayed === 0) {
+            lastPlayed = "Jamais joué";
+          } else {
+            lastPlayed = moment.duration(game.lastPlayed - now).locale("fr").humanize(true);
+          }
+
+          if (lastPlayed === "") {
+            lastPlayed = "En ce moment";
+          }
+
+
           for (const member of gameRole.members) {
+            let player = {
+              "id": "",
+              "score": 0
+            };
+
+            player.id = member[1].id;
+            player.score = client.gameGetPlayerScore(game.id, member[1].id);
+            players.push(player);
+          }
+          players.sort(function (a, b) {
+            return a.score + b.score;
+          });
+
+
+          for (const player of players) {
+
+            if (player.score > 0) {
+              ++playersActiveCount;
+            } else {
+              ++playersInactiveCount;
+            }
+
             if (index == 1) {
-              memberList1 += `<@${member[1].id}>\n`;
+              memberList1 += `<@${player.id}>\n`;
             }
             if (index == 2) {
-              memberList2 += `<@${member[1].id}>\n`;
+              memberList2 += `<@${player.id}>\n`;
             }
             if (index == 3) {
-              memberList3 += `<@${member[1].id}>\n`;
+              memberList3 += `<@${player.id}>\n`;
             }
             if (index !== 3) {
               index += 1;
@@ -752,6 +821,60 @@ module.exports = (client) => {
               index = 1;
             }
           }
+
+          let scoreEmoji = "";
+          if (game.currentScore > game.previousScore) {
+            scoreEmoji = "👍";
+          };
+          if (game.currentScore < game.previousScore) {
+            scoreEmoji = "👎";
+          };
+          if (game.currentScore === game.previousScore) {
+            scoreEmoji = "✊";
+          };
+
+          let scoreDescription = "";
+          switch (game.currentScore) {
+            case 5:
+              scoreDescription = "⭐️⭐️⭐️⭐️⭐️";
+              break;
+            case 4:
+              scoreDescription = "⭐️⭐️⭐️⭐️";
+              break;
+            case 3:
+              scoreDescription = "⭐️⭐️⭐️";
+              break;
+            case 2:
+              scoreDescription = "⭐️⭐️";
+              break;
+            case 1:
+              scoreDescription = "⭐️";
+              break;
+            case 0:
+              scoreDescription = "👻";
+              break;
+            default:
+              scoreDescription = "👻";
+              break;
+          }
+
+          scoreDescription += ` ${scoreEmoji}`;
+
+
+          embed.addField("\u200b", "\u200b", true);
+          embed.addField("\u200b", "\u200b", true);
+          embed.addField("📈 Score", `${scoreDescription}`, true);
+
+          embed.addField("📅 Actif depuis", `Le ${moment(game.createdAt).format('DD.MM.YYYY')}, ${moment.duration(game.createdAt - now).locale("fr").humanize(true)}`, false);
+
+          embed.addField("👥 Inscrits", `${playersActiveCount + playersInactiveCount}`, true);
+          embed.addField("👥 Actifs", `${playersActiveCount}`, true);
+          embed.addField("⏳ Dernière activité", `${lastPlayed}`, true);
+
+          embed.addField("👋 Inactivité", `${game.nbDaysInactive} jours`, true);
+          embed.addField("\u200b", "\u200b", true);
+          embed.addField("\u200b", "\u200b", true);
+
           embed.addField("\u200b", memberList1 || "\u200b", true);
           embed.addField("Membres", memberList2 || "\u200b", true);
           embed.addField("\u200b", memberList3 || "\u200b", true);
@@ -763,18 +886,20 @@ module.exports = (client) => {
 
 
       } else {
-        description += "Attention: Problème avec le rôle principal de ce jeu\n"
+        description += "Attention: Problème avec le rôle principal de ce jeu\n";
       }
 
 
     }
 
 
-    embed.addField("Créé le", moment(game.createdAt).format('DD.MM.YYYY'), true);
+
 
     embed.setTitle(game.name);
     embed.setColor(0xF1C40F);
     embed.setDescription(description);
+    embed.setTimestamp();
+    embed.setFooter(`Dernière mise à jour`);
 
     return embed;
 
@@ -783,6 +908,46 @@ module.exports = (client) => {
   client.gamesPostGameInfos = (game, channel) => {
     let embed = new Discord.MessageEmbed(client.gamesGetGameInfosEmbed(game));
     channel.send(embed)
+  };
+
+  client.gamesInfosPost = async () => {
+    const guild = client.getGuild();
+    const settings = client.getSettings(guild);
+    let games = client.gamesGetActive(true);
+
+    for (const game of games) {
+      let embed = new Discord.MessageEmbed(client.gamesGetGameInfosEmbed(game));
+
+      if (game.infosChannelID !== "") {
+        let gameInfosChannel = guild.channels.cache.get(game.infosChannelID);
+
+        let gameInfosMessage = undefined;
+        if (game.infosMessageID) {
+          await gameInfosChannel.messages.fetch(game.infosMessageID).then(message => {
+            gameInfosMessage = message;
+          }).catch(error => {
+            gameInfosMessage = undefined;
+            client.log(`Message infos jeu "${game.name}" non trouvé dans ${gameInfosChannel.name}`, "warn");
+          });
+        }
+
+        if (gameInfosMessage !== undefined) {
+          gameInfosMessage.edit(embed);
+          client.log(`Message infos jeu "${game.name}" mis à jour`);
+        } else {
+          gameInfosChannel.send(embed).then(
+            message => {
+              game.infosMessageID = message.id;
+              client.db_games.set(game.id, game);
+              client.log(`Message infos jeu "${game.name}" créé`, 'warn');
+            }
+          );
+        }
+
+      } else {
+        // client.modLog(textes.get("MOD_NOTIF_GAME_NO_INFO_CHANNEL", game));
+      }
+    }
   };
 
   client.gamesJoinListPost = async (clearReact = false) => {
@@ -799,6 +964,7 @@ module.exports = (client) => {
     if (!games) return;
 
     let embed = new Discord.MessageEmbed();
+    let embedInfos = new Discord.MessageEmbed();
 
     let gameJoinMessage = undefined;
     if (settings.gameJoinMessage !== "") {
@@ -810,24 +976,56 @@ module.exports = (client) => {
       });
     }
 
+    let gameInfosLinkMessage = undefined;
+    if (settings.gameInfosLinkMessage !== "") {
+      await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage).then(message => {
+        gameInfosLinkMessage = message;
+        client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_LOADED"), "debug");
+      }).catch(err => {
+        client.log(client.textes.get("GAMES_LISTLINK_WARN_NOTFOUND"), "warn");
+      });
+    }
+
+
+
     let maxXP = gamesXP[0].xp;
 
     let description = "";
-    for (const game of gamesXP) {
+    for (const gameXP of gamesXP) {
 
-      let score = 0;
-      if (game.xp > 0) {
-        score = Math.round(((game.xp * 100) / maxXP) / 20);
+      let game = client.gamesGet(gameXP.name);
+      if (game) {
+
+        let score = 0;
+        if (gameXP.xp > 0) {
+          score = Math.round(((gameXP.xp * 100) / maxXP) / 20);
+        }
+        if (gameXP.xp > 0 && score == 0) score = 1;
+
+        if (score == 5) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n`;
+        if (score == 4) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️⭐️\n`;
+        if (score == 3) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️\n`;
+        if (score == 2) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️\n`;
+        if (score == 1) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️\n`;
+        if (score == 0) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` 👻\n`;
+
+        game.currentScore = score;
+        client.gamesUpdateGame(game);
+
+
+
+        // embedInfos.addField("\u200b", "\u200b", false);
+        let fieldDescription = `${game.name}`;
+        if (game.infosChannelID !== "") {
+          let gameinfosChannel = await guild.channels.cache.get(game.infosChannelID);
+          if (game.infosMessageID !== "") {
+            await gameinfosChannel.messages.fetch(game.infosMessageID).then(message => {
+              fieldDescription = `[**${game.name}**](${message.url})`;
+            });
+          }
+        }
+        embedInfos.addField("\u200b", `${fieldDescription}`, true);
       }
-
-      if (game.xp > 0 && score == 0) score = 1;
-
-      if (score == 5) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n`;
-      if (score == 4) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️⭐️\n`;
-      if (score == 3) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️⭐️\n`;
-      if (score == 2) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️⭐️\n`;
-      if (score == 1) description += `${game.emoji} **${game.name}** \`${game.members}👤\` ⭐️\n`;
-      if (score == 0) description += `${game.emoji} **${game.name}** \`${game.members}👤\` 👻\n`;
 
     }
     let footer = (`Dernière mise à jour`);
@@ -839,7 +1037,8 @@ module.exports = (client) => {
     embed.setTimestamp();
     embed.setImage(`https://media.discordapp.net/attachments/599235210550181900/645313787376697344/ligne_horizontale_2F3136.png`);
 
-
+    embedInfos.setTitle(`Informations sur les jeux`);
+    embedInfos.setDescription(`Obtenez plus d'informations sur un jeu en cliquant sur son lien ci-dessous`);
 
     if (!gameJoinMessage) {
       await gameJoinChannel.send(embed).then(async msgSent => {
@@ -860,6 +1059,17 @@ module.exports = (client) => {
         }
       });
       client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
+    }
+
+    if (!gameInfosLinkMessage) {
+      await gameJoinChannel.send(embedInfos).then(async msgSent => {
+        settings.gameInfosLinkMessage = msgSent.id;
+        client.db_settings.set(guild.id, settings);
+      });
+      client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_CREATED"), "warn")
+    } else {
+      gameInfosLinkMessage.edit(embedInfos);
+      client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_UPDATED"))
     }
 
   };
@@ -902,6 +1112,8 @@ module.exports = (client) => {
     await client.arrayToEmbed(playerListOutput, 20, `Joueurs de ${gamename}`, message.channel);
   };
 
+
+
   client.usergameGet = (member, game) => {
     let usergameKey = `${member.id}-${game.id}`;
     let usergame = client.db_usergame.get(usergameKey);
@@ -937,6 +1149,8 @@ module.exports = (client) => {
       }
     }
     usergame.lastPlayed = +new Date;
+    game.lastPlayed = +new Date;
+    client.gamesUpdateGame(game);
     client.db_usergame.set(usergameKey, usergame);
   };
 
