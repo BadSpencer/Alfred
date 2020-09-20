@@ -732,7 +732,7 @@ module.exports = (client) => {
     };
     client.arrayToEmbed = async (array, recordsByPage = 10, titre, channel) => {
         client.log(`Méthode: arrayToEmbed`, "debug");
-        let postedEmbeds = client.db_postedEmbeds.get("default");
+        let postedEmbeds = Object.assign({}, datamodel.tables.postedEmbeds);
 
         let nbPages = Math.ceil(array.length / recordsByPage);
         let pagesArray = [];
