@@ -53,6 +53,8 @@ exports.tables = {
         "emoji": "",
         "createdAt": "",
         "actif": false,
+        "isGame": true,
+        "isGrouped": false,
         "nbDaysInactive": 30,
         "lastPlayed": 0,
         "previousScore": 0,

@@ -630,23 +630,23 @@ module.exports = class {
             GAMES_GAMEALIAS_ADD_GAME_PROMPT: `Pour quel **jeu** souhaitez vous ajouter un alias ?`,
             GAMES_GAMEALIAS_ADD_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
             GAMES_GAMEALIAS_ADD_ALIAS_PROMPT: (game) => {
-                return `Quel est **l'alias** pour le jeu **${game.id}** ?`;
+                return `Quel est **l'alias** pour le jeu **${game.name}** ?`;
             },
             GAMES_GAMEALIAS_ADD_ALIAS_RETRY: `Cet alias est déjà utilisé, veuillez en choisir un autre`,
             GAMES_GAMEALIAS_ADD_SUCCESS: (game, alias) => {
-                return `L'alias **${alias}** à été ajouté pour le jeu **${game.id}** avec succès.`;
+                return `L'alias **${alias}** à été ajouté pour le jeu **${game.name}** avec succès.`;
             },
 
             GAMES_GAME_ACTIVE_DESCRIPTION_CONTENT: `Activer un jeu`,
             GAMES_GAME_ACTIVE_DESCRIPTION_USAGE: `Description à écrire`,
             GAMES_GAME_ACTIVE_ERROR_GAME_ACTIVE: (game) => {
-                return `Le jeu **${game.id}** est déjà actif`;
+                return `Le jeu **${game.name}** est déjà actif`;
             },
             GAMES_GAME_ACTIVE_SUCCESS: (game) => {
-                return `Le jeu  **${game.id}** à été activé.`;
+                return `Le jeu  **${game.name}** à été activé.`;
             },
             GAMES_GAME_ACTIVE_STATE_START: (game) => {
-                return `Activation du jeu **${game.id}**
+                return `Activation du jeu **${game.name}**
                 `;
             },
             GAMES_GAME_ACTIVE_CATEGORY_NOT_FOUND: `La catégorie enregistrée pour le jeu n'a pas été trouvée. Elle sera recréée`,
@@ -668,26 +668,26 @@ module.exports = class {
             GAMES_GAME_INACTIVE_DESCRIPTION_CONTENT: `Désactiver un jeu`,
             GAMES_GAME_INACTIVE_DESCRIPTION_USAGE: `Description à écrire`,
             GAMES_GAME_INACTIVE_ERROR_GAME_INACTIVE: (game) => {
-                return `Le jeu **${game.id}** est déjà désactivé`;
+                return `Le jeu **${game.name}** est déjà désactivé`;
             },
             GAMES_GAME_INACTIVE_STATE_START: (game) => {
-                return `Désactivation du jeu **${game.id}**
+                return `Désactivation du jeu **${game.name}**
                 `;
             },
             GAMES_GAME_INACTIVE_SUCCESS: (game) => {
-                return `Le jeu  **${game.id}** à été désactivé.`;
+                return `Le jeu  **${game.name}** à été désactivé.`;
             },
 
             GAMES_GAME_DELETE_DESCRIPTION_CONTENT: `Supprimer un jeu`,
             GAMES_GAME_DELETE_DESCRIPTION_USAGE: `Description à écrire`,
             GAMES_GAME_DELETE_ERROR_GAME_ACTIVE: (game) => {
-                return `Le jeu **${game.id}** est actif. Le jeu doit être désactivé avant d'être supprimé.`;
+                return `Le jeu **${game.name}** est actif. Le jeu doit être désactivé avant d'être supprimé.`;
             },
             GAMES_GAME_DELETE_SUCCESS: (game) => {
-                return `Le jeu  **${game.id}** à été supprimé.`;
+                return `Le jeu  **${game.name}** à été supprimé.`;
             },
             GAMES_GAME_DELETE_STATE_START: (game) => {
-                return `Suppression rôles et salons du jeu **${game.id}**
+                return `Suppression rôles et salons du jeu **${game.name}**
                 `;
             },
 
@@ -703,7 +703,7 @@ module.exports = class {
             GAMES_GAME_EDIT_GAME_PROMPT: `Quel **jeu** souhaitez vous éditer ?`,
             GAMES_GAME_EDIT_GAME_RETRY: `Ce jeu est inconnu ! Veuillez saisir un nom de jeu`,
             GAMES_GAME_EDIT_SUCCESS: (game) => {
-                return `Le jeu  **${game.id}** à correctment été modifié.`;
+                return `Le jeu  **${game.name}** à correctment été modifié.`;
             },
 
             GAMES_GAME_LIST_DESCRIPTION_CONTENT: `Afficher la liste des jeux`,

@@ -23,7 +23,7 @@ class GameChanCommand extends Command {
             type: "game",
             prompt: {
                 start: async message => {
-                    await this.client.gamesListPost(message.channel, 'tout');
+                    await this.client.gamesListPost(message.channel, 'actif');
                     return promptMessage(textes.get('GAMES_GAME_CHAN_GAME_PROMPT'))
                 },
                 retry: message => promptMessage(textes.get('GAMES_CHAN_INFOS_GAME_RETRY')),
@@ -102,13 +102,13 @@ class GameChanCommand extends Command {
                         CREATE_INSTANT_INVITE: false,
                         MANAGE_CHANNELS: false,
                         ADD_REACTIONS: false,
-                        VIEW_CHANNEL: false,
+                        VIEW_CHANNEL: true,
                         SEND_MESSAGES: false,
                         SEND_TTS_MESSAGES: false,
                         MANAGE_MESSAGES: false,
                         EMBED_LINKS: false,
                         ATTACH_FILES: false,
-                        READ_MESSAGE_HISTORY: false,
+                        READ_MESSAGE_HISTORY: true,
                         MENTION_EVERYONE: false,
                         USE_EXTERNAL_EMOJIS: false,
                         MANAGE_ROLES: false,
