@@ -78,7 +78,9 @@ module.exports = (client) => {
         await client.embedArchiveCurrentEdit(message);
 
 
-        let embed = client.db_embeds.get("default");
+        // let embed = client.db_embeds.get("default");
+        let embed = Object.assign({}, datamodel.tables.embeds);
+
         let key = client.db_embeds.autonum;
         const Embed = new Discord.MessageEmbed().setTitle(titre);
         embed.id = key;
