@@ -18,10 +18,7 @@ module.exports = (client) => {
     };
 
     client.getSettings = (guild = null) => {
-        if (!guild) {
-            guild = client.guilds.cache.get(client.config.guildID);
-        }
-        let settings = client.db_settings.get(guild.id);
+        let settings = client.db_settings.get(client.config.guildID);
         if (!settings) {
             return client.log(`Configuration du Serveur discord "${client.config.guildID}" non trouvée.`, "error");
         } else {
@@ -134,8 +131,8 @@ module.exports = (client) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
-        const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
-        const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleEveryone = await guild.roles.cache.find(r => r.name == "@everyone");
+        const roleMembers = await guild.roles.cache.find(r => r.name == settings.memberRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
         let channelName = "";
@@ -147,16 +144,66 @@ module.exports = (client) => {
 
         guild.channels.create(channelName, {
             type: 'voice'
-        }).then(freeVoiceChannel => {
-            freeVoiceChannel.createOverwrite(roleEveryone, {
-                'CONNECT': false,
-            });
-            freeVoiceChannel.createOverwrite(roleMembers, {
-                'CONNECT': true,
-            });
-            freeVoiceChannel.setParent(voiceChannelsCategory);
-        });
+        })
+        .then( async freeVoiceChannel => {
+            await client.sleep(1000);
+            await freeVoiceChannel.setParent(voiceChannelsCategory);
+            await client.sleep(500);
+            await freeVoiceChannel.createOverwrite(roleEveryone, {
+                VIEW_CHANNEL: true,
+                CONNECT: false,
+            })
+            .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
+            .catch(console.error);
 
+            await client.sleep(500);
+
+            await freeVoiceChannel.createOverwrite(roleMembers, {
+                VIEW_CHANNEL: true,
+                CONNECT: true,
+            })
+            .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @membres`, "debug"))
+            .catch(console.error);
+
+
+        })
+        .catch(console.error);
+
+
+        // await client.sleep(500);
+        // if (freeVoiceChannel) {
+        //     client.log(`freeVoiceChannel correctement créé`, "debug");
+        //     if (roleEveryone) {
+        //         freeVoiceChannel.createOverwrite(roleEveryone, {
+        //             VIEW_CHANNEL: true,
+        //             CONNECT: false,
+        //         })
+        //         .then(channel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
+        //         .catch(console.error);
+                
+        //     } else {
+        //         client.log(`roleEveryone non disponible`, "error");
+        //     };
+
+        //     await client.sleep(500);
+
+        //     if (roleMembers) {
+        //         freeVoiceChannel.createOverwrite(roleMembers, {
+        //             VIEW_CHANNEL: true,
+        //             CONNECT: true,
+        //         })
+        //         .then(channel => client.log(`freeVoiceChannel permissions @membres`, "debug"))
+        //         .catch(console.error);
+        //     } else {
+        //         client.log(`roleMembers non disponible`, "error");
+        //     }
+
+        //     await client.sleep(500);
+
+        //     await freeVoiceChannel.setParent(voiceChannelsCategory);
+        // } else {
+        //     client.log(`freeVoiceChannel non disponible`, "error");
+        // }
     };
 
     client.renameFreeVoiceChannel = async (member) => {
@@ -172,7 +219,7 @@ module.exports = (client) => {
         }
         await member.voice.channel.setName(channelName);
         await member.voice.channel.createOverwrite(member, {
-            'MANAGE_CHANNELS': true,
+            MANAGE_CHANNELS: true,
         });
     };
 
@@ -289,14 +336,19 @@ module.exports = (client) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
         try {
             await channel.setParent(voiceChannelsCategory);
             await channel.setName(`🔊${game.name}`);
             await channel.createOverwrite(roleMembers, {
-                'VIEW_CHANNEL': true,
-                'CONNECT': true,
+                VIEW_CHANNEL: true,
+                CONNECT: true,
+            });
+            await channel.createOverwrite(roleEveryone, {
+                VIEW_CHANNEL: true,
+                CONNECT: false,
             });
         } catch (error) {
             client.log(error, "error");
@@ -308,14 +360,19 @@ module.exports = (client) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
         const gameCategory = guild.channels.cache.get(game.categoryID);
 
         try {
             await channel.setParent(gameCategory);
             await channel.setName(`🔈${game.name}`);
             await channel.createOverwrite(roleMembers, {
-                'VIEW_CHANNEL': false,
-                'CONNECT': false,
+                VIEW_CHANNEL: false,
+                CONNECT: false,
+            });
+            await channel.createOverwrite(roleEveryone, {
+                VIEW_CHANNEL: false,
+                CONNECT: false,
             });
         } catch (error) {
             client.log(error, "error");
@@ -746,6 +803,10 @@ module.exports = (client) => {
         });
 
 
+    };
+
+    client.sleep = async (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
     };
 
     client.datamodelCheck = () => {

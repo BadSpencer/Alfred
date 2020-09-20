@@ -24,7 +24,7 @@ class GameInactiveCommand extends Command {
             match: 'rest',
             prompt: {
                 start: async message => {
-                    await this.client.gamesListPost(message.channel, 'tout');
+                    await this.client.gamesListPost(message.channel, 'actif');
                     return promptMessage(textes.get('GAMES_GAME_EDIT_GAME_PROMPT'))
                 },
                 retry: message => promptMessage(textes.get('GAMES_GAME_EDIT_GAME_RETRY')),
@@ -75,6 +75,7 @@ class GameInactiveCommand extends Command {
             state += `Rôle principal: aucun rôle associé\n`;
             stateMsg.edit(stateMessage(state));
         };
+        await client.sleep(500);
 
 
 
@@ -94,6 +95,7 @@ class GameInactiveCommand extends Command {
             stateMsg.edit(stateMessage(state));
         }
         args.game.playRoleID = "";
+        await client.sleep(500);
 
         const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
         if (gameCategory) {
@@ -106,7 +108,12 @@ class GameInactiveCommand extends Command {
                     state += `Catégorie: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
-        };
+        } else {
+            state += `Catégorie: 🟥 non trouvée\n`;
+            args.game.categoryID = "";
+            stateMsg.edit(stateMessage(state));
+        }
+        await client.sleep(500);
 
         const gameTextChannel = message.guild.channels.cache.get(args.game.textChannelID);
         if (gameTextChannel) {
@@ -119,6 +126,7 @@ class GameInactiveCommand extends Command {
                     state += `Salon discussion: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
+                await client.sleep(500);
             gameTextChannel.createOverwrite(roleEveryone, {
                 CREATE_INSTANT_INVITE: false,
                 MANAGE_CHANNELS: false,
@@ -143,6 +151,7 @@ class GameInactiveCommand extends Command {
                     state += `Salon discussion: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
+                await client.sleep(500);
             gameTextChannel.createOverwrite(roleMembers, {
                 CREATE_INSTANT_INVITE: false,
                 MANAGE_CHANNELS: false,
@@ -167,7 +176,12 @@ class GameInactiveCommand extends Command {
                     state += `Salon discussion: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
+        } else {
+            state += `Salon discussion: 🟥 non trouvé\n`;
+            args.game.textChannelID = "";
+            stateMsg.edit(stateMessage(state));
         };
+        await client.sleep(500);
 
         const gameInfosChannel = message.guild.channels.cache.get(args.game.infosChannelID);
         if (gameInfosChannel) {
@@ -180,8 +194,12 @@ class GameInactiveCommand extends Command {
                     state += `Salon Informations: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
+        } else {
+            state += `Salon Informations: 🟥 non trouvé\n`;
+            stateMsg.edit(stateMessage(state));
         };
         args.game.infosChannelID = "";
+        await client.sleep(500);
 
         const gameStatutChannel = message.guild.channels.cache.get(args.game.statusChannelID);
         if (gameStatutChannel) {
@@ -194,8 +212,30 @@ class GameInactiveCommand extends Command {
                     state += `Salon Statut: 🟥 ${error}\n`;
                     stateMsg.edit(stateMessage(state));
                 });
+        } else {
+            state += `Salon Statut: 🟥 non trouvé\n`;
+            stateMsg.edit(stateMessage(state));
         };
         args.game.statusChannelID = "";
+        await client.sleep(500);
+
+        const gameVoiceChannel = message.guild.channels.cache.get(args.game.voiceChannelID);
+        if (gameVoiceChannel) {
+            gameVoiceChannel.delete()
+            .then(deleted => {
+                state += `Salon Vocal: ✅ supprimé\n`;
+                stateMsg.edit(stateMessage(state));
+            })
+            .catch(error => {
+                state += `Salon Vocal: 🟥 ${error}\n`;
+                stateMsg.edit(stateMessage(state));
+            });
+        } else {
+            state += `Salon Vocal: 🟥 non trouvé\n`;
+            stateMsg.edit(stateMessage(state));
+        };
+        args.game.voiceChannelID = "";
+        await client.sleep(500);
 
         args.game.roleID = "";
         args.game.actif = false;
