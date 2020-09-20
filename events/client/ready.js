@@ -23,7 +23,7 @@ class ReadyListener extends Listener {
         client.settingsCheck();
         // Normalisation des enregistrements de la BD pour qu'ils aient la même 
         // structure que définie dans datamodel
-        client.datamodelCheck();
+        // client.datamodelCheck();
         client.userdataCheck();
         // client.gamesCheck();
         client.textesCheck();
