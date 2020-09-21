@@ -25,23 +25,33 @@ module.exports = (client) => {
 
   client.gamesGetAll = (toArray = false) => {
     if (toArray === false) {
-      return client.db_games.fetchEverything();
+      return client.db_games.filter((rec) =>
+      rec.isGame === true);
     } else {
-      return client.db_games.array();
+      return client.db_games.filterArray((rec) =>
+      rec.isGame === true);
     };
   };
   client.gamesGetActive = (toArray = false) => {
     if (toArray === false) {
-      return client.db_games.filter((rec) => rec.actif == true);
+      return client.db_games.filter((rec) =>
+        rec.actif === true &&
+        rec.isGame === true);
     } else {
-      return client.db_games.filterArray((rec) => rec.actif == true);
+      return client.db_games.filterArray((rec) =>
+        rec.actif == true &&
+        rec.isGame === true);
     }
   };
   client.gamesGetInactive = (toArray = false) => {
     if (toArray === false) {
-      return client.db_games.filter((rec) => rec.actif === false);
+      return client.db_games.filter((rec) =>
+        rec.actif === false &&
+        rec.isGame === true);
     } else {
-      return client.db_games.filterArray((rec) => rec.actif === false);
+      return client.db_games.filterArray((rec) =>
+        rec.actif === false &&
+        rec.isGame === true);
     }
   };
 
@@ -960,8 +970,8 @@ module.exports = (client) => {
     let gameJoinMessage;
     if (settings.gameJoinMessage !== "") {
       await gameJoinChannel.messages.fetch(settings.gameJoinMessage)
-      .then(message => gameJoinMessage = message)
-      .catch(console.error);
+        .then(message => gameJoinMessage = message)
+        .catch(console.error);
 
       // await gameJoinChannel.messages.fetch(settings.gameJoinMessage).then(
       //   message => {
@@ -984,8 +994,8 @@ module.exports = (client) => {
     let gameInfosLinkMessage;
     if (settings.gameInfosLinkMessage !== "") {
       await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage)
-      .then(message => gameInfosLinkMessage = message)
-      .catch(console.error);
+        .then(message => gameInfosLinkMessage = message)
+        .catch(console.error);
 
 
       // await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage).then(
@@ -1045,12 +1055,12 @@ module.exports = (client) => {
           let gameinfosChannel = await guild.channels.cache.get(game.infosChannelID);
           if (game.infosMessageID !== "") {
             await gameinfosChannel.messages.fetch(game.infosMessageID)
-            .then(message => {
-              fieldDescription = `[**${game.name}**](${message.url})`;
-            })
-            .catch(error => {
-              
-            });
+              .then(message => {
+                fieldDescription = `[**${game.name}**](${message.url})`;
+              })
+              .catch(error => {
+
+              });
           }
         }
         embedInfos.addField("\u200b", `${fieldDescription}`, true);

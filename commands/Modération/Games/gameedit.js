@@ -23,7 +23,7 @@ class GameEditCommand extends Command {
             type: "game",
             match: 'rest',
             prompt: {
-                start: async message => { 
+                start: async message => {
                     await this.client.gamesListPost(message.channel, 'tout');
                     return promptMessage(textes.get('GAMES_GAME_EDIT_GAME_PROMPT'))
                 },
@@ -33,10 +33,10 @@ class GameEditCommand extends Command {
 
         const field = yield {
             prompt: {
-                start: async message => { 
+                start: async message => {
                     await message.channel.send(`**${game.id}**\n\`\`\`json\n${inspect(game)}\n\`\`\``);
-                    return promptMessage(textes.get('CMD_EDIT_FIELD_PROMPT')) 
-            },
+                    return promptMessage(textes.get('CMD_EDIT_FIELD_PROMPT'))
+                },
             }
         };
 
@@ -54,17 +54,15 @@ class GameEditCommand extends Command {
 
         if (!args.game[args.field]) return errorMessage(textes.get('ERROR_FIELD_NOT_FOUND', args.field), message.channel);
 
-        if (args.field == "nbDaysInactive" ) {
+        if (args.field == "nbDaysInactive") {
             args.game[args.field] = parseInt(args.value);
         } else {
-            if (args.field == "actif") {
-                if (args.field == "true") {
-                    args.game[args.field] = true;
-                } else {
-                    args.game[args.field] = false;
-                }
-            } else {
-                args.game[args.field] = args.value;
+            args.game[args.field] = args.value;
+            if (args.value === "true") {
+                args.game[args.field] = true;
+            }
+            if (args.value === "false") {
+                args.game[args.field] = false;
             }
         }
         client.db_games.set(args.game.id, args.game);
