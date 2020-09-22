@@ -491,7 +491,7 @@ module.exports = (client) => {
                 gamesTopScore += `${gamesScore.name}: **${gamesScore.playersCount}** :busts_in_silhouette:\n`;
             }
         }
-        embed.addField(`Autres jeux joués`, gamesTopScore, true);
+        // embed.addField(`Autres jeux joués`, gamesTopScore, true);
 
         let popuparChannelDesc = "";
         let popularChannels = await client.getPopularChannels();
@@ -510,7 +510,7 @@ module.exports = (client) => {
                     popuparChannelDesc += `${popularChannel.channelID}: ${popularChannel.messagesCount}\n`
                 }
             };
-            embed.addField(`Salons populaires`, popuparChannelDesc, true);
+            // embed.addField(`Salons populaires`, popuparChannelDesc, true);
         }
 
 
