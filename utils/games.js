@@ -26,10 +26,10 @@ module.exports = (client) => {
   client.gamesGetAll = (toArray = false) => {
     if (toArray === false) {
       return client.db_games.filter((rec) =>
-      rec.isGame === true);
+        rec.isGame === true);
     } else {
       return client.db_games.filterArray((rec) =>
-      rec.isGame === true);
+        rec.isGame === true);
     };
   };
   client.gamesGetActive = (toArray = false) => {
@@ -750,6 +750,37 @@ module.exports = (client) => {
     return gameScore;
   };
 
+  client.gamesGetGamePlayersCount = (gameID, nbDays = 5) => {
+    let gamePlayersCount = 0;
+    let days = [];
+    for (var i = 0; i < nbDays; i++) {
+      days.push(moment().subtract(i, 'days').format('DD.MM.YYYY'));
+    };
+
+    for (const day of days) {
+      let gameXP = client.db_usergameXP.filterArray((usergameXP) =>
+        usergameXP.date === day &&
+        usergameXP.gameID === gameID);
+
+      let players = [];
+      for (const XP of gameXP) {
+        let player = {
+          "userID": ""
+        };
+        if (!players.find((rec) => rec.userID === XP.memberID)) {
+          ++gamePlayersCount;
+          player.userID = XP.memberID;
+          players.push(player);
+        }
+      }
+
+
+    }
+    return gamePlayersCount;
+  };
+
+
+
   client.gamesGetGameInfosEmbed = (game) => {
     const guild = client.guilds.cache.get(client.config.guildID);
 
@@ -972,17 +1003,6 @@ module.exports = (client) => {
       await gameJoinChannel.messages.fetch(settings.gameJoinMessage)
         .then(message => gameJoinMessage = message)
         .catch(console.error);
-
-      // await gameJoinChannel.messages.fetch(settings.gameJoinMessage).then(
-      //   message => {
-      //     gameJoinMessage = message;
-      //     client.log(client.textes.get("GAMES_LIST_SUCCESS_LOADED"), "debug");
-      //   }
-      // ).catch(
-      //   error => {
-      //     client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND"), "warn");
-      //   }
-      // )
     };
 
     if (gameJoinMessage) {
@@ -996,23 +1016,8 @@ module.exports = (client) => {
       await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage)
         .then(message => gameInfosLinkMessage = message)
         .catch(console.error);
-
-
-      // await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage).then(
-      //   message => {
-      //     gameInfosLinkMessage = message;
-      //     client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_LOADED"), "debug");
-      //   }
-      // ).catch(
-      //   error => {
-      //     client.log(client.textes.get("GAMES_LISTLINK_WARN_NOTFOUND"), "warn");
-      //   }
-      // )
     };
 
-    // if (settings.gameInfosLinkMessage !== "") {
-    //   gameInfosLinkMessage = await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage);
-    // };
     if (gameInfosLinkMessage) {
       client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_LOADED"), "debug");
     } else {
@@ -1150,8 +1155,6 @@ module.exports = (client) => {
     }
     await client.arrayToEmbed(playerListOutput, 20, `Joueurs de ${gamename}`, message.channel);
   };
-
-
 
   client.usergameGet = (member, game) => {
     let usergameKey = `${member.id}-${game.id}`;
@@ -1568,5 +1571,4 @@ module.exports = (client) => {
 
   };
 
-
-}
+};

@@ -145,29 +145,29 @@ module.exports = (client) => {
         guild.channels.create(channelName, {
             type: 'voice'
         })
-        .then( async freeVoiceChannel => {
-            await client.sleep(1000);
-            await freeVoiceChannel.setParent(voiceChannelsCategory);
-            await client.sleep(500);
-            await freeVoiceChannel.createOverwrite(roleEveryone, {
-                VIEW_CHANNEL: true,
-                CONNECT: false,
+            .then(async freeVoiceChannel => {
+                await client.sleep(1000);
+                await freeVoiceChannel.setParent(voiceChannelsCategory);
+                await client.sleep(500);
+                await freeVoiceChannel.createOverwrite(roleEveryone, {
+                    VIEW_CHANNEL: true,
+                    CONNECT: false,
+                })
+                    .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
+                    .catch(console.error);
+
+                await client.sleep(500);
+
+                await freeVoiceChannel.createOverwrite(roleMembers, {
+                    VIEW_CHANNEL: true,
+                    CONNECT: true,
+                })
+                    .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @membres`, "debug"))
+                    .catch(console.error);
+
+
             })
-            .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
             .catch(console.error);
-
-            await client.sleep(500);
-
-            await freeVoiceChannel.createOverwrite(roleMembers, {
-                VIEW_CHANNEL: true,
-                CONNECT: true,
-            })
-            .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @membres`, "debug"))
-            .catch(console.error);
-
-
-        })
-        .catch(console.error);
 
 
         // await client.sleep(500);
@@ -180,7 +180,7 @@ module.exports = (client) => {
         //         })
         //         .then(channel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
         //         .catch(console.error);
-                
+
         //     } else {
         //         client.log(`roleEveryone non disponible`, "error");
         //     };
@@ -462,7 +462,7 @@ module.exports = (client) => {
         }
         // embed.addField(`Membres les plus actifs`, usersTopScore, true);
 
-        let games = client.gamesGetAll(true);
+        let games = client.gamesGetInactive(true);
 
         let gamesScores = [];
         for (const game of games) {
@@ -470,12 +470,14 @@ module.exports = (client) => {
                 "gameID": "",
                 "name": "",
                 "actif": false,
-                "score": 0
+                "score": 0,
+                "playersCount": 0
             };
             gameScore.gameID = game.id;
             gameScore.name = game.name;
             gameScore.actif = game.actif;
             gameScore.score = client.gamesGetGameScore(game.id);
+            gameScore.playersCount = client.gamesGetGamePlayersCount(game.id);
             gamesScores.push(gameScore);
         }
         gamesScores.sort(function (a, b) {
@@ -486,14 +488,32 @@ module.exports = (client) => {
         let gamesTopScore = "";
         for (const gamesScore of gamesScores) {
             if (gamesScore.score > 0) {
-                if (gamesScore.actif === true) {
-                    gamesTopScore += `**${gamesScore.name}**\n`;
-                } else {
-                    gamesTopScore += `${gamesScore.name}\n`;
-                }
+                gamesTopScore += `${gamesScore.name}: **${gamesScore.playersCount}** :busts_in_silhouette:\n`;
             }
         }
-        embed.addField(`Jeux les plus actifs`, gamesTopScore, true);
+        embed.addField(`Autres jeux joués`, gamesTopScore, true);
+
+        let popuparChannelDesc = "";
+        let popularChannels = await client.getPopularChannels();
+        if (popularChannels.length > 0) {
+            popularChannels.sort(function (a, b) {
+                return b.messagesCount - a.messagesCount;
+            });
+
+            popularChannels = popularChannels.slice(0, 10);
+
+            for (const popularChannel of popularChannels) {
+                let channel = guild.channels.cache.get(popularChannel.channelID);
+                if (channel) {
+                    popuparChannelDesc += `${channel.parent.name}/${channel.name}: ${popularChannel.messagesCount}\n`
+                } else {
+                    popuparChannelDesc += `${popularChannel.channelID}: ${popularChannel.messagesCount}\n`
+                }
+            };
+            embed.addField(`Salons populaires`, popuparChannelDesc, true);
+        }
+
+
 
         embed.setTitle(client.textes.get("MOTD_TITRE"));
         embed.setColor(`0xCC7900`);
@@ -552,6 +572,31 @@ module.exports = (client) => {
         commandsLogs.content = message.content;
         client.db_commandsLogs.set(message.id, commandsLogs);
         client.log(`Commande ${command.id} par ${commandsLogs.createdByName}`, "debug");
+    };
+
+    client.getPopularChannels = async (nbDays = 5) => {
+
+        let now = +new Date;
+        let fromTimestamp = +new Date(moment(now).subtract(nbDays, 'days').startOf('day'));
+
+        let messages = client.db_messageslogs.filterArray((messageLog) =>
+            messageLog.createdAt > fromTimestamp);
+
+        let channelMessages = [];
+        for (const message of messages) {
+            let channelMessage = channelMessages.find((rec) =>
+                rec.channelID === message.channelID)
+            if (channelMessage) {
+                ++channelMessage.messagesCount;
+            } else {
+                channelMessage = {
+                    "channelID": message.channelID,
+                    "messagesCount": 1
+                };
+                channelMessages.push(channelMessage);
+            }
+        }
+        return channelMessages;
     };
 
     client.channelGetAllMessages = async (channelID) => {
