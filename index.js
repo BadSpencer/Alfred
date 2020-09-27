@@ -44,7 +44,7 @@ client.on('shardDisconnect', () => client.log('Connection perdue...', 'warn'))
     .on('shardResume', () => {
         client.log('Reconnexion effectuée', 'warn');
         const pjson = require('./package.json');
-        client.user.setActivity(`${pjson.version}`, {
+        client.user.setActivity(`v${pjson.version}`, {
             type: "PLAYING"
         });
     })
