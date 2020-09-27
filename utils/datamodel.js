@@ -9,6 +9,7 @@ exports.tables = {
         "adminRole": "Admins",
         "memberRole": "Membres", 
         "modNotifChannel": "notifications-modération" ,
+        "modVoiceChannel": "🟪🔈Espace privé" ,
         "welcomeChannel": "accueil",
         "welcomeEnabled": "true",
         "welcomeMemberChannel": "💬général",

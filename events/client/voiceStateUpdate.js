@@ -61,9 +61,9 @@ class voiceStateUpdateListener extends Listener {
                     await client.gameVoiceChannelQuit(game, oldState.channel);
                 } else {
 
-                    if (oldState.channel.name == settings.contactChannelFree ||
-                        oldState.channel.name == settings.contactChannelWaiting ||
-                        oldState.channel.name == settings.contactChannelInprogress) {
+                    if (oldState.channel.name === settings.contactChannelFree ||
+                        oldState.channel.name === settings.contactChannelWaiting ||
+                        oldState.channel.name === settings.contactChannelInprogress) {
                         await client.contactVoiceChannelQuit(oldState.channel);
                     };
                     if (oldState.channel.name !== settings.quietChannel &&
@@ -86,9 +86,9 @@ class voiceStateUpdateListener extends Listener {
                 if (game) {
                     await client.gameVoiceChannelQuit(game, oldState.channel);
                 } else {
-                    if (oldState.channel.name == settings.contactChannelFree ||
-                        oldState.channel.name == settings.contactChannelWaiting ||
-                        oldState.channel.name == settings.contactChannelInprogress) {
+                    if (oldState.channel.name === settings.contactChannelFree ||
+                        oldState.channel.name === settings.contactChannelWaiting ||
+                        oldState.channel.name === settings.contactChannelInprogress) {
                         await client.contactVoiceChannelQuit(oldState.channel);
                     };
                     if (oldState.channel.name !== settings.quietChannel &&
