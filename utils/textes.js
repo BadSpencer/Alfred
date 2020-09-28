@@ -404,7 +404,7 @@ module.exports = class {
 
                 Je vous invite à vous présenter pour nous dire ce qui vous amène ici. Si vous avez été invité par un membre, précisez le, ça peut avoir son importance.
 
-                Les personnes susceptibles (et elles le sont croyez moi!) de vous accueillir sont <@!186143653008244746> <@!157584976525656064> <@!193822534196658176> <@!168129394387320833> et <@!291545597205544971>. Ils prendront contact avec vous pour un petit entretien vocal. Il vous présenteront cette communauté et le discord, sûrement mieux que je ne saurais le faire. Notez qu’ils ne sont pas toujours disponibles, il semblerait qu’ils aient d’autres activités ailleurs qu’ici, soyez un peu patient.                                
+                Les personnes susceptibles (et elles le sont croyez moi!) de vous accueillir sont <@!186143653008244746> <@!157584976525656064> <@!193822534196658176> et <@!291545597205544971>. Ils prendront contact avec vous pour un petit entretien vocal. Il vous présenteront cette communauté et le discord, sûrement mieux que je ne saurais le faire. Notez qu’ils ne sont pas toujours disponibles, il semblerait qu’ils aient d’autres activités ailleurs qu’ici, soyez un peu patient.                                
                 
                 Si vous ne savez pas où vous êtes ou ce que vous faites ici, je vous invite à consulter [notre site](https://www.casual-effect.org/) pour en savoir plus sur ce qu'on fait ici.`;
             },
