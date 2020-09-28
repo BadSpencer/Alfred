@@ -890,9 +890,6 @@ module.exports = (client) => {
             break;
         }
 
-        // scoreDescription += ` ${scoreEmoji}`;
-
-
         embed.addField("\u200b", "\u200b", true);
         embed.addField("\u200b", "\u200b", true);
         embed.addField("📈 Score", `${scoreDescription}`, true);
@@ -910,12 +907,6 @@ module.exports = (client) => {
         embed.addField("\u200b", memberList1 || "\u200b", true);
         embed.addField("Membres", memberList2 || "\u200b", true);
         embed.addField("\u200b", memberList3 || "\u200b", true);
-        // } else {
-        //   embed.addField("\u200b", "\u200b", true);
-        //   embed.addField("Membres", "Aucun membre", true);
-        //   embed.addField("\u200b", "\u200b", true);
-        // }
-
 
       } else {
         description += "Attention: Problème avec le rôle principal de ce jeu\n";
@@ -944,7 +935,6 @@ module.exports = (client) => {
 
   client.gamesInfosPost = async () => {
     const guild = client.getGuild();
-    const settings = client.getSettings(guild);
     let games = client.gamesGetActive(true);
 
     for (const game of games) {
@@ -976,8 +966,8 @@ module.exports = (client) => {
           );
         }
 
-      } else {
-        // client.modLog(textes.get("MOD_NOTIF_GAME_NO_INFO_CHANNEL", game));
+      }  else {
+        client.log(`Salon information pour "${game.name}" non trouvé`, 'warn');
       }
     }
   };
