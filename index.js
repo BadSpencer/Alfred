@@ -120,7 +120,6 @@ client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes l
 });
 client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
     client.gameServersStatus();
-    client.gamesInfosPost();
 });
 
 client.cron_serverMaintenanceOn = new cron.CronJob('00 25 05 * * *', () => { // Tous les jours à 5h25
@@ -143,6 +142,7 @@ client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous
 });
 client.cron_gameList = new cron.CronJob('15 00 */1 * * *', () => { // Tous les heures après 15sec
     client.gamesJoinListPost();
+    client.gamesInfosPost();
 });
 client.cron_ArkDWD = new cron.CronJob('00 00 06 * * 5', () => { // Tous les 2 jours à 6h00
     client.gameServersArkDWD();
