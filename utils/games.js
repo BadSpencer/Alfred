@@ -39,7 +39,7 @@ module.exports = (client) => {
         rec.isGame === true);
     } else {
       return client.db_games.filterArray((rec) =>
-        rec.actif == true &&
+        rec.actif === true &&
         rec.isGame === true);
     }
   };
