@@ -7,7 +7,7 @@ const {
 } = require('./messages');
 const colors = require("./colors");
 const Discord = require("discord.js");
-const textes = new(require("./textes.js"));
+const textes = new (require("./textes.js"));
 const moment = require("moment");
 
 module.exports = (client) => {
@@ -87,6 +87,63 @@ module.exports = (client) => {
             }
         }
         return score;
+    };
+
+    client.membersGetExpDetail = (nbDays = 5) => {
+
+        let userdatas = client.userdataGetAll(true);
+
+        let expDetail = [];
+        let days = [];
+        for (var i = 0; i < nbDays; i++) {
+            days.push(moment().subtract(i, 'days').format('DD.MM.YYYY'));
+        };
+
+        for (const day of days) {
+            expDetail.push(`**${day}**`);
+            for (const userdata of userdatas) {
+
+                let memberLogs = client.db_memberLog.filterArray(memberLog =>
+                    memberLog.memberID === userdata.id &&
+                    memberLog.createdDate === day);
+
+                let totalExp = 0;
+                let voiceExp = 0;
+                let gameExp = 0;
+                let textExp = 0;
+                let reactInExp = 0;
+                let reactOutExp = 0;
+                for (const memberLog of memberLogs) {
+                    totalExp += memberLog.xpGained;
+
+                    switch (memberLog.type) {
+                        case "VOICE":
+                            voiceExp += memberLog.xpGained;
+                            break;
+                        case "PLAY":
+                            gameExp += memberLog.xpGained;
+                            break;
+                        case "TEXT":
+                            textExp += memberLog.xpGained;
+                            break;
+                        case "REACTIN":
+                            reactInExp += memberLog.xpGained;
+                            break;
+                        case "REACTOUT":
+                            reactOutExp += memberLog.xpGained;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (totalExp > 0) {
+                    expDetail.push(`${userdata.displayName}: **${totalExp}** (${voiceExp}/${gameExp}/${textExp}/${reactInExp}/${reactOutExp})`);
+                    // expDetail.push(`V:${voiceExp} P:${gameExp} T:${textExp} Ri:${reactInExp} Ro:${reactOutExp}`);
+                }
+            };
+        };
+
+        return expDetail;
     };
 
     client.membersGetTopScores = () => {
