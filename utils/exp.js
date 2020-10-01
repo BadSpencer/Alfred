@@ -32,7 +32,11 @@ module.exports = (client) => {
                     if (game) {
                         client.usergameUpdateLastPlayed(game, member);
                         client.usergameAddXP(member, game);
-                        client.memberLogPlay(member.id, game);
+                        if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel && member.voice.channel.name !== settings.quietChannel) {
+                            client.memberLogPlay(member, game, null, 1);
+                        } else {
+                            client.memberLogPlay(member, game, null, 0);
+                        }
                     }
                 }
                 if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel && member.voice.channel.name !== settings.quietChannel) {
@@ -54,19 +58,17 @@ module.exports = (client) => {
         }
     };
 
-    client.memberLogPlay = (memberID, game, timestamp = null, xpGained = 1) => {
-        const guild = client.getGuild();
+    client.memberLogPlay = (member, game, timestamp = null, xpGained = 1) => {
         if (timestamp === null) {
             timestamp = +new Date;
         };
-        let member = guild.members.cache.get(memberID);
-        if (member) {
-            if (member.roles.cache.has(game.roleID)) {
-                client.memberLog(timestamp, memberID, "PLAY", `${client.memberGetDisplayNameByID(memberID)} joue à ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
-            } else {
-                client.memberLog(timestamp, memberID, "PLAY", `${client.memberGetDisplayNameByID(memberID)} joue à ${game.name} (pas dans le groupe)`, game.id, null, null, null, null, null, null, 0);
-            }
+
+        if (member.roles.cache.has(game.roleID)) {
+            client.memberLog(timestamp, member.id, "PLAY", `${client.memberGetDisplayNameByID(member.id)} joue à ${game.name}`, game.id, null, null, null, null, null, null, xpGained);
+        } else {
+            client.memberLog(timestamp, member.id, "PLAY", `${client.memberGetDisplayNameByID(member.id)} joue à ${game.name} (pas dans le groupe)`, game.id, null, null, null, null, null, null, 0);
         }
+
     };
 
     client.memberLogText = (memberID, message, timestamp = null) => {
@@ -219,9 +221,9 @@ module.exports = (client) => {
                     memberLog.memberID === memberID &&
                     memberLog.createdDate === date &&
                     memberLog.type === "TEXT");
-                    if (memberLogText) {
-                        memberLogAdd = memberLogText;
-                    }
+                if (memberLogText) {
+                    memberLogAdd = memberLogText;
+                }
                 break;
             case "CMD":
                 maxTypeXPperDay = settings.maxCmdXPPerDay;
@@ -229,9 +231,9 @@ module.exports = (client) => {
                     memberLog.memberID === memberID &&
                     memberLog.createdDate === date &&
                     memberLog.type === "CMD");
-                    if (memberLogCmd) {
-                        memberLogAdd = memberLogCmd;
-                    }
+                if (memberLogCmd) {
+                    memberLogAdd = memberLogCmd;
+                }
                 break;
             case "REACTIN":
                 maxTypeXPperDay = settings.maxReactInXPPerDay;
@@ -352,8 +354,8 @@ module.exports = (client) => {
         let createdDate = moment(date).format('DD.MM.YYYY');
         let memberLogs = client.db_memberLog.filterArray(
             (memberLog) => memberLog.memberID === memberID &&
-            memberLog.createdDate === createdDate &&
-            memberLog.type === type);
+                memberLog.createdDate === createdDate &&
+                memberLog.type === type);
 
         let XP = 0;
         for (const memberLog of memberLogs) {

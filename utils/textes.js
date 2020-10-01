@@ -24,7 +24,11 @@ module.exports = class {
             },
             COMMAND_BLOCKED_REASON_BLACKLIST: "Vous êtes blacklisté",
             COMMAND_BLOCKED_REASON_USERPERMISSIONS: "Vous n'êtes pas autorisé à utiliser cette commande",
-            COMMAND_BLOCKED_REASON_CHANNELS: "Les commandes ne sont pas autorisées dans ce salon",
+            COMMAND_BLOCKED_REASON_CHANNELS: (channel) => {
+                return `Les commandes ne sont pas autorisées dans le salon **${channel.name}**
+
+                Merci de lancer vos commandes dans le salon <#562683604690534400> ou bien directement ici en m'envoyant la commande par message privé.`;
+            },
             COMMAND_BLOCKED_REASON_DM: "Cette commande n'est disponible que via message privé avec Alfred",
 
             SUGG_NOTIF_TITLE: "Suggestion...",

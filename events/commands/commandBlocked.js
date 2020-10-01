@@ -27,27 +27,34 @@ class CommandBlockedListener extends Listener {
         switch (reason) {
             case 'blacklist':
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_BLACKLIST");
+                errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
+                message.delete();
                 break;
             case 'userPermissions':
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_USERPERMISSIONS");
+                errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
+                message.delete();
                 break;
             case 'moderation':                
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_USERPERMISSIONS");
+                errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
+                message.delete();
                 break;
             case 'channel':
-                raison = client.textes.get("COMMAND_BLOCKED_REASON_CHANNELS");
+                raison = client.textes.get("COMMAND_BLOCKED_REASON_CHANNELS", message.channel);
+                errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.member, false);
+                message.delete();
                 break;
             case 'dm':
                 raison = client.textes.get("COMMAND_BLOCKED_REASON_DM");
+                errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
+                message.delete();
                 break;
             default:
                 raison = reason;
         }
-
-        // Log 
-        errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
         client.log(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), "warn");
-        if (message.channel.type === 'text') if (message.channel.type === 'text') message.delete();;
+
 
 
 
