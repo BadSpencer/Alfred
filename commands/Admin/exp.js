@@ -117,7 +117,7 @@ class expCommand extends Command {
                         record.createdBy === userdata.id
                     );
                     if (memberMessages) {
-                        userdata.xp = memberMessages.length * 10;
+                        userdata.xp = memberMessages.length * 25;
                         userdata.level = client.xpGetLevel(userdata.xp);
                     } else {
                         userdata.xp = 0;
