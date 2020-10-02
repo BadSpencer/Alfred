@@ -117,7 +117,15 @@ class expCommand extends Command {
                         record.createdBy === userdata.id
                     );
                     if (memberMessages) {
-                        userdata.xp = memberMessages.length * 25;
+                        for (const message of memberMessages) {
+                            if (!message.content.startsWith("https://tenor.com") && !message.content.startsWith("https://media.tenor.com")) {
+                                if (message.content.length > 150) {
+                                    userdata.xp += 100;
+                                } else {
+                                    userdata.xp += 25;
+                                }
+                            }
+                        }
                         userdata.level = client.xpGetLevel(userdata.xp);
                     } else {
                         userdata.xp = 0;
