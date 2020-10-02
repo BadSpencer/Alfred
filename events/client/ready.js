@@ -39,7 +39,6 @@ class ReadyListener extends Listener {
         if (!client.cron_serverUpdateInfos.running) client.cron_serverUpdateInfos.start();
 
         if (!client.cron_serversInfos.running) client.cron_serversInfos.start();
-        if (!client.cron_ArkDWD.running) client.cron_ArkDWD.start();
 
         if (!client.cron_gamePurge.running) client.cron_gamePurge.start();
 
