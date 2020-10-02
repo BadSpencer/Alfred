@@ -52,8 +52,26 @@ class dbSettingsCommand extends Command {
 
             case 'edit': {
                 if (!args.key) return errorMessage('Veuillez spécifier une clé', message.channel);
-                if (args.value.length < 1)  return errorMessage('Veuillez spécifier une valeur', message.channel);
-                settings[args.key] = args.value;
+                if (args.value.length < 1) return errorMessage('Veuillez spécifier une valeur', message.channel);
+
+                if (args.key === "xpToLevelCoef" ||
+                    args.key === "maxPlayXPPerDay" ||
+                    args.key === "maxVoiceXPPerDay" ||
+                    args.key === "maxTextXPPerDay" ||
+                    args.key === "maxCmdXPPerDay" ||
+                    args.key === "maxReactInXPPerDay" ||
+                    args.key === "maxReactOutXPPerDay"
+                ) {
+                    settings[args.key] = parseInt(args.value);
+                } else {
+                    settings[args.key] = args.value;
+                    if (args.value === "true") {
+                        settings[args.key] = true;
+                    }
+                    if (args.value === "false") {
+                        settings[args.key] = false;
+                    }
+                }
                 client.db_settings.set(guild.id, settings);
 
                 successMessage(`${args.key} édité avec succès avec la valeur ${args.value}`, message.channel);
@@ -63,7 +81,7 @@ class dbSettingsCommand extends Command {
 
 
         }
-        
+
         if (message.channel.type === 'text') message.delete();;
     }
 

@@ -16,7 +16,7 @@ module.exports = (client) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
-        if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
+        if (settings.welcomeEnabled === false) return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"), "warn");
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -42,7 +42,7 @@ module.exports = (client) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
-        if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
+        if (settings.welcomeEnabled === false) return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
@@ -60,7 +60,7 @@ module.exports = (client) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
-        if (settings.welcomeEnabled !== "true") return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
+        if (settings.welcomeEnabled === false) return client.log(client.textes.get("LOG_EVENT_MEMBER_JOIN_NO_NOTIFICATION"));
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
