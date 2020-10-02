@@ -114,6 +114,8 @@ client.db_memberLog = new Enmap({
 
 
 
+// client.cron_exemple = new cron.CronJob('00 00 06 * * 5', () => { // Le vendredi à 6h00
+// });
 
 client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
     client.activityCheck();
@@ -143,9 +145,6 @@ client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous
 client.cron_gameList = new cron.CronJob('15 00 */1 * * *', () => { // Tous les heures après 15sec
     client.gamesJoinListPost();
     client.gamesInfosPost();
-});
-client.cron_ArkDWD = new cron.CronJob('00 00 06 * * 5', () => { // Tous les 2 jours à 6h00
-    client.gameServersArkDWD();
 });
 
 client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les jours à 14h30 et 20sec

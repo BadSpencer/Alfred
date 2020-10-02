@@ -424,45 +424,6 @@ module.exports = (client) => {
     }
   };
 
-  client.gameServersArkDWD = async (serverID = "*", message = null) => {
-    const guild = client.guilds.cache.get(client.config.guildID);
-    let settings = client.db_settings.get(guild.id);
-
-    if (serverID == "*") {
-      let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
-      for (const server of servers) {
-        let response = await client.gameRconQuery(server, "destroywilddinos");
-        if (response.includes("All Wild Dinos Destroyed")) {
-          client.modLog(client.textes.get("GAMESERVER_ARK_DWD_SUCCESS", server));
-          if (message !== null) {
-            successMessage(client.textes.get("GAMESERVER_ARK_DWD_SUCCESS", server), message.channel);
-          }
-        } else {
-          client.modLog(client.textes.get("GAMESERVER_ARK_DWD_ERROR", serverID));
-          if (message !== null) {
-            errorMessage(client.textes.get("GAMESERVER_ARK_DWD_ERROR", serverID), message.channel);
-          }
-        }
-      }
-    } else {
-      let server = await client.db_gameservers.get(serverID);
-      if (server) {
-        let response = await client.gameRconQuery(server, "destroywilddinos");
-        if (response.includes("All Wild Dinos Destroyed")) {
-          client.modLog(client.textes.get("GAMESERVER_ARK_DWD_SUCCESS", server));
-          if (message !== null) {
-            successMessage(client.textes.get("GAMESERVER_ARK_DWD_SUCCESS", server), message.channel);
-          }
-        } else {
-          client.modLog(client.textes.get("GAMESERVER_ARK_DWD_ERROR", serverID));
-          if (message !== null) {
-            errorMessage(client.textes.get("GAMESERVER_ARK_DWD_ERROR", serverID), message.channel);
-          }
-        }
-      }
-    }
-  };
-
   client.gameServersSetMaintenanceOn = async (serverID = "*") => {
     if (serverID == "*") {
       let servers = await client.db_gameservers.filterArray(server => server.gamename == "ARK: Survival Evolved");
