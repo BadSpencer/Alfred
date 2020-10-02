@@ -44,7 +44,7 @@ class guildMemberUpdateListener extends Listener {
                     if (newRole.id == roleMembers.id) {
                         client.memberLogMember(newMember.id);
                     }
-                    if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled == "true") {
+                    if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled === true) {
                         client.newMemberNotification(newMember);
                         client.newMemberWelcome(newMember);
                     }
