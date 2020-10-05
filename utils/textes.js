@@ -515,6 +515,42 @@ module.exports = class {
 
                 return `${member.displayName} à rejoint Casual Effect !`;
             },
+
+            EXP_CMD_REINIT_DESCRIPTION_CONTENT: `Réinitialisation de l'expérience`,
+            EXP_CMD_REINIT_DESCRIPTION_USAGE: `La commande se lance sans paramètre: \`!expreinit\`
+            
+            Attention: Cette commande réinitialise l'expérience de tous les membres du discord.`,
+        
+            EXP_CMD_REINIT_SUCCESS: (number) => {
+                return `L'expérience à été remise à zéro pour ${number} membres`;
+            },
+            EXP_CMD_ADD_DESCRIPTION_CONTENT: `Ajouter de l'expérience à un membre`,
+            EXP_CMD_ADD_DESCRIPTION_USAGE: `La commande se lance sans paramètre: \`!expadd\`
+            Elle peut aussi se lancer en spécifiant les paramètres: \`!expadd <ID membre> <montant exp>\``,
+            EXP_CMD_ADD_XPAMOUNT_PROMPT: `Quel est le montant d'expérience à ajouter ?`,
+            EXP_CMD_ADD_XPAMOUNT_RETRY: `Veuillez spécifier un nombre. Quel est le montant d'expérience à ajouter ?`,
+            EXP_CMD_ADD_SUCCESS: (userdata, xpamount) => {
+                return `${xpamount} points d'expérience ont été ajoutés ${userdata.displayName}. Il a désormais ${userdata.xp} points d'expérience et il est level ${userdata.level}`;
+            },
+
+            EXP_CMD_SET_DESCRIPTION_CONTENT: `Attribue un montant d'expérience à un membre`,
+            EXP_CMD_SET_DESCRIPTION_USAGE: `La commande se lance sans paramètre: \`!expset\`
+            Elle peut aussi se lancer en spécifiant les paramètres: \`!expset <ID membre> <montant exp>\``,
+            EXP_CMD_SET_XPTOTAL_PROMPT: `Quel est le nouveau montant total d'expérience ?`,
+            EXP_CMD_SET_XPTOTAL_RETRY: `Veuillez spécifier un nombre. Quel est le montant total d'expérience ?`,
+            EXP_CMD_SET_SUCCESS: (userdata) => {
+                return `${userdata.displayName} a désormais ${userdata.xp} points d'expérience et il est level ${userdata.level}`;
+            },
+
+            EXP_CMD_LVLSET_DESCRIPTION_CONTENT: `Attribue un level à un membre`,
+            EXP_CMD_LVLSET_DESCRIPTION_USAGE: `La commande se lance sans paramètre: \`!explvlset\`
+            Elle peut aussi se lancer en spécifiant les paramètres: \`!explvlset <ID membre> <level>\``,
+            EXP_CMD_LVLSET_LEVEL_PROMPT: `Quel est le nouveau level pour ce membre ?`,
+            EXP_CMD_LVLSET_LEVEL_RETRY: `Veuillez spécifier un nombre. Quel est le nouveau level pour ce membre ?`,
+            EXP_CMD_LVLSET_SUCCESS: (userdata) => {
+                return `${userdata.displayName} est désormais ${userdata.level} avec ${userdata.xp} points d'expérience`;
+            },
+
             EXP_LOG_ADDXP: (member, xp, reason) => {
                 return `${member.displayName} à gagné ${xp}xp (${reason})`;
             },
