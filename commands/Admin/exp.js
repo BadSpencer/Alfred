@@ -118,12 +118,8 @@ class expCommand extends Command {
                     );
                     if (memberMessages) {
                         for (const message of memberMessages) {
-                            if (!message.content.startsWith("https://tenor.com") && !message.content.startsWith("https://media.tenor.com")) {
-                                if (message.content.length > 150) {
-                                    userdata.xp += 100;
-                                } else {
+                            if (!message.content.startsWith("https://tenor.com") && !message.content.startsWith("https://media.tenor.com") && !message.content.startsWith("!")) {
                                     userdata.xp += 25;
-                                }
                             }
                         }
                         userdata.level = client.xpGetLevel(userdata.xp);
