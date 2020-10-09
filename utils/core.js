@@ -337,6 +337,7 @@ module.exports = (client) => {
         const settings = client.getSettings(guild);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
+        const roleGame = guild.roles.cache.get(game.roleID);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
         try {
@@ -350,6 +351,10 @@ module.exports = (client) => {
                 VIEW_CHANNEL: true,
                 CONNECT: false,
             });
+            await channel.createOverwrite(roleGame, {
+                VIEW_CHANNEL: true,
+                CONNECT: true,
+            });
         } catch (error) {
             client.log(error, "error");
         };
@@ -361,6 +366,7 @@ module.exports = (client) => {
         const settings = client.getSettings(guild);
         const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
+        const roleGame = guild.roles.cache.get(game.roleID);
         const gameCategory = guild.channels.cache.get(game.categoryID);
 
         try {
@@ -373,6 +379,10 @@ module.exports = (client) => {
             await channel.createOverwrite(roleEveryone, {
                 VIEW_CHANNEL: false,
                 CONNECT: false,
+            });
+            await channel.createOverwrite(roleGame, {
+                VIEW_CHANNEL: true,
+                CONNECT: true,
             });
         } catch (error) {
             client.log(error, "error");
