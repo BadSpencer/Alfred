@@ -52,7 +52,7 @@ class GameEditCommand extends Command {
     async exec(message, args) {
         let client = this.client;
 
-        if (!args.game[args.field]) return errorMessage(textes.get('ERROR_FIELD_NOT_FOUND', args.field), message.channel);
+        if (args.game[args.field] === undefined) return errorMessage(textes.get('ERROR_FIELD_NOT_FOUND', args.field), message.channel);
 
         if (args.field == "nbDaysInactive") {
             args.game[args.field] = parseInt(args.value);
