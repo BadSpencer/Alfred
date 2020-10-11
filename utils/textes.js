@@ -1256,6 +1256,13 @@ module.exports = class {
                 return `⚠️ Le jeu **${game.name}** n'a pas de salon "informations"`;
             },
 
+            MOD_NOTIF_AUTOMOD_DISCORDLINK: (message) => {
+                return `❗️ Message avec lien d'invitation Discord supprimé dans <#${message.channel.id}>
+                Auteur: <@${message.author.id}>
+                Contenu: 
+                ${message.cleanContent}`;
+            },
+
 
             AIDE_EMBED_TITLE_1: `Casual Effect: Aide en ligne`,
             AIDE_EMBED_DESCRIPTION_1: `Ce livret d'aide apporte des informations sur les commandes que je peux exécuter.
