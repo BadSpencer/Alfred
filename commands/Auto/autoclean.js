@@ -11,29 +11,31 @@ class AutoCleanCommand extends Command {
         });
     }
     condition(message) {
-        let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
-        let settings = client.db_settings.get(guild.id);
+        // let client = this.client;
+        // const guild = client.guilds.cache.get(client.config.guildID);
+        // let settings = client.db_settings.get(guild.id);
 
-        if (message.author.bot) return false;
-        if (message.channel.type == 'dm') return false;
-        if (message.channel.name == settings.gameJoinChannel) {
-            if (message.mentions.roles.size == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        // if (message.author.bot) return false;
+        // if (message.channel.type == 'dm') return false;
+        // if (message.channel.name == settings.gameJoinChannel) {
+        //     if (message.mentions.roles.size == 0) {
+        //         return true;
+        //     } else {
+        //         return false;
+        //     }
+        // } else {
+        //     return false;
+        // }
+
+        return false;
 
     }
 
 
     exec(message) {
-        let client = this.client;
+        // let client = this.client;
 
-        if (message.channel.type === 'text') message.delete();;
+        // if (message.channel.type === 'text') message.delete();;
 
     }
 
