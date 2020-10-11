@@ -29,6 +29,7 @@ class automodCommand extends Command {
 
     exec(message) {
         this.client.modLog(textes.get("MOD_NOTIF_AUTOMOD_DISCORDLINK", message));
+        message.author.send(textes.get("USER_NOTIF_AUTOMOD_DISCORDLINK", message));
         message.delete();
     }
 

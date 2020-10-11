@@ -1263,6 +1263,10 @@ module.exports = class {
                 ${message.cleanContent}`;
             },
 
+            USER_NOTIF_AUTOMOD_DISCORDLINK: (message) => {
+                return `Votre message dans <#${message.channel.id}> à été supprimé car il contenait un lien d'invitation discord. Ceci est contraire à notre <#règlement>.`;
+            },
+
 
             AIDE_EMBED_TITLE_1: `Casual Effect: Aide en ligne`,
             AIDE_EMBED_DESCRIPTION_1: `Ce livret d'aide apporte des informations sur les commandes que je peux exécuter.
