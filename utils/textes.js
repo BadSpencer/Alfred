@@ -533,6 +533,15 @@ module.exports = class {
                 return `${xpamount} points d'expérience ont été ajoutés ${userdata.displayName}. Il a désormais ${userdata.xp} points d'expérience et il est level ${userdata.level}`;
             },
 
+            EXP_CMD_SETCOEF_DESCRIPTION_CONTENT: `Modifier le coefficient d'expérience ⚠️`,
+            EXP_CMD_SETCOEF_DESCRIPTION_USAGE: `Commande de maintenance. 
+            ⚠️ Ne pas utiliser à moins de savoir ce que vous faites ⚠️`,
+            EXP_CMD_SETCOEF_COEF_PROMPT: `Quel est le nouveau coefficient d'expérience ?`,
+            EXP_CMD_SETCOEF_COEF_RETRY: `Veuillez spécifier un nombre. Quel est le nouveau coefficient d'expérience ?`,
+            EXP_CMD_SETCOEF_SUCCESS: (coef) => {
+                return `Le nouveau coefficient d'expérience est de ${coef}`;
+            },
+
             EXP_CMD_SET_DESCRIPTION_CONTENT: `Attribue un montant d'expérience à un membre`,
             EXP_CMD_SET_DESCRIPTION_USAGE: `La commande se lance sans paramètre: \`!expset\`
             Elle peut aussi se lancer en spécifiant les paramètres: \`!expset <ID membre> <montant exp>\``,
