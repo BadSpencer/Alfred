@@ -95,39 +95,27 @@ class expCommand extends Command {
                 await client.arrayToEmbed(expDetail, 20, `Expérience gagné jour par jour\n(Vocal/Jeu/Messages/Réactions reçues/Réactions données})`, message.channel);
 
                 break;
-
-            case "initbyage":
-                let memberExpLogAge = [];
-
-                for (const userdata of userdatas) {
-                    let now = +new Date;
-                    let nbDays = client.msToDays(now - userdata.joinedAt);
-                    userdata.xp = nbDays * 10;
-                    userdata.level = client.xpGetLevel(userdata.xp);
-                    memberExpLogAge.push(`${userdata.displayName}: **${userdata.level}** ${userdata.xp}`);
-                    // client.userdataSet(userdata);
-                }
-                await client.arrayToEmbed(memberExpLogAge, 20, `Initialisation Expérience\nExp = Nb jours ancienneté x 10`, message.channel);
-                break;
             case "initbymess":
                 let memberExpLogMess = [];
 
                 for (const userdata of userdatas) {
+                    let xp = 0;
+                    let level = 1;
                     let memberMessages = client.db_messageslogs.filterArray((record) =>
                         record.createdBy === userdata.id
                     );
                     if (memberMessages) {
                         for (const message of memberMessages) {
                             if (!message.content.startsWith("https://tenor.com") && !message.content.startsWith("https://media.tenor.com") && !message.content.startsWith("!")) {
-                                    userdata.xp += 25;
+                                    xp += 25;
                             }
                         }
-                        userdata.level = client.xpGetLevel(userdata.xp);
+                        level = client.xpGetLevel(userdata.xp);
                     } else {
-                        userdata.xp = 0;
-                        userdata.level = 1;
+                        xp = 0;
+                        level = 1;
                     }
-                    memberExpLogMess.push(`${userdata.displayName}: **${userdata.level}** ${userdata.xp}`);
+                    memberExpLogMess.push(`${userdata.displayName}: **${level}** ${xp}`);
                     // client.userdataSet(userdata);
                 }
                 await client.arrayToEmbed(memberExpLogMess, 20, `Initialisation Expérience\nExp = Nombre messages x 10`, message.channel);

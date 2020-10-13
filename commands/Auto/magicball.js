@@ -10,11 +10,22 @@ class magicballCommand extends Command {
     }
 
     regex(message) {
-        return /^[A,a]lfred(.*)crois tu que*/i;
+        return /^[A,a]lfred(.*)crois(.*)tu que*/i;
     }
 
-    exec(message, args) {
-        return message.channel.send(textes.get("MAGICBALL"));
+    async exec(message, args) {
+        let client = this.client;
+        let embed = new Discord.MessageEmbed();
+        
+
+        embed.setDescription(`⏳ Veuillez patienter...`);
+        let reponse = await message.channel.send(embed);
+        await client.sleep(2000);
+        embed.setDescription(`⏳ Je consulte ma boule magique...`);
+        reponse.edit(embed);
+        await client.sleep(4000);
+        embed.setDescription(`🔮 **${textes.get("MAGICBALL")}**`);
+        reponse.edit(embed);
     }
 }
 
