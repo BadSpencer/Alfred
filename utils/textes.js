@@ -36,7 +36,7 @@ module.exports = class {
                 return `Proposée par ${member.displayName}`;
             },
             
-            MAGICBALL_DESC_START: [
+            MAGICBALL_ACTION: [
                 "Je consulte les astres...",
                 "Les esprits communiquent avec moi...",
                 "Des visions me viennent...",
@@ -55,7 +55,7 @@ module.exports = class {
                 "Lancement des algorithmes d'analyse heuristique",
                 "Je vais prendre 'l'appel à un ami' Jean-Pierre"
             ],
-            MAGICBALL: [
+            MAGICBALL_REPONSES: [
                 "Le service est momentanément indisponible",
                 "La question est trop difficle",
                 "Je n'ai pas d'avis sur la question",
