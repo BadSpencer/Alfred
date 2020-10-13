@@ -21,10 +21,10 @@ class magicballCommand extends Command {
         embed.setDescription(`⏳ Veuillez patienter...`);
         let reponse = await message.channel.send(embed);
         await client.sleep(2000);
-        embed.setDescription(`⏳ Je consulte ma boule magique...`);
+        embed.setDescription(`⏳ ${textes.get("MAGICBALL_ACTION")}`);
         reponse.edit(embed);
         await client.sleep(4000);
-        embed.setDescription(`🔮 **${textes.get("MAGICBALL")}**`);
+        embed.setDescription(`👉 ${textes.get("MAGICBALL_REPONSES")}`);
         reponse.edit(embed);
     }
 }

@@ -110,7 +110,7 @@ class expCommand extends Command {
                                     xp += 25;
                             }
                         }
-                        level = client.xpGetLevel(userdata.xp);
+                        level = client.xpGetLevel(xp);
                     } else {
                         xp = 0;
                         level = 1;
