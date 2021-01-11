@@ -11,19 +11,21 @@ class DéCommand extends Command {
             args: [{
                 id: 'numFaces',
                 type: 'number',
-                prompt: {
-                    start: 'Combien de faces possède votre dé virtuel ?',
-                    retry: 'Hmmm, je m\'attendais à un nombre...',
-                    default: 6
-                }
+                default: 6,
+                // prompt: {
+                //     start: 'Combien de faces possède votre dé virtuel ?',
+                //     retry: 'Hmmm, je m\'attendais à un nombre...',
+                    
+                // }
             }, {
                 id: 'numTirages',
                 type: 'number',
-                prompt: {
-                    start: 'Combien de tirages souhaitez vous faire ?',
-                    retry: 'Hmmm, je m\'attendais à un nombre...',
-                    default: 1
-                }
+                default: 1,
+                // prompt: {
+                //     // start: 'Combien de tirages souhaitez vous faire ?',
+                //     retry: 'Hmmm, je m\'attendais à un nombre...',
+                //     default: 1
+                // }
             }, ],
             // command description
 
