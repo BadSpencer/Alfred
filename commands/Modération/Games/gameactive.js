@@ -55,27 +55,27 @@ class GameActiveCommand extends Command {
         let stateMsg = await message.channel.send(embedState);
 
 
-        // Catégorie
-        let gameCategory;
-        if (args.game.categoryID === "") {
-            state += `Catégorie: Création\n`;
-            gameCategory = await message.guild.channels.create(`${settings.gameCategoryPrefix}${args.game.name}`, {
-                type: "category"
-            });
-        } else {
-            state += `Catégorie: Réactivation\n`;
-            gameCategory = await message.guild.channels.cache.get(args.game.categoryID);
-            await gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`)
-        };
-        if (gameCategory) {
-            args.game.categoryID = gameCategory.id;
-            state += `Catégorie: ✅\n`;
+        // // Catégorie
+        // let gameCategory;
+        // if (args.game.categoryID === "") {
+        //     state += `Catégorie: Création\n`;
+        //     gameCategory = await message.guild.channels.create(`${settings.gameCategoryPrefix}${args.game.name}`, {
+        //         type: "category"
+        //     });
+        // } else {
+        //     state += `Catégorie: Réactivation\n`;
+        //     gameCategory = await message.guild.channels.cache.get(args.game.categoryID);
+        //     await gameCategory.setName(`${settings.gameCategoryPrefix}${args.game.name}`)
+        // };
+        // if (gameCategory) {
+        //     args.game.categoryID = gameCategory.id;
+        //     state += `Catégorie: ✅\n`;
 
-        } else {
-            state += `Catégorie: 🟥 Non disponible\n`;
-        };
-        stateMsg.edit(stateMessage(state));
-        await client.sleep(500);
+        // } else {
+        //     state += `Catégorie: 🟥 Non disponible\n`;
+        // };
+        // stateMsg.edit(stateMessage(state));
+        // await client.sleep(500);
 
 
 
@@ -118,7 +118,7 @@ class GameActiveCommand extends Command {
 
         let textChannel;
         if (args.game.textChannelID === "") {
-            textChannel = await message.guild.channels.create(`${settings.gameTextPrefix}discussions`, {
+            textChannel = await message.guild.channels.create(`${args.game.name}`, {
                 type: 'text'
             });
         } else {
@@ -134,7 +134,7 @@ class GameActiveCommand extends Command {
         stateMsg.edit(stateMessage(state));
         await client.sleep(500);
         if (textChannel) {
-            await textChannel.setParent(gameCategory);
+            // await textChannel.setParent(gameCategory);
             await client.sleep(500);
             await textChannel.createOverwrite(roleEveryone, {
                 CREATE_INSTANT_INVITE: false,
@@ -153,14 +153,14 @@ class GameActiveCommand extends Command {
                 MANAGE_WEBHOOKS: false
             });
             await client.sleep(500);
-            await textChannel.createOverwrite(gameRole, {
+            await textChannel.createOverwrite(roleMod, {
                 CREATE_INSTANT_INVITE: false,
                 MANAGE_CHANNELS: false,
                 ADD_REACTIONS: true,
                 VIEW_CHANNEL: true,
                 SEND_MESSAGES: true,
                 SEND_TTS_MESSAGES: true,
-                MANAGE_MESSAGES: false,
+                MANAGE_MESSAGES: true,
                 EMBED_LINKS: true,
                 ATTACH_FILES: true,
                 READ_MESSAGE_HISTORY: true,
@@ -192,108 +192,108 @@ class GameActiveCommand extends Command {
         await client.sleep(500);
 
 
-        let gameVoiceChannel = await message.guild.channels.create(`🔈${args.game.name}`, {
-            type: 'voice'
-        });
-        if (gameVoiceChannel) {
-            args.game.voiceChannelID = gameVoiceChannel.id;
-            state += `Salon Vocal: ✅\n`;
-        } else {
-            state += `Salon Vocal: 🟥 Non disponible\n`;
-        };
-        stateMsg.edit(stateMessage(state));
-        await client.sleep(500);
-        if (gameVoiceChannel) {
-            gameVoiceChannel.setParent(gameCategory);
-            await client.sleep(500);
-            gameVoiceChannel.createOverwrite(roleEveryone, {
-                VIEW_CHANNEL: false,
-                CONNECT: false,
-            });
-            await client.sleep(500);
-            gameVoiceChannel.createOverwrite(gameRole, {
-                VIEW_CHANNEL: true,
-                CONNECT: true,
-            });
-            await client.sleep(500);
-            gameVoiceChannel.createOverwrite(roleMembers, {
-                VIEW_CHANNEL: false,
-                CONNECT: false,
-            });
-            state += `Salon Vocal (perm): ✅\n`;
-        };
-        stateMsg.edit(stateMessage(state));
-        await client.sleep(500);
+        // let gameVoiceChannel = await message.guild.channels.create(`🔈${args.game.name}`, {
+        //     type: 'voice'
+        // });
+        // if (gameVoiceChannel) {
+        //     args.game.voiceChannelID = gameVoiceChannel.id;
+        //     state += `Salon Vocal: ✅\n`;
+        // } else {
+        //     state += `Salon Vocal: 🟥 Non disponible\n`;
+        // };
+        // stateMsg.edit(stateMessage(state));
+        // await client.sleep(500);
+        // if (gameVoiceChannel) {
+        //     gameVoiceChannel.setParent(gameCategory);
+        //     await client.sleep(500);
+        //     gameVoiceChannel.createOverwrite(roleEveryone, {
+        //         VIEW_CHANNEL: false,
+        //         CONNECT: false,
+        //     });
+        //     await client.sleep(500);
+        //     gameVoiceChannel.createOverwrite(gameRole, {
+        //         VIEW_CHANNEL: true,
+        //         CONNECT: true,
+        //     });
+        //     await client.sleep(500);
+        //     gameVoiceChannel.createOverwrite(roleMembers, {
+        //         VIEW_CHANNEL: false,
+        //         CONNECT: false,
+        //     });
+        //     state += `Salon Vocal (perm): ✅\n`;
+        // };
+        // stateMsg.edit(stateMessage(state));
+        // await client.sleep(500);
 
-        let infosChannel = await message.guild.channels.create(`${settings.gameInfosPrefix}informations`, {
-            type: 'text'
-        });
-        if (infosChannel) {
-            args.game.infosChannelID = infosChannel.id;
-            state += `Salon Informations: ✅\n`;
-        } else {
-            state += `Salon Informations: 🟥 Non disponible\n`;
-        };
-        stateMsg.edit(stateMessage(state));
-        if (infosChannel) {
-            await infosChannel.setParent(gameCategory);
-            await client.sleep(500);
-            await infosChannel.setPosition(1);
-            await client.sleep(500);
-            await infosChannel.createOverwrite(roleEveryone, {
-                CREATE_INSTANT_INVITE: false,
-                MANAGE_CHANNELS: false,
-                ADD_REACTIONS: false,
-                VIEW_CHANNEL: false,
-                SEND_MESSAGES: false,
-                SEND_TTS_MESSAGES: false,
-                MANAGE_MESSAGES: false,
-                EMBED_LINKS: false,
-                ATTACH_FILES: false,
-                READ_MESSAGE_HISTORY: false,
-                MENTION_EVERYONE: false,
-                USE_EXTERNAL_EMOJIS: false,
-                MANAGE_ROLES: false,
-                MANAGE_WEBHOOKS: false
-            });
-            await client.sleep(500);
-            await infosChannel.createOverwrite(gameRole, {
-                CREATE_INSTANT_INVITE: false,
-                MANAGE_CHANNELS: false,
-                ADD_REACTIONS: false,
-                VIEW_CHANNEL: true,
-                SEND_MESSAGES: false,
-                SEND_TTS_MESSAGES: false,
-                MANAGE_MESSAGES: false,
-                EMBED_LINKS: false,
-                ATTACH_FILES: false,
-                READ_MESSAGE_HISTORY: true,
-                MENTION_EVERYONE: false,
-                USE_EXTERNAL_EMOJIS: false,
-                MANAGE_ROLES: false,
-                MANAGE_WEBHOOKS: false
-            });
-            await client.sleep(500);
-            await infosChannel.createOverwrite(roleMembers, {
-                CREATE_INSTANT_INVITE: false,
-                MANAGE_CHANNELS: false,
-                ADD_REACTIONS: false,
-                VIEW_CHANNEL: true,
-                SEND_MESSAGES: false,
-                SEND_TTS_MESSAGES: false,
-                MANAGE_MESSAGES: false,
-                EMBED_LINKS: false,
-                ATTACH_FILES: false,
-                READ_MESSAGE_HISTORY: true,
-                MENTION_EVERYONE: false,
-                USE_EXTERNAL_EMOJIS: false,
-                MANAGE_ROLES: false,
-                MANAGE_WEBHOOKS: false
-            });
-            state += `Salon Informations (perm): ✅\n`;
-        };
-        stateMsg.edit(stateMessage(state));
-        await client.sleep(500);
+        // let infosChannel = await message.guild.channels.create(`${settings.gameInfosPrefix}informations`, {
+        //     type: 'text'
+        // });
+        // if (infosChannel) {
+        //     args.game.infosChannelID = infosChannel.id;
+        //     state += `Salon Informations: ✅\n`;
+        // } else {
+        //     state += `Salon Informations: 🟥 Non disponible\n`;
+        // };
+        // stateMsg.edit(stateMessage(state));
+        // if (infosChannel) {
+        //     await infosChannel.setParent(gameCategory);
+        //     await client.sleep(500);
+        //     await infosChannel.setPosition(1);
+        //     await client.sleep(500);
+        //     await infosChannel.createOverwrite(roleEveryone, {
+        //         CREATE_INSTANT_INVITE: false,
+        //         MANAGE_CHANNELS: false,
+        //         ADD_REACTIONS: false,
+        //         VIEW_CHANNEL: false,
+        //         SEND_MESSAGES: false,
+        //         SEND_TTS_MESSAGES: false,
+        //         MANAGE_MESSAGES: false,
+        //         EMBED_LINKS: false,
+        //         ATTACH_FILES: false,
+        //         READ_MESSAGE_HISTORY: false,
+        //         MENTION_EVERYONE: false,
+        //         USE_EXTERNAL_EMOJIS: false,
+        //         MANAGE_ROLES: false,
+        //         MANAGE_WEBHOOKS: false
+        //     });
+        //     await client.sleep(500);
+        //     await infosChannel.createOverwrite(gameRole, {
+        //         CREATE_INSTANT_INVITE: false,
+        //         MANAGE_CHANNELS: false,
+        //         ADD_REACTIONS: false,
+        //         VIEW_CHANNEL: true,
+        //         SEND_MESSAGES: false,
+        //         SEND_TTS_MESSAGES: false,
+        //         MANAGE_MESSAGES: false,
+        //         EMBED_LINKS: false,
+        //         ATTACH_FILES: false,
+        //         READ_MESSAGE_HISTORY: true,
+        //         MENTION_EVERYONE: false,
+        //         USE_EXTERNAL_EMOJIS: false,
+        //         MANAGE_ROLES: false,
+        //         MANAGE_WEBHOOKS: false
+        //     });
+        //     await client.sleep(500);
+        //     await infosChannel.createOverwrite(roleMembers, {
+        //         CREATE_INSTANT_INVITE: false,
+        //         MANAGE_CHANNELS: false,
+        //         ADD_REACTIONS: false,
+        //         VIEW_CHANNEL: true,
+        //         SEND_MESSAGES: false,
+        //         SEND_TTS_MESSAGES: false,
+        //         MANAGE_MESSAGES: false,
+        //         EMBED_LINKS: false,
+        //         ATTACH_FILES: false,
+        //         READ_MESSAGE_HISTORY: true,
+        //         MENTION_EVERYONE: false,
+        //         USE_EXTERNAL_EMOJIS: false,
+        //         MANAGE_ROLES: false,
+        //         MANAGE_WEBHOOKS: false
+        //     });
+        //     state += `Salon Informations (perm): ✅\n`;
+        // };
+        // stateMsg.edit(stateMessage(state));
+        // await client.sleep(500);
 
 
         args.game.actif = true;

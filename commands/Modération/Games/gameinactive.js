@@ -199,6 +199,7 @@ class GameInactiveCommand extends Command {
             stateMsg.edit(stateMessage(state));
         };
         args.game.infosChannelID = "";
+        args.game.infosMessageID = "";
         await client.sleep(500);
 
         const gameStatutChannel = message.guild.channels.cache.get(args.game.statusChannelID);

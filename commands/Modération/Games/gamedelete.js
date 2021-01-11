@@ -98,6 +98,7 @@ class GameInactiveCommand extends Command {
             const gameInfosChannel = message.guild.channels.cache.get(args.game.infosChannelID);
             if (gameInfosChannel) {
                 args.game.infosChannelID = "";
+                args.game.infosMessageID = "";
                 await gameInfosChannel.delete("Suppression du jeu");
                 state += `Salon infos: ✅\n`;
             } else {
@@ -123,6 +124,7 @@ class GameInactiveCommand extends Command {
             state += `Salon statut: aucun salon associé\n`;
         };
         stateMsg.edit(stateMessage(state));
+
 
 
         if (args.game.voiceChannelID != "") {
