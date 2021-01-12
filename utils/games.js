@@ -704,11 +704,11 @@ module.exports = (client) => {
 
 
     const guild = client.guilds.cache.get(client.config.guildID);
-    let activeGames = client.gamesGetActive(true);
+    let games = client.gamesGetActive(true);
 
     let activeGamesScores = [];
 
-    for (const game of activeGames) {
+    for (const game of games) {
       let gameRole = guild.roles.cache.get(game.roleID);
       if (!gameRole) return;
       client.log(`Score pour ${game.name}: ${client.gamesGetGameScore(game.id)}`);

@@ -786,6 +786,10 @@ module.exports = class {
             GAMES_GAME_LIST_OPTION_RETRY: `Cette option n'est pas valide.
             Options valides: 'tout, 'actif ou 'inactif'.`,
 
+            GAMES_GAME_SCORES_DESCRIPTION_CONTENT: `Affiche la liste des scores pour les jeux`,
+            GAMES_GAME_SCORES_DESCRIPTION_USAGE: `Lancez cette commande sans paramètre pour obtenir la liste des jeux qui ont un score supérieur à 0`,
+
+
             GAMES_GAME_PLAYER_DESCRIPTION_CONTENT: `Afficher les membres d'un jeu`,
             GAMES_GAME_PLAYER_DESCRIPTION_USAGE: `Lancez la commande sans paramètre et laissez-vous guider`,
             GAMES_GAME_PLAYER_GAME_PROMPT: `Pour quel **jeu** souhaitez vous afficher la liste des joueurs ?`,
