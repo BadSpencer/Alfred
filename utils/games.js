@@ -951,6 +951,7 @@ module.exports = (client) => {
     channel.send(embed)
   };
 
+  // Poste un message d'information pour un jeu si un salon information lié au jeu existe
   client.gamesInfosPost = async () => {
     const guild = client.getGuild();
     let games = client.gamesGetActive(true);
@@ -1004,8 +1005,6 @@ module.exports = (client) => {
     if (!games) return;
 
     let embed = new Discord.MessageEmbed();
-    let embedInfos = new Discord.MessageEmbed();
-
     let gameJoinMessage;
     if (settings.gameJoinMessage !== "") {
       await gameJoinChannel.messages.fetch(settings.gameJoinMessage)
@@ -1018,23 +1017,6 @@ module.exports = (client) => {
     } else {
       client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND"), "warn");
     }
-
-    let gameInfosLinkMessage;
-    if (settings.gameInfosLinkMessage !== "") {
-      await gameJoinChannel.messages.fetch(settings.gameInfosLinkMessage)
-        .then(message => gameInfosLinkMessage = message)
-        .catch(console.error);
-    };
-
-    if (gameInfosLinkMessage) {
-      client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_LOADED"), "debug");
-    } else {
-      client.log(client.textes.get("GAMES_LISTLINK_WARN_NOTFOUND"), "warn");
-    };
-
-
-
-
 
     let maxXP = gamesXP[0].xp;
 
@@ -1059,24 +1041,6 @@ module.exports = (client) => {
 
         game.currentScore = score;
         client.gamesUpdateGame(game);
-
-
-
-        // embedInfos.addField("\u200b", "\u200b", false);
-        let fieldDescription = `${game.name}`;
-        if (game.infosChannelID !== "") {
-          let gameinfosChannel = await guild.channels.cache.get(game.infosChannelID);
-          if (game.infosMessageID !== "") {
-            await gameinfosChannel.messages.fetch(game.infosMessageID)
-              .then(message => {
-                fieldDescription = `[**${game.name}**](${message.url})`;
-              })
-              .catch(error => {
-
-              });
-          }
-        }
-        embedInfos.addField("\u200b", `${fieldDescription}`, true);
       }
 
     }
@@ -1088,9 +1052,6 @@ module.exports = (client) => {
     embed.setFooter(footer);
     embed.setTimestamp();
     embed.setImage(`https://media.discordapp.net/attachments/599235210550181900/645313787376697344/ligne_horizontale_2F3136.png`);
-
-    embedInfos.setTitle(`Informations sur les jeux`);
-    embedInfos.setDescription(`Obtenez plus d'informations sur un jeu en cliquant sur son lien ci-dessous`);
 
     if (!gameJoinMessage) {
       await gameJoinChannel.send(embed).then(async msgSent => {
@@ -1113,16 +1074,6 @@ module.exports = (client) => {
       client.log(client.textes.get("GAMES_LIST_SUCCESS_UPDATED"))
     }
 
-    if (!gameInfosLinkMessage) {
-      await gameJoinChannel.send(embedInfos).then(async msgSent => {
-        settings.gameInfosLinkMessage = msgSent.id;
-        client.db_settings.set(guild.id, settings);
-      });
-      client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_CREATED"), "warn")
-    } else {
-      gameInfosLinkMessage.edit(embedInfos);
-      client.log(client.textes.get("GAMES_LISTLINK_SUCCESS_UPDATED"))
-    }
 
   };
 
