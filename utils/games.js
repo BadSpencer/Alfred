@@ -55,6 +55,18 @@ module.exports = (client) => {
     }
   };
 
+  client.gamesSearch = (phrase, toArray = false) => {
+    let searchString = client.gamesGetGameID(phrase);
+
+    if (toArray === false) {
+      return client.db_games.filter((rec) =>
+        rec.id.includes(searchString));
+    } else {
+      return client.db_games.filterArray((rec) =>
+      rec.id.includes(searchString));
+    }
+  };
+
   client.gamesGet = (phrase) => {
     let gameID = client.gamesGetGameID(phrase);
     let alias = phrase.toLowerCase();
@@ -105,6 +117,12 @@ module.exports = (client) => {
         gameList.sort(function (a, b) {
           return a.name - b.name;
         });
+        break;
+      default:
+        gameList = client.gamesSearch(option, true);
+        gameList.sort(function (a, b) {
+          return a.actif - b.actif;
+        }).reverse();
         break;
     }
 

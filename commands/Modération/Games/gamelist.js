@@ -19,7 +19,6 @@ class GameListCommand extends Command {
 
     async *args(message) {
         const option = yield {
-            type: ['tout', 'actif', 'inactif'],
             default: 'tout',
             prompt: {
                 retry: message => promptMessage(textes.get('GAMES_GAME_LIST_OPTION_RETRY')),
