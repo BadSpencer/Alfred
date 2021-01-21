@@ -15,7 +15,7 @@ class ListeCommand extends Command {
         let client = this.client;
         client.gamesJoinListPost(true);
 
-        if (message.channel.type === "text") if (message.channel.type === "text") message.delete();;;
+        if (message.channel.type === "text") if (message.channel.type === "text") message.delete();
     }
 }
 

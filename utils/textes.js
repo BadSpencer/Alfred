@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const moment = require("moment");
 const textes = require('./textes');
-// This class is used to store languages strings
+
 
 module.exports = class {
     constructor() {
