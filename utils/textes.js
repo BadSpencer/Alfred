@@ -715,14 +715,28 @@ module.exports = class {
             GAMES_GAME_ACTIVE_SUCCESS: (game) => {
                 return `Le jeu  **${game.name}** à été activé.`;
             },
-            GAMES_GAME_ACTIVE_STATE_START: (game) => {
-                return `Activation du jeu **${game.name}**
-                `;
+            GAMES_GAME_ACTIVE_STATE_TITLE: (game) => {
+                return `Activation du jeu **${game.name}**`;
             },
+            GAMES_GAME_ACTIVE_STATE_ROLE_CREATE_START: `**Rôle** ⏳ En cours `,
+            GAMES_GAME_ACTIVE_STATE_ROLE_CREATE_SUCCESS: `**Rôle** ✅ Correctement créé`,
+            GAMES_GAME_ACTIVE_STATE_ROLE_CREATE_FAILED: `**Rôle** 🟥 Le rôle n'a pas été créé`,
+
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNEL_CREATE_START: `**Salon texte** ⏳ En cours `,
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNEL_CREATE_SUCCESS: `**Salon texte** ✅ Correctement créé`,
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNEL_CREATE_FAILED: `**Salon texte** 🟥 Le salon n'a pas été créé`,
+
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_START: `**Permissions salon texte** ⏳ En cours `,
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_SUCCESS: `**Permissions salon texte** ✅ Correctement créé`,
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_FAILED: `**Permissions salon texte** 🟥 Permiussions non appliquées`,
+
             GAMES_GAME_ACTIVE_CATEGORY_NOT_FOUND: `La catégorie enregistrée pour le jeu n'a pas été trouvée. Elle sera recréée`,
             GAMES_GAME_ACTIVE_TEXTCHANNEL_NOT_FOUND: `La salon de discussions enregistrée pour le jeu n'a pas été trouvé. Il sera recréé`,
             GAMES_GAME_ACTIVE_MAINROLE_ALREADY_EXIST: `Le rôle principal pour le jeu existe déjà (ce n'est pas normal). Il va être réutilisé`,
 
+            GAMES_GAME_ACTIVE_STATE_COMPLETE: (game) => {
+                return `Activation du jeu **${game.name}** complètée`;
+            },
 
             GAMES_GAME_CHAN_DESCRIPTION_CONTENT: `Ajouter un salon à un jeu`,
             GAMES_GAME_CHAN_DESCRIPTION_USAGE: `Description à écrire`,
@@ -1004,6 +1018,11 @@ module.exports = class {
             CMD_USERDATA_PROMPT: `Quel est l'ID du membre ?`,
             CMD_USERDATA_RETRY: `Je ne trouve aucun membre avec cet ID, êtes vous sûr de votre saisie ?`,
 
+            CMD_MEMBER_PROMPT: `Quel est le membre concerné par cette action ?`,
+            CMD_MEMBER_RETRY: `Je ne trouve aucun membre avec ce nom, êtes vous sûr de votre saisie ?
+            Essayez avec son ID`,
+
+
             CMD_STEAMID_PROMPT: `Quel est le SteamID du joueur ?`,
             CMD_STEAMID_RETRY: `Ce n'est pas un SteamID valide. Il doit commencer par "7656" et comporte 17 caractères en tout`,
 
@@ -1064,7 +1083,14 @@ module.exports = class {
             USER_INFOS_DESCRIPTION_CONTENT: `Informations sur un membre`,
             USER_INFOS_DESCRIPTION_USAGE: `Permet d'afficher les informations détaillées d'un membre`,
 
-
+            USER_NOTE_DESCRIPTION_CONTENT: `Ajouter une note sur un membre`,
+            USER_NOTE_DESCRIPTION_USAGE: `Permet d'ajouter une note de modération sur un membre`,
+            USER_NOTE_MEMBER_PROMPT: `Pour quel membre souhaitez-vous ajouter une note ?`,
+            USER_NOTE_NOTE_PROMPT: (member) => {
+                return `Ajouter une note pour **${member.displayName}**
+                
+                Veuillez saisir la note à ajouter`;
+            },
 
 
 
