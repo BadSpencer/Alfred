@@ -1018,9 +1018,13 @@ module.exports = (client) => {
       client.log(client.textes.get("GAMES_LIST_WARN_NOTFOUND"), "warn");
     }
 
+    let description = "";
+    if(games.size === 0) {
+      description = "Aucun jeu actif sur le serveur";
+    } else {
     let maxXP = gamesXP[0].xp;
 
-    let description = "";
+
     for (const gameXP of gamesXP) {
 
       let game = client.gamesGet(gameXP.name);
@@ -1044,6 +1048,7 @@ module.exports = (client) => {
       }
 
     }
+  }
     let footer = (`Dernière mise à jour`);
 
     embed.setTitle(`Liste des jeux`);
