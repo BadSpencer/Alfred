@@ -38,9 +38,8 @@ class EmbedNewsCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.db_settings.get(guild.id);
-        let newsChannel = guild.channels.cache.find(c => c.name === settings.newsChannel);
-        let generalChannel = guild.channels.cache.find(c => c.name === settings.welcomeMemberChannel);
+        let newsChannel = guild.channels.cache.find(c => c.name === message.settings.newsChannel);
+        let generalChannel = guild.channels.cache.find(c => c.name === message.settings.welcomeMemberChannel);
     
         if (message.channel.type === 'text') message.delete();;
         let news = await client.embedShowChannel(args.embedID, newsChannel, true);

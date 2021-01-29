@@ -136,8 +136,6 @@ module.exports = (client) => {
     }
     client.embedShowChannel = async (embedID, channel, news = false) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        const settings = client.db_settings.get(guild.id);
-
 
         let postedMessage;
         let embed = client.db_embeds.get(embedID);
@@ -158,9 +156,16 @@ module.exports = (client) => {
             if (embed.showTitle == false) {
                 Embed.setTitle("");
             }
+            if (news) {
+            await channel.send("@here",Embed).then(msgSent => {
+                postedMessage = msgSent;
+                 });
+            } else {
             await channel.send(Embed).then(msgSent => {
                 postedMessage = msgSent;
-            });
+                 });
+            }
+           
         } else {
             errorMessage(client.textes.get("EMBED_NOT_FOUND", embedID), channel);
         }
