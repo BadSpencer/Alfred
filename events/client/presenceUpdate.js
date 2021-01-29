@@ -9,12 +9,15 @@ class presenceUpdateListener extends Listener {
     }
 
     async exec(oldPresence, newPresence) {
+        // Ne pas vérifier la présence des bots
+        if (newPresence.member.user.bot) return;
+
         let client = this.client;
         client.log(`EVENT: ${this.emitter}/${this.event} pour ${newPresence.member.displayName}`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
-        if (newPresence.member.bot) return;
+        
 
         let newPresenceGame = null;
         if (newPresence) {
