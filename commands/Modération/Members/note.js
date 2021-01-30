@@ -40,6 +40,7 @@ class NoteCommand extends Command {
                 start: message => promptMessage(textes.get("USER_NOTE_NOTE_PROMPT", member))
             }
         };
+        
         return {
             member,
             note
