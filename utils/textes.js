@@ -727,7 +727,7 @@ module.exports = class {
             GAMES_GAME_ACTIVE_STATE_TEXTCHANNEL_CREATE_FAILED: `**Salon texte** 🟥 Le salon n'a pas été créé`,
 
             GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_START: `**Permissions salon texte** ⏳ En cours `,
-            GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_SUCCESS: `**Permissions salon texte** ✅ Correctement créé`,
+            GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_SUCCESS: `**Permissions salon texte** ✅ Effectué`,
             GAMES_GAME_ACTIVE_STATE_TEXTCHANNELPERM_CREATE_FAILED: `**Permissions salon texte** 🟥 Permiussions non appliquées`,
 
             GAMES_GAME_ACTIVE_CATEGORY_NOT_FOUND: `La catégorie enregistrée pour le jeu n'a pas été trouvée. Elle sera recréée`,
@@ -737,6 +737,45 @@ module.exports = class {
             GAMES_GAME_ACTIVE_STATE_COMPLETE: (game) => {
                 return `Activation du jeu **${game.name}** complètée`;
             },
+
+            GAMES_GAME_INACTIVE_STATE_TITLE: (game) => {
+                return `Désactivation du jeu **${game.name}**`;
+            },
+            GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_START: `**Suppression Rôle** ⏳ En cours `,
+            GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_SUCCESS: `**Suppression Rôle** ✅ Correctement supprimé`,
+            GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_NO_ROLE: `**Suppression Rôle** ⚠️ Aucun rôle associé `,
+            GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_NOT_FOUND: (roleId) => {
+                return `**Suppression Rôle** 🟥 Rôle ${roleId} non trouvé`;
+            },
+            GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_FAILED: `**Suppression Rôle** 🟥 Le rôle n'a pas été créé`,
+
+
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_START: `**Renommer salon** ⏳ En cours `,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_SUCCESS: `**Renommer salon** ✅ Correctement renommé`,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_NO_ID: `**Renommer salon** ⚠️ Aucun salon associé `,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_NOT_FOUND: (channelId) => {
+                return `**Renommer salon** 🟥 Salon ${channelId} non trouvé`;
+            },
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_FAILED: `**Renommer salon** 🟥 Le salon n'a pas été renommé`,
+
+
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_START: `**Perm. everyone salon** ⏳ En cours `,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_SUCCESS: `**Perm. everyone salon** ✅ Correctement effectué`,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_NO_ID: `**Perm. everyone salon** ⚠️ Aucun salon associé `,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_NOT_FOUND: (channelId) => {
+                return `**Perm. everyone salon** 🟥 Salon ${channelId} non trouvé`;
+            },
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_FAILED: `**Perm. everyone salon** 🟥 Le rôle n'a pas été créé`,
+
+
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_START: `**Perm. membres salon** ⏳ En cours `,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_SUCCESS: `**Perm. membres salon** ✅ Correctement effectué`,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_NO_ID: `**Perm. membres salon** ⚠️ Aucun salon associé `,
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_NOT_FOUND: (channelId) => {
+                return `**Perm. membres salon** 🟥 Salon ${channelId} non trouvé`;
+            },
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_FAILED: `**Perm. membres salon** 🟥 Le rôle n'a pas été créé`,            
+
 
             GAMES_GAME_CHAN_DESCRIPTION_CONTENT: `Ajouter un salon à un jeu`,
             GAMES_GAME_CHAN_DESCRIPTION_USAGE: `Description à écrire`,

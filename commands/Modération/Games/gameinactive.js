@@ -31,219 +31,142 @@ class GameInactiveCommand extends Command {
             }
         };
 
-
-
         return { game };
     }
 
     async exec(message, args) {
         let client = this.client;
         const guild = client.getGuild();
-        const settings = client.getSettings(guild);
 
         if (!args.game.actif) {
-            return errorMessage(textes.get("GAMES_GAME_INACTIVE_ERROR_GAME_INACTIVE", args.game.name), message.channel);
+            return errorMessage(textes.get("GAMES_GAME_INACTIVE_ERROR_GAME_INACTIVE", args.game), message.channel);
         };
 
         const roleEveryone = guild.roles.cache.find(r => r.name == "@everyone");
-        const roleMembers = guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleMembers = guild.roles.cache.find(r => r.name == message.settings.memberRole);
+
+        let states = [];
+        states.push(textes.get("GAMES_GAME_INACTIVE_STATE_TITLE", args.game));
+        states.push(" ");
+        states.push(textes.get("GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_START")); // states[2]
+        states.push(textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_START")); // states[3]
+        states.push(textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_START")); // states[4]
+        states.push(textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_START")); // states[5]
+
 
         let state = textes.get("GAMES_GAME_INACTIVE_STATE_START", args.game);
-        let embedState = stateMessage(state);
-        let stateMsg = await message.channel.send(embedState);
+
+        let stateMsg = await message.channel.send(stateMessage(states.join("\n")));
 
         if (args.game.roleID !== "") {
             const gameRole = message.guild.roles.cache.get(args.game.roleID);
             if (gameRole) {
                 gameRole.delete()
                     .then(deleted => {
-                        state += `Rôle principal: ✅ supprimé\n`;
-                        stateMsg.edit(stateMessage(state));
+                        states[2] = textes.get("GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_SUCCESS");
                         args.game.roleID = "";
                     })
                     .catch(error => {
-                        state += `Rôle principal: 🟥 ${error}\n`;
-                        stateMsg.edit(stateMessage(state));
+                        states[2] = textes.get("GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_FAILED");
                         args.game.roleID = "";
                     });
             } else {
-                state += `Rôle principal: 🟥 non trouvé (${args.game.roleID})\n`;
-                stateMsg.edit(stateMessage(state));
+                states[2] = textes.get("GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_NOT_FOUND", args.game.roleID);
                 args.game.roleID = "";
             };
         } else {
-            state += `Rôle principal: aucun rôle associé\n`;
-            stateMsg.edit(stateMessage(state));
+            states[2] = textes.get("GAMES_GAME_INACTIVE_STATE_ROLE_DELETE_NO_ROLE");
         };
+        stateMsg.edit(stateMessage(states.join("\n")));
         await client.sleep(500);
 
 
+        if (args.game.textChannelID !== "") {
+            const gameTextChannel = message.guild.channels.cache.get(args.game.textChannelID);
+            if (gameTextChannel) {
+                await client.sleep(1500);
+                gameTextChannel.setName(`🔒${gameTextChannel.name}`)
+                    .then(textChannel => {
+                        states[3] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_SUCCESS");
+                        stateMsg.edit(stateMessage(states.join("\n")));
 
-        const gamePlayRole = message.guild.roles.cache.get(args.game.playRoleID);
-        if (gamePlayRole) {
-            gamePlayRole.delete()
-                .then(deleted => {
-                    state += `Rôle "Joue à": ✅ supprimé\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Rôle "Joue à": 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
+                        textChannel.createOverwrite(roleEveryone, {
+                            CREATE_INSTANT_INVITE: false,
+                            MANAGE_CHANNELS: false,
+                            ADD_REACTIONS: false,
+                            VIEW_CHANNEL: false,
+                            SEND_MESSAGES: false,
+                            SEND_TTS_MESSAGES: false,
+                            MANAGE_MESSAGES: false,
+                            EMBED_LINKS: false,
+                            ATTACH_FILES: false,
+                            READ_MESSAGE_HISTORY: false,
+                            MENTION_EVERYONE: false,
+                            USE_EXTERNAL_EMOJIS: false,
+                            MANAGE_ROLES: false,
+                            MANAGE_WEBHOOKS: false
+                        })
+                            .then(textChannel => {
+                                states[4] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_SUCCESS");
+                                stateMsg.edit(stateMessage(states.join("\n")));
+
+                                gameTextChannel.createOverwrite(roleMembers, {
+                                    CREATE_INSTANT_INVITE: false,
+                                    MANAGE_CHANNELS: false,
+                                    ADD_REACTIONS: false,
+                                    VIEW_CHANNEL: false,
+                                    SEND_MESSAGES: false,
+                                    SEND_TTS_MESSAGES: false,
+                                    MANAGE_MESSAGES: false,
+                                    EMBED_LINKS: false,
+                                    ATTACH_FILES: false,
+                                    READ_MESSAGE_HISTORY: false,
+                                    MENTION_EVERYONE: false,
+                                    USE_EXTERNAL_EMOJIS: false,
+                                    MANAGE_ROLES: false,
+                                    MANAGE_WEBHOOKS: false
+                                })
+                                    .then(textChannel => {
+                                        states[5] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_SUCCESS");
+                                        stateMsg.edit(stateMessage(states.join("\n")));
+                                    })
+                                    .catch(error => {
+                                        states[5] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_FAILED");
+                                        stateMsg.edit(stateMessage(states.join("\n")));
+                                    });
+                            })
+                            .catch(error => {
+                                states[4] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_FAILED");
+                                stateMsg.edit(stateMessage(states.join("\n")));
+                            });
+                    })
+                    .catch(error => {
+                        states[3] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_FAILED");
+                        stateMsg.edit(stateMessage(states.join("\n")));
+                    });
+
+            } else {
+                states[3] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_NOT_FOUND", args.game.textChannelID);
+                states[4] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_NOT_FOUND", args.game.textChannelID);
+                states[5] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_NOT_FOUND", args.game.textChannelID);
+                args.game.textChannelID = "";
+                stateMsg.edit(stateMessage(states.join("\n")));
+            };
         } else {
-            state += `Rôle "Joue à": 🟥 non trouvé\n`;
-            stateMsg.edit(stateMessage(state));
+            states[3] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_RENAME_NO_ID");
+            states[4] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_EVERYONEPERM_NO_ID");
+            states[5] = textes.get("GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_NO_ID");
+            stateMsg.edit(stateMessage(states.join("\n")));
         }
-        args.game.playRoleID = "";
+        stateMsg.edit(stateMessage(states.join("\n")));
         await client.sleep(500);
 
-        const gameCategory = message.guild.channels.cache.get(args.game.categoryID);
-        if (gameCategory) {
-            gameCategory.setName(`🔒${settings.gameCategoryPrefix}${args.game.name}`)
-                .then(deleted => {
-                    state += `Catégorie: ✅ renommée\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Catégorie: 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
-        } else {
-            state += `Catégorie: 🟥 non trouvée\n`;
-            args.game.categoryID = "";
-            stateMsg.edit(stateMessage(state));
-        }
-        await client.sleep(500);
-
-        const gameTextChannel = message.guild.channels.cache.get(args.game.textChannelID);
-        if (gameTextChannel) {
-            gameTextChannel.setName(`🔒${settings.gameTextPrefix}discussions`)
-                .then(textChannel => {
-                    state += `Salon discussion: ✅ renommé\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Salon discussion: 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
-                await client.sleep(500);
-            gameTextChannel.createOverwrite(roleEveryone, {
-                CREATE_INSTANT_INVITE: false,
-                MANAGE_CHANNELS: false,
-                ADD_REACTIONS: false,
-                VIEW_CHANNEL: false,
-                SEND_MESSAGES: false,
-                SEND_TTS_MESSAGES: false,
-                MANAGE_MESSAGES: false,
-                EMBED_LINKS: false,
-                ATTACH_FILES: false,
-                READ_MESSAGE_HISTORY: false,
-                MENTION_EVERYONE: false,
-                USE_EXTERNAL_EMOJIS: false,
-                MANAGE_ROLES: false,
-                MANAGE_WEBHOOKS: false
-            })
-                .then(textChannel => {
-                    state += `Salon discussion: ✅ verrouillé pour Everyone\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Salon discussion: 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
-                await client.sleep(500);
-            gameTextChannel.createOverwrite(roleMembers, {
-                CREATE_INSTANT_INVITE: false,
-                MANAGE_CHANNELS: false,
-                ADD_REACTIONS: false,
-                VIEW_CHANNEL: false,
-                SEND_MESSAGES: false,
-                SEND_TTS_MESSAGES: false,
-                MANAGE_MESSAGES: false,
-                EMBED_LINKS: false,
-                ATTACH_FILES: false,
-                READ_MESSAGE_HISTORY: false,
-                MENTION_EVERYONE: false,
-                USE_EXTERNAL_EMOJIS: false,
-                MANAGE_ROLES: false,
-                MANAGE_WEBHOOKS: false
-            })
-                .then(textChannel => {
-                    state += `Salon discussion: ✅ verrouillé pour Membres\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Salon discussion: 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
-        } else {
-            state += `Salon discussion: 🟥 non trouvé\n`;
-            args.game.textChannelID = "";
-            stateMsg.edit(stateMessage(state));
-        };
-        await client.sleep(500);
-
-        const gameInfosChannel = message.guild.channels.cache.get(args.game.infosChannelID);
-        if (gameInfosChannel) {
-            gameInfosChannel.delete()
-                .then(deleted => {
-                    state += `Salon Informations: ✅ supprimé\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Salon Informations: 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
-        } else {
-            state += `Salon Informations: 🟥 non trouvé\n`;
-            stateMsg.edit(stateMessage(state));
-        };
-        args.game.infosChannelID = "";
-        args.game.infosMessageID = "";
-        await client.sleep(500);
-
-        const gameStatutChannel = message.guild.channels.cache.get(args.game.statusChannelID);
-        if (gameStatutChannel) {
-            gameStatutChannel.delete()
-                .then(deleted => {
-                    state += `Salon Statut: ✅ supprimé\n`;
-                    stateMsg.edit(stateMessage(state));
-                })
-                .catch(error => {
-                    state += `Salon Statut: 🟥 ${error}\n`;
-                    stateMsg.edit(stateMessage(state));
-                });
-        } else {
-            state += `Salon Statut: 🟥 non trouvé\n`;
-            stateMsg.edit(stateMessage(state));
-        };
-        args.game.statusChannelID = "";
-        await client.sleep(500);
-
-        const gameVoiceChannel = message.guild.channels.cache.get(args.game.voiceChannelID);
-        if (gameVoiceChannel) {
-            gameVoiceChannel.delete()
-            .then(deleted => {
-                state += `Salon Vocal: ✅ supprimé\n`;
-                stateMsg.edit(stateMessage(state));
-            })
-            .catch(error => {
-                state += `Salon Vocal: 🟥 ${error}\n`;
-                stateMsg.edit(stateMessage(state));
-            });
-        } else {
-            state += `Salon Vocal: 🟥 non trouvé\n`;
-            stateMsg.edit(stateMessage(state));
-        };
-        args.game.voiceChannelID = "";
-        await client.sleep(500);
 
         args.game.roleID = "";
         args.game.actif = false;
         args.game.emoji = "";
         client.db_games.set(args.game.id, args.game);
 
-        successMessage(textes.get('GAMES_GAME_INACTIVE_SUCCESS', args.game), message.channel);
         if (message.channel.type === 'text') message.delete();
     }
 
