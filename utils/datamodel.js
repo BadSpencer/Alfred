@@ -14,6 +14,7 @@ exports.tables = {
         "welcomeEnabled": true,
         "welcomeMemberChannel": "💬général",
         "welcomeMemberEnabled": true,
+        "gameAutoPrune": false,
         "newsChannel": "📢news",  
         "suggChannel": "💡suggestions",
         "freeVoiceChan": "➕ Créer salon",

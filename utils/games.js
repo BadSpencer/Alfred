@@ -63,7 +63,7 @@ module.exports = (client) => {
         rec.id.includes(searchString));
     } else {
       return client.db_games.filterArray((rec) =>
-      rec.id.includes(searchString));
+        rec.id.includes(searchString));
     }
   };
 
@@ -985,7 +985,7 @@ module.exports = (client) => {
           );
         }
 
-      }  else {
+      } else {
         client.log(`Salon information pour "${game.name}" non trouvé`, 'warn');
       }
     }
@@ -1019,36 +1019,36 @@ module.exports = (client) => {
     }
 
     let description = "";
-    if(games.size === 0) {
+    if (games.size === 0) {
       description = "Aucun jeu actif sur le serveur";
     } else {
-    let maxXP = gamesXP[0].xp;
+      let maxXP = gamesXP[0].xp;
 
 
-    for (const gameXP of gamesXP) {
+      for (const gameXP of gamesXP) {
 
-      let game = client.gamesGet(gameXP.name);
-      if (game) {
+        let game = client.gamesGet(gameXP.name);
+        if (game) {
 
-        let score = 0;
-        if (gameXP.xp > 0) {
-          score = Math.round(((gameXP.xp * 100) / maxXP) / 20);
+          let score = 0;
+          if (gameXP.xp > 0) {
+            score = Math.round(((gameXP.xp * 100) / maxXP) / 20);
+          }
+          if (gameXP.xp > 0 && score == 0) score = 1;
+
+          if (score == 5) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n`;
+          if (score == 4) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️⭐️\n`;
+          if (score == 3) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️\n`;
+          if (score == 2) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️\n`;
+          if (score == 1) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️\n`;
+          if (score == 0) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` 👻\n`;
+
+          game.currentScore = score;
+          client.gamesUpdateGame(game);
         }
-        if (gameXP.xp > 0 && score == 0) score = 1;
 
-        if (score == 5) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️⭐️⭐️\n`;
-        if (score == 4) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️⭐️\n`;
-        if (score == 3) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️⭐️\n`;
-        if (score == 2) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️⭐️\n`;
-        if (score == 1) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` ⭐️\n`;
-        if (score == 0) description += `${gameXP.emoji} **${game.name}** \`${gameXP.members}👤\` 👻\n`;
-
-        game.currentScore = score;
-        client.gamesUpdateGame(game);
       }
-
     }
-  }
     let footer = (`Dernière mise à jour`);
 
     embed.setTitle(`Liste des jeux`);
@@ -1466,11 +1466,16 @@ module.exports = (client) => {
   };
 
   client.gamesPurge = async () => {
-    const games = client.gamesGetActive();
-    for (const game of games) {
-      client.gamePurgeMembers(game[1], false);
+    const guild = client.getGuild();
+    const settings = client.getSettings(guild);
+
+    if (settings.gameAutoPrune) {
+      const games = client.gamesGetActive();
+      for (const game of games) {
+        client.gamePurgeMembers(game[1], false);
+      }
+      client.gamesJoinListPost();
     }
-    client.gamesJoinListPost();
   };
 
   client.gamealiasAdd = (alias, gameID) => {
