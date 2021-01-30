@@ -156,6 +156,7 @@ client.commandHandler.resolver.addType('game', (message, phrase) => {
     if (!phrase) return null;
     return client.gamesGet(phrase);
 });
+
 client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
     if (!phrase) return null;
 
@@ -165,6 +166,7 @@ client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
     }
     return phrase;
 });
+
 client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     if (!phrase) return null;
 
