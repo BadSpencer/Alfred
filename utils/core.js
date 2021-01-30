@@ -29,6 +29,9 @@ module.exports = (client) => {
 
     client.settingsCheck = () => {
         client.log(`Méthode: core/settingsCheck`, "debug");
+
+        client.datamodelCheckSettings();
+
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
@@ -216,7 +219,10 @@ module.exports = (client) => {
         if (presenceGame) {
             let game = client.gamesGet(presenceGame);
             if (game) {
+
+                if (member.roles.cache.has(game.roleID)) {
                 channelName = `🔊 ${game.name}`
+                }
             }
         }
         await member.voice.channel.setName(channelName);
@@ -872,6 +878,26 @@ module.exports = (client) => {
 
     client.sleep = async (milliseconds) => {
         return new Promise(resolve => setTimeout(resolve, milliseconds));
+    };
+
+    client.datamodelCheckSettings = () => {
+        const guild = client.guilds.cache.get(client.config.guildID);
+
+
+        client.log(`Vérification structure "settings"`, "debug");
+
+        let settingsModel = Object.assign({}, datamodel.tables.settings);
+        let setingsKeys = Object.keys(settingsModel);
+        let settings = client.db_settings.get(guild.id);
+
+        let settingsNew = settingsModel;
+        for (const key of setingsKeys) {
+            if (settings[key] !== undefined) {
+                settingsNew[key] = settings[key];
+            };
+        };
+        client.db_settings.set(guild.id, settingsNew);
+
     };
 
     client.datamodelCheck = () => {
