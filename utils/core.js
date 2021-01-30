@@ -221,6 +221,14 @@ module.exports = (client) => {
         await member.voice.channel.createOverwrite(member, {
             MANAGE_CHANNELS: true,
         });
+
+        let freeVoiceChannel = Object.assign({}, datamodel.tables.freeVoiceChannels);
+
+        freeVoiceChannel.id = member.voice.channel.id;
+        freeVoiceChannel.createdAt = +new Date;
+        freeVoiceChannel.memberId = member.id;
+        client.db_freeVoiceChannels.set(member.voice.channel.id, freeVoiceChannel);
+
     };
 
     client.freeVoiceChannelCheck = () => {

@@ -112,6 +112,9 @@ client.db_memberLog = new Enmap({
     name: "memberLog"
 });
 
+client.db_freeVoiceChannels = new Enmap({
+    name: "freeVoiceChannels"
+});
 
 
 // client.cron_exemple = new cron.CronJob('00 00 06 * * 5', () => { // Le vendredi à 6h00

@@ -273,5 +273,10 @@ exports.tables = {
         "hits": 0,
         "xpGained": 0,
         "xpNoLimit": 0
+    },
+    freeVoiceChannels: {
+        "id": "",
+        "createdAt": "",
+        "memberId": ""
     }
 }

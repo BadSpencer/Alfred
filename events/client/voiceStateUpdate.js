@@ -66,14 +66,10 @@ class voiceStateUpdateListener extends Listener {
                         oldState.channel.name === settings.contactChannelInprogress) {
                         await client.contactVoiceChannelQuit(oldState.channel);
                     };
-                    if (oldState.channel.name !== settings.quietChannel &&
-                        oldState.channel.name !== settings.AFKChannel &&
-                        oldState.channel.name !== settings.modVoiceChannel &&
-                        oldState.channel.name !== settings.contactChannelFree &&
-                        oldState.channel.name !== settings.contactChannelWaiting &&
-                        oldState.channel.name !== settings.contactChannelInprogress) {
-                        oldState.channel.delete();
-                    };
+                    if (client.db_freeVoiceChannels.has(oldState.channel.id)) {
+                        oldState.channel.delete();  
+                        client.db_freeVoiceChannels.delete(oldState.channel.id);
+                    }
                 }
             }
         }
@@ -91,14 +87,10 @@ class voiceStateUpdateListener extends Listener {
                         oldState.channel.name === settings.contactChannelInprogress) {
                         await client.contactVoiceChannelQuit(oldState.channel);
                     };
-                    if (oldState.channel.name !== settings.quietChannel &&
-                        oldState.channel.name !== settings.AFKChannel &&
-                        oldState.channel.name !== settings.modVoiceChannel &&
-                        oldState.channel.name !== settings.contactChannelFree &&
-                        oldState.channel.name !== settings.contactChannelWaiting &&
-                        oldState.channel.name !== settings.contactChannelInprogress) {
-                        oldState.channel.delete();
-                    };
+                    if (client.db_freeVoiceChannels.has(oldState.channel.id)) {
+                        oldState.channel.delete();  
+                        client.db_freeVoiceChannels.delete(oldState.channel.id);
+                    }
                 }
             }
 
