@@ -17,6 +17,8 @@ class presenceUpdateListener extends Listener {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
+        const gamePlayRole =  this.commandHandler.resolver.type('role')(settings.playRole);
+
         
 
         let newPresenceGame = null;
@@ -46,7 +48,6 @@ class presenceUpdateListener extends Listener {
                 await client.usergameUpdateLastPlayed(gamePlayed, newPresence.member);
 
                 if (gamePlayed.actif) {
-                    let gamePlayRole = newPresence.member.guild.roles.cache.get(gamePlayed.playRoleID);
                     if (newPresence.member.roles.cache.has(gamePlayed.roleID)) {
                         await newPresence.member.roles.add(gamePlayRole);
 
@@ -68,8 +69,7 @@ class presenceUpdateListener extends Listener {
             let gamePlayed = client.gamesGet(oldPresenceGame);
             if (gamePlayed) {
                 if (gamePlayed.actif) {
-                    let gamePlayRole = oldPresence.member.guild.roles.cache.get(gamePlayed.playRoleID);
-                    if (oldPresence.member.roles.cache.has(gamePlayed.roleID)) {
+                    if (oldPresence.member.roles.cache.has(gamePlayRole.id)) {
                         await oldPresence.member.roles.remove(gamePlayRole);
                     }
                 }
@@ -90,10 +90,7 @@ class presenceUpdateListener extends Listener {
             }
             let gamePlayedNew = client.gamesGet(newPresenceGame);
             if (gamePlayedNew) {
-
                 await client.usergameUpdateLastPlayed(gamePlayedNew, newPresence.member);
-
-                let gamePlayRole = newPresence.member.guild.roles.cache.get(gamePlayedNew.playRoleID);
                 if (newPresence.member.roles.cache.has(gamePlayedNew.roleID)) {
                     await newPresence.member.roles.add(gamePlayRole);
                 }
