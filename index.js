@@ -34,7 +34,7 @@ require("./utils/users.js")(client);
 require("./utils/aide.js")(client);
 require("./utils/exp.js")(client);
 
-client.textes = new(require(`./utils/textes.js`));
+client.textes = new (require(`./utils/textes.js`));
 
 client.on('shardDisconnect', () => client.log('Connection perdue...', 'warn'))
     .on('shardReconnecting', () => {
@@ -168,9 +168,13 @@ client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
 client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     if (!phrase) return null;
 
-    const userdata = client.db_userdata.find(record => record.id == phrase);
-    if (userdata) {
-        return userdata;
+    const memberType = client.commandHandler.resolver.type('member');
+    const member = memberType(message, phrase);
+    if (member) {
+        const userdata = client.db_userdata.find(record => record.id == member.id);
+        if (userdata) {
+            return userdata;
+        }
     }
     return null;
 });
