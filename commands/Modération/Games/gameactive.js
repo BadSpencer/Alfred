@@ -179,6 +179,10 @@ class GameActiveCommand extends Command {
         states.push(textes.get("GAMES_GAME_ACTIVE_STATE_COPPLETE", args.game));
         stateMsg.edit(stateMessage(states.join("\n")));
 
+        client.gamesJoinListPost(true);
+
+        if (message.channel.type === 'text') message.delete();
+
   
     }
 

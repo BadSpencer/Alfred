@@ -167,6 +167,8 @@ class GameInactiveCommand extends Command {
         args.game.emoji = "";
         client.db_games.set(args.game.id, args.game);
 
+        client.gamesJoinListPost(true);
+
         if (message.channel.type === 'text') message.delete();
     }
 
