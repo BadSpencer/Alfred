@@ -17,6 +17,7 @@ exports.tables = {
         "newsChannel": "📢news",  
         "suggChannel": "💡suggestions",
         "freeVoiceChan": "➕ Créer salon",
+        "createdVoiceChan": "🔊 Salon vocal",
         "voiceChansCategory": "🔷Salons vocaux",
         "accueilCategory": "🔷Espace Public",
         "contactChannelFree": "👋contact",

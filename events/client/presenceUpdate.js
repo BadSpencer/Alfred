@@ -28,7 +28,7 @@ class presenceUpdateListener extends Listener {
             oldPresenceGame = await client.presenceGetGameName(oldPresence);
         }
 
-        // Ajout du jeu dans la base s'il n'ets pas trouvé
+        // Ajout du jeu dans la base s'il n'est pas trouvé
         if (newPresenceGame !== null) {
             let gamePlayed = client.gamesGet(newPresenceGame);
             if (!gamePlayed) {
@@ -52,7 +52,7 @@ class presenceUpdateListener extends Listener {
 
                         let voicechannel = client.channels.cache.get(newPresence.member.voice.channelID);
                         if (voicechannel) {
-                            if (voicechannel.name == "🔊 Salon vocal") {
+                            if (voicechannel.name === settings.createdVoiceChan) {
                                 voicechannel.setName(`🔊 ${gamePlayed.name}`);
                             }
                         }

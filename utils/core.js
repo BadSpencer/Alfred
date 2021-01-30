@@ -208,7 +208,9 @@ module.exports = (client) => {
 
     client.renameFreeVoiceChannel = async (member) => {
         client.log(`Méthode: renameFreeVoiceChannel`, "debug");
-        let channelName = client.textes.get("VOICE_NEW_VOICE_CHANNEL");
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
+        let channelName = settings.createdVoiceChan;
 
         let presenceGame = await client.presenceGetGameName(member.presence);
         if (presenceGame) {
