@@ -17,7 +17,7 @@ class presenceUpdateListener extends Listener {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
-        const gamePlayRole =  this.commandHandler.resolver.type('role')(settings.playRole);
+        const gamePlayRole =  client.commandHandler.resolver.type('role')(settings.playRole);
 
         
 
