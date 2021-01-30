@@ -1125,6 +1125,7 @@ module.exports = class {
             USER_NOTE_DESCRIPTION_CONTENT: `Ajouter une note sur un membre`,
             USER_NOTE_DESCRIPTION_USAGE: `Permet d'ajouter une note de modération sur un membre`,
             USER_NOTE_MEMBER_PROMPT: `Pour quel membre souhaitez-vous ajouter une note ?`,
+            USER_NOTE_MEMBER_RETRY: `Je n'arrive pas à trouver de membre aved ce nom. Essayer peut-être avec son ID`,
             USER_NOTE_NOTE_PROMPT: (member) => {
                 return `Ajouter une note pour **${member.displayName}**
                 

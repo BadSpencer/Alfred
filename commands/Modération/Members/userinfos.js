@@ -22,7 +22,7 @@ class PlayerSessCommand extends Command {
             description: {
                 content: textes.get('USER_INFOS_DESCRIPTION_CONTENT'),
                 usage: textes.get('USER_INFOS_DESCRIPTION_USAGE'),
-                examples: ['!ui', '!ui 291545597205544971']
+                examples: ['!ui', '!ui Bad Spencer', '!ui 291545597205544971']
             }
         });
     }
