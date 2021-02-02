@@ -83,7 +83,6 @@ class presenceUpdateListener extends Listener {
         if (oldPresenceGame !== null && newPresenceGame !== null) {
             let gamePlayedOld = client.gamesGet(oldPresenceGame);
             if (gamePlayedOld) {
-                let gamePlayRole = oldPresence.guild.roles.cache.get(gamePlayedOld.playRoleID);
                 if (oldPresence.member.roles.cache.has(gamePlayedOld.roleID)) {
                     await oldPresence.member.roles.remove(gamePlayRole);
                 }
