@@ -27,9 +27,8 @@
     "source-rcon-client": "0.0.10",
     "sqlite": "^3.0.6",
     "steam-server-status": "^1.0.2",
-    "ytdl-core": "^2.1.7"
+    "ytdl-core": "^4.4.5"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Pas de test\"",
     "start": "pm2 start index.js --name Alfred && clear && pm2 logs Alfred && --watch && echo \"Alfred démarré avec succès\"",
