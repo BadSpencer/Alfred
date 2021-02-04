@@ -157,7 +157,7 @@ module.exports = (client) => {
                 Embed.setTitle("");
             }
             if (news) {
-            await channel.send("@here",Embed).then(msgSent => {
+            await channel.send("@everyone",Embed).then(msgSent => {
                 postedMessage = msgSent;
                  });
             } else {
