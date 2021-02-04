@@ -25,7 +25,6 @@
     "sequelize": "^5.22.3",
     "sodium": "^3.0.2",
     "source-rcon-client": "0.0.10",
-    "sqlite": "^3.0.6",
     "steam-server-status": "^1.0.2",
     "ytdl-core": "^4.4.5"
   },
