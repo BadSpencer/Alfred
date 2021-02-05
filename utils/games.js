@@ -1222,9 +1222,7 @@ module.exports = (client) => {
     if (gameTextChannel) {
       const welcomeMessage = new Discord.MessageEmbed()
         .setColor(colors['darkgreen'])
-        .setTimestamp()
-        .setThumbnail(avatar)
-        .setDescription(client.textes.get("GAMES_JOIN_NOTIFICATION", game, member));
+        .setAuthor(`${member.displayName} à rejoint ${game.name}`, avatar)
       await gameTextChannel.send(welcomeMessage);
       if (gameInfosChannel) {
         const informationsMessage = new Discord.MessageEmbed()
@@ -1234,7 +1232,7 @@ module.exports = (client) => {
         await member.send(informationsMessage);
       };
     }
-    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
+    // client.modLog(client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
   };
 
   client.gamePlayerQuitNotification = async (game, member, type = 'QUIT') => {
@@ -1257,8 +1255,7 @@ module.exports = (client) => {
     if (gameTextChannel) {
       const notifChannelMessage = new Discord.MessageEmbed()
         .setColor(colors['yellow'])
-        .setTimestamp()
-        .setDescription(client.textes.get(channelNotification, game, member));
+        .setAuthor(`${member.displayName} à quitté ${game.name}`, avatar);
       gameTextChannel.send(notifChannelMessage);
     };
     if (type == "PURGE") {
@@ -1267,11 +1264,10 @@ module.exports = (client) => {
         .setTimestamp()
         .setDescription(client.textes.get('GAMES_PURGE_MEMBER_NOTIFICATION', game));
       member.send(notifMemberMessage);
-
     };
 
 
-    client.modLog(client.textes.get(modNotification, member, game));
+    // client.modLog(client.textes.get(modNotification, member, game));
 
   };
 
