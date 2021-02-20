@@ -591,7 +591,7 @@ module.exports = (client) => {
         commandsLogs.channelID = message.channel.id;
         commandsLogs.channelType = message.channel.type;
         commandsLogs.createdBy = message.author.id;
-        commandsLogs.createdByName = client.memberGetDisplayNameByID(message.author.id);;
+        commandsLogs.createdByName = client.memberGetDisplayNameByID(message.author.id);
         commandsLogs.createdAt = message.createdTimestamp;
         commandsLogs.createdDate = moment(message.createdAt).format('DD.MM.YYYY');
         commandsLogs.createdTime = moment(message.createdAt).format('HH:mm');
