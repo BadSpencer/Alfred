@@ -1345,6 +1345,12 @@ module.exports = class {
                 return `⚠️ **${member.displayName}** à été retiré du groupe du jeu ${game.name} pour inactivité.`;
             },
 
+            MOD_NOTIF_MEMBER_NEW_MESSAGE: (memberDisplayName, message) => {
+                return `✉️ Message de **${memberDisplayName}** pour le Staff
+                
+                **Message**: ${message}`;
+            },
+
             MOD_NOTIF_SERVER_VERSION_CHANGE: (server, oldVers, newVers) => {
                 return `⚠️ Le serveur **${server.servername}** à été mis à jour de la ${oldVers} vers la **${newVers}**`;
             },
