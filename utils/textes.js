@@ -1304,28 +1304,28 @@ module.exports = class {
             },
 
             MOD_NOTIF_USER_JOIN_CONTACT: (member) => {
-                return `⚠️ Membre **${member.displayName}** est dans le salon "contact". Il attend sûrement qu'un admin ou modo aille l'acceuillir !`;
+                return `⚠️ Membre **<@${member.id}>** est dans le salon "contact". Il attend sûrement qu'un admin ou modo aille l'acceuillir !`;
             },
             MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST: (member, game) => {
-                return `⚠️ **${member.displayName}** joue à ${game.name} mais n'est pas dans le groupe. Il à été notifié par message privé de l'existence du groupe.`;
+                return `⚠️ **<@${member.id}>** joue à ${game.name} mais n'est pas dans le groupe. Il à été notifié par message privé de l'existence du groupe.`;
             },
             MOD_NOTIF_SERVER_JOIN: (member) => {
-                return `✅ **${member.displayName}** à rejoint le serveur`;
+                return `✅ **<@${member.id}>** à rejoint le serveur`;
             },
             MOD_NOTIF_SERVER_JOIN_AGAIN: (member) => {
-                return `❗️✅ **${member.displayName}** à rejoint le serveur (c'est pas la première fois)`;
+                return `❗️✅ **<@${member.id}>** à rejoint le serveur (c'est pas la première fois)`;
             },
             MOD_NOTIF_SERVER_QUIT: (member) => {
-                return `❗️ **${member.displayName}** à quitté le serveur`;
+                return `❗️ **<@${member.id}>** à quitté le serveur`;
             },
             MOD_NOTIF_SERVER_KICK: (member) => {
-                return `❗️ **${member.displayName}** à été expulsé du serveur`;
+                return `❗️ **<@${member.id}>** à été expulsé du serveur`;
             },
             MOD_NOTIF_SERVER_BAN: (member) => {
-                return `❗️ **${member.displayName}** à été banni du serveur`;
+                return `❗️ **<@${member.id}>** à été banni du serveur`;
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
-                return `✅ **${member.displayName}** à été accepté et ajouté au groupe des membres`;
+                return `✅ **<@${member.id}>** à été accepté et ajouté au groupe des membres`;
             },
             MOD_NOTIF_MEMBER_NICK_CHANGE: (oldNick, newNick) => {
                 return `⚠️ **${oldNick}** à changé de pseudo, c'est désormais: **${newNick}**`;
@@ -1345,11 +1345,13 @@ module.exports = class {
                 return `⚠️ **${member.displayName}** à été retiré du groupe du jeu ${game.name} pour inactivité.`;
             },
 
-            MOD_NOTIF_MEMBER_NEW_MESSAGE: (memberDisplayName, message) => {
-                return `✉️ Message de **${memberDisplayName}** pour le Staff
+            MOD_NOTIF_MEMBER_NEW_MESSAGE: (user, message) => {
+                return `✉️ Message de **<@${user.id}>** pour le Staff
                 
                 **Message**: ${message}`;
             },
+            MOD_NOTIF_MEMBER_NEW_MESSAGE_CONFIRM: `Merci ! Votre message à bien été transmis au Staff.`,
+
 
             MOD_NOTIF_SERVER_VERSION_CHANGE: (server, oldVers, newVers) => {
                 return `⚠️ Le serveur **${server.servername}** à été mis à jour de la ${oldVers} vers la **${newVers}**`;

@@ -34,7 +34,8 @@ class MessageInvalidListener extends Listener {
         };
 
         if (message.channel.type === 'dm') {
-            client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_MESSAGE", client.memberGetDisplayNameByID(message.author.id), message.content));
+            client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NEW_MESSAGE", message.author, message.content));
+            message.author.send(client.textes.get("MOD_NOTIF_MEMBER_NEW_MESSAGE_CONFIRM"));
         };
 
 
