@@ -1190,17 +1190,17 @@ module.exports = (client) => {
   };
 
   client.usergameNotifyPlayerActiveGame = async (game, member) => {
-    const guild = client.getGuild();
-    const settings = client.getSettings(guild);
+    // const guild = client.getGuild();
+    // const settings = client.getSettings(guild);
 
-    const gameRole = guild.roles.cache.get(game.roleID);
-    const gameJoinChannel = await guild.channels.cache.find(c => c.name === settings.gameJoinChannel);
+    // const gameRole = guild.roles.cache.get(game.roleID);
+    // const gameJoinChannel = await guild.channels.cache.find(c => c.name === settings.gameJoinChannel);
 
-    const notification = new Discord.MessageEmbed()
-      .setColor(colors['darkviolet'])
-      .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
-    member.send(notification);
-    client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
+    // const notification = new Discord.MessageEmbed()
+    //   .setColor(colors['darkviolet'])
+    //   .setDescription(client.textes.get("GAMES_ACTIVE_NOTIFICATION", game, member, gameRole, gameJoinChannel));
+    // member.send(notification);
+    // client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST", member, game));
 
   };
 
