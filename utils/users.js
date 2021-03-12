@@ -412,21 +412,15 @@ module.exports = (client) => {
 
     client.userdataShowInfos = async (userdata, channel) => {
         const guild = client.guilds.cache.get(client.config.guildID);
-        let usersLastEvents = "";
+
 
         if (!userdata) return;
 
         if (channel) {
-
-
-
-
-
-
             const userInfosMessage = new Discord.MessageEmbed();
             userInfosMessage.setTitle(`${userdata.displayName}`);
             userInfosMessage.setColor(colors['darkorange']);
-            userInfosMessage.addField("Derniers évènements", usersLastEvents, false);
+
             // userInfosMessage.setThumbnail();
             // userInfosMessage.setDescription();
             channel.send(userInfosMessage);

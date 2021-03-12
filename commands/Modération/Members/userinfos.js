@@ -28,22 +28,25 @@ class PlayerSessCommand extends Command {
     }
 
     async *args(message) {
-        const userdata = yield {
-            type: 'userdata',
+        const member = yield {
+            type: "member",
             prompt: {
-                start: message => promptMessage(textes.get('CMD_USERDATA_PROMPT')),
-                retry: message => promptMessage(textes.get('CMD_USERDATA_RETRY'))
+                start: message => promptMessage(textes.get('USER_USERINFO_MEMBER_PROMPT')),
+                retry: message => promptMessage(textes.get('USER_USERINFO_MEMBER_RETRY'))
             }
         };
         return {
-            userdata
+            member
         };
     }
 
     async exec(message, args) {
         let client = this.client;
 
-        client.userdataShowInfos(args.userdata, message.channel);
+        const userdata = client.db_userdata.find(record => record.id == args.member.id);
+        if (userdata) {
+            client.userdataShowInfos(userdata, message.channel);
+        }        
 
         if (message.channel.type === 'text') message.delete();
     }

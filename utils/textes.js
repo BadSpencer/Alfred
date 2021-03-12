@@ -1131,6 +1131,8 @@ module.exports = class {
                 
                 Veuillez saisir la note à ajouter`;
             },
+            USER_USERINFO_MEMBER_PROMPT: `Pour quel membre souhaitez-vous afficher les informations ?`,
+            USER_USERINFO_MEMBER_RETRY: `Je n'arrive pas à trouver de membre aved ce nom. Essayer peut-être avec son ID`,
 
 
 
