@@ -296,21 +296,7 @@ module.exports = (client) => {
         client.db_memberLog.set(memberLogAdd.key, memberLogAdd);
     };
 
-    client.memberGetDisplayNameByID = (memberID) => {
-        const guild = client.getGuild();
 
-        let guildMember = guild.members.cache.get(memberID);
-        if (guildMember) {
-            return guildMember.displayName;
-        } else {
-            let userdata = client.userdataGet(memberID);
-            if (userdata) {
-                return userdata.displayName;
-            } else {
-                return memberID;
-            }
-        }
-    };
 
     client.userdataAddXP = (memberID, amount = 1) => {
         const guild = client.getGuild();

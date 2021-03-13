@@ -11,6 +11,22 @@ const textes = new (require("./textes.js"));
 const moment = require("moment");
 
 module.exports = (client) => {
+
+    client.memberGetDisplayNameByID = (memberID) => {
+        const guild = client.getGuild();
+
+        let guildMember = guild.members.cache.get(memberID);
+        if (guildMember) {
+            return guildMember.displayName;
+        } else {
+            let userdata = client.userdataGet(memberID);
+            if (userdata) {
+                return userdata.displayName;
+            } else {
+                return memberID;
+            }
+        }
+    };
     // Message d'annonce lorsqu'un utilisateur est passé membre
     client.newMemberNotification = async (member) => {
         client.log(textes.get("LOG_EVENT_MEMBER_JOIN_MEMBERS", member));
@@ -180,8 +196,6 @@ module.exports = (client) => {
         return membersXP;
     };
 
-
-
     client.memberListPost = async (channel, option = 'tout') => {
         let memberList = [];
         switch (option) {
@@ -201,9 +215,33 @@ module.exports = (client) => {
 
         let memberListOutput = [];
         for (const member of memberList) {
-                memberListOutput.push(`**${member.displayName}** (${member.id})`);
+            memberListOutput.push(`**${member.displayName}** (${member.id})`);
         };
         await client.arrayToEmbed(memberListOutput, 20, `Liste de membres`, channel);
     };
+
+    client.memberNotesPost = async (member, channel) => {
+
+        let memberLogs = client.db_memberLog.filterArray(memberLog =>
+            memberLog.memberID === member.id &&
+            memberLog.type === "NOTE");
+
+        let memberNotes = [];
+
+        memberLogs.sort(function (a, b) {
+            return a.createdAt - b.createdAt;
+        }).reverse();
+
+        if (memberLogs) {
+            for (const memberLog of memberLogs) {
+                memberNotes.push(`Le **${moment(memberLog.createdAt).format('DD.MM.YYYY')}** à **${moment(memberLog.createdAt).format('HH.mm')}** par  **${client.memberGetDisplayNameByID(memberLog.partyMemberID)}**`);
+                memberNotes.push(`${memberLog.note}`);
+                memberNotes.push(``);
+            }
+        }
+
+        await client.arrayToEmbed(memberNotes, 9, `Notes pour ${member.displayName}`, channel);
+
+    }
 
 }
