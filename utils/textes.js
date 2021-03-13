@@ -481,6 +481,10 @@ module.exports = class {
 
             USERDATA_USERBOARD_TITLE: `Informations utilsateurs`,
 
+            MEMBERS_LIST_DESCRIPTION_CONTENT: `Afficher la liste des membres`,
+            MEMBERS_LIST_DESCRIPTION_USAGE: `Lancez cette commande sans paramètre pour obtenir la liste des membres
+            Syntaxe: \`!member-list`,
+
             MEMBER_NEW_MEMBER_NOTIFICATION: (member) => {
                 return `**${member.displayName}** à été accepté en tant que membre de Casual Effect`;
             },

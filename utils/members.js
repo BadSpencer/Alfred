@@ -180,4 +180,30 @@ module.exports = (client) => {
         return membersXP;
     };
 
+
+
+    client.memberListPost = async (channel, option = 'tout') => {
+        let memberList = [];
+        switch (option) {
+            case 'tout':
+                memberList = client.userdataGetAll(true);
+                memberList.sort(function (a, b) {
+                    return a.username - b.username;
+                }).reverse();
+                break;
+            default:
+                memberList = client.gamesSearch(option, true);
+                memberList.sort(function (a, b) {
+                    return a.actif - b.actif;
+                }).reverse();
+                break;
+        }
+
+        let memberListOutput = [];
+        for (const member of memberList) {
+                memberListOutput.push(`**${member.displayName}** (${member.id})`);
+        };
+        await client.arrayToEmbed(memberListOutput, 20, `Liste de membres`, channel);
+    };
+
 }
