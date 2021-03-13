@@ -240,7 +240,11 @@ module.exports = (client) => {
             }
         }
 
-        await client.arrayToEmbed(memberNotes, 9, `Notes pour ${member.displayName}`, channel);
+        if (memberNotes.length < 0) {
+            await client.arrayToEmbed(memberNotes, 9, `Notes pour ${member.displayName}`, channel);
+        } else {
+            warnMessage(`Aucune note trouvée pour ${member.displayName}`, channel);
+        }
 
     }
 
