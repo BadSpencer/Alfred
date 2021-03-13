@@ -220,17 +220,22 @@ module.exports = (client) => {
         await client.arrayToEmbed(memberListOutput, 20, `Liste de membres`, channel);
     };
 
-    client.memberNotesPost = async (member, channel) => {
-
+    client.memberNotesGet = async (member) => {
         let memberLogs = client.db_memberLog.filterArray(memberLog =>
             memberLog.memberID === member.id &&
             memberLog.type === "NOTE");
 
-        let memberNotes = [];
-
         memberLogs.sort(function (a, b) {
             return a.createdAt - b.createdAt;
         }).reverse();
+
+        return memberLogs;
+    };
+
+    client.memberNotesPost = async (member, channel) => {
+
+        memberLogs = await client.memberNotesGet(member);
+        let memberNotes = [];
 
         if (memberLogs) {
             for (const memberLog of memberLogs) {
@@ -240,12 +245,12 @@ module.exports = (client) => {
             }
         }
 
-        if (memberNotes.length < 0) {
+        if (memberNotes.length > 0) {
             await client.arrayToEmbed(memberNotes, 9, `Notes pour ${member.displayName}`, channel);
         } else {
             warnMessage(`Aucune note trouvée pour ${member.displayName}`, channel);
         }
 
-    }
+    };
 
 }
