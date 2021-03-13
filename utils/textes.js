@@ -32,8 +32,8 @@ module.exports = class {
             COMMAND_BLOCKED_REASON_DM: "Cette commande n'est disponible que via message privé avec Alfred",
 
             SUGG_NOTIF_TITLE: "Suggestion...",
-            SUGG_NOTIF_PROPOSED_BY: (member) => {
-                return `Proposée par ${member.displayName}`;
+            SUGG_NOTIF_PROPOSED_BY: (displayName) => {
+                return `Proposée par ${displayName}`;
             },
             
             MAGICBALL_ACTION: [

@@ -47,7 +47,7 @@ class SuggestionCommand extends Command {
                     embed.setTitle(this.client.textes.get("SUGG_NOTIF_TITLE"));
                     embed.setThumbnail("https://i.imgur.com/VQHvSKr.png");
                     embed.setDescription(suggestion);
-                    embed.setFooter(this.client.textes.get("SUGG_NOTIF_PROPOSED_BY", message.author), avatar);
+                    embed.setFooter(this.client.textes.get("SUGG_NOTIF_PROPOSED_BY", this.client.memberGetDisplayNameByID(message.author.id)), avatar);
                     embed.setTimestamp();
                     message.channel.send(embed).then(async msgSent => {
                         await msgSent.react("💚");
@@ -88,7 +88,7 @@ class SuggestionCommand extends Command {
             embed.setTitle(client.textes.get("SUGG_NOTIF_TITLE"));
             embed.setThumbnail("https://i.imgur.com/VQHvSKr.png");
             embed.setDescription(args.suggestion);
-            embed.setFooter(client.textes.get("SUGG_NOTIF_PROPOSED_BY", member), avatar);
+            embed.setFooter(client.textes.get("SUGG_NOTIF_PROPOSED_BY", client.memberGetDisplayNameByID(message.author.id)), avatar);
             embed.setTimestamp();
 
             if (message.channel.type === 'text') message.delete();
