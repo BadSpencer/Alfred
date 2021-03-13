@@ -46,6 +46,8 @@ module.exports = (client) => {
                     } else {
                         client.log(`${presenceGame} non trouvé`, "debug");
                     }
+                } else {
+                    client.log(`${member.displayName} ne joue à aucun jeu`, "debug");
                 }
                 if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel && member.voice.channel.name !== settings.quietChannel) {
                     client.log(`${member.displayName} est dans un salon vocal -> gain d'XP`, "debug");
