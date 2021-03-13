@@ -44,6 +44,8 @@ class ReadyListener extends Listener {
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
 
+        client.gamesJoinListPost(true);
+
     }
 }
 
