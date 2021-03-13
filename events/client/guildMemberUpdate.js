@@ -88,6 +88,10 @@ class guildMemberUpdateListener extends Listener {
 
                         client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`,"debug");
 
+                        client.gamesJoinListPost();
+                        client.gamePlayerQuitNotification(game, newMember);
+                        client.memberLogGameQuit(newMember.id, game);
+
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {
                             client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,"debug");

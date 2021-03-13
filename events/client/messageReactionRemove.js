@@ -23,11 +23,6 @@ class MessageReactionRemoveListener extends Listener {
         client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
         if (user.bot) return;
 
-        let gameGroupsBlacklist = [
-            "000000000000000000" // Null
-            //'191993511543832577' // Albator
-        ];
-
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
         const member = guild.members.cache.get(user.id);
@@ -74,18 +69,11 @@ class MessageReactionRemoveListener extends Listener {
                 const gameRole = guild.roles.cache.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.cache.has(gameRole.id)) {
-                        if (gameGroupsBlacklist.includes(member.id)) {
-                            member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
-                        } else {
-                            client.gameQuitConfirmation(messageReaction, game, member);
-                        }
+                        member.roles.remove(gameRole);
+                        successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), member);
                     } else {
-                        if (gameGroupsBlacklist.includes(member.id)) {
-                            member.send(client.textes.get("GAMES_MEMBER_BLACKLISTED"));
-                        } else {
-                            member.roles.add(gameRole);
-                            successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
-                        }
+                        member.roles.add(gameRole);
+                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), member);
                     }
                 }
             } else {

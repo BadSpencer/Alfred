@@ -90,10 +90,11 @@ class MessageReactionAddListener extends Listener {
                 const gameRole = guild.roles.cache.get(game.roleID);
                 if (gameRole) {
                     if (member.roles.cache.has(gameRole.id)) {
-                        client.gameQuitConfirmation(messageReaction, game, member);
+                        member.roles.remove(gameRole);
+                        successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), member);
                     } else {
                         member.roles.add(gameRole);
-                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), messageReaction.message.channel);
+                        successMessage(client.textes.get(`GAMES_JOIN_SUCCESS`, game.name), member);
                     }
                 }
             } else {

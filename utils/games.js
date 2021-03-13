@@ -1317,37 +1317,6 @@ module.exports = (client) => {
     channel.send(embed);
   };
 
-  client.gameQuitConfirmation = async (messageReaction, game, member) => {
-    const guild = client.getGuild();
-    const settings = client.getSettings(guild);
-    const gameRole = guild.roles.cache.get(game.roleID);
-    let userdata = client.db_userdata.get(member.id);
-    let statusMessage = await questionMessage(client.textes.get("GAMES_JOIN_WANT_TO_QUIT", game.name), messageReaction.message.channel);
-    const responses = await messageReaction.message.channel.awaitMessages(msg => msg.author.id === member.id, {
-      max: 1,
-      time: 30000,
-    });
-
-    if (responses.size !== 1) {
-      warnMessage(client.textes.get("GAMES_QUIT_CANCEL"), messageReaction.message.channel);
-      return null;
-    }
-    const response = responses.first();
-
-    if (response.content == "oui") {
-      // response.delete();
-      member.roles.remove(gameRole);
-      successMessage(client.textes.get("GAMES_QUIT_SUCCESS", game.name), messageReaction.message.channel);
-      client.gamesJoinListPost();
-      client.gamePlayerQuitNotification(game, member);
-      client.memberLogGameQuit(member.id, game);
-    } else {
-      response.delete();
-      warnMessage(client.textes.get("COM_ACTION_ANNULLE"), messageReaction.message.channel);
-      return null;
-    }
-  }
-
   client.gameGetPlayerList = async (game) => {
     const guild = client.guilds.cache.get(client.config.guildID);
     const gameRole = guild.roles.cache.get(game.roleID);
