@@ -384,22 +384,26 @@ module.exports = class {
             MESSAGES_SERVER_JOIN: (member) => {
                 return `Monsieur, nous avons un visiteur, un certain **${member.displayName}** est à la porte.`;
             },
-            MESSAGES_SERVER_QUIT: (member) => {
+            MESSAGES_SERVER_QUIT: (user) => {
                 let textes = [
-                    `Adieu **${member.displayName}** tu vas nous manquer... ou pas !`,
-                    `RIP **${member.displayName}** petit Ange parti trop tôt`,
-                    `Ah Enfin ! On est débarrassé de **${member.displayName}**`,
-                    `Ah bah voilà ! Vous avez fait peur à **${member.displayName}** et il est parti !`,
-                    `T'as raison **${member.displayName}** ! Casse-toi ! Et qu'on ne te revoit plus jamais par ici`,
-                    `T'as les vrai, et puis t'as les mecs comme **${member.displayName}** qui se barrent sans rien dire.`
+                    `Adieu <@${user.id}> tu vas nous manquer... ou pas !`,
+                    `RIP <@${user.id}> petit Ange parti trop tôt`,
+                    `Ah Enfin ! On est débarrassé de <@${user.id}>`,
+                    `Ah bah voilà ! Vous avez fait peur à <@${user.id}> et il est parti !`,
+                    `T'as raison <@${user.id}> ! Casse-toi ! Et qu'on ne te revoit plus jamais par ici`,
+                    `T'as les vrai, et puis t'as les mecs comme <@${user.id}> qui se barrent sans rien dire.`
                 ]
                 return textes.random();
             },
-            MESSAGES_SERVER_KICK: (member, memberBy, raison) => {
-                return `**${member.displayName}** à été expulsé du serveur par **${memberBy.displayName}** pour la raison: ${raison}`;
+            MESSAGES_SERVER_KICK: (user, userBy, raison) => {
+                return `<@${user.id}> à été expulsé du serveur par <@${userBy.id}>
+                
+                **Raison**: ${raison}`;
             },
-            MESSAGES_SERVER_BAN: (member, memberBy, raison) => {
-                return `**${member.displayName}** à été banni du serveur par **${memberBy.displayName}** pour la raison: ${raison}`;
+            MESSAGES_SERVER_BAN: (user, userBy, raison) => {
+                return `<@${user.id}> à été banni du serveur par <@${userBy.id}>
+                
+                **Raison**: ${raison}`;
             },
             MESSAGES_NEW_MEMBER: (member) => {
                 let textes = [
@@ -1292,14 +1296,14 @@ module.exports = class {
             LOG_EVENT_USER_JOIN_SERVER: (member) => {
                 return `${member.displayName} à rejoint le serveur`;
             },
-            LOG_EVENT_USER_QUIT_SERVER: (member) => {
-                return `${member.displayName} à quitté le serveur`;
+            LOG_EVENT_USER_QUIT_SERVER: (user) => {
+                return `${user.tag} à quitté le serveur`;
             },
-            LOG_EVENT_USER_KICK_SERVER: (member) => {
-                return `${member.displayName} à été expulsé du serveur`;
+            LOG_EVENT_USER_KICK_SERVER: (user) => {
+                return `${user.tag} à été expulsé du serveur`;
             },
-            LOG_EVENT_USER_BAN_SERVER: (member) => {
-                return `${member.displayName} à été banni du serveur`;
+            LOG_EVENT_USER_BAN_SERVER: (user) => {
+                return `${user.tag} à été banni du serveur`;
             },
             LOG_EVENT_MEMBER_JOIN_MEMBERS: (member) => {
                 return `${member.displayName} à rejoint Casual Effect`;
@@ -1324,11 +1328,15 @@ module.exports = class {
             MOD_NOTIF_SERVER_QUIT: (member) => {
                 return `❗️ **<@${member.id}>** à quitté le serveur`;
             },
-            MOD_NOTIF_SERVER_KICK: (member) => {
-                return `❗️ **<@${member.id}>** à été expulsé du serveur`;
+            MOD_NOTIF_SERVER_KICK: (target, executor, reason) => {
+                return `❗️ **<@${target.id}>** à été expulsé du serveur par **<@${executor.id}>**
+                
+                **Raison**: ${reason}`;
             },
-            MOD_NOTIF_SERVER_BAN: (member) => {
-                return `❗️ **<@${member.id}>** à été banni du serveur`;
+            MOD_NOTIF_SERVER_BAN: (target, executor, reason) => {
+                return `❗️ **<@${target.id}>** à été banni du serveur par **<@${executor.id}>**
+                
+                **Raison**: ${reason}`;
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
                 return `✅ **<@${member.id}>** à été accepté et ajouté au groupe des membres`;

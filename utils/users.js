@@ -75,17 +75,17 @@ module.exports = (client) => {
         };
     };
     // Message d'annonce lorsque quelqu'un quitte le serveur
-    client.serverQuitNotification = async (member) => {
+    client.serverQuitNotification = async (user) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         let avatar;
-        if (!member.user.avatarURL()) {
+        if (!user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL();
+            avatar = user.avatarURL();
         }
 
         if (welcomeChannel) {
@@ -93,59 +93,62 @@ module.exports = (client) => {
             const welcomeMessage = new Discord.MessageEmbed()
                 .setTimestamp()
                 .setColor(colors['yellow'])
-                .setDescription(client.textes.get("MESSAGES_SERVER_QUIT", member))
-                .setFooter(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member), avatar);
+                .setDescription(client.textes.get("MESSAGES_SERVER_QUIT", user))
+                .setThumbnail('https://cdn.discordapp.com/attachments/713393174449619004/820327631647014982/1F64B-1F3FB_color.png')
+                .setFooter(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", user), avatar);
             welcomeChannel.send(welcomeMessage);
         };
 
 
 
     };
-    client.serverKickNotification = async (member, memberBy, raison) => {
+    client.serverKickNotification = async (user, userBy, raison) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         let avatar;
-        if (!member.user.avatarURL()) {
+        if (!user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL();
+            avatar = user.avatarURL();
         }
 
         if (welcomeChannel) {
 
             const welcomeMessage = new Discord.MessageEmbed()
                 .setTimestamp()
-                .setColor(colors['yellow'])
-                .setDescription(client.textes.get("MESSAGES_SERVER_KICK", member, memberBy, raison))
-                .setFooter(client.textes.get("LOG_EVENT_USER_KICK_SERVER", member), avatar);
+                .setColor(colors['darkred'])
+                .setDescription(client.textes.get("MESSAGES_SERVER_KICK", user, userBy, raison))
+                .setThumbnail('https://cdn.discordapp.com/attachments/713393174449619004/820326574707834880/274C_color.png')
+                .setFooter(client.textes.get("LOG_EVENT_USER_KICK_SERVER", user), avatar);
             welcomeChannel.send(welcomeMessage);
         } else {
             client.log("Salon acceuil non trouvé", "error");
         }
     };
-    client.serverBanNotification = async (member, memberBy, raison) => {
+    client.serverBanNotification = async (user, userBy, raison) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
         let welcomeChannel = guild.channels.cache.find(c => c.name === settings.welcomeChannel);
 
         let avatar;
-        if (!member.user.avatarURL()) {
+        if (!user.avatarURL()) {
             avatar = "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         } else {
-            avatar = member.user.avatarURL();
+            avatar = user.avatarURL();
         }
 
         if (welcomeChannel) {
 
             const banMessage = new Discord.MessageEmbed()
                 .setTimestamp()
-                .setColor(colors['yellow'])
-                .setDescription(client.textes.get("MESSAGES_SERVER_BAN", member, memberBy, raison))
-                .setFooter(client.textes.get("LOG_EVENT_USER_BAN_SERVER", member), avatar);
+                .setColor(colors['red'])
+                .setDescription(client.textes.get("MESSAGES_SERVER_BAN", user, userBy, raison))
+                .setThumbnail('https://cdn.discordapp.com/attachments/713393174449619004/820325906391498802/26D4_color.png')
+                .setFooter(client.textes.get("LOG_EVENT_USER_BAN_SERVER", user), avatar);
             welcomeChannel.send(banMessage);
         };
     };

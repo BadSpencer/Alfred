@@ -13,42 +13,56 @@ class guildMemberRemoveListener extends Listener {
         });
     }
 
-    exec(member) {
+    async exec(member) {
         let client = this.client;
         client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
 
-        client.log(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member));
-
-        let userdata = client.db_userdata.get(member.id);
-        let date = moment().format('DD.MM.YYYY');
-
-        let memberLogKick = client.db_memberLog.find(memberLog =>
-            memberLog.memberID === member.id &&
-            memberLog.createdDate === date &&
-            memberLog.type === "SERVERKICK");
-
-            
-        let memberLogBan = client.db_memberLog.find(memberLog =>
-            memberLog.memberID === member.id &&
-            memberLog.createdDate === date &&
-            memberLog.type === "SERVERBAN");
+        client.log(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member.user));
 
 
-            if (memberLogKick) {
-                client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", member));
-            };
+        const fetchedKickLogs = await member.guild.fetchAuditLogs({
+            limit: 1,
+            type: 'MEMBER_KICK',
+        });
+        const fetchedBanLogs = await member.guild.fetchAuditLogs({
+            limit: 1,
+            type: 'MEMBER_BAN_ADD',
+        });
 
-            if (memberLogBan) {
-                client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", member));
-            };
+        const kickLog = fetchedKickLogs.entries.first();
+        const banLog = fetchedBanLogs.entries.first();
 
-            if (!memberLogBan && !memberLogKick) {
-                client.serverQuitNotification(member);
-                client.memberLogServerQuit(member.id);
-                client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
+        const dateNow = +new Date;
+
+
+        if (banLog) {
+            const banDate = +new Date(banLog.createdAt);
+            const banDuration = dateNow - banDate;
+
+            if (banLog.target.id === member.id && banDuration < 10000) {
+                client.serverBanNotification(banLog.target, banLog.executor, banLog.reason);
+                client.memberLogBan(kickLog.target.id, kickLog.executor.id, kickLog.reason);
+                client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", kickLog.target, kickLog.executor, kickLog.reason));
+                return
             }
+        }
+        if (kickLog) {
+            const kickDate = +new Date(kickLog.createdAt);
+            const kickDuration = dateNow - kickDate;
 
+            if (kickLog.target.id === member.id && kickDuration < 10000) {
+                client.serverKickNotification(kickLog.target, kickLog.executor, kickLog.reason);
+                client.memberLogKick(kickLog.target.id, kickLog.executor.id, kickLog.reason);
+                client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", kickLog.target, kickLog.executor, kickLog.reason));
+                return
+            }
+        }
+        client.memberLogServerQuit(member.id);
+        client.serverQuitNotification(kickLog.target, kickLog.executor, kickLog.reason);
+        client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
     }
+
+
 }
 
 module.exports = guildMemberRemoveListener;
