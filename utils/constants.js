@@ -19,5 +19,28 @@ exports.images = {
         17: "https://i.imgur.com/ioQO6le.png",
         18: "https://i.imgur.com/qWHIAnX.png",
         19: "https://i.imgur.com/v532waw.png"
+    },
+    lvlth: {
+        1: 'https://i.imgur.com/sIuaSit.png',
+        2: 'https://i.imgur.com/i9ySV5r.png',
+        3: 'https://i.imgur.com/EhbOmKu.png',
+        4: 'https://i.imgur.com/3vylvJ5.png',
+        5: 'https://i.imgur.com/03DeNvk.png',
+        6: 'https://i.imgur.com/Sy5uiA9.png',
+        7: 'https://i.imgur.com/opaOnWk.png',
+        8: 'https://i.imgur.com/mxjPugh.png',
+        9: 'https://i.imgur.com/rYLAY1E.png',
+        10: 'https://i.imgur.com/emcNflV.png',
+        11: 'https://i.imgur.com/Y2HIhf2.png',
+        12: 'https://i.imgur.com/gsqHRKY.png',
+        13: 'https://i.imgur.com/WwLb7eP.png',
+        14: 'https://i.imgur.com/wuFzcDK.png',
+        15: 'https://i.imgur.com/C1rBhyi.png',
+        16: 'https://i.imgur.com/FmDH5i0.png',
+        17: 'https://i.imgur.com/yWScBOg.png',
+        18: 'https://i.imgur.com/aTu8tQ4.png',
+        19: 'https://i.imgur.com/Wnq7Vya.png',
+        20: 'https://i.imgur.com/Wnq7Vya.png',
+        21: 'https://i.imgur.com/Wnq7Vya.png'
     }
 }

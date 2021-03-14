@@ -215,10 +215,7 @@ module.exports = (client) => {
                 break;
         }
 
-        
-
         let dateNow = +new Date;
-
 
         let memberList = [];
         let memberListOutput = [];
@@ -246,10 +243,10 @@ module.exports = (client) => {
             let member = guild.members.cache.get(userdata.id);
             if (member) {
                 memberListline.actif = true;
-                
+
             } else {
                 memberListline.actif = false;
-                
+
             }
             memberList.push(memberListline);
         };
@@ -283,6 +280,15 @@ module.exports = (client) => {
 
         return memberLogs;
     };
+
+    client.memberNotesCount = async (memberID) => {
+        let memberNotesLogs = await client.memberNotesGet(memberID);
+        if (memberNotesLogs) {
+            return memberNotesLogs.length;
+        } else {
+            return 0;
+        }
+    }
 
     client.memberNotesPost = async (member, channel) => {
 

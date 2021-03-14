@@ -296,8 +296,6 @@ module.exports = (client) => {
         client.db_memberLog.set(memberLogAdd.key, memberLogAdd);
     };
 
-
-
     client.userdataAddXP = (memberID, amount = 1) => {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);

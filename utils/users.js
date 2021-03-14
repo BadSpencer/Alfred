@@ -170,13 +170,13 @@ module.exports = (client) => {
 
     client.userdataSearch = (phrase, toArray = false) => {
         if (toArray === false) {
-          return client.db_userdata.filter((rec) =>
-            rec.displayName.includes(searchString));
+            return client.db_userdata.filter((rec) =>
+                rec.displayName.includes(searchString));
         } else {
-          return client.db_userdata.filterArray((rec) =>
-            rec.displayName.includes(searchString));
+            return client.db_userdata.filterArray((rec) =>
+                rec.displayName.includes(searchString));
         }
-      };
+    };
 
     client.userdataUserboard = async (message) => {
         const guild = client.guilds.cache.get(client.config.guildID);
@@ -423,19 +423,27 @@ module.exports = (client) => {
 
     };
 
-    client.userdataShowInfos = async (userdata, channel) => {
+    client.userdataShowInfos = async (userdata, channel, showModInfos = false) => {
         const guild = client.guilds.cache.get(client.config.guildID);
+        const member = guild.members.cache.get(userdata.id);
 
+        
 
         if (!userdata) return;
 
         if (channel) {
             const userInfosMessage = new Discord.MessageEmbed();
-            userInfosMessage.setTitle(`${userdata.displayName}`);
+            userInfosMessage.setAuthor(userdata.displayName, member.user.avatarURL())
             userInfosMessage.setColor(colors['darkorange']);
-
-            // userInfosMessage.setThumbnail();
-            // userInfosMessage.setDescription();
+            userInfosMessage.setTitle(`ID: ${userdata.id}`)
+            userInfosMessage.setThumbnail(`${constants.images.lvlth[userdata.level]}`)
+            userInfosMessage.addField(`XP: ${userdata.xp}`, '\u200B', true);
+            userInfosMessage.addField(`Karma: ${userdata.karma}`, '\u200B', true);
+            if (showModInfos) {
+                let notesCount = await client.memberNotesCount(userdata.id);
+                userInfosMessage.addField(`Notes: ${notesCount}`, `!note ${member.user.tag}`, true);
+            }
+            userInfosMessage.setDescription(`Description`)
             channel.send(userInfosMessage);
         };
     };

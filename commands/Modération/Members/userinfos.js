@@ -30,6 +30,7 @@ class PlayerSessCommand extends Command {
     async *args(message) {
         const member = yield {
             type: "member",
+            match: 'rest',
             prompt: {
                 start: message => promptMessage(textes.get('USER_USERINFO_MEMBER_PROMPT')),
                 retry: message => promptMessage(textes.get('USER_USERINFO_MEMBER_RETRY'))
@@ -45,10 +46,8 @@ class PlayerSessCommand extends Command {
 
         const userdata = client.db_userdata.find(record => record.id == args.member.id);
         if (userdata) {
-            client.userdataShowInfos(userdata, message.channel);
+            client.userdataShowInfos(userdata, message.channel, true);
         }        
-
-        if (message.channel.type === 'text') message.delete();
     }
 
 }
