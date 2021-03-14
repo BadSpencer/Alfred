@@ -434,19 +434,22 @@ module.exports = (client) => {
         if (channel) {
             let memberGames = client.gamesGetForMember(userdata.id);
             const userInfosMessage = new Discord.MessageEmbed();
+            let dateNow = +new Date;
 
             let listeJeux = memberGames.map(rec => rec.name).join(`\n`);
+            if (listeJeux == '') {
+                listeJeux = 'Aucun jeu';
+            }
             userInfosMessage.setAuthor(userdata.displayName, member.user.avatarURL())
             userInfosMessage.setColor(colors['darkorange'])
             userInfosMessage.setTitle(`ID: ${userdata.id}`)
             userInfosMessage.setThumbnail(`${constants.images.lvlth[userdata.level]}`)
-            userInfosMessage.addField(`Jeux`, `${listeJeux}`, true);
-            userInfosMessage.addField(`Points`, `XP: ${userdata.xp}\nKarma: ${userdata.karma}`, true);
+            userInfosMessage.addField(`📅 Arrivée`, `Le ${userdata.joinedDate}\n${moment.duration(userdata.joinedAt - dateNow).locale("fr").humanize(true)}`, true);
+            userInfosMessage.addField(`🎮 Jeux`, `${listeJeux}`, true);
+            userInfosMessage.addField(`📊 Points`, `XP: ${userdata.xp}\nKarma: ${userdata.karma}`, true);
             if (showModInfos) {
                 let notesCount = await client.memberNotesCount(userdata.id);
-                if (notesCount > 0) {
-                    userInfosMessage.addField(`Notes: ${notesCount}`, `!note ${member.user.tag}`, false);
-                }
+                userInfosMessage.addField(`🟪 Modération`, `Notes: ${notesCount}\nAvert.: ${userdata.warn}`, true);
             }
             userInfosMessage.setDescription(`Description`)
             channel.send(userInfosMessage);

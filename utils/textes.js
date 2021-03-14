@@ -1150,7 +1150,13 @@ module.exports = class {
             USER_USERINFO_MEMBER_RETRY: `Je n'arrive pas à trouver de membre aved ce nom. Essayer peut-être avec son ID`,
 
 
-
+            USER_WARN_DESCRIPTION_CONTENT: `Avertir un membre`,
+            USER_WARN_DESCRIPTION_USAGE: `Permet d'aavertir un membre avec ajout d'une note`,
+            USER_WARN_NOTE_PROMPT: (member) => {
+                return `Donner un avertissment pour **${member.displayName}**
+                
+                Veuillez saisir la note à ajouter à votre avertissement`;
+            },
             // EMBED
             EMBED_CREATION_SUCCESS: (titre, id) => {
                 return `L'embed **${titre}** (${id}) à été correctement créé`;
@@ -1353,6 +1359,11 @@ module.exports = class {
             },
             MOD_NOTIF_MEMBER_NEW_NOTE: (member, partyMember, note) => {
                 return `⚠️ Une nouvelle note à été ajoutée pour **${member.displayName}** par **${partyMember.displayName}**
+                
+                **Note**: ${note}`;
+            },
+            MOD_NOTIF_MEMBER_NEW_WARN: (member, partyMember, note) => {
+                return `⚠️ Un avertissement à été ajouté pour <@${member.id}> par <@${partyMember.id}>
                 
                 **Note**: ${note}`;
             },
