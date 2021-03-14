@@ -151,8 +151,10 @@ exports.tables = {
         "joinedAt": "",
         "joinedDate": "",
         "joinedTime": "",
+        "warn": 0,
         "level": 0,
         "xp": 0,
+        "karma": 0,
         "logs": []
     },
     userdataLogs: {

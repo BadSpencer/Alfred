@@ -168,6 +168,16 @@ module.exports = (client) => {
         client.db_userdata.set(userdata.id, userdata);
     };
 
+    client.userdataSearch = (phrase, toArray = false) => {
+        if (toArray === false) {
+          return client.db_userdata.filter((rec) =>
+            rec.displayName.includes(searchString));
+        } else {
+          return client.db_userdata.filterArray((rec) =>
+            rec.displayName.includes(searchString));
+        }
+      };
+
     client.userdataUserboard = async (message) => {
         const guild = client.guilds.cache.get(client.config.guildID);
 

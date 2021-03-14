@@ -196,33 +196,85 @@ module.exports = (client) => {
         return membersXP;
     };
 
+
     client.memberListPost = async (channel, option = 'tout') => {
-        let memberList = [];
+        const guild = client.getGuild();
+        let userdataList = [];
         switch (option) {
             case 'tout':
-                memberList = client.userdataGetAll(true);
-                memberList.sort(function (a, b) {
+                userdataList = client.userdataGetAll(true);
+                userdataList.sort(function (a, b) {
                     return a.username - b.username;
                 }).reverse();
                 break;
             default:
-                memberList = client.gamesSearch(option, true);
-                memberList.sort(function (a, b) {
+                userdataList = client.userdataSearch(option, true);
+                userdataList.sort(function (a, b) {
                     return a.actif - b.actif;
                 }).reverse();
                 break;
         }
 
+        
+
+        let dateNow = +new Date;
+
+
+        let memberList = [];
         let memberListOutput = [];
-        for (const member of memberList) {
-            memberListOutput.push(`**${member.displayName}** (${member.id})`);
+        for (const userdata of userdataList) {
+            let memberListline = {
+                "id": "",
+                "actif": false,
+                "displayName": "",
+                "memberSince": "",
+                "warn": 0,
+                "level": 0,
+                "xp": 0,
+                "karma": 0,
+                "notes": 0
+            };
+            let memberLogs = await client.memberNotesGet(userdata.id);
+            memberListline.id = userdata.id;
+            memberListline.displayName = client.memberGetDisplayNameByID(userdata.id);
+            memberListline.memberSince = moment.duration(userdata.joinedAt - dateNow).locale("fr").humanize(true);
+            memberListline.warn = userdata.warn;
+            memberListline.level = userdata.level;
+            memberListline.xp = userdata.xp;
+            memberListline.karma = userdata.karma;
+            memberListline.notes = memberLogs.length;
+            let member = guild.members.cache.get(userdata.id);
+            if (member) {
+                memberListline.actif = true;
+                
+            } else {
+                memberListline.actif = false;
+                
+            }
+            memberList.push(memberListline);
         };
+
+        memberList.sort(function (a, b) {
+            return a.xp - b.xp;
+        }).reverse();
+
+        for (memberListline of memberList) {
+
+            if (memberListline.actif) {
+                memberListOutput.push(`◽️**${memberListline.displayName}** nous a rejoint ${memberListline.memberSince}`);
+                memberListOutput.push(`◾️Level:**${memberListline.level}** XP:**${memberListline.xp}** Karma:**${memberListline.karma}** Avert:**${memberListline.warn}** Notes:**${memberListline.notes}**`);
+            } else {
+                // memberListOutput.push(`◾️${memberListline.displayName} (${memberListline.id})`);
+            }
+
+
+        }
         await client.arrayToEmbed(memberListOutput, 20, `Liste de membres`, channel);
     };
 
-    client.memberNotesGet = async (member) => {
+    client.memberNotesGet = async (memberID) => {
         let memberLogs = client.db_memberLog.filterArray(memberLog =>
-            memberLog.memberID === member.id &&
+            memberLog.memberID === memberID &&
             memberLog.type === "NOTE");
 
         memberLogs.sort(function (a, b) {
@@ -234,7 +286,7 @@ module.exports = (client) => {
 
     client.memberNotesPost = async (member, channel) => {
 
-        memberLogs = await client.memberNotesGet(member);
+        let memberLogs = await client.memberNotesGet(member.id);
         let memberNotes = [];
 
         if (memberLogs) {

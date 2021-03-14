@@ -31,6 +31,7 @@ module.exports = (client) => {
         client.log(`Méthode: core/settingsCheck`, "debug");
 
         client.datamodelCheckSettings();
+        client.datamodelCheckUserdata();
 
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
@@ -899,6 +900,29 @@ module.exports = (client) => {
         client.db_settings.set(guild.id, settingsNew);
 
     };
+
+    client.datamodelCheckUserdata = () => {
+        const guild = client.guilds.cache.get(client.config.guildID);
+
+
+        client.log(`Vérification structure "userdata"`, "debug");
+
+        let userdataModel = Object.assign({}, datamodel.tables.userdata);
+        let userdataKeys = Object.keys(userdataModel);
+        let userdatas = client.userdataGetAll(true);
+
+        for (userdata of userdatas) {
+            let userdataNew = userdataModel;
+            for (const key of userdataKeys) {
+                if (userdata[key] !== undefined) {
+                    userdataNew[key] = userdata[key];
+                };
+            };
+            client.db_userdata.set(userdata.id, userdataNew);
+        }      
+
+    };
+
 
     client.datamodelCheck = () => {
         const guild = client.guilds.cache.get(client.config.guildID);
