@@ -26,19 +26,10 @@ class PurgeCommand extends Command {
     }
 
     async exec(message, args) {
-        let client = this.client;
-
         if (args.nbdel < 1 || args.nbdel > 100) return message.util.send('Le nombre de messages à supprimer doit être compris entre 1 et 100.');
         await message.delete()
-
         const deleted = await message.channel.messages.fetch({ limit: args.nbdel });
-        await message.channel.bulkDelete(deleted)
-            .then(deletedMsg => {
-                successMessage(client.textes.get("PURGE_DELETE_SUCCESS", args.nbdel, deletedMsg.size), message.channel);
-            })
-            .catch(error => {
-                errorMessage(client.textes.get("PURGE_DELETE_ERROR", error), message.channel);
-            });
+        await message.channel.bulkDelete(deleted);
     }
 }
 
