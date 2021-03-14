@@ -427,21 +427,26 @@ module.exports = (client) => {
         const guild = client.guilds.cache.get(client.config.guildID);
         const member = guild.members.cache.get(userdata.id);
 
-        
+
 
         if (!userdata) return;
 
         if (channel) {
+            let memberGames = client.gamesGetForMember(userdata.id);
             const userInfosMessage = new Discord.MessageEmbed();
+
+            let listeJeux = memberGames.map(rec => rec.name).join(`\n`);
             userInfosMessage.setAuthor(userdata.displayName, member.user.avatarURL())
-            userInfosMessage.setColor(colors['darkorange']);
+            userInfosMessage.setColor(colors['darkorange'])
             userInfosMessage.setTitle(`ID: ${userdata.id}`)
             userInfosMessage.setThumbnail(`${constants.images.lvlth[userdata.level]}`)
-            userInfosMessage.addField(`XP: ${userdata.xp}`, '\u200B', true);
-            userInfosMessage.addField(`Karma: ${userdata.karma}`, '\u200B', true);
+            userInfosMessage.addField(`Jeux`, `${listeJeux}`, true);
+            userInfosMessage.addField(`Points`, `XP: ${userdata.xp}\nKarma: ${userdata.karma}`, true);
             if (showModInfos) {
                 let notesCount = await client.memberNotesCount(userdata.id);
-                userInfosMessage.addField(`Notes: ${notesCount}`, `!note ${member.user.tag}`, true);
+                if (notesCount > 0) {
+                    userInfosMessage.addField(`Notes: ${notesCount}`, `!note ${member.user.tag}`, false);
+                }
             }
             userInfosMessage.setDescription(`Description`)
             channel.send(userInfosMessage);

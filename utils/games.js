@@ -55,6 +55,22 @@ module.exports = (client) => {
     }
   };
 
+  client.gamesGetForMember = (memberID) => {
+    const guild = client.guilds.cache.get(client.config.guildID);
+    let activeGames = client.gamesGetActive(true);
+    let member = guild.members.cache.get(memberID);
+
+    let memberGames = [];
+    if (member) {
+      for (game of activeGames) {
+        if (member.roles.cache.has(game.roleID)) {
+          memberGames.push(game);
+        }
+      }
+    }
+    return memberGames;
+  };
+
   client.gamesSearch = (phrase, toArray = false) => {
     let searchString = client.gamesGetGameID(phrase);
 
