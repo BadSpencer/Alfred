@@ -58,7 +58,7 @@ class guildMemberRemoveListener extends Listener {
             }
         }
         client.memberLogServerQuit(member.id);
-        client.serverQuitNotification(kickLog.target, kickLog.executor, kickLog.reason);
+        client.serverQuitNotification(member.user);
         client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
     }
 
