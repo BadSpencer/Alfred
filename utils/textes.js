@@ -391,7 +391,7 @@ module.exports = class {
                     `Ah Enfin ! On est débarrassé de <@${user.id}>`,
                     `Ah bah voilà ! Vous avez fait peur à <@${user.id}> et il est parti !`,
                     `T'as raison <@${user.id}> ! Casse-toi ! Et qu'on ne te revoit plus jamais par ici`,
-                    `T'as les vrai, et puis t'as les mecs comme <@${user.id}> qui se barrent sans rien dire.`
+                    `T'as les vrais, et puis t'as les mecs comme <@${user.id}> qui se barrent sans rien dire.`
                 ]
                 return textes.random();
             },

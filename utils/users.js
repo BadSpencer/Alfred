@@ -183,113 +183,19 @@ module.exports = (client) => {
 
         let userdatas = client.userdataGetAll(true);
 
-        let usersTopXP = usersTopIn = usersTopOut = userdatas;
-
-        let userstop5Desc = "";
-        let userstopInDesc = "";
-        let userstopOutDesc = "";
-        let usersLastEvents = "";
-        usersTopXP.sort(function (a, b) {
-            return a.xp - b.xp;
-        });
-        usersTopXP.reverse();
-        usersTopXP = usersTopXP.slice(0, 5);
-        for (const user of usersTopXP) {
-            let member = await guild.members.cache.get(user.id);
-            if (member) {
-                userstop5Desc += `**${user.displayName}**: ${user.level} (${user.xp})\n`;
-            } else {
-                userstop5Desc += `${user.displayName}: ${user.level} (${user.xp})\n`;
-            }
+        let membersTopScores = client.membersGetTopScores();
+        membersTopScores = membersTopScores.slice(0, 5);
+        let listeScores = "";
+        for ( memberTopScore of membersTopScores) {
+            listeScores += `${client.memberGetDisplayNameByID(memberTopScore.memberID)}: ${memberTopScore.score}\n`;
         }
-
-
-        usersTopIn.sort(function (a, b) {
-            return a.joinedAt - b.joinedAt;
-        });
-        usersTopIn.reverse();
-        usersTopIn = usersTopIn.slice(0, 5);
-        for (const userIn of usersTopIn) {
-            let member = await guild.members.cache.get(userIn.id);
-            if (member) {
-                userstopInDesc += `**${userIn.displayName}**\n`;
-            } else {
-                userstopInDesc += `${userIn.displayName}\n`;
-            }
-        };
-
-        let usersTopOutLogs = [];
-        for (const key in usersTopOut) {
-            let member = await guild.members.cache.get(usersTopOut[key].id);
-
-            if (!member) {
-                let logEntriesQuit = usersTopOut[key].logs.filter(record =>
-                    record.event == "BAN" ||
-                    record.event == "KICK" ||
-                    record.event == "QUIT");
-
-                if (logEntriesQuit.length > 0) {
-                    logEntriesQuit.sort(function (a, b) {
-                        return a.createdAt + b.createdAt;
-                    });
-                    usersTopOutLogs.push({
-                        "id": usersTopOut[key].id,
-                        "createdAt": logEntriesQuit[0].createdAt,
-                        "event": logEntriesQuit[0].event,
-                        "displayName": usersTopOut[key].displayName
-                    })
-                }
-            }
+        if (listeScores == "") {
+            listeScores = 'Aucun score';
         }
-
-        if (usersTopOutLogs.length > 0) {
-            usersTopOutLogs.sort(function (a, b) {
-                return a.createdAt - b.createdAt;
-            });
-            usersTopOutLogs.reverse();
-            usersTopOutLogs = usersTopOutLogs.slice(0, 5);
-            for (const keyUuserOut in usersTopOutLogs) {
-                userstopOutDesc += `${client.logEventToEmoji(usersTopOutLogs[keyUuserOut].event)} ${usersTopOutLogs[keyUuserOut].displayName}\n`;
-            };
-        } else {
-            userstopOutDesc = "Aucun";
-        }
-
-
-        let logEntriesLast = [];
-        for (const user of userdatas) {
-            for (const log of user.logs) {
-                logEntriesLast.push({
-                    "id": user.id,
-                    "createdAt": log.createdAt,
-                    "event": log.event,
-                    "displayName": user.displayName,
-                    "commentaire": log.commentaire
-                })
-            }
-        }
-        logEntriesLast.sort(function (a, b) {
-            return a.createdAt - b.createdAt;
-        });
-        logEntriesLast.reverse();
-        logEntriesLast = logEntriesLast.slice(0, 10);
-        let dateNow = +new Date;
-        for (const logEntry of logEntriesLast) {
-            usersLastEvents += `${client.logEventToEmoji(logEntry.event)} ${logEntry.displayName} ${client.logEventToText(logEntry.event)} **${client.msToDaysText(dateNow - logEntry.createdAt)}**\n`;
-        }
-
-
 
         let embed = new Discord.MessageEmbed();
         embed.setTitle(client.textes.get("USERDATA_USERBOARD_TITLE"));
-
-        embed.addField("Derniers évènements", usersLastEvents, false);
-
-        embed.addField("Arrivées", userstopInDesc, true);
-        embed.addField("Départs", userstopOutDesc, true);
-
-        embed.addField("Top 5: level/xp", userstop5Desc, false);
-
+        embed.addField("Top Scores", listeScores, false);
 
         message.channel.send(embed);
     };

@@ -175,6 +175,10 @@ module.exports = (client) => {
             memberScore.score = client.membersGetScore(userdata.id);
             membersScores.push(memberScore);
         }
+        membersScores.sort(function (a, b) {
+            return a.score - b.score;
+        });
+        membersScores.reverse();
         return membersScores;
     };
 
