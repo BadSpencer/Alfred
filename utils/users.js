@@ -339,13 +339,24 @@ module.exports = (client) => {
 
         if (channel) {
             let memberGames = client.gamesGetForMember(userdata.id);
-            const userInfosMessage = new Discord.MessageEmbed();
-            let dateNow = +new Date;
+            let listeJeux = '';
+            for (game of memberGames) {
+                let usergameKey = `${userdata.id}-${game.id}`;
+                let usergame = client.db_usergame.get(usergameKey);
+                if (usergame) {
+                    listeJeux += `${game.name} (${usergame.level})`;
+                } else {
+                    listeJeux += `${game.name}`;
+                }
+            }
 
-            let listeJeux = memberGames.map(rec => rec.name).join(`\n`);
             if (listeJeux == '') {
                 listeJeux = 'Aucun jeu';
             }
+
+            const userInfosMessage = new Discord.MessageEmbed();
+            let dateNow = +new Date;
+
             userInfosMessage.setAuthor(userdata.displayName, member.user.avatarURL())
             userInfosMessage.setColor(colors['darkorange'])
             userInfosMessage.setTitle(`ID: ${userdata.id}`)
