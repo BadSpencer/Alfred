@@ -6,7 +6,7 @@ const textes = new (require(`../../../utils/textes.js`));
 class GameInfosCommand extends Command {
     constructor() {
         super('game-infos', {
-            aliases: ['game-infos', 'ginfos'],
+            aliases: ['game-infos', 'ginfos', 'gi'],
             category: 'Jeux',
             description: {
                 content: textes.get('GAMES_GAME_INFOS_DESCRIPTION_CONTENT'),

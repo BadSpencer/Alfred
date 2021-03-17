@@ -852,8 +852,15 @@ module.exports = (client) => {
         for (const member of gameRole.members) {
           let player = {
             "id": "",
-            "score": 0
+            "score": 0,
+            "level": 0
           };
+
+          let usergameKey = `${member[1].id}-${game.id}`;
+          let usergame = client.db_usergame.get(usergameKey);
+          if (usergame) {
+            player.level = usergame.level;
+          }
 
           player.id = member[1].id;
           player.score = client.gameGetPlayerScore(game.id, member[1].id);
@@ -873,13 +880,13 @@ module.exports = (client) => {
           }
 
           if (index == 1) {
-            memberList1 += `<@${player.id}>\n`;
+            memberList1 += `<@${player.id}> (${player.level})\n`;
           }
           if (index == 2) {
-            memberList2 += `<@${player.id}>\n`;
+            memberList2 += `<@${player.id}> (${player.level})\n`;
           }
           if (index == 3) {
-            memberList3 += `<@${player.id}>\n`;
+            memberList3 += `<@${player.id}> (${player.level})\n`;
           }
           if (index !== 3) {
             index += 1;
@@ -930,13 +937,12 @@ module.exports = (client) => {
 
         embed.addField("📅 Actif depuis", `Le ${moment(game.createdAt).format('DD.MM.YYYY')}, ${moment.duration(game.createdAt - now).locale("fr").humanize(true)}`, false);
 
-        embed.addField("👥 Inscrits", `${playersActiveCount + playersInactiveCount}`, true);
-        embed.addField("👥 Actifs", `${playersActiveCount}`, true);
+        embed.addField("👥 Joueurs", `**${playersActiveCount + playersInactiveCount}** (${playersInactiveCount} inact.)`, true);
         embed.addField("⏳ Dernière activité", `${lastPlayed}`, true);
-
         embed.addField("👋 Inactivité", `${game.nbDaysInactive} jours`, true);
-        embed.addField("\u200b", "\u200b", true);
-        embed.addField("\u200b", "\u200b", true);
+
+        // embed.addField("\u200b", "\u200b", true);
+        // embed.addField("\u200b", "\u200b", true);
 
         embed.addField("\u200b", memberList1 || "\u200b", true);
         embed.addField("Membres", memberList2 || "\u200b", true);
