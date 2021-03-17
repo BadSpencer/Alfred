@@ -344,9 +344,9 @@ module.exports = (client) => {
                 let usergameKey = `${userdata.id}-${game.id}`;
                 let usergame = client.db_usergame.get(usergameKey);
                 if (usergame) {
-                    listeJeux += `${game.name} (${usergame.level})`;
+                    listeJeux += `${game.name} (${usergame.level})\n`;
                 } else {
-                    listeJeux += `${game.name}`;
+                    listeJeux += `${game.name}\n`;
                 }
             }
 
