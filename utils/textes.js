@@ -1128,7 +1128,7 @@ module.exports = class {
             La liste est trièe avec les joueurs qui se sont connectés récement en premier.`,
 
             USER_MEMBER_PROMPT: `Veuillez spécifier un membre pour cette action`,
-            USER_MEMBER_RETRY: `Je n'arrive pas à trouver de membre aved ce nom. Essayer peut-être avec son ID`,
+            USER_MEMBER_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
 
             USER_INFOS_DESCRIPTION_CONTENT: `Informations sur un membre`,
             USER_INFOS_DESCRIPTION_USAGE: `Permet d'afficher les informations détaillées d'un membre`,
@@ -1140,14 +1140,14 @@ module.exports = class {
             USER_NOTEADD_DESCRIPTION_CONTENT: `Ajouter une note sur un membre`,
             USER_NOTEADD_DESCRIPTION_USAGE: `Permet d'ajouter une note de modération sur un membre`,
             USER_NOTEADD_MEMBER_PROMPT: `Pour quel membre souhaitez-vous ajouter une note ?`,
-            USER_NOTEADD_MEMBER_RETRY: `Je n'arrive pas à trouver de membre aved ce nom. Essayer peut-être avec son ID`,
+            USER_NOTEADD_MEMBER_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
             USER_NOTEADD_NOTE_PROMPT: (member) => {
                 return `Ajouter une note pour **${member.displayName}**
                 
                 Veuillez saisir la note à ajouter`;
             },
             USER_USERINFO_MEMBER_PROMPT: `Pour quel membre souhaitez-vous afficher les informations ?`,
-            USER_USERINFO_MEMBER_RETRY: `Je n'arrive pas à trouver de membre aved ce nom. Essayer peut-être avec son ID`,
+            USER_USERINFO_MEMBER_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
 
 
             USER_WARN_DESCRIPTION_CONTENT: `Avertir un membre`,
