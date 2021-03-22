@@ -8,6 +8,7 @@ class SuggestionCommand extends Command {
     constructor() {
         super('suggestion', {
             aliases: ['suggestion', 'sugg', 'sug'],
+            channel: 'dm',
             category: 'Utilitaires',
             description: {
                 content: 'Permet de soumettre une suggestion dans <#688062451228475428>',
@@ -27,13 +28,15 @@ class SuggestionCommand extends Command {
     *args(message) {
         const suggestion = yield {
             type: 'string',
-            match: 'rest',
+            match: 'content',
             prompt: {
                 start: message => promptMessage('Quelle est votre suggestion ?')
             }
         };
         const validation = yield {
             type: 'string',
+            match: 'option',
+            flag: '--post',
             prompt: {
                 start: async message => {
                     let embed = new Discord.MessageEmbed();
@@ -54,7 +57,8 @@ class SuggestionCommand extends Command {
                         await msgSent.react("💛");
                         await msgSent.react("💔");
                     });
-                    return promptMessage('Est ce que ça vous convient ? (oui/non)')
+                    return promptMessage(`Est ce que ça vous convient ? (oui/non)
+                    En répondant **'oui'** votre suggestion sera postée dans le salon "Suggestions" du discord`)
                 },
                 retry: message => promptMessage(`oui pour valider... `),
             }

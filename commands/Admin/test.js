@@ -8,7 +8,7 @@ class TestCommand extends Command {
     constructor() {
         super('test', {
             aliases: ['test'],
-            category: 'Admin',
+            category: '🟪 Admin',
             cooldown: 30000,
             ratelimit: 1,
             description: 'Commande de test',

@@ -8,7 +8,7 @@ class EvalCommand extends Command {
 	constructor() {
 		super("eval", {
 			aliases: ["eval"],
-			category: "Admin",
+			category: '🟪 Admin',
 			ownerOnly: true,
 			quoted: false,
 			args: [{

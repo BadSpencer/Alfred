@@ -228,6 +228,7 @@ module.exports = (client) => {
                 "id": "",
                 "actif": false,
                 "displayName": "",
+                "tag": "",
                 "memberSince": "",
                 "warn": 0,
                 "level": 0,
@@ -236,6 +237,7 @@ module.exports = (client) => {
                 "notes": 0
             };
             let memberLogs = await client.memberNotesGet(userdata.id);
+            let member = guild.members.cache.get(userdata.id);
             memberListline.id = userdata.id;
             memberListline.displayName = client.memberGetDisplayNameByID(userdata.id);
             memberListline.memberSince = moment.duration(userdata.joinedAt - dateNow).locale("fr").humanize(true);
@@ -244,13 +246,12 @@ module.exports = (client) => {
             memberListline.xp = userdata.xp;
             memberListline.karma = userdata.karma;
             memberListline.notes = memberLogs.length;
-            let member = guild.members.cache.get(userdata.id);
             if (member) {
                 memberListline.actif = true;
-
+                memberListline.tag = member.user.username;
             } else {
                 memberListline.actif = false;
-
+                memberListline.tag = 'non trouvé';
             }
             memberList.push(memberListline);
         };
@@ -262,8 +263,8 @@ module.exports = (client) => {
         for (memberListline of memberList) {
 
             if (memberListline.actif) {
-                memberListOutput.push(`◽️**${memberListline.displayName}** nous a rejoint ${memberListline.memberSince}`);
-                memberListOutput.push(`◾️Level:**${memberListline.level}** XP:**${memberListline.xp}** Karma:**${memberListline.karma}** Avert:**${memberListline.warn}** Notes:**${memberListline.notes}**`);
+                memberListOutput.push(`◽️**${memberListline.displayName}** (${memberListline.tag}) - ${memberListline.id}`);
+                memberListOutput.push(`◾️Level:**${memberListline.level}** XP:**${memberListline.xp}** Karma:**${memberListline.karma}** Avert:**${memberListline.warn}** Notes:**${memberListline.notes}**\n`);
             } else {
                 // memberListOutput.push(`◾️${memberListline.displayName} (${memberListline.id})`);
             }

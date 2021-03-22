@@ -13,11 +13,11 @@ const {
 const Discord = require("discord.js");
 const moment = require("moment");
 
-class expCommand extends Command {
+class ExpCommand extends Command {
     constructor() {
         super("exp", {
             aliases: ["exp"],
-            category: "Admin",
+            category: '🟪 Admin',
             description: {
                 content: "Expérience",
                 usage: "!exp top",
@@ -134,4 +134,4 @@ class expCommand extends Command {
 
 }
 
-module.exports = expCommand;
+module.exports = ExpCommand;

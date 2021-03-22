@@ -10,12 +10,9 @@ class MessageListener extends Listener {
         });
     }
 
-  async exec(message) {
-        let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
+    async exec(message) {
         if (message.author.bot) return;
-
-        message.settings = client.getSettings();
+        message.settings = this.client.getSettings();
     }
 }
 

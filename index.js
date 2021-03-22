@@ -173,15 +173,30 @@ client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
 client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     if (!phrase) return null;
 
-    const memberType = client.commandHandler.resolver.type('member');
-    const member = memberType(message, phrase);
-    if (member) {
-        const userdata = client.db_userdata.find(record => record.id == member.id);
-        if (userdata) {
-            return userdata;
+    if (message.channel.type === 'dm') {
+        const userType = client.commandHandler.resolver.type('user');
+        const user = userType(message, phrase);
+        if (user) {
+            const userdata = client.db_userdata.find(record => record.id == user.id);
+            if (userdata) {
+                return userdata;
+            }
+            return null;
         }
-    }
-    return null;
+        return null;
+    } else {
+
+        const memberType = client.commandHandler.resolver.type('member');
+        const member = memberType(message, phrase);
+        if (member) {
+            const userdata = client.db_userdata.find(record => record.id == member.id);
+            if (userdata) {
+                return userdata;
+            }
+            return null;
+        }
+        return null;
+    };
 });
 
 client.commandHandler.resolver.addType('steamID', (message, phrase) => {

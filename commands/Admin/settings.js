@@ -15,7 +15,7 @@ class dbSettingsCommand extends Command {
     constructor() {
         super('settings', {
             aliases: ['settings', 'set'],
-            category: 'Admin',
+            category: '🟪 Admin',
             userPermissions: [Permissions.FLAGS.MANAGE_GUILD],
             split: 'quoted',
 

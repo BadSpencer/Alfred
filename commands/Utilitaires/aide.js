@@ -66,11 +66,13 @@ class AideCommand extends Command {
         let ignoredCategories = [];
         ignoredCategories.push("Auto");
         if (!member.roles.cache.has(roleMod.id) && !member.roles.cache.has(roleAdm.id)) {
-            ignoredCategories.push("Admin");
-            ignoredCategories.push("Modération");
-            ignoredCategories.push("Jeux");
-            ignoredCategories.push("Serveurs");
-            ignoredCategories.push("Joueurs");
+            ignoredCategories.push("🟪 Admin");
+            ignoredCategories.push('🟪 Membres');
+            ignoredCategories.push('🟪 Levels/Expérience');
+            ignoredCategories.push('🟪 News/embeds');
+            ignoredCategories.push('🟪 Jeux');
+            ignoredCategories.push('🟪 Serveurs');
+            ignoredCategories.push('🟪 Joueurs');
         }
 
         if (!args.command) {
@@ -167,7 +169,7 @@ class AideCommand extends Command {
             );
 
         if (message.channel.type === "text") message.delete();
-        return message.util.send(embed);
+        return message.author.send(embed);
     }
 
 }

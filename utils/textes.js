@@ -22,6 +22,10 @@ module.exports = class {
             COMMAND_BLOCKED_MESSAGE: (commande, raison) => {
                 return `La commande "${commande}" à été bloquée\nRaison: ${raison}`;
             },
+            COMMAND_ONLY_DM_MESSAGE: (commande, content) => {
+                return `La commande "${commande}" n'est disponible que via message privé.
+                Veuillez relancer votre commande ici`
+            },
             COMMAND_BLOCKED_REASON_BLACKLIST: "Vous êtes blacklisté",
             COMMAND_BLOCKED_REASON_USERPERMISSIONS: "Vous n'êtes pas autorisé à utiliser cette commande",
             COMMAND_BLOCKED_REASON_CHANNELS: (channel) => {
@@ -29,13 +33,12 @@ module.exports = class {
 
                 Merci de lancer vos commandes dans le salon <#562683604690534400> ou bien directement ici en m'envoyant la commande par message privé.`;
             },
-            COMMAND_BLOCKED_REASON_DM: "Cette commande n'est disponible que via message privé avec Alfred",
 
             SUGG_NOTIF_TITLE: "Suggestion...",
             SUGG_NOTIF_PROPOSED_BY: (displayName) => {
                 return `Proposée par ${displayName}`;
             },
-            
+
             MAGICBALL_ACTION: [
                 "Je consulte les astres...",
                 "Les esprits communiquent avec moi...",
@@ -78,8 +81,6 @@ module.exports = class {
                 "Heu... non",
                 "C'est impossible",
             ],
-
-
 
             CITATIONS: [
                 "C'est merveilleux la vieillesse, dommage que ça finisse si mal ! (François Mauriac)",
@@ -309,7 +310,61 @@ module.exports = class {
                 "Vivre est la chose la plus rare. La plupart des gens se contente d'exister. (Oscar Wilde)",
                 "Vouloir être de son temps, c'est déjà être dépassé. (Eugène Ionesco)",
                 "Vous n'êtes pas responsable de la tête que vous avez mais vous êtes responsable de la gueule que vous faites. (Coluche)",
-                "Vous pouvez vous construire un trône avec des baïonnettes, mais vous ne resterez pas assis longtemps dessus. (Boris Eltsine)"
+                "Vous pouvez vous construire un trône avec des baïonnettes, mais vous ne resterez pas assis longtemps dessus. (Boris Eltsine)",
+                "Tout homme qui dirige, qui fait quelque chose, a contre lui ceux qui voudraient faire la même chose, ceux qui font précisément le contraire, et surtout la grande armée des gens d'autant plus sévères qu'ils ne font rien du tout. (Jules Claretie)",
+                "On a toujours tort d'essayer d'avoir raison devant des gens qui ont toutes les bonnes raisons de croire qu'ils n'ont pas tort ! (Raymond Devos)",
+                "La grippe, ça dure huit jours si on la soigne et une semaine si on ne fait rien. (Raymond Devos)",
+                "Mon pied droit est jaloux de mon pied gauche. Quand l'un avance, l'autre veut le dépasser. Et moi, comme un imbécile, je marche ! (Raymond Devos)",
+                "Monsieur, ce que j'admire en vous, c'est que vous avez le courage d'être vous-même ; avec tout ce que cela comporte de ridicule ! (Raymond Devos)",
+                "Si tu étais plus belle, je me serais déjà lassé. Tandis que là, je ne m'y suis pas encore habitué ! (Raymond Devos)",
+                "Quand on s'est connus, ma femme et moi, on était tellement timides tous les deux qu'on n'osait pas se regarder. Maintenant, on ne peut plus se voir ! (Raymond Devos)",
+                "Quand j'ai tort, j'ai mes raisons, que je ne donne pas. Ce serait reconnaître mes torts ! (Raymond Devos)",
+                "Je crois à l'immortalité et pourtant je crains bien de mourir avant de la connaître. (Raymond Devos)",
+                "Une rengaine, c'est un air qui commence par vous entrer par une oreille et qui finit par vous sortir par les yeux. (Raymond Devos)",
+                "Si ma femme doit être veuve un jour, j'aimerais mieux que ce soit de mon vivant. (Raymond Devos)",
+                "Il ne faudrait pas croire que les responsables d'hier étaient plus ignorants de la situation que ne le sont ceux d'aujourd'hui ! (Raymond Devos)",
+                "La différence entre l'amour et l'argent, c'est que si on partage son argent, il diminue, tandis que si on partage son amour, il augmente. L'idéal étant d'arriver à partager son amour avec quelqu'un qui a du pognon. (Philippe Geluck)",
+                "Dieu a tout créé. Dieu a créé le racisme. Mais Dieu a aussi créé l'antiracisme. Avec tout le respect que je lui dois, Dieu est un sacré fouteur de merde. (Philippe Geluck)",
+                "Terrorisme, missile ou pollution sont des plus gros mots que caca, merde ou prout. (Philippe Geluck)",
+                "Si la méchanceté n'existait pas, il n'y aurait aucun mérite à être gentil. (Philippe Geluck)",
+                "Les imbéciles pensent que tous les noirs se ressemblent. Je connais un noir qui trouve, lui, que tous les imbéciles se ressemblent. (Philippe Geluck)",
+                "Au fond, est-ce que ranger ça ne revient pas un peu à foutre le bordel dans son désordre ? (Philippe Geluck)",
+                "Si on payait mieux les bénévoles, ça donnerait peut-être envie à plus de gens de travailler gratuitement. (Philippe Geluck)",
+                "Avec le temps qui passe ceux qui étaient con le restent et ceux qui ne l'étaient pas le deviennent. (Philippe Geluck)",
+                "Si je devais me suicider un jour, je me pendrais à un noyer, ce serait mon dernier jeu de mot. (Philippe Geluck)",
+                "Un joueur d'échecs c'est comme de la peinture, s'il n'est pas brillant il est mat. (Philippe Geluck)",
+                "Il y a des gens qui arrivent à écrire leur nom dans la neige en faisant pipi... parmi eux il y a cependant davantage de Luc et de Jo que de Jean-Sébastien ! (Philippe Geluck)",
+                "Si les lentilles vous font péter, portez des lunettes. (Philippe Geluck)",
+                "Peut-on rire du malheur des autres ? Ca dépend... Si le malheur des autres est rigolo, oui. (Philippe Geluck)",
+                "La différence entre la chasse et la guerre, c'est qu'à la chasse on ne fait pas de prisonniers. (Philippe Geluck)",
+                "Se rendre compte qu'on est un imbécile est un signe d'intelligence. (Philippe Geluck)",
+                "Il y a des gens qui arrivent à joindre l'inutile au désagréable. (Philippe Geluck)",
+                "Le chemin le plus court d'un point à un autre c'est de ne pas y aller. (Philippe Geluck)",
+                "Le lancement du poids, c'est la pétanque des costauds. (Philippe Geluck)",
+                "Si tu donnes à quelqu'un un poisson que tu as volé, il mangera une fois. Si tu lui apprends à voler, il mangera toute sa vie. (Philippe Geluck)",
+                "La spéléologie, c'est l'alpinisme de ceux qui ont le vertige. (Philippe Geluck)",
+                "J'essaye de noyer mon chagrin dans l'alcool mais depuis le temps... il appris à nager, mon chagrin. (Philippe Geluck)",
+                "Au fond quand on y pense, un type qui doit être vachement frustré, c'est le type qui a réalisé le plancher de la chapelle Sixtine... (Philippe Geluck)",
+                "J'ai une écharde dans le pouce, pourvu que ça ne s'infecte pas... je touche du bois ! (Philippe Geluck)",
+                "Les animaux se lavent en se léchant. Sauf les hérissons et les oursins. (Philippe Geluck)",
+                "Les jeunes, c'est tous des bons-à-rien . Et ça devient pire avec l'âge. (Philippe Geluck)",
+                "Je suis tout prêt à croire en Dieu. Mais je pense que Dieu n'est pas tout-à-fait prêt à croire en moi. (Philippe Geluck)",
+                "On dit qu'on apprend avec ses erreurs, mais à mon avis c'est une erreur... et si je me trompe au moins j'aurais appris quelque chose ! (Philippe Geluck)",
+                "Plus mon cigare raccourcit, et plus je dois tendre le bras vers le cendrier. Un patron aussi a ses soucis. (Philippe Geluck)",
+                "Meilleurs voeux pour toute la vie, comme ça, c'est fait une fois pour toutes. (Philippe Geluck)",
+                "Un type qui se trompe en disant quelche chose de faux dit peut-être quelque chose de vrai. (Philippe Geluck)",
+                "La recherche a besoin d'argent dans deux domaines prioritaires : le cancer et les missiles antimissiles. Pour les missiles antimissiles, il y a les impôts. Pour le cancer, on fait la quête. (Pierre Desproges)",
+                "L'intelligence, c'est comme les parachutes, quand on n'en a pas, on s'écrase. (Pierre Desproges)",
+                "J'aime bien les histoires qui finissent mal. Ce sont les plus belles car ce sont celles qui ressemblent le plus à la vie. (Pierre Desproges)",
+                "Il ne faut pas désespérer des imbéciles. Avec un peu d'entraînement, on peut arriver à en faire des militaires. (Pierre Desproges)",
+                "Je ne suis pas raciste, mais il faut bien voir les choses en face : les enfants ne sont pas des gens comme nous. (Pierre Desproges)",
+                "Au Paradis, on est assis à la droite de Dieu : c'est normal, c'est la place du mort. (Pierre Desproges)",
+                "L'homme de science le sait bien, lui, que seule la science, a pu, au fil des siècles, lui apporter l'horloge pointeuse et le parcmètre automatique sans lesquels il n'est pas de bonheur terrestre possible. (Pierre Desproges)",
+                "Ce n'est pas parce que l'homme a soif d'amour qu'il doit se jeter sur la première gourde. (Pierre Desproges)",
+                "Il n'y a que deux sortes de chauffeurs de taxis : ceux qui puent le tabac, et ceux qui vous empêchent de fumer. (Pierre Desproges)",
+                "Je suis trop conscient de la vanité de l'existence pour avoir un plan de carrière ou de l'ambition. (Pierre Desproges)",
+                "Il ne suffit pas d'être heureux. Encore faut-il que les autres soient malheureux. (Pierre Desproges)"
+
             ],
 
             ASTUCES: [
@@ -318,7 +373,8 @@ module.exports = class {
                 `Si vous jouez à un jeu lorsque vous créez un salon vocal, le salon sera nommé avec le nom du jeu.`,
                 `Votre jeu préféré n'a pas encore sa place sur le Discord ? Proposez le ! Vous aurez ainsi une section dédiée pour partager des informations.`,
                 `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`,
-                `Si le salon "+ Créer salon" est absent ou inacessible, il vous suffit de lancer la commande **!vocal** pour en créer un autre`
+                `Si le salon "+ Créer salon" est absent ou inacessible, lancez la commande **!vocal** pour en créer un autre`,
+                ``
             ],
 
             COM_USERS_INITMESSLOGS_RESULT: (messageCount) => {
@@ -333,10 +389,10 @@ module.exports = class {
 
             MOTD_TITRE: "Bonne journée à tous sur Casual Effect",
             MOTD_BONJOUR: [
-                "Bonjour à tous, je vous souhaites une bonne journée.",
-                "Je vous souhaites à toutes et à tous une excellente journée.",
+                "Bonjour à tous, je vous souhaite une bonne journée.",
+                "Je vous souhaite à toutes et à tous une excellente journée.",
                 "Bonne journée à vous.",
-                "Je vous souhaites de passer une excellente journée",
+                "Je vous souhaite de passer une excellente journée",
                 "Je sens que ça va être une bonne journée, pas vous ?",
                 "Ah une nouvelle journée qui commence ! J'espère que ce sera une bonne journée pour vous.",
                 "Une bien belle journée qui s'annonce..."
@@ -549,7 +605,7 @@ module.exports = class {
             EXP_CMD_REINIT_DESCRIPTION_USAGE: `La commande se lance sans paramètre: \`!expreinit\`
             
             Attention: Cette commande réinitialise l'expérience de tous les membres du discord.`,
-        
+
             EXP_CMD_REINIT_SUCCESS: (number) => {
                 return `L'expérience à été remise à zéro pour ${number} membres`;
             },
@@ -782,7 +838,7 @@ module.exports = class {
             GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_NOT_FOUND: (channelId) => {
                 return `**Perm. membres salon** 🟥 Salon ${channelId} non trouvé`;
             },
-            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_FAILED: `**Perm. membres salon** 🟥 Le rôle n'a pas été créé`,            
+            GAMES_GAME_INACTIVE_STATE_TEXTCHANNEL_MEMBERPERM_FAILED: `**Perm. membres salon** 🟥 Le rôle n'a pas été créé`,
 
 
             GAMES_GAME_CHAN_DESCRIPTION_CONTENT: `Ajouter un salon à un jeu`,
@@ -860,7 +916,7 @@ module.exports = class {
             GAMES_GAME_ADD_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
             GAMES_GAME_ADD_GAME_PROMPT: `Quel **jeu** souhaitez vous ajouter ?`,
 
-        
+
             GAMES_GAME_VIEW_DESCRIPTION_CONTENT: `Afficher les données d'un jeu`,
             GAMES_GAME_VIEW_DESCRIPTION_USAGE: `Cette commande ne requiert aucun argument pour fonctionner`,
             GAMES_GAME_VIEW_GAME_PROMPT: `Quel **jeu** souhaitez vous afficher ?`,
@@ -1135,7 +1191,7 @@ module.exports = class {
 
             USER_NOTE_DESCRIPTION_CONTENT: `Gestion des notes pour un membre`,
             USER_NOTE_DESCRIPTION_USAGE: `Affiche les dernière notes pour un membres et permet des actions`,
-            
+
 
             USER_NOTEADD_DESCRIPTION_CONTENT: `Ajouter une note sur un membre`,
             USER_NOTEADD_DESCRIPTION_USAGE: `Permet d'ajouter une note de modération sur un membre`,
@@ -1157,6 +1213,13 @@ module.exports = class {
                 
                 Veuillez saisir la note à ajouter à votre avertissement`;
             },
+
+            INFOS_PROFIL_DESCRIPTION_CONTENT: `Afficher son profil ou celui d'un autre membre`,
+            INFOS_PROFIL_DESCRIPTION_USAGE: `Si cette commande est lancée sans paramètre elle affichera votre profil
+            Pour afficher le profil d'un autre membre vous devez préciser son nom ou une partie de son nom`,
+            INFOS_PROFIL_MEMBER_PROMPT: `Pour quel membre souhaitez-vous afficher le profil ?`,
+            INFOS_PROFIL_MEMBER_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
+
             // EMBED
             EMBED_CREATION_SUCCESS: (titre, id) => {
                 return `L'embed **${titre}** (${id}) à été correctement créé`;
@@ -1179,7 +1242,7 @@ module.exports = class {
             EMBED_USERBOARD_TITLE: (name) => {
                 return `Gestion des embeds de ${name}`;
             },
-            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds, editEmbed, ) => {
+            EMBED_USERBOARD_DESCRIPTION: (totalEmbeds, editEmbed,) => {
                 let texte = `Total: **${totalEmbeds}** embeds\n`;
                 if (editEmbed) {
                     texte += `En cours d'édition: **${editEmbed.titre}** (id:${editEmbed.id})\n\n`;
@@ -1408,12 +1471,14 @@ module.exports = class {
             },
 
 
-            AIDE_EMBED_TITLE_1: `Casual Effect: Aide en ligne`,
-            AIDE_EMBED_DESCRIPTION_1: `Ce livret d'aide apporte des informations sur les commandes que je peux exécuter.
+            AIDE_EMBED_TITLE_1: `Aide en ligne Alfred`,
+            AIDE_EMBED_DESCRIPTION_1: `Voici la liste des commandes d'Alfred.
 
-            Les commandes peuvent être envoyées par message privé (ci-dessous) ou bien dans le salon <#562683604690534400>. Je vous conseille de mettre ce salon en "muet" pour ne pas être notifié à chaque fois qu'une commande est lancée.
+            La plupart des commandes doivent être lancées ici (message privé) pour éviter les notifications inutiles sur le discord. 
+            
+            Les commandes qui produisent un "résultat" (comme la commande "dé") ont besoin d'être lancées dans le salon où l'on souhaite que le résultat s'affiche. Ces commandes sont notées avec l'emoji 🔹
 
-            Pour avoir une aide détaillée sur une commande, lancez: \`!aide <commande>\` par exemple \`!aide aide\` affichera une aide détaillée sur la commande "aide".
+            Pour avoir une aide détaillée sur une commande, lancez: \`!aide <commande>\` par exemple \`!aide dé\` affichera une aide détaillée sur la commande "dé".
             
             Les prochaines pages présentent les commandes disponibles. Elles sont classées par catégories, une catégorie par page.
             Utilisez les réactions ◀️ et ▶️ pour naviguer entre les pages.
@@ -1424,14 +1489,8 @@ module.exports = class {
         }
     }
 
-    /**
-     * The method to get language strings
-     * @param {string} term The string or function to look up
-     * @param {...*} args Any arguments to pass to the lookup
-     * @returns {string|Function}
-     */
+
     get(term, ...args) {
-        //if (!this.enabled && this !== this.store.default) return this.store.default.get(term, ...args);
         const value = this.textes[term];
         /* eslint-disable new-cap */
         switch (typeof value) {

@@ -14,11 +14,11 @@ const {
     Permissions
 } = require("discord.js");
 
-class debugCommand extends Command {
+class DebugCommand extends Command {
     constructor() {
         super("debug", {
             aliases: ["debug"],
-            category: 'Admin',
+            category: '🟪 Admin',
             description: {
                 content: 'Activation/désactivation du debug',
                 usage: '!debug <on/off>',
@@ -63,4 +63,4 @@ class debugCommand extends Command {
 
 }
 
-module.exports = debugCommand;
+module.exports = DebugCommand;

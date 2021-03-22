@@ -1,58 +1,69 @@
-const {
-    Command
-} = require("discord-akairo");
+const Discord = require("discord.js");
+const { Command } = require("discord-akairo");
+const { Permissions } = require("discord.js");
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../utils/messages');
+const textes = new (require("../../utils/textes.js"));
+const colors = require('../../utils/colors');
 
-class DéCommand extends Command {
+
+class KickCommand extends Command {
     constructor() {
         super('dé', {
-            aliases: ['dé','random', 'rand', 'rnd'],
+            aliases: ['dé', 'dés', 'random', 'rand', 'rnd'],
             category: 'Utilitaires',
-            // define arg properties
-            args: [{
-                id: 'numFaces',
-                type: 'number',
-                default: 6,
-                // prompt: {
-                //     start: 'Combien de faces possède votre dé virtuel ?',
-                //     retry: 'Hmmm, je m\'attendais à un nombre...',
-                    
-                // }
-            }, {
-                id: 'numTirages',
-                type: 'number',
-                default: 1,
-                // prompt: {
-                //     // start: 'Combien de tirages souhaitez vous faire ?',
-                //     retry: 'Hmmm, je m\'attendais à un nombre...',
-                //     default: 1
-                // }
-            }, ],
-            // command description
-
             description: {
-                content: 'Permet d\'effectuer un lancer de dé virtuel',
-                usage: `\`!dé [<nb faces> <nb tirages>]\`
-                Choisissez le nombre de faces que comporte votre dé et le nombre de tirages successifs que vous souhaitez que j\'effectue.
-                Si vous lancez la commande sans paramètre, j'effectuerais un seul lancé d'un dé à six faces`,
-                examples: ['!dé','!dé 20 4', '!rnd 100 1']
+                content: '🔹 Permet d\'effectuer un ou plusieurs lancés de dé',
+                usage: `\`!dé [<nb tirages> <nb faces>]\`
+                Choisissez le nombre de tirages successifs que vous souhaitez et le nombre de faces que comporte votre dé. Ces paramètres sont optionnels.
+                Si vous lancez la commande sans paramètre, j'effectuerais un seul lancé d'un dé à six faces. Si vous souhaitez modifier le nombre de faces de votre dé vous devrez alors aussi spécifier un nombre de tirages`,
+                examples: [`!dé`, `!dé 4 20`, `!rnd 1 100`]
             }
         });
     }
 
-    exec(message, args) {
-        if (args.numFaces == null) message.reply("Utilisation: !tirage <nb faces du dé> <nombre de tirages>");
-        if (isNaN(args.numFaces) || (args.numTirages != null && isNaN(args.numTirages))) {message.reply("Il me faut des nombres pour que ça marche bien"); return;}
-        if (args.numTirages == null) args.numTirages=1; 
-        var msg = "Résultat du tirage: ";
-        for (var i=0; i<args.numTirages-1; i++) {
-          msg += `${(Math.floor(Math.random()*args.numFaces)+1).toString()},`;
+    *args(message) {
+        const numTirages = yield {
+            type: Argument.range('number', 1, 20),
+            default: 1
+        };
+        const numFaces = yield {
+            type: 'number',
+            default: 6
+        };
+        return { numTirages, numFaces };
+    }
+
+    async exec(message, args) {
+
+        let client = this.client;
+        let embed = new Discord.MessageEmbed();
+        let footer = `Tirages: ${args.numTirages}  Faces: ${args.numFaces}`;
+
+        embed.setFooter(footer);
+        if (args.numTirages > 1) {
+            embed.setTitle(`Lancé de dés pour ${client.memberGetDisplayNameByID(message.author.id)}`)
+        } else {
+            embed.setTitle(`Lancé de dé pour ${client.memberGetDisplayNameByID(message.author.id)}`)
         }
-        msg += `${(Math.floor(Math.random()*args.numFaces)+1).toString()},`;
-        message.reply(msg);
-        if (message.channel.type === 'text') message.delete();;
+
+        embed.setDescription(`⏳ Tirage en cours...`);
+        let reponse = await message.channel.send(embed);
+        await client.sleep(2000);
+        let description = 'Résultat du tirage\n\n';
+        if (args.numTirages > 1) {
+            description += `Nombre de tirages: ${args.numTirages}\n`
+        }
+        if (args.numFaces != 6) {
+            description += `Nombre de faces: ${args.numFaces}\n\n`
+        }
+        for (var i = 0; i < args.numTirages; i++) {
+            description += `**${(Math.floor(Math.random() * args.numFaces) + 1).toString()}**\n`;
+        }
+        embed.setDescription(description);
+        reponse.edit(embed);
 
     }
 }
 
 
-module.exports = DéCommand;
+module.exports = KickCommand;

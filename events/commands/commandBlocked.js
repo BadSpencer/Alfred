@@ -4,7 +4,11 @@ const {
 const chalk = require('chalk');
 const moment = require('moment');
 const {
-    errorMessage
+    successMessage,
+    errorMessage,
+    warnMessage,
+    questionMessage,
+    promptMessage
 } = require('../../utils/messages');
 
 class CommandBlockedListener extends Listener {
@@ -46,8 +50,7 @@ class CommandBlockedListener extends Listener {
                 message.delete();
                 break;
             case 'dm':
-                raison = client.textes.get("COMMAND_BLOCKED_REASON_DM");
-                errorMessage(client.textes.get("COMMAND_BLOCKED_MESSAGE", command, raison), message.channel);
+                warnMessage(client.textes.get("COMMAND_ONLY_DM_MESSAGE", command), message.member);
                 message.delete();
                 break;
             default:

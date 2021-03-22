@@ -311,6 +311,7 @@ module.exports = (client) => {
         userdata.joinedTime = moment(member.joinedTimestamp).format('HH:mm');
         userdata.level = 0;
         userdata.xp = 0;
+        userdata.karma = 100;
 
         client.db_userdata.set(member.id, userdata);
         client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);

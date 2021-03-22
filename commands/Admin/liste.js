@@ -6,8 +6,7 @@ class ListeCommand extends Command {
     constructor() {
         super('liste', {
             aliases: ["liste", "list", "ls"],
-            enabled: false,
-            category: "Admin",
+            category: '🟪 Admin',
         });
     }
 

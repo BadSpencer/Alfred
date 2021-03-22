@@ -11,15 +11,22 @@ class ModerationCheck extends Inhibitor {
     exec(message, command) {
         let client = this.client;
         const guild = client.guilds.cache.get(client.config.guildID);
+        const settings = client.getSettings(guild);
         let member = guild.members.cache.get(message.author.id);
 
         //const roleEve = guild.roles.cache.find(r => { return r.name == "@everyone" });
         //const roleMem = guild.roles.cache.find(r => { return r.name == message.settings.memberRole });
-        const roleMod = guild.roles.cache.find(r => { return r.name == message.settings.modRole });
-        const roleAdm = guild.roles.cache.find(r => { return r.name == message.settings.adminRole });
+        const roleMod = guild.roles.cache.find(r => { return r.name == settings.modRole });
+        const roleAdm = guild.roles.cache.find(r => { return r.name == settings.adminRole });
 
         const modCategories = [
             'Modération',
+            '🟪 Membres',
+            '🟪 Jeux',
+            '🟪 Serveurs',
+            '🟪 Joueurs',
+            '🟪 Levels/Expérience',
+            '🟪 News/embeds',
             'Jeux',
             'Serveurs',
             'Joueurs',
