@@ -23,7 +23,7 @@ class ProfilCommand extends Command {
             description: {
                 content: textes.get('INFOS_PROFIL_DESCRIPTION_CONTENT'),
                 usage: textes.get('INFOS_PROFIL_DESCRIPTION_USAGE'),
-                examples: ['!profil', '!profil Bad Spencer', '!profil 291545597205544971']
+                examples: ['!profil', '!profil Bad Spencer', '!profil spencer', '!profil 291545597205544971']
             }
         });
     }
@@ -31,7 +31,7 @@ class ProfilCommand extends Command {
     async *args(message) {
         const userdata = yield {
             type: "userdata",
-            match: 'rest',
+            match: 'content',
             default: message => this.client.db_userdata.get(message.author.id),
             prompt: {
                 start: message => promptMessage(textes.get('INFOS_PROFIL_MEMBER_PROMPT')),
@@ -44,7 +44,18 @@ class ProfilCommand extends Command {
     }
 
     async exec(message, args) {
-        this.client.userdataShowInfos(args.userdata, message.channel, false);
+        const guild = this.client.getGuild();
+
+        const roleModerator = guild.roles.cache.find(r => r.name === message.settings.modRole);
+
+        let member = guild.members.cache.get(message.author.id);
+
+        let showModInfos = false;
+        if (member.roles.cache.has(roleModerator.id)) {
+            showModInfos = true;
+        } 
+
+        this.client.userdataShowInfos(args.userdata, message.channel, showModInfos);
     }
 
 }

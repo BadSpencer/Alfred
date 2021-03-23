@@ -360,16 +360,17 @@ module.exports = (client) => {
 
             userInfosMessage.setAuthor(userdata.displayName, member.user.avatarURL())
             userInfosMessage.setColor(colors['darkorange'])
-            userInfosMessage.setTitle(`ID: ${userdata.id}`)
+            
             userInfosMessage.setThumbnail(`${constants.images.lvlth[userdata.level]}`)
-            userInfosMessage.addField(`📅 Arrivée`, `Le ${userdata.joinedDate}\n${moment.duration(userdata.joinedAt - dateNow).locale("fr").humanize(true)}`, true);
+            userInfosMessage.addField(`📅 Inscription`, `Le ${userdata.joinedDate}\n${moment.duration(userdata.joinedAt - dateNow).locale("fr").humanize(true)}`, true);
             userInfosMessage.addField(`🎮 Jeux`, `${listeJeux}`, true);
             userInfosMessage.addField(`📊 Points`, `XP: ${userdata.xp}\nKarma: ${userdata.karma}`, true);
             if (showModInfos) {
                 let notesCount = await client.memberNotesCount(userdata.id);
                 userInfosMessage.addField(`🟪 Modération`, `Notes: ${notesCount}\nAvert.: ${userdata.warn}`, true);
+                userInfosMessage.setTitle(`ID: ${userdata.id}`)
             }
-            userInfosMessage.setDescription(`Description`)
+            // userInfosMessage.setDescription(`Description`)
             channel.send(userInfosMessage);
         };
     };

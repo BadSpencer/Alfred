@@ -1216,7 +1216,7 @@ module.exports = class {
 
             INFOS_PROFIL_DESCRIPTION_CONTENT: `Afficher son profil ou celui d'un autre membre`,
             INFOS_PROFIL_DESCRIPTION_USAGE: `Si cette commande est lancée sans paramètre elle affichera votre profil
-            Pour afficher le profil d'un autre membre vous devez préciser son nom ou une partie de son nom`,
+            Pour afficher le profil d'un autre membre vous devez préciser son nom, une partie de son nom ou son ID`,
             INFOS_PROFIL_MEMBER_PROMPT: `Pour quel membre souhaitez-vous afficher le profil ?`,
             INFOS_PROFIL_MEMBER_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
 
