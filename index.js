@@ -154,6 +154,10 @@ client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les
     client.gamesPurge();
 });
 
+client.cron_karma = new cron.CronJob('00 00 01 * * *', () => { // Tous les jours à 1h
+    client.setKarma();
+});
+
 
 client.commandHandler.resolver.addType('game', (message, phrase) => {
     if (!phrase) return null;
@@ -173,30 +177,17 @@ client.commandHandler.resolver.addType('gamealiasNew', (message, phrase) => {
 client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     if (!phrase) return null;
 
-    if (message.channel.type === 'dm') {
-        const userType = client.commandHandler.resolver.type('user');
-        const user = userType(message, phrase);
-        if (user) {
-            const userdata = client.db_userdata.find(record => record.id == user.id);
-            if (userdata) {
-                return userdata;
-            }
-            return null;
+    const guild = client.getGuild();
+    const member = client.util.resolveMember(phrase, guild.members.cache);
+    if (member) {
+        const userdata = client.db_userdata.find(record => record.id == member.id);
+        if (userdata) {
+            return userdata;
         }
         return null;
-    } else {
+    }
+    return null;
 
-        const memberType = client.commandHandler.resolver.type('member');
-        const member = memberType(message, phrase);
-        if (member) {
-            const userdata = client.db_userdata.find(record => record.id == member.id);
-            if (userdata) {
-                return userdata;
-            }
-            return null;
-        }
-        return null;
-    };
 });
 
 client.commandHandler.resolver.addType('steamID', (message, phrase) => {

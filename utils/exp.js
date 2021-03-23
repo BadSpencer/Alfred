@@ -420,4 +420,51 @@ module.exports = (client) => {
         }
     };
 
+    client.memberGetKarma = (memberID) => {
+        let karma = 0;
+        let score = 0;
+        let now = +new Date;
+        let fromTimestamp = +new Date(moment(now).subtract(1, 'days').startOf('day'));
+        let toTimestamp = +new Date(moment(now).subtract(1, 'days').endOf('day'));
+
+        let memberLogs = client.db_memberLog.filterArray(memberLog =>
+            memberLog.memberID === memberID &&
+            memberLog.createdAt > fromTimestamp &&
+            memberLog.createdAt < toTimestamp);
+
+        if (memberLogs) {
+            for (const memberLog of memberLogs) {
+                score += memberLog.xpGained;
+            }
+        }
+
+        if (score > 0) {
+            karma = 1;
+        } else {
+            karma = -1;
+        }
+        return karma;
+    };
+
+    client.setKarma = () => {
+        const guild = client.getGuild();
+        guild.members.cache.forEach(member => {
+            client.log(`Karma pour ${member.displayName}`, "debug");
+            let userdata = client.userdataGet(member.id);
+            if (userdata) {
+                let karma = client.memberGetKarma(member.id);
+                userdata.karma += karma;
+                if (userdata.karma < 0) {
+                    userdata.karma = 0;
+                }
+                if (userdata.karma > 100) {
+                    userdata.karma = 100;
+                }
+                client.userdataSet(userdata);
+                client.log(`Karma: ${karma} -> ${userdata.karma}`, "debug");
+            }
+        });
+        return true;
+    };
+
 }
