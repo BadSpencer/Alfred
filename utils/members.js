@@ -295,9 +295,9 @@ module.exports = (client) => {
         }
     }
 
-    client.memberNotesPost = async (member, channel) => {
+    client.memberNotesPost = async (memberID, channel) => {
 
-        let memberLogs = await client.memberNotesGet(member.id);
+        let memberLogs = await client.memberNotesGet(memberID);
         let memberNotes = [];
 
         if (memberLogs) {
@@ -309,9 +309,9 @@ module.exports = (client) => {
         }
 
         if (memberNotes.length > 0) {
-            await client.arrayToEmbed(memberNotes, 9, `Notes pour ${member.displayName}`, channel);
+            await client.arrayToEmbed(memberNotes, 9, `Notes pour ${client.memberGetDisplayNameByID(memberID)}`, channel);
         } else {
-            warnMessage(`Aucune note trouvée pour ${member.displayName}`, channel);
+            warnMessage(`Aucune note trouvée pour ${client.memberGetDisplayNameByID(memberID)}`, channel);
         }
 
     };

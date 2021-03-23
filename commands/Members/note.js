@@ -26,8 +26,8 @@ class NoteCommand extends Command {
     }
 
     async *args(message) {
-        const member = yield {
-            type: "member",
+        const userdata = yield {
+            type: "userdata",
             prompt: {
                 start: message => promptMessage(textes.get('USER_MEMBER_PROMPT')),
                 retry: message => promptMessage(textes.get('USER_MEMBER_RETRY'))
@@ -36,12 +36,12 @@ class NoteCommand extends Command {
 
         
         return {
-            member
+            userdata
         };
     }
 
     async exec(message, args) {
-        this.client.memberNotesPost(args.member, message.channel);
+        this.client.memberNotesPost(args.userdata.id, message.channel);
     }
 }
 
