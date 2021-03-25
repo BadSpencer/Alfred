@@ -63,9 +63,11 @@ class NoteDelCommand extends Command {
                 userdata.warn -= 1;
                 this.client.userdataSet(userdata);
                 successMessage(`L'avertissement ${args.note.key} à correctement été retiré`, message.channel, true);
+                this.client.modLogEmbed(this.client.textes.get("MOD_NOTIF_MEMBER_WARN_DEL", message.author.id, args.note), 'WARNDEL');
             } else {
                 successMessage(`La note ${args.note.key} à correctement été supprimée`, message.channel, true);
                 this.client.db_memberLog.delete(args.note.key);
+                this.client.modLogEmbed(this.client.textes.get("MOD_NOTIF_MEMBER_NOTE_DEL", message.author.id, args.note), 'NOTEDEL');
             }
         }
     }

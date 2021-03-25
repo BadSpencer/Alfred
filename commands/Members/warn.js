@@ -9,6 +9,7 @@ const {
     questionMessage,
     promptMessage
 } = require('../../utils/messages');
+const Discord = require("discord.js");
 const colors = require('../../utils/colors');
 const textes = new (require(`../../utils/textes.js`));
 
@@ -55,15 +56,17 @@ class NoteCommand extends Command {
         args.userdata.warn += 1;
         this.client.userdataSet(args.userdata);
 
-        this.client.memberLogWarn(args.userdata.id, message.author.id, args.note);
-        member.send(`Vous avez reçu un avertissement de la part de ${this.client.memberGetDisplayNameByID(message.author.id)}.
-        Raison: ${args.note}`)
+        let embed = new Discord.MessageEmbed();
 
-        if (args.userdata.warn > 2) {
-            this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_WARN_LIMIT", args.userdata.id, message.author.id, args.note, args.userdata.warn));
-        } else {
-            this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_WARN", args.userdata.id, message.author.id, args.note));
-        }
+        embed.setDescription(`Vous avez reçu un avertissement de la part de <@${message.author.id}>\n\nPour la raison: ${args.note}`);
+        embed.setFooter(`Nombre total d'avertissement: ${args.userdata.warn}`);
+        embed.setAuthor('Avertissement', 'https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+        member.send(embed);
+
+        this.client.memberLogWarn(args.userdata.id, message.author.id, args.note);
+
+        this.client.modLogEmbed(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_WARN", args.userdata.id, message.author.id, args.note, args.userdata.warn), 'WARN');
+
 
     }
 }

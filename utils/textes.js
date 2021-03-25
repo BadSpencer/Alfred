@@ -1232,8 +1232,8 @@ module.exports = class {
                 return `**${note.key}** \`${note.createdDate} ${note.createdTime}\` par **${party}** pour **${member}**
                 ${note.note} 
                 
-                ⚠️ **Attention** cette note est un **warning** en supprimant cette note le compteur de warning du membre diminuera aussi.
-                Êtes-vous sûr de vouloir supprimer cette note ? (**oui**/**non**)`;
+                ⚠️ **Attention** cette note est un **avertissement** en supprimant cette note le compteur d'avertissements du membre diminuera aussi.
+                Êtes-vous sûr de vouloir supprimer cet avertissement ? (**oui**/**non**)`;
             },
 
             NOTE_LIST_DESCRIPTION_CONTENT: `Liste de toutes les notes`,
@@ -1467,23 +1467,43 @@ module.exports = class {
             MOD_NOTIF_MEMBER_NICK_CHANGE: (oldNick, newNick) => {
                 return `⚠️ **${oldNick}** à changé de pseudo, c'est désormais: **${newNick}**`;
             },
-            MOD_NOTIF_MEMBER_NEW_NOTE: (member, party, note) => {
-                return `⚠️ Une nouvelle note à été ajoutée pour **${member}** par **${party}**
+            MOD_NOTIF_MEMBER_NEW_NOTE: (memberID, partyID, note) => {
+                return `Une nouvelle note à été ajoutée pour <@${memberID}> par <@${partyID}>
                 
                 **Note**: ${note}`;
             },
-            MOD_NOTIF_MEMBER_NEW_WARN: (memberID, partyID, note) => {
-                return `⚠️ Un avertissement à été ajouté pour <@${memberID}> par <@${partyID}>
+            MOD_NOTIF_MEMBER_NEW_WARN: (memberID, partyID, note, warn) => {
+                return `Un avertissement à été ajouté pour <@${memberID}> par <@${partyID}>
                 
-                **Note**: ${note}`;
+                **Raison**: ${note}
+                
+                Ce membre comptabilise **${warn}** avertissement(s)`;
             },
-            MOD_NOTIF_MEMBER_NEW_WARN_LIMIT: (memberID, partyID, note, warn) => {
-                return `⚠️ Un avertissement à été ajouté pour <@${memberID}> par <@${partyID}>
-                
-                **Note**: ${note}
-                
-                ⚠️ **ATTENTION** ce membre comptabilise **${warn}** avertissements`;
+            MOD_NOTIF_MEMBER_NOTE_DEL: (memberID, note) => {
+                return `La note **${note.key}** pour <@${note.memberID}> par <@${note.partyMemberID}>
+                a été supprimée par <@${memberID}>
+
+                **Note**: ${note.note}`;
             },
+            MOD_NOTIF_MEMBER_NOTE_EDIT: (memberID, oldNote, newNote) => {
+                return `La note **${oldNote.key}** pour <@${oldNote.memberID}> par <@${oldNote.partyMemberID}>
+                a été éditée par <@${memberID}>
+
+                **Avant**
+                Le **${moment(oldNote.createdAt).format('DD.MM.YYYY')}** à **${moment(oldNote.createdAt).format('HH:mm')}**
+                ${oldNote.note}
+
+                **Après**
+                Le **${moment(newNote.createdAt).format('DD.MM.YYYY')}** à **${moment(newNote.createdAt).format('HH:mm')}**
+                ${newNote.note}`;
+            },
+            MOD_NOTIF_MEMBER_WARN_DEL: (memberID, note) => {
+                return `L'avertissement **${note.key}** pour <@${note.memberID}> par <@${note.partyMemberID}>
+                a été retiré par <@${memberID}>
+                
+                **Raison**: ${note.note}`;
+            },
+
             MOD_NOTIF_MEMBER_JOIN_GAME: (member, game) => {
                 return `✅ **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;
             },

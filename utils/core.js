@@ -563,6 +563,57 @@ module.exports = (client) => {
             modNotifChannel.send(content);
         }
     };
+
+    client.modLogEmbed = async (description, type = 'NONE') => {
+
+        let embed = new Discord.MessageEmbed();
+
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
+
+        let modNotifChannel = guild.channels.cache.find(c => c.name === settings.modNotifChannel);
+
+        embed.setDescription(description);
+
+        switch (type) {
+            case 'CONTACT':
+                embed.setAuthor('Message de contact','https://cdn.discordapp.com/attachments/552008545231568897/824625258605969408/1F4E8.png');
+                embed.setColor(colors['darkgreen']);
+            break;
+            case 'NOTE':
+                embed.setAuthor('Note ajoutée','https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
+                embed.setColor(colors['darkorange']);
+            break;
+            case 'NOTEDEL':
+                embed.setAuthor('Note supprimée','https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
+                embed.setColor(colors['darkgreen']);
+            break;
+            case 'NOTEEDIT':
+                embed.setAuthor('Note éditée','https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
+                embed.setColor(colors['darkorange']);
+            break;
+            case 'WARN':
+                embed.setAuthor('Avertissement','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setColor(colors['darkred']);
+            break;
+            case 'WARNDEL':
+                embed.setAuthor('Avertissement retiré','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setColor(colors['darkgreen']);
+            break;
+
+            default:
+                embed.setAuthor('Notification','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setColor(colors['darkgreen']);
+            break;
+
+        }
+
+        if (modNotifChannel) {
+            modNotifChannel.send(embed);
+        }
+    };
+
+
     client.messageLog = (message) => {
         if (message.author.bot) return false;
         if (message.content.startsWith("!")) return false;

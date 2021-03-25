@@ -80,7 +80,7 @@ class NoteEditCommand extends Command {
 
     async exec(message, args) {
 
-        let newNote = args.note;
+        let newNote = Object.assign({}, args.note);
 
         newNote.createdAt = args.date;
         newNote.createdDate = moment(args.date).format('DD.MM.YYYY');
@@ -88,6 +88,7 @@ class NoteEditCommand extends Command {
         newNote.note = args.newText;
         
         this.client.db_memberLog.set(newNote.key, newNote);
+        this.client.modLogEmbed(this.client.textes.get("MOD_NOTIF_MEMBER_NOTE_EDIT", message.author.id, args.note, newNote), 'NOTEEDIT');
 
     }
 }

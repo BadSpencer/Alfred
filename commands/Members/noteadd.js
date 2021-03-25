@@ -49,7 +49,7 @@ class NoteCommand extends Command {
 
     async exec(message, args) {
         this.client.memberLogNote(args.userdata.id, message.author.id, args.note);
-        this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_NOTE", this.client.memberGetDisplayNameByID(args.userdata.id), this.client.memberGetDisplayNameByID(message.author.id), args.note));
+        this.client.modLogEmbed(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_NOTE", args.userdata.id, message.author.id, args.note), 'NOTE');
     }
 }
 
