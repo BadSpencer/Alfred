@@ -14,8 +14,8 @@ const textes = new (require(`../../utils/textes.js`));
 
 class NoteCommand extends Command {
     constructor() {
-        super("noteadd", {
-            aliases: ["noteadd"],
+        super('note-add', {
+            aliases: ['note-add', 'notes-add', 'nadd'],
             category: '🟪 Membres',
             description: {
                 content: textes.get("USER_NOTEADD_DESCRIPTION_CONTENT"),
@@ -26,8 +26,8 @@ class NoteCommand extends Command {
     }
 
     async *args(message) {
-        const member = yield {
-            type: "member",
+        const userdata = yield {
+            type: "userdata",
             prompt: {
                 start: message => promptMessage(textes.get('USER_NOTEADD_MEMBER_PROMPT')),
                 retry: message => promptMessage(textes.get('USER_NOTEADD_MEMBER_RETRY'))
@@ -37,19 +37,19 @@ class NoteCommand extends Command {
         const note = yield {
             type: "string",
             prompt: {
-                start: message => promptMessage(textes.get("USER_NOTEADD_NOTE_PROMPT", member))
+                start: message => promptMessage(textes.get("USER_NOTEADD_NOTE_PROMPT", this.client.memberGetDisplayNameByID(userdata.id)))
             }
         };
         
         return {
-            member,
+            userdata,
             note
         };
     }
 
     async exec(message, args) {
-        this.client.memberLogNote(args.member.id, message.author.id, args.note);
-        this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_NOTE", args.member, message.member, args.note));
+        this.client.memberLogNote(args.userdata.id, message.author.id, args.note);
+        this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_NOTE", this.client.memberGetDisplayNameByID(args.userdata.id), this.client.memberGetDisplayNameByID(message.author.id), args.note));
     }
 }
 

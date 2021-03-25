@@ -26,8 +26,8 @@ class NoteCommand extends Command {
     }
 
     async *args(message) {
-        const member = yield {
-            type: "member",
+        const userdata = yield {
+            type: "userdata",
             prompt: {
                 start: message => promptMessage(textes.get('USER_MEMBER_PROMPT')),
                 retry: message => promptMessage(textes.get('USER_MEMBER_RETRY'))
@@ -37,29 +37,34 @@ class NoteCommand extends Command {
         const note = yield {
             type: "string",
             prompt: {
-                start: message => promptMessage(textes.get("USER_WARN_NOTE_PROMPT", member))
+                start: message => promptMessage(textes.get("USER_WARN_NOTE_PROMPT", this.client.memberGetDisplayNameByID(userdata.id)))
             }
         };
 
         return {
-            member,
+            userdata,
             note
         };
     }
 
     async exec(message, args) {
-        let userdata = this.client.userdataGet(args.member.id);
 
-        if (userdata) {
-            userdata.warn += 1;
-        };
-        this.client.userdataSet(userdata);
+        const guild = this.client.getGuild();
+        let member = guild.members.cache.get(args.userdata.id);
 
-        let note = `⚠️ ${args.note}`;
-        this.client.memberLogNote(args.member.id, message.author.id, note);
-        args.member.send(`Vous avez reçu un avertissement de la part de ${this.client.memberGetDisplayNameByID(message.member.id)}.
+        args.userdata.warn += 1;
+        this.client.userdataSet(args.userdata);
+
+        this.client.memberLogWarn(args.userdata.id, message.author.id, args.note);
+        member.send(`Vous avez reçu un avertissement de la part de ${this.client.memberGetDisplayNameByID(message.author.id)}.
         Raison: ${args.note}`)
-        this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_WARN", args.member, message.member, note));
+
+        if (args.userdata.warn > 2) {
+            this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_WARN_LIMIT", args.userdata.id, message.author.id, args.note, args.userdata.warn));
+        } else {
+            this.client.modLog(this.client.textes.get("MOD_NOTIF_MEMBER_NEW_WARN", args.userdata.id, message.author.id, args.note));
+        }
+
     }
 }
 

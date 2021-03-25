@@ -12,10 +12,10 @@ const {
 const colors = require('../../utils/colors');
 const textes = new (require(`../../utils/textes.js`));
 
-class NoteCommand extends Command {
+class NoteUserCommand extends Command {
     constructor() {
-        super("note", {
-            aliases: ["note"],
+        super('note-user', {
+            aliases: ['note-user', 'notes-user', 'notes', 'nuser'],
             category: '🟪 Membres',
             description: {
                 content: textes.get("USER_NOTE_DESCRIPTION_CONTENT"),
@@ -33,8 +33,6 @@ class NoteCommand extends Command {
                 retry: message => promptMessage(textes.get('USER_MEMBER_RETRY'))
             }
         };
-
-        
         return {
             userdata
         };
@@ -46,4 +44,4 @@ class NoteCommand extends Command {
 }
 
 
-module.exports = NoteCommand;
+module.exports = NoteUserCommand;

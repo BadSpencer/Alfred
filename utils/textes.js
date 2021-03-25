@@ -1136,7 +1136,10 @@ module.exports = class {
             CMD_EDIT_VALUE_PROMPT: `Quelle est la **nouvelle valeur** pour ce champ ?`,
 
 
+            CMD_NOTE_PROMPT: `Quel est l'ID de la note ?`,
+            CMD_NOTE_RETRY: `Je ne trouve aucune note avec cet ID. Vérifiez votre saisie`,
 
+            CMD_OUINON_RETRY: `Veuillez répondre par 'oui' ou par 'non`,
 
 
 
@@ -1189,8 +1192,52 @@ module.exports = class {
             USER_INFOS_DESCRIPTION_CONTENT: `Informations sur un membre`,
             USER_INFOS_DESCRIPTION_USAGE: `Permet d'afficher les informations détaillées d'un membre`,
 
-            USER_NOTE_DESCRIPTION_CONTENT: `Gestion des notes pour un membre`,
+            USER_NOTE_DESCRIPTION_CONTENT: `Notes pour un membre`,
             USER_NOTE_DESCRIPTION_USAGE: `Affiche les dernière notes pour un membres et permet des actions`,
+
+            NOTE_EDIT_DESCRIPTION_CONTENT: `Modifier une note`,
+            NOTE_EDIT_DESCRIPTION_USAGE: `Permet de modifier le texte d'une note`,
+            NOTE_CHANGEDATE_PROMPT: (createdDate, createdTime) => {
+                return `Cette note est datée du  **${createdDate}** à **${createdTime}**
+                Souhaitez-vous modifier cette date ? (**oui**/**non**)`;
+            },
+            NOTE_CHANGEDATE_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
+
+            NOTE_CHANGENOTE_PROMPT: (note) => {
+                return `Voici le texte actuel de la note: 
+                ${note}
+
+                Souhaitez-vous modifier ce texte ? (**oui**/**non**)`;
+            },
+
+            NOTE_NEWNOTE_PROMPT: (note) => {
+                return `Voici le texte actuel de la note: 
+                ${note}
+
+                Saisissez le texte de remplacement`;
+            },
+
+            NOTE_DATE_PROMPT: `Veuillez sisir la nouvelle date au format \`AAAA-MM-JJ hh:mm\``,
+            NOTE_DATE_RETRY: `Cette date n'est pas valide. J'attends une date au format \`AAAA-MM-JJ hh:mm\``,
+
+            NOTE_DEL_DESCRIPTION_CONTENT: `Supprimer une note`,
+            NOTE_DEL_DESCRIPTION_USAGE: `Permet de supprimer une note`,
+            NOTE_DEL_CONFIRM_PROMPT: (note, party, member) => {
+                return `**${note.key}** \`${note.createdDate} ${note.createdTime}\` par **${party}** pour **${member}**
+                ${note.note} 
+                
+                Êtes-vous sûr de vouloir supprimer cette note ? (**oui**/**non**)`;
+            },
+            WARN_DEL_CONFIRM_PROMPT: (note, party, member) => {
+                return `**${note.key}** \`${note.createdDate} ${note.createdTime}\` par **${party}** pour **${member}**
+                ${note.note} 
+                
+                ⚠️ **Attention** cette note est un **warning** en supprimant cette note le compteur de warning du membre diminuera aussi.
+                Êtes-vous sûr de vouloir supprimer cette note ? (**oui**/**non**)`;
+            },
+
+            NOTE_LIST_DESCRIPTION_CONTENT: `Liste de toutes les notes`,
+            NOTE_LIST_DESCRIPTION_USAGE: `Affiche la liste des notes pour tous les membres`,
 
 
             USER_NOTEADD_DESCRIPTION_CONTENT: `Ajouter une note sur un membre`,
@@ -1198,7 +1245,7 @@ module.exports = class {
             USER_NOTEADD_MEMBER_PROMPT: `Pour quel membre souhaitez-vous ajouter une note ?`,
             USER_NOTEADD_MEMBER_RETRY: `Je n'arrive pas à trouver de membre avec ce nom. Essayer peut-être avec son ID`,
             USER_NOTEADD_NOTE_PROMPT: (member) => {
-                return `Ajouter une note pour **${member.displayName}**
+                return `Ajouter une note pour **${member}**
                 
                 Veuillez saisir la note à ajouter`;
             },
@@ -1209,7 +1256,7 @@ module.exports = class {
             USER_WARN_DESCRIPTION_CONTENT: `Avertir un membre`,
             USER_WARN_DESCRIPTION_USAGE: `Permet d'aavertir un membre avec ajout d'une note`,
             USER_WARN_NOTE_PROMPT: (member) => {
-                return `Donner un avertissment pour **${member.displayName}**
+                return `Donner un avertissment pour **${member}**
                 
                 Veuillez saisir la note à ajouter à votre avertissement`;
             },
@@ -1420,15 +1467,22 @@ module.exports = class {
             MOD_NOTIF_MEMBER_NICK_CHANGE: (oldNick, newNick) => {
                 return `⚠️ **${oldNick}** à changé de pseudo, c'est désormais: **${newNick}**`;
             },
-            MOD_NOTIF_MEMBER_NEW_NOTE: (member, partyMember, note) => {
-                return `⚠️ Une nouvelle note à été ajoutée pour **${member.displayName}** par **${partyMember.displayName}**
+            MOD_NOTIF_MEMBER_NEW_NOTE: (member, party, note) => {
+                return `⚠️ Une nouvelle note à été ajoutée pour **${member}** par **${party}**
                 
                 **Note**: ${note}`;
             },
-            MOD_NOTIF_MEMBER_NEW_WARN: (member, partyMember, note) => {
-                return `⚠️ Un avertissement à été ajouté pour <@${member.id}> par <@${partyMember.id}>
+            MOD_NOTIF_MEMBER_NEW_WARN: (memberID, partyID, note) => {
+                return `⚠️ Un avertissement à été ajouté pour <@${memberID}> par <@${partyID}>
                 
                 **Note**: ${note}`;
+            },
+            MOD_NOTIF_MEMBER_NEW_WARN_LIMIT: (memberID, partyID, note, warn) => {
+                return `⚠️ Un avertissement à été ajouté pour <@${memberID}> par <@${partyID}>
+                
+                **Note**: ${note}
+                
+                ⚠️ **ATTENTION** ce membre comptabilise **${warn}** avertissements`;
             },
             MOD_NOTIF_MEMBER_JOIN_GAME: (member, game) => {
                 return `✅ **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;

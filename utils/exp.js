@@ -140,6 +140,13 @@ module.exports = (client) => {
         client.memberLog(timestamp, memberID, "NOTE", `Note pour ${client.memberGetDisplayNameByID(memberID)} par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, partyMemberID, null, null, null, note, 0);
     };
 
+    client.memberLogWarn = (memberID, partyMemberID, note, timestamp = null) => {
+        if (timestamp === null) {
+            timestamp = +new Date;
+        };
+        client.memberLog(timestamp, memberID, "WARN", `Avertissement pour ${client.memberGetDisplayNameByID(memberID)} par ${client.memberGetDisplayNameByID(partyMemberID)}`, null, null, partyMemberID, null, null, null, note, 0);
+    };
+
     client.memberLogKick = (memberID, partyMemberID, note, timestamp = null) => {
         if (timestamp === null) {
             timestamp = +new Date;

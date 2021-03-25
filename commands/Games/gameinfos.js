@@ -37,13 +37,7 @@ class GameInfosCommand extends Command {
     }
 
     async exec(message, args) {
-        let client = this.client;
-
-        client.gamesPostGameInfos(args.game, message.channel);
-
-
-
-        //if (message.channel.type === 'text') message.delete();
+        this.client.gamesPostGameInfos(args.game, message.channel);
     }
 
 }

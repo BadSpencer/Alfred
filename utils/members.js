@@ -277,7 +277,20 @@ module.exports = (client) => {
     client.memberNotesGet = async (memberID) => {
         let memberLogs = client.db_memberLog.filterArray(memberLog =>
             memberLog.memberID === memberID &&
-            memberLog.type === "NOTE");
+            memberLog.type === 'NOTE' ||
+            memberLog.type === 'WARN');
+
+        memberLogs.sort(function (a, b) {
+            return a.createdAt - b.createdAt;
+        }).reverse();
+
+        return memberLogs;
+    };
+
+    client.memberNotesGetAll = async () => {
+        let memberLogs = client.db_memberLog.filterArray(memberLog =>
+            memberLog.type === 'NOTE' ||
+            memberLog.type === 'WARN');
 
         memberLogs.sort(function (a, b) {
             return a.createdAt - b.createdAt;
@@ -302,18 +315,63 @@ module.exports = (client) => {
 
         if (memberLogs) {
             for (const memberLog of memberLogs) {
-                memberNotes.push(`Le **${moment(memberLog.createdAt).format('DD.MM.YYYY')}** à **${moment(memberLog.createdAt).format('HH.mm')}** par  **${client.memberGetDisplayNameByID(memberLog.partyMemberID)}**`);
+                if (memberLog.type == 'WARN') {
+                    memberNotes.push(`⚠️**${memberLog.key}** \`${moment(memberLog.createdAt).format('DD.MM.YYYY')} ${moment(memberLog.createdAt).format('HH:mm')}\` par <@${memberLog.partyMemberID}>`);
+                } else {
+                    memberNotes.push(`◽️**${memberLog.key}** \`${moment(memberLog.createdAt).format('DD.MM.YYYY')} ${moment(memberLog.createdAt).format('HH:mm')}\` par <@${memberLog.partyMemberID}>`);
+                }
+                memberNotes.push(`${memberLog.note}`);
+                memberNotes.push(``);
+                
+            }
+        }
+
+        if (memberNotes.length > 0) {
+            await client.arrayToEmbed(memberNotes, 12, `Notes pour ${client.memberGetDisplayNameByID(memberID)}`, channel);
+        } else {
+            warnMessage(`Aucune note trouvée pour ${client.memberGetDisplayNameByID(memberID)}`, channel);
+        }
+
+    };
+
+    client.memberUpdateWarn = async () => {
+        let userdatas = client.userdataGetAll(true);
+
+        for (userdata of userdatas) {
+            let memberLogs = client.db_memberLog.filterArray(memberLog =>
+                memberLog.memberID === userdata.id &&
+                memberLog.type === 'WARN');
+
+                userdata.warn = memberLogs.length;
+                client.userdataSet(userdata);
+        }
+
+    };
+
+    client.memberNotesList = async (channel) => {
+
+        let memberLogs = await client.memberNotesGetAll();
+        let memberNotes = [];
+
+        if (memberLogs) {
+            for (const memberLog of memberLogs) {
+                if (memberLog.type == 'WARN') {
+                    memberNotes.push(`⚠️**${memberLog.key}** <@${memberLog.memberID}> \`${moment(memberLog.createdAt).format('DD.MM.YYYY')} ${moment(memberLog.createdAt).format('HH:mm')}\` par <@${memberLog.partyMemberID}>`);
+                } else {
+                    memberNotes.push(`◽️**${memberLog.key}** <@${memberLog.memberID}> \`${moment(memberLog.createdAt).format('DD.MM.YYYY')} ${moment(memberLog.createdAt).format('HH:mm')}\` par <@${memberLog.partyMemberID}>`);
+                }
                 memberNotes.push(`${memberLog.note}`);
                 memberNotes.push(``);
             }
         }
 
         if (memberNotes.length > 0) {
-            await client.arrayToEmbed(memberNotes, 9, `Notes pour ${client.memberGetDisplayNameByID(memberID)}`, channel);
+            await client.arrayToEmbed(memberNotes, 12, `Liste des notes`, channel);
         } else {
-            warnMessage(`Aucune note trouvée pour ${client.memberGetDisplayNameByID(memberID)}`, channel);
+            warnMessage(`Aucune note trouvée`, channel);
         }
 
     };
+
 
 }

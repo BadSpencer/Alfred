@@ -180,7 +180,7 @@ client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     const guild = client.getGuild();
     const member = client.util.resolveMember(phrase, guild.members.cache);
     if (member) {
-        const userdata = client.db_userdata.find(record => record.id == member.id);
+        const userdata = client.db_userdata.get(member.id);
         if (userdata) {
             return userdata;
         }
@@ -188,6 +188,18 @@ client.commandHandler.resolver.addType('userdata', (message, phrase) => {
     }
     return null;
 
+});
+
+client.commandHandler.resolver.addType('note', (message, phrase) => {
+    if (!phrase) return null;
+
+    let note = client.db_memberLog.get(phrase)
+    if (note) {
+        if (note.type == 'NOTE' || note.type == 'WARN') {
+            return note;
+        }
+    }
+    return null;
 });
 
 client.commandHandler.resolver.addType('steamID', (message, phrase) => {
