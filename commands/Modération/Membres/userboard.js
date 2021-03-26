@@ -7,9 +7,9 @@ const {
     errorMessage,
     warnMessage,
     questionMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 const moment = require("moment");
-const datamodel = require('../../utils/datamodel');
+const datamodel = require('../../../utils/datamodel');
 
 class userboardCommand extends Command {
     constructor() {

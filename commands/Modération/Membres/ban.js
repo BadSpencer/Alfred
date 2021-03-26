@@ -10,8 +10,8 @@ const {
     warnMessage,
     questionMessage,
     promptMessage
-} = require('../../utils/messages');
-const colors = require('../../utils/colors');
+} = require('../../../utils/messages');
+const colors = require('../../../utils/colors');
 
 
 class BanCommand extends Command {

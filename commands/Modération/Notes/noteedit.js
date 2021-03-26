@@ -9,10 +9,10 @@ const {
     warnMessage,
     questionMessage,
     promptMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 const moment = require("moment");
-const colors = require('../../utils/colors');
-const textes = new (require(`../../utils/textes.js`));
+const colors = require('../../../utils/colors');
+const textes = new (require(`../../../utils/textes.js`));
 
 class NoteEditCommand extends Command {
     constructor() {

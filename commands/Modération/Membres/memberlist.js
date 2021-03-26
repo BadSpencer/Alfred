@@ -1,7 +1,7 @@
 const { Command } = require("discord-akairo");
 const { inspect } = require("util");
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../utils/messages');
-const textes = new (require(`../../utils/textes.js`));
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const textes = new (require(`../../../utils/textes.js`));
 
 class GameListCommand extends Command {
     constructor() {

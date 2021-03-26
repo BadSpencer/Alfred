@@ -8,10 +8,10 @@ const {
     warnMessage,
     questionMessage,
     promptMessage
-} = require('../../utils/messages');
+} = require('../../../utils/messages');
 const Discord = require("discord.js");
-const colors = require('../../utils/colors');
-const textes = new (require(`../../utils/textes.js`));
+const colors = require('../../../utils/colors');
+const textes = new (require(`../../../utils/textes.js`));
 
 class NoteCommand extends Command {
     constructor() {

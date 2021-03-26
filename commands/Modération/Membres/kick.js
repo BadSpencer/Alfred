@@ -1,7 +1,7 @@
 const { Command } = require("discord-akairo");
 const { Permissions } = require("discord.js");
-const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../utils/messages');
-const colors = require('../../utils/colors');
+const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../../utils/messages');
+const colors = require('../../../utils/colors');
 
 
 class KickCommand extends Command {
