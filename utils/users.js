@@ -95,7 +95,6 @@ module.exports = (client) => {
                 .setColor(colors['yellow'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_QUIT", user))
                 .setThumbnail('https://cdn.discordapp.com/attachments/713393174449619004/820327631647014982/1F64B-1F3FB_color.png')
-                .setFooter(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", user), avatar);
             welcomeChannel.send(welcomeMessage);
         };
 
@@ -122,7 +121,6 @@ module.exports = (client) => {
                 .setColor(colors['darkred'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_KICK", user, userBy, raison))
                 .setThumbnail('https://cdn.discordapp.com/attachments/713393174449619004/820326574707834880/274C_color.png')
-                .setFooter(client.textes.get("LOG_EVENT_USER_KICK_SERVER", user), avatar);
             welcomeChannel.send(welcomeMessage);
         } else {
             client.log("Salon acceuil non trouvé", "error");
@@ -148,7 +146,6 @@ module.exports = (client) => {
                 .setColor(colors['red'])
                 .setDescription(client.textes.get("MESSAGES_SERVER_BAN", user, userBy, raison))
                 .setThumbnail('https://cdn.discordapp.com/attachments/713393174449619004/820325906391498802/26D4_color.png')
-                .setFooter(client.textes.get("LOG_EVENT_USER_BAN_SERVER", user), avatar);
             welcomeChannel.send(banMessage);
         };
     };

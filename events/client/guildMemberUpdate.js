@@ -24,7 +24,7 @@ class guildMemberUpdateListener extends Listener {
 
         if (newMember.displayName !== oldMember.displayName) {
             client.memberLogNick(newMember.id, oldMember.displayName, newMember.displayName);
-            client.modLog(client.textes.get("MOD_NOTIF_MEMBER_NICK_CHANGE", oldMember.displayName, newMember.displayName));
+            client.modLogEmbed(client.textes.get("MOD_NOTIF_MEMBER_NICK_CHANGE", oldMember.displayName, newMember.displayName));
             userdata.displayName = newMember.displayName;
             userdata.username = newMember.username;
             client.db_userdata.set(userdata.id, userdata);

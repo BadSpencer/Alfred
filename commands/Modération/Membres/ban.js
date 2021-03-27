@@ -32,63 +32,52 @@ class BanCommand extends Command {
             type: 'userdata',
             prompt: {
                 start: message => promptMessage('Quel membre souhaitez vous bannir ?'),
-                retry: message => promptMessage('Mentionnez un membre avec son ID')
+                retry: message => promptMessage(this.client.textes.get('USER_MEMBER_RETRY'))
             }
         };
-        const raison = yield {
-            type: 'content',
-            match: 'rest',
+
+        const confirmation = yield {
+            type: 'ouinon',
             prompt: {
-                start: message => promptMessage(`Pour quelle raison souhaitez vous bannir **${userdata.displayName}** ?`),
-                retry: message => promptMessage(`Pour quelle raison souhaitez vous bannir **${userdata.displayName}** ?`)
+                start: message => promptMessage(`Êtes-vous sûr de vouloir bannir **${this.client.memberGetDisplayNameByID(userdata.id)}** ?`),
+                retry: message => promptMessage(this.client.textes.get('CMD_OUINON_RETRY'))
             }
-        };
+        }
+
+        const reason = yield (confirmation == 'oui' ? {
+            type: 'string',
+            prompt: {
+                start: message => promptMessage(`Veuillez saisir une **raison** pour ce bannissement\n\nCe texte sera envoyé au membre par message privé avant son bannissement`)
+            }
+        } : {
+            type: 'string',
+            default: 'commande annulée'
+        });
+
         return {
             userdata,
-            raison
+            confirmation,
+            reason,
         };
     }
 
     async exec(message, args) {
-        let client = this.client;
-        const guild = client.guilds.cache.get(client.config.guildID);
-        let member = guild.members.cache.get(args.userdata.id);
 
-        if (!member) return errorMessage(client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName), message.channel);
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return errorMessage(client.textes.get("USER_ERROR_NOT_BANABLE", args.userdata.displayName), message.channel);
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return errorMessage(client.textes.get("USER_ERROR_NOT_BANABLE", args.userdata.displayName), message.channel);
+        let guildMember = this.client.memberGet(args.userdata.id);
 
-        let questionMess = await questionMessage(client.textes.get("USER_BAN_CHECK_BEFORE", member), message.channel);
-        const responses = await message.channel.awaitMessages(msg => msg.author.id === message.author.id, {
-            max: 1,
-            time: 30000,
-        });
+        if (!guildMember) return errorMessage(this.client.textes.get("USER_ERROR_NOT_A_MEMBER", this.client.memberGetDisplayNameByID(args.userdata.id)), message.channel);
 
-        if (responses.size !== 1) {
-            warnMessage(client.textes.get("COM_ACTION_TIMEOUT"), message.channel);
-            return null;
-        }
-        const response = responses.first();
+        if (args.confirmation == 'oui') {
+            if (guildMember.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return errorMessage(this.client.textes.get("USER_ERROR_NOT_BANABLE", this.client.memberGetDisplayNameByID(guildMember.id)), message.channel);
+            if (guildMember.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return errorMessage(this.client.textes.get("USER_ERROR_NOT_BANABLE", this.client.memberGetDisplayNameByID(guildMember.id)), message.channel);
 
-        if (response.content == "oui") {
-            if (message.channel.type === 'text') {
-                message.delete();;
-                response.delete();
-            }
-
-            client.memberLogBan(member.id, message.author.id, args.raison);
-            await errorMessage(client.textes.get("USER_BAN_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
-            await member.ban({ days: 0, reason: args.raison });
-            client.serverBanNotification(member.user, message.author, args.raison);
-            successMessage(client.textes.get("USER_BAN_CHECK_SUCCESS", member), message.channel);
+            this.client.memberLogBan(guildMember.id, message.author.id, args.reason);
+            await errorMessage(this.client.textes.get("USER_BAN_NOTIFICATION_TO_USER", this.client.memberGetDisplayNameByID(message.author.id), args.reason), guildMember, false);
+            await guildMember.ban({ days: 0, reason: args.reason });
+            this.client.serverBanNotification(guildMember.user, message.author, args.reason);
+            successMessage(this.client.textes.get("USER_BAN_CHECK_SUCCESS", guildMember), message.channel);
         } else {
-            if (message.channel.type === 'text') {
-                message.delete();;
-                response.delete();
-            }
-
-            warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
-            return null;
+            warnMessage(this.client.textes.get("COM_ACTION_ANNULLE"), message.channel);
         }
 
     }

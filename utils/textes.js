@@ -505,8 +505,8 @@ module.exports = class {
             USER_KICK_CHECK_BEFORE: (member) => {
                 return `Êtes vous certain de vouloir expulser **${member.displayName}** du serveur ?`;
             },
-            USER_KICK_NOTIFICATION_TO_USER: (memberBy, raison) => {
-                return `Vous avez été expulsé du discord Casual Effect par ${memberBy.displayName} pour la raison suivante:\n${raison}`;
+            USER_KICK_NOTIFICATION_TO_USER: (memberByName, raison) => {
+                return `Vous avez été expulsé du discord Casual Effect par ${memberByName} pour la raison suivante:\n${raison}`;
             },
             USER_KICK_CHECK_SUCCESS: (member) => {
                 return `Le membre **${member.displayName}** à été explusé du serveur avec succès.`;
@@ -515,8 +515,8 @@ module.exports = class {
             USER_BAN_CHECK_BEFORE: (member) => {
                 return `Êtes vous certain de vouloir bannir **${member.displayName}** du serveur ?`;
             },
-            USER_BAN_NOTIFICATION_TO_USER: (memberBy, raison) => {
-                return `Vous avez été banni du discord Casual Effect par ${memberBy.displayName} pour la raison:\n${raison}`;
+            USER_BAN_NOTIFICATION_TO_USER: (memberByName, raison) => {
+                return `Vous avez été banni du discord Casual Effect par ${memberByName} pour la raison:\n${raison}`;
             },
             USER_BAN_CHECK_SUCCESS: (member) => {
                 return `Le membre **${member.displayName}** à été banni du serveur avec succès.`;
@@ -1416,8 +1416,8 @@ module.exports = class {
                     return `${member.displayName} à retiré sa réaction ${messageReaction.emoji.name}  sur le message ${messageReaction.message.id}(${messageReaction.message.author.username}) dans ${messageReaction.message.channel.name}`;
                 }
             },
-            LOG_EVENT_USER_JOIN_SERVER: (member) => {
-                return `${member.displayName} à rejoint le serveur`;
+            LOG_EVENT_USER_JOIN_SERVER: (memberDisplayName) => {
+                return `${memberDisplayName} à rejoint le serveur`;
             },
             LOG_EVENT_USER_QUIT_SERVER: (user) => {
                 return `${user.tag} à quitté le serveur`;
@@ -1443,29 +1443,29 @@ module.exports = class {
                 return `⚠️ **<@${member.id}>** joue à ${game.name} mais n'est pas dans le groupe. Il à été notifié par message privé de l'existence du groupe.`;
             },
             MOD_NOTIF_SERVER_JOIN: (member) => {
-                return `✅ **<@${member.id}>** à rejoint le serveur`;
+                return `<@${member.id}> à rejoint le serveur`;
             },
-            MOD_NOTIF_SERVER_JOIN_AGAIN: (member) => {
-                return `❗️✅ **<@${member.id}>** à rejoint le serveur (c'est pas la première fois)`;
+            MOD_NOTIF_SERVER_JOIN_AGAIN: (member, userdata) => {
+                return `<@${member.id}> à rejoint le serveur`;
             },
             MOD_NOTIF_SERVER_QUIT: (member) => {
-                return `❗️ **<@${member.id}>** à quitté le serveur`;
+                return `<@${member.id}> à quitté le serveur`;
             },
             MOD_NOTIF_SERVER_KICK: (target, executor, reason) => {
-                return `❗️ **<@${target.id}>** à été expulsé du serveur par **<@${executor.id}>**
+                return `<@${target.id}> à été expulsé du serveur par <@${executor.id}>
                 
                 **Raison**: ${reason}`;
             },
             MOD_NOTIF_SERVER_BAN: (target, executor, reason) => {
-                return `❗️ **<@${target.id}>** à été banni du serveur par **<@${executor.id}>**
+                return `❗<@${target.id}> à été banni du serveur par <@${executor.id}>
                 
                 **Raison**: ${reason}`;
             },
             MOD_NOTIF_NEW_MEMBER: (member) => {
-                return `✅ **<@${member.id}>** à été accepté et ajouté au groupe des membres`;
+                return `<@${member.id}> à été accepté et ajouté au groupe des membres`;
             },
             MOD_NOTIF_MEMBER_NICK_CHANGE: (oldNick, newNick) => {
-                return `⚠️ **${oldNick}** à changé de pseudo, c'est désormais: **${newNick}**`;
+                return `⚠${oldNick} à changé de pseudo, c'est désormais: ${newNick}`;
             },
             MOD_NOTIF_MEMBER_NEW_NOTE: (memberID, partyID, note) => {
                 return `Une nouvelle note à été ajoutée pour <@${memberID}> par <@${partyID}>
@@ -1534,14 +1534,15 @@ module.exports = class {
             },
 
             MOD_NOTIF_AUTOMOD_DISCORDLINK: (message) => {
-                return `❗️ Message avec lien d'invitation Discord supprimé dans <#${message.channel.id}>
+                return `Message avec lien d'invitation Discord supprimé dans <#${message.channel.id}>
                 Auteur: <@${message.author.id}>
                 Contenu: 
                 ${message.cleanContent}`;
             },
 
             USER_NOTIF_AUTOMOD_DISCORDLINK: (message) => {
-                return `Votre message dans <#${message.channel.id}> à été supprimé car il contenait un lien d'invitation discord. Ceci est contraire à notre <#règlement>.`;
+                return `Votre message dans <#${message.channel.id}> à été supprimé car il contenait un lien d'invitation discord.
+                Ceci est contraire à notre <#règlement>.`;
             },
 
 

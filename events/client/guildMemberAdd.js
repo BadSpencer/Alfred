@@ -15,29 +15,24 @@ class guildMemberAddListener extends Listener {
 
     exec(member) {
         let client = this.client;
-        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
 
-        client.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", member));
+        this.client.memberLogServerJoin(member.id);
 
-        client.memberLogServerJoin(member.id);
-
-
-        let userdata = client.db_userdata.get(member.id);
-
+        let userdata = this.client.userdataGet(member.id);
         if (userdata) {
             setTimeout(function () {
                 client.serverJoinInformationAgain(member);
-            }, 5000);
+            }, 500);
 
-            client.modLog(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member));
+            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata), 'REJOIN');
         } else {
-            client.userdataCreate(member);
+            this.client.userdataCreate(member);
             setTimeout(function () {
                 client.serverJoinInformation(member);
-            }, 5000);
+            }, 500);
 
 
-            client.modLog(client.textes.get("MOD_NOTIF_SERVER_JOIN", member));
+            client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member), 'JOIN');
         }
 
     }

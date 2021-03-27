@@ -12,10 +12,17 @@ const moment = require("moment");
 
 module.exports = (client) => {
 
-    client.memberGetDisplayNameByID = (memberID) => {
+    client.memberGet = (memberID) => {
         const guild = client.getGuild();
-
         let guildMember = guild.members.cache.get(memberID);
+        if (guildMember) {
+            return guildMember;
+        }
+        return false;
+    }
+
+    client.memberGetDisplayNameByID = (memberID) => {
+        let guildMember = client.memberGet(memberID);
         if (guildMember) {
             return guildMember.displayName;
         } else {
@@ -322,7 +329,7 @@ module.exports = (client) => {
                 }
                 memberNotes.push(`${memberLog.note}`);
                 memberNotes.push(``);
-                
+
             }
         }
 
@@ -342,8 +349,8 @@ module.exports = (client) => {
                 memberLog.memberID === userdata.id &&
                 memberLog.type === 'WARN');
 
-                userdata.warn = memberLogs.length;
-                client.userdataSet(userdata);
+            userdata.warn = memberLogs.length;
+            client.userdataSet(userdata);
         }
 
     };

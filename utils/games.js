@@ -1254,7 +1254,6 @@ module.exports = (client) => {
         await member.send(informationsMessage);
       };
     }
-    // client.modLog(client.textes.get("MOD_NOTIF_MEMBER_JOIN_GAME", member, game));
   };
 
   client.gamePlayerQuitNotification = async (game, member, type = 'QUIT') => {
@@ -1287,10 +1286,6 @@ module.exports = (client) => {
         .setDescription(client.textes.get('GAMES_PURGE_MEMBER_NOTIFICATION', game));
       member.send(notifMemberMessage);
     };
-
-
-    // client.modLog(client.textes.get(modNotification, member, game));
-
   };
 
   client.gameDisplayInfos = async (game, channel) => {
@@ -1439,7 +1434,6 @@ module.exports = (client) => {
               client.gamePlayerQuitNotification(game, member, "PURGE");
               client.memberLogGameIdle(member.id, game);
             } else {
-              //client.modLog(`**${member.displayName}** devrait être retiré du groupe "${game.name}" pour inactivité`);
               playersPurgedList += `${member.displayName}\n`;
             }
           }

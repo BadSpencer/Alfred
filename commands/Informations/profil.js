@@ -35,7 +35,8 @@ class ProfilCommand extends Command {
             default: message => this.client.db_userdata.get(message.author.id),
             prompt: {
                 start: message => promptMessage(textes.get('INFOS_PROFIL_MEMBER_PROMPT')),
-                retry: message => promptMessage(textes.get('INFOS_PROFIL_MEMBER_RETRY'))
+                retry: message => promptMessage(textes.get('INFOS_PROFIL_MEMBER_RETRY')),
+                optional: true
             }
         };
         return {

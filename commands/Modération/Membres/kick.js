@@ -17,72 +17,59 @@ class KickCommand extends Command {
         });
     }
 
-    *args(message) {
-        const userdata = yield {
-            type: 'userdata', 
-            prompt: {
-                start: message => promptMessage('Quel membre souhaitez vous expulser ?'),
-                retry: message => promptMessage('Mentionnez un membre avec son ID')
-            }
-        };
-        const raison = yield {
-            type: 'content', 
-            match: 'rest',
-            prompt: {
-                start: message => promptMessage(`Pour quelle raison souhaitez vous expulser **${userdata.displayName}** ?`),
-                retry: message => promptMessage(`Pour quelle raison souhaitez vous expulser **${userdata.displayName}** ?`)
-            }
-        };
-        return { userdata, raison };
+    * args(message) {
+    const userdata = yield {
+        type: 'userdata',
+        prompt: {
+            start: message => promptMessage('Quel membre souhaitez vous expulser ?'),
+            retry: message => promptMessage(this.client.textes.get('USER_MEMBER_RETRY'))
+        }
+    };
+
+    const confirmation = yield {
+        type: 'ouinon',
+        prompt: {
+            start: message => promptMessage(`Êtes-vous sûr de vouloir bannir **${this.client.memberGetDisplayNameByID(userdata.id)}** ?`),
+            retry: message => promptMessage(this.client.textes.get('CMD_OUINON_RETRY'))
+        }
     }
 
+    const reason = yield (confirmation == 'oui' ? {
+        type: 'string',
+        prompt: {
+            start: message => promptMessage(`Veuillez saisir une **raison** pour ce bannissement\n\nCe texte sera envoyé au membre par message privé avant son bannissement`)
+        }
+    } : {
+        type: 'string',
+        default: 'commande annulée'
+    });
+
+    return {
+        userdata,
+        confirmation,
+        reason,
+    };
+}
+
     async exec(message, args) {
-        let client = this.client;
-        const guild = client.getGuild();
-        let member = guild.members.cache.get(args.userdata.id);
 
 
+        let guildMember = this.client.memberGet(args.userdata.id);
 
+        if (!guildMember) return errorMessage(this.client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName, message.channel));
 
-        if (!member) return errorMessage(client.textes.get("USER_ERROR_NOT_A_MEMBER", args.userdata.displayName), message.channel);
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return errorMessage(client.textes.get("USER_ERROR_NOT_KICKABLE", args.userdata.displayName), message.channel);
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return errorMessage(client.textes.get("USER_ERROR_NOT_KICKABLE", args.userdata.displayName), message.channel);
+        if (args.confirmation == 'oui') {
+            if (guildMember.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) return errorMessage(this.client.textes.get("USER_ERROR_NOT_KICKABLE", guildMember.displayName), message.channel);
+            if (guildMember.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) return errorMessage(this.client.textes.get("USER_ERROR_NOT_KICKABLE", guildMember.displayName), message.channel);
 
-        let questionMess = await questionMessage(client.textes.get("USER_KICK_CHECK_BEFORE", member), message.channel);
-        const responses = await message.channel.awaitMessages(msg => msg.author.id === message.author.id, {
-            max: 1,
-            time: 30000,
-        });
+            this.client.memberLogKick(guildMember.id, message.author.id, args.reason);
+            warnMessage(this.client.textes.get("USER_KICK_NOTIFICATION_TO_USER", this.client.memberGetDisplayNameByID(message.author.id), args.reason), guildMember, false);
+            await guildMember.kick(args.reason);
 
-        if (responses.size !== 1) {
-            warnMessage(client.textes.get("COM_ACTION_TIMEOUT"), message.channel);
-            return null;
-        }
-        const response = responses.first();
-
-        if (response.content == "oui") {
-            if (message.channel.type === 'text') {
-                message.delete();;
-                response.delete();
-            }
-
-            client.memberLogKick(member.id, message.author.id, args.raison);
-            await warnMessage(client.textes.get("USER_KICK_NOTIFICATION_TO_USER", message.member, args.raison), member, false);
-            await member.kick(args.raison);
-
-
-            client.serverKickNotification(member.user, message.author, args.raison);
-            successMessage(client.textes.get("USER_KICK_CHECK_SUCCESS", member), message.channel);
+            successMessage(this.client.textes.get("USER_KICK_CHECK_SUCCESS", guildMember), message.channel);
         } else {
-            if (message.channel.type === 'text') {
-                message.delete();;
-                response.delete();
-            }
-
-            warnMessage(client.textes.get("COM_ACTION_ANNULLE"), message.channel);
-            return null;
+            warnMessage(this.client.textes.get("COM_ACTION_ANNULLE"), message.channel);
         }
-
 
     }
 }

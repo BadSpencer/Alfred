@@ -124,6 +124,7 @@ module.exports = (client) => {
             timestamp = +new Date;
         };
         client.memberLog(timestamp, memberID, "SERVERJOIN", `${client.memberGetDisplayNameByID(memberID)} à rejoint le serveur`, null, null, null, null, null, null, null, 0);
+        client.log(client.textes.get("LOG_EVENT_USER_JOIN_SERVER", client.memberGetDisplayNameByID(memberID)));
     };
 
     client.memberLogServerQuit = (memberID, timestamp = null) => {

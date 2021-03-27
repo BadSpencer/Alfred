@@ -44,22 +44,26 @@ class guildMemberRemoveListener extends Listener {
                 let executor = banLog.executor;
                 let reason = banLog.reason;
 
+                if (reason == null) {
+                    reason = `Aucune raison spécifiée`
+                }
+
                 if (banLog.executor.id === client.user.id) {
-                    let memberLogBan = client.db_memberLog.find(memberLog =>
+                    let memberLog = client.db_memberLog.filterArray(memberLog =>
                         memberLog.memberID === member.id &&
                         memberLog.type === "SERVERBAN");
     
-                        memberLogBan.sort(function (a, b) {
+                        memberLog.sort(function (a, b) {
                             return a.createdAt - b.createdAt;
-                        });
-                        executor = guild.members.cache.get(memberLogBan[0].partyMemberID);
-                        reason = memberLogBan[0].note;
+                        }).reverse();
+                        executor = guild.members.cache.get(memberLog[0].partyMemberID);
+                        reason = memberLog[0].note;
                 } 
 
 
                 client.serverBanNotification(banLog.target, executor, reason);
                 client.memberLogBan(banLog.target.id, executor.id, reason);
-                client.modLog(client.textes.get("MOD_NOTIF_SERVER_BAN", banLog.target, executor, reason));
+                client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_BAN", banLog.target, executor, reason), 'BAN');
                 return
             }
         }
@@ -71,28 +75,32 @@ class guildMemberRemoveListener extends Listener {
                 let executor = kickLog.executor;
                 let reason = kickLog.reason;
 
+                if (reason == null) {
+                    reason = `Aucune raison spécifiée`
+                }
+
                 if (kickLog.executor.id === client.user.id) {
-                    let memberLogBan = client.db_memberLog.find(memberLog =>
+                    let memberLog = client.db_memberLog.filterArray(memberLog =>
                         memberLog.memberID === member.id &&
                         memberLog.type === "SERVERKICK");
     
-                        memberLogBan.sort(function (a, b) {
+                        memberLog.sort(function (a, b) {
                             return a.createdAt - b.createdAt;
-                        });
-                        executor = guild.members.cache.get(memberLogBan[0].partyMemberID);
-                        reason = memberLogBan[0].note;
+                        }).reverse();
+                        executor = guild.members.cache.get(memberLog[0].partyMemberID);
+                        reason = memberLog[0].note;
                 }
 
 
                 client.serverKickNotification(kickLog.target, executor, reason);
                 client.memberLogKick(kickLog.target.id, executor.id, reason);
-                client.modLog(client.textes.get("MOD_NOTIF_SERVER_KICK", kickLog.target, executor, reason));
+                client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_KICK", kickLog.target, executor, reason), 'KICK');
                 return
             }
         }
         client.memberLogServerQuit(member.id);
         client.serverQuitNotification(member.user);
-        client.modLog(client.textes.get("MOD_NOTIF_SERVER_QUIT", member));
+        client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_QUIT", member), 'QUIT');
     }
 
 
