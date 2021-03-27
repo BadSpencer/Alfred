@@ -1445,8 +1445,25 @@ module.exports = class {
             MOD_NOTIF_SERVER_JOIN: (member) => {
                 return `<@${member.id}> à rejoint le serveur`;
             },
-            MOD_NOTIF_SERVER_JOIN_AGAIN: (member, userdata) => {
-                return `<@${member.id}> à rejoint le serveur`;
+            MOD_NOTIF_SERVER_JOIN_AGAIN: (member, userdata, log) => {
+                let dateNow = +new Date;
+                let details = '';
+                switch (log.type) {
+                    case 'SERVERQUIT':
+                        details = `Il nous avait quitté le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})`
+                        break;
+                    case 'SERVERKICK':
+                        details = `Il avait été expulsé par <@${log.partyMemberID}> le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})
+                        
+                        **Raison**: ${log.note}`;
+                        break;
+                    case 'SERVERBAN':
+                        details = `Il avait été banni par <@${log.partyMemberID}> le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})
+                        
+                        **Raison**: ${log.note}`;
+                        break;
+                }
+                return `<@${member.id}> est de retour !\n\n${details}`;
             },
             MOD_NOTIF_SERVER_QUIT: (member) => {
                 return `<@${member.id}> à quitté le serveur`;
@@ -1457,7 +1474,7 @@ module.exports = class {
                 **Raison**: ${reason}`;
             },
             MOD_NOTIF_SERVER_BAN: (target, executor, reason) => {
-                return `❗<@${target.id}> à été banni du serveur par <@${executor.id}>
+                return `<@${target.id}> à été banni du serveur par <@${executor.id}>
                 
                 **Raison**: ${reason}`;
             },
