@@ -428,8 +428,8 @@ module.exports = (client) => {
         }
     };
 
-    client.memberGetKarma = (memberID) => {
-        let karma = 0;
+    client.memberGetCredit = (memberID) => {
+        let credit = 0;
         let score = 0;
         let now = +new Date;
         let fromTimestamp = +new Date(moment(now).subtract(1, 'days').startOf('day'));
@@ -447,29 +447,29 @@ module.exports = (client) => {
         }
 
         if (score > 0) {
-            karma = 1;
+            credit = 1;
         } else {
-            karma = -1;
+            credit = -1;
         }
-        return karma;
+        return credit;
     };
 
-    client.setKarma = () => {
+    client.setCredit = () => {
         const guild = client.getGuild();
         guild.members.cache.forEach(member => {
-            client.log(`Karma pour ${member.displayName}`, "debug");
+            client.log(`credit pour ${member.displayName}`, "debug");
             let userdata = client.userdataGet(member.id);
             if (userdata) {
-                let karma = client.memberGetKarma(member.id);
-                userdata.karma += karma;
-                if (userdata.karma < 0) {
-                    userdata.karma = 0;
+                let credit = client.memberGetCredit(member.id);
+                userdata.credit += credit;
+                if (userdata.credit < 0) {
+                    userdata.credit = 0;
                 }
-                if (userdata.karma > 100) {
-                    userdata.karma = 100;
+                if (userdata.credit > 100) {
+                    userdata.credit = 100;
                 }
                 client.userdataSet(userdata);
-                client.log(`Karma: ${karma} -> ${userdata.karma}`, "debug");
+                client.log(`credit: ${credit} -> ${userdata.credit}`, "debug");
             }
         });
         return true;

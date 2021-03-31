@@ -1522,13 +1522,13 @@ module.exports = class {
             },
 
             MOD_NOTIF_MEMBER_JOIN_GAME: (member, game) => {
-                return `✅ **${member.displayName}** à rejoint le groupe du jeu ${game.name}`;
+                return `<@${member.id}> à rejoint le groupe du jeu ${game.name}`;
             },
             MOD_NOTIF_MEMBER_QUIT_GAME: (member, game) => {
-                return `⚠️ **${member.displayName}** à quitté le groupe du jeu ${game.name}`;
+                return `<@${member.id}> à quitté le groupe du jeu ${game.name}`;
             },
             MOD_NOTIF_MEMBER_PURGE_GAME: (member, game) => {
-                return `⚠️ **${member.displayName}** à été retiré du groupe du jeu ${game.name} pour inactivité.`;
+                return `<@${member.id}> à été retiré du groupe du jeu ${game.name} pour inactivité.`;
             },
 
             MOD_NOTIF_MEMBER_NEW_MESSAGE: (user, message) => {

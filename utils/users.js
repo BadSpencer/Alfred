@@ -308,7 +308,7 @@ module.exports = (client) => {
         userdata.joinedTime = moment(member.joinedTimestamp).format('HH:mm');
         userdata.level = 0;
         userdata.xp = 0;
-        userdata.karma = 100;
+        userdata.credit = 0;
 
         client.db_userdata.set(member.id, userdata);
         client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);
@@ -361,7 +361,7 @@ module.exports = (client) => {
             userInfosMessage.setThumbnail(`${constants.images.lvlth[userdata.level]}`)
             userInfosMessage.addField(`📅 Inscription`, `Le ${userdata.joinedDate}\n${moment.duration(userdata.joinedAt - dateNow).locale("fr").humanize(true)}`, true);
             userInfosMessage.addField(`🎮 Jeux`, `${listeJeux}`, true);
-            userInfosMessage.addField(`📊 Points`, `XP: ${userdata.xp}\nKarma: ${userdata.karma}`, true);
+            userInfosMessage.addField(`📊 Points`, `XP: ${userdata.xp}\ncredit: ${userdata.credit}`, true);
             if (showModInfos) {
                 let notesCount = await client.memberNotesCount(userdata.id);
                 userInfosMessage.addField(`🟪 Modération`, `Notes: ${notesCount}\nAvert.: ${userdata.warn}`, true);

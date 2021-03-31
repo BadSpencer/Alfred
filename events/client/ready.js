@@ -42,7 +42,7 @@ class ReadyListener extends Listener {
 
         if (!client.cron_gamePurge.running) client.cron_gamePurge.start();
 
-        if (!client.cron_karma.running) client.cron_karma.start();
+        if (!client.cron_credit.running) client.cron_credit.start();
 
         client.logger.log(`Alfred v${pjson.version} prêt !`, `ready`);
 

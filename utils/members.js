@@ -240,7 +240,7 @@ module.exports = (client) => {
                 "warn": 0,
                 "level": 0,
                 "xp": 0,
-                "karma": 0,
+                "credit": 0,
                 "notes": 0
             };
             let memberLogs = await client.memberNotesGet(userdata.id);
@@ -251,7 +251,7 @@ module.exports = (client) => {
             memberListline.warn = userdata.warn;
             memberListline.level = userdata.level;
             memberListline.xp = userdata.xp;
-            memberListline.karma = userdata.karma;
+            memberListline.credit = userdata.credit;
             memberListline.notes = memberLogs.length;
             if (member) {
                 memberListline.actif = true;
@@ -271,7 +271,7 @@ module.exports = (client) => {
 
             if (memberListline.actif) {
                 memberListOutput.push(`◽️**${memberListline.displayName}** (${memberListline.tag}) - ${memberListline.id}`);
-                memberListOutput.push(`◾️Level:**${memberListline.level}** XP:**${memberListline.xp}** Karma:**${memberListline.karma}** Avert:**${memberListline.warn}** Notes:**${memberListline.notes}**\n`);
+                memberListOutput.push(`◾️Level:**${memberListline.level}** XP:**${memberListline.xp}** Credits:**${memberListline.credit}** Avert:**${memberListline.warn}** Notes:**${memberListline.notes}**\n`);
             } else {
                 // memberListOutput.push(`◾️${memberListline.displayName} (${memberListline.id})`);
             }

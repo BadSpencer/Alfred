@@ -154,8 +154,8 @@ client.cron_gamePurge = new cron.CronJob('20 30 14 * * *', () => { // Toutes les
     client.gamesPurge();
 });
 
-client.cron_karma = new cron.CronJob('00 00 01 * * *', () => { // Tous les jours à 1h
-    client.setKarma();
+client.cron_credit = new cron.CronJob('00 00 01 * * *', () => { // Tous les jours à 1h
+    client.setcredit();
 });
 
 
