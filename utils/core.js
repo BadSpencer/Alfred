@@ -622,6 +622,10 @@ module.exports = (client) => {
                 embed.setAuthor('Retour membre','https://i.imgur.com/NOXkUzu.png');
                 embed.setColor(colors['darkorange']);
             break;
+            case 'MODWARN':
+                embed.setAuthor('Signalement message','https://i.imgur.com/fqtn1xO.png');
+                embed.setColor(colors['darkred']);
+            break;
 
             default:
                 embed.setAuthor('Notification','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
