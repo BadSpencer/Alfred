@@ -447,17 +447,17 @@ module.exports = (client) => {
         }
 
         if (score > 0) {
-            credit = 1;
+            credit = Math.round(score / 10);
         } else {
             credit = -1;
         }
+        client.log(`Score: ${score} -> ${credit}`, "debug");
         return credit;
     };
 
     client.setCredit = () => {
         const guild = client.getGuild();
         guild.members.cache.forEach(member => {
-            client.log(`credit pour ${member.displayName}`, "debug");
             let userdata = client.userdataGet(member.id);
             if (userdata) {
                 let credit = client.memberGetCredit(member.id);
@@ -465,11 +465,8 @@ module.exports = (client) => {
                 if (userdata.credit < 0) {
                     userdata.credit = 0;
                 }
-                if (userdata.credit > 100) {
-                    userdata.credit = 100;
-                }
                 client.userdataSet(userdata);
-                client.log(`credit: ${credit} -> ${userdata.credit}`, "debug");
+                client.log(`${member.displayName} à gagné ${credit}cr -> ${userdata.credit}cr au total`);
             }
         });
         return true;
