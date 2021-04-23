@@ -20,7 +20,20 @@ module.exports = (client) => {
     client.getSettings = (guild = null) => {
         let settings = client.db_settings.get(client.config.guildID);
         if (!settings) {
-            return client.log(`Configuration du Serveur discord "${client.config.guildID}" non trouvée.`, "error");
+            //return client.log(`Configuration du Serveur discord "${client.config.guildID}" non trouvée.`, "error");
+            if (guild) {
+                guild.owner.send(`La configuration du serveur ${guild.name} (${guild.id}) n\'a pas été faite. Veuillez lancer la commande !settings`);
+
+                client.log(`Configuration non trouvée pour serveur ${guild.name} (${guild.id}). La configuration par défaut à été appliquée.`);
+
+                settings = Object.assign({}, datamodel.tables.settings);
+                settings.id = guild.id;
+                settings.guildName = guild.name;
+                client.db_settings.set(guild.id, settings);
+                return settings;
+            } else {
+                return null;
+            }
         } else {
             return settings;
         }
@@ -29,9 +42,6 @@ module.exports = (client) => {
 
     client.settingsCheck = () => {
         client.log(`Méthode: core/settingsCheck`, "debug");
-
-        client.datamodelCheckSettings();
-        client.datamodelCheckUserdata();
 
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
@@ -71,7 +81,8 @@ module.exports = (client) => {
             client.log(`settingsCheck: Rôle "Admins" OK`, "debug");
         };
 
-
+        client.datamodelCheckSettings();
+        client.datamodelCheckUserdata();
     };
 
     client.roleMemberGet = (guild = null, settings = null) => {
@@ -222,7 +233,7 @@ module.exports = (client) => {
             if (game) {
 
                 if (member.roles.cache.has(game.roleID)) {
-                channelName = `🔊 ${game.name}`
+                    channelName = `🔊 ${game.name}`
                 }
             }
         }
@@ -577,61 +588,61 @@ module.exports = (client) => {
 
         switch (type) {
             case 'CONTACT':
-                embed.setAuthor('Message de contact','https://cdn.discordapp.com/attachments/552008545231568897/824625258605969408/1F4E8.png');
+                embed.setAuthor('Message de contact', 'https://cdn.discordapp.com/attachments/552008545231568897/824625258605969408/1F4E8.png');
                 embed.setColor(colors['darkgreen']);
-            break;
+                break;
             case 'NOTE':
-                embed.setAuthor('Note ajoutée','https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
+                embed.setAuthor('Note ajoutée', 'https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
                 embed.setColor(colors['darkorange']);
-            break;
+                break;
             case 'NOTEDEL':
-                embed.setAuthor('Note supprimée','https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
+                embed.setAuthor('Note supprimée', 'https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
                 embed.setColor(colors['darkgreen']);
-            break;
+                break;
             case 'NOTEEDIT':
-                embed.setAuthor('Note éditée','https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
+                embed.setAuthor('Note éditée', 'https://cdn.discordapp.com/attachments/552008545231568897/824625547543052318/1F4DD.png');
                 embed.setColor(colors['darkorange']);
-            break;
+                break;
             case 'WARN':
-                embed.setAuthor('Avertissement','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setAuthor('Avertissement', 'https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
                 embed.setColor(colors['darkred']);
-            break;
+                break;
             case 'WARNDEL':
-                embed.setAuthor('Avertissement retiré','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setAuthor('Avertissement retiré', 'https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
                 embed.setColor(colors['darkgreen']);
-            break;
+                break;
 
             case 'QUIT':
-                embed.setAuthor('Départ','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setAuthor('Départ', 'https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
                 embed.setColor(colors['darkred']);
-            break;
+                break;
             case 'KICK':
-                embed.setAuthor('Expulsion','https://cdn.discordapp.com/attachments/713393174449619004/820326574707834880/274C_color.png');
+                embed.setAuthor('Expulsion', 'https://cdn.discordapp.com/attachments/713393174449619004/820326574707834880/274C_color.png');
                 embed.setColor(colors['darkred']);
-            break;
+                break;
             case 'BAN':
-                embed.setAuthor('Banissement','https://cdn.discordapp.com/attachments/713393174449619004/820325906391498802/26D4_color.png');
+                embed.setAuthor('Banissement', 'https://cdn.discordapp.com/attachments/713393174449619004/820325906391498802/26D4_color.png');
                 embed.setColor(colors['darkred']);
-            break;
+                break;
 
             case 'JOIN':
-                embed.setAuthor('Nouveau membre','https://i.imgur.com/MyK3L5t.png');
+                embed.setAuthor('Nouveau membre', 'https://i.imgur.com/MyK3L5t.png');
                 embed.setColor(colors['darkgreen']);
-            break;
+                break;
             case 'REJOIN':
-                embed.setAuthor('Retour membre','https://i.imgur.com/NOXkUzu.png');
+                embed.setAuthor('Retour membre', 'https://i.imgur.com/NOXkUzu.png');
                 embed.setColor(colors['darkorange']);
-            break;
+                break;
             case 'MODWARN':
-                embed.setAuthor('Signalement message','https://i.imgur.com/fqtn1xO.png');
+                embed.setAuthor('Signalement message', 'https://i.imgur.com/fqtn1xO.png');
                 embed.setColor(colors['darkred']);
-            break;
+                break;
 
             default:
-                embed.setAuthor('Notification','https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
+                embed.setAuthor('Notification', 'https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
                 embed.setColor(colors['darkgreen']);
-            break;
-            
+                break;
+
 
         }
 
@@ -997,7 +1008,7 @@ module.exports = (client) => {
                 };
             };
             client.db_userdata.set(userdata.id, userdataNew);
-        }      
+        }
 
     };
 
