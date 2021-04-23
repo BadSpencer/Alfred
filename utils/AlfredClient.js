@@ -31,7 +31,7 @@ class AlfredClient extends AkairoClient {
 					ended: msg => `Trop de tentatives. Commande annulée`,
 					cancel: msg => `Commande annulée`,
 					retries: 4,
-					time: 60000
+					time: 180000
 				}
 			}
 		});
