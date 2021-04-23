@@ -1,6 +1,6 @@
 {
   "name": "alfred",
-  "version": "3.7.6",
+  "version": "3.7.7",
   "description": "Bot du serveur discord Casual Effect",
   "main": "index.js",
   "dependencies": {
