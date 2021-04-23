@@ -5,7 +5,7 @@ exports.tables = {
         "logChannelID": "",
         "logToChan": false,
         "debug": true,
-        "modRole": "Modérateurs",
+        "modRole": "Officiers",
         "adminRole": "Admins",
         "memberRole": "Membres",
         "playRole": "En jeu", 
