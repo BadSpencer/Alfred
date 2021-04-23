@@ -18,7 +18,7 @@ class NoteDelCommand extends Command {
     constructor() {
         super('note-del', {
             aliases: ['note-del','notes-del', 'ndel'],
-            category: '🟪 Membres',
+            category: '🟪 Notes de modération',
             description: {
                 content: textes.get("NOTE_DEL_DESCRIPTION_CONTENT"),
                 usage: textes.get("NOTE_DEL_DESCRIPTION_USAGE"),

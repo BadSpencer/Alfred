@@ -16,7 +16,7 @@ class NotesListCommand extends Command {
     constructor() {
         super('note-list', {
             aliases: ['note-list', 'notes-list', 'nlist'],
-            category: '🟪 Membres',
+            category: '🟪 Notes de modération',
             description: {
                 content: textes.get("NOTE_LIST_DESCRIPTION_CONTENT"),
                 usage: textes.get("NOTE_LIST_DESCRIPTION_USAGE"),

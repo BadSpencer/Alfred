@@ -16,7 +16,7 @@ class NoteCommand extends Command {
     constructor() {
         super('note-add', {
             aliases: ['note-add', 'notes-add', 'nadd'],
-            category: '🟪 Membres',
+            category: '🟪 Notes de modération',
             description: {
                 content: textes.get("USER_NOTEADD_DESCRIPTION_CONTENT"),
                 usage: textes.get("USER_NOTEADD_DESCRIPTION_USAGE"),
