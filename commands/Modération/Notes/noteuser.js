@@ -15,7 +15,7 @@ const textes = new (require(`../../../utils/textes.js`));
 class NoteUserCommand extends Command {
     constructor() {
         super('note-user', {
-            aliases: ['note-user', 'notes-user', 'notes', 'nuser'],
+            aliases: ['note-user', 'notes-user', 'notes', 'note', 'nuser'],
             category: '🟪 Membres',
             description: {
                 content: textes.get("USER_NOTE_DESCRIPTION_CONTENT"),
