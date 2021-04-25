@@ -8,6 +8,7 @@ exports.tables = {
         "modRole": "Officiers",
         "adminRole": "Admins",
         "memberRole": "Membres",
+        "applyRole": "Recrues",
         "playRole": "En jeu", 
         "modNotifChannel": "notifications-modération" ,
         "modVoiceChannel": "🟪🔈Espace privé" ,
