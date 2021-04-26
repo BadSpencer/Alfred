@@ -39,8 +39,7 @@ class ExpCommand extends Command {
     async exec(message, args) {
         let client = this.client;
         const guild = client.getGuild();
-        const settings = client.getSettings(guild);
-
+       
         let userdatas = client.userdataGetAll(true);
 
         moment.locale('fr');
