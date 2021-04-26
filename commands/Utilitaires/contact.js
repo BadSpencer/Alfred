@@ -29,7 +29,7 @@ class KickCommand extends Command {
         let client = this.client;
         let embed = new Discord.MessageEmbed();
 
-        let contactCategory = message.guild.channels.cache.find(c => c.name === message.settings.newsChannel);
+        let contactCategory = message.guild.channels.cache.find(c => c.name === message.settings.contactCategory);
 
 
 
