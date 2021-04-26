@@ -38,6 +38,11 @@ class guildMemberAddListener extends Listener {
             }).reverse();
 
             this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0]), 'REJOIN');
+
+            // Réinitialisation du statut vérifié pour les membres qui reviennent
+            userdata.verified = false;
+            this.client.userdataSet(userdata);
+
         } else {
             this.client.userdataCreate(member);
             // setTimeout(function () {
@@ -51,12 +56,12 @@ class guildMemberAddListener extends Listener {
 
         let embed = new Discord.MessageEmbed();
 
-        embed.setTitle('Discord Casual Effect:');
+        embed.setTitle('Casual Effect');
         embed.setImage(imageUrl);
         embed.setDescription(`Avant de vous donner les droits d'envoyer des messages sur ce discord, je dois m'assurer que vous n'êtes pas un de ces satanés bots. Je déteste la concurrence !
         
         Veuillez m'indiquez le nom du personnage qui figure sur l'image ci-dessous`);
-        embed.setFooter(`Indice: 4a commande par "Ma" et ça fini par "rio"`);
+        embed.setFooter(`Indice: ça commence par "Ma" et ça fini par "rio"`);
 
         member.send(embed);
 
