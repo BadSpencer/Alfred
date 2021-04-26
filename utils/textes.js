@@ -373,8 +373,7 @@ module.exports = class {
                 `Si vous jouez à un jeu lorsque vous créez un salon vocal, le salon sera nommé avec le nom du jeu.`,
                 `Votre jeu préféré n'a pas encore sa place sur le Discord ? Proposez le ! Vous aurez ainsi une section dédiée pour partager des informations.`,
                 `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`,
-                `Si le salon "+ Créer salon" est absent ou inacessible, lancez la commande **!vocal** pour en créer un autre`,
-                ``
+                `Si le salon "+ Créer salon" est absent ou inacessible, lancez la commande **!vocal** pour en créer un autre`
             ],
 
             COM_USERS_INITMESSLOGS_RESULT: (messageCount) => {
