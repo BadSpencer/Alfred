@@ -46,10 +46,10 @@ class MessageInvalidListener extends Listener {
 
                     embed.setTitle('Casual Effect');
                     embed.setDescription(`Félicitations ! Vous avez correctement répondu à la question.
-                    
                     Vous êtes désormais au grade '**Invité**'
+
+                    [**Retourner sur Casual Effect**](https://discord.com/channels/554806950437584917/836348694906667068/836607506422693928)
                     `);
-                    embed.addField(`Reviens Léon`,`[https://discord.com/channels/562037980819226625/836134064821764097/836137238541893672](Casual EFfect)`)
                     member.send(embed);
 
 
