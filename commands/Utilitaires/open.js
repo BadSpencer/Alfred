@@ -40,6 +40,7 @@ class KickCommand extends Command {
                 SPEAK: true,
                 USE_VAD: true
             });
+            successMessage(`Votre salon ${member.voice.channel.name} est désormais accessible pour les invités !`, member);
         } else {
             errorMessage('Vous ne pouvez pas ouvrir ce salon aux invités. Veuillez en créer un à vous !', member);
         }
