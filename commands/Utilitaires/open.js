@@ -38,24 +38,10 @@ class KickCommand extends Command {
             await member.voice.channel.createOverwrite(verifiedRole, {
                 CONNECT: true,
                 SPEAK: true,
-                USE_VAD: true,
-                CREATE_INSTANT_INVITE: false,
-                MANAGE_CHANNELS: false,
-                ADD_REACTIONS: false,
-                VIEW_CHANNEL: true,
-                SEND_MESSAGES: false,
-                SEND_TTS_MESSAGES: false,
-                MANAGE_MESSAGES: false,
-                EMBED_LINKS: false,
-                ATTACH_FILES: false,
-                READ_MESSAGE_HISTORY: false,
-                MENTION_EVERYONE: false,
-                USE_EXTERNAL_EMOJIS: false,
-                MANAGE_ROLES: false,
-                MANAGE_WEBHOOKS: false
+                USE_VAD: true
             });
         } else {
-            errorMessage('Vous ne pouvez pas ouvrir ce salon. Veuillez en créer un à vous !', member);
+            errorMessage('Vous ne pouvez pas ouvrir ce salon aux invités. Veuillez en créer un à vous !', member);
         }
 
 
