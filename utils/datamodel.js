@@ -290,5 +290,9 @@ exports.tables = {
         "id": "",
         "createdAt": "",
         "memberId": ""
+    },
+    invites: {
+        "id": "",
+        "uses": 0
     }
 }

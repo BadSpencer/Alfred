@@ -148,6 +148,7 @@ module.exports = (client) => {
 
         const roleEveryone = await guild.roles.cache.find(r => r.name == "@everyone");
         const roleMembers = await guild.roles.cache.find(r => r.name == settings.memberRole);
+        const roleApply = await guild.roles.cache.find(r => r.name == settings.applyRole);
         const voiceChannelsCategory = guild.channels.cache.find(c => c.name === settings.voiceChansCategory);
 
         let channelName = "";
@@ -177,6 +178,10 @@ module.exports = (client) => {
                     VIEW_CHANNEL: true,
                     CONNECT: true,
                 })
+                await freeVoiceChannel.createOverwrite(roleApply, {
+                    VIEW_CHANNEL: true,
+                    CONNECT: true,
+                })                
                     .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @membres`, "debug"))
                     .catch(console.error);
 
@@ -240,6 +245,7 @@ module.exports = (client) => {
         await member.voice.channel.setName(channelName);
         await member.voice.channel.createOverwrite(member, {
             MANAGE_CHANNELS: true,
+            CREATE_INSTANT_INVITE: true,
         });
 
         let freeVoiceChannel = Object.assign({}, datamodel.tables.freeVoiceChannels);

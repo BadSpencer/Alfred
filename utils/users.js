@@ -312,6 +312,7 @@ module.exports = (client) => {
 
         client.db_userdata.set(member.id, userdata);
         client.log(`L'utilisateur ${member.user.username} à été ajouté à la base de données`);
+        return userdata;
 
     };
 
