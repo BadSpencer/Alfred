@@ -60,7 +60,7 @@ class MessageInvalidListener extends Listener {
                     let verifiedRole = guild.roles.cache.find(c => c.name === message.settings.verifiedRole);
                     member.roles.add(verifiedRole);
 
-                    client.modLogEmbed(`<@${member.id} à correctement répondu à l'énigme anti-bot. Il à été ajouté au groupe "**Invités**"`);
+                    client.modLogEmbed(`<@${member.id}> à correctement répondu à l'énigme anti-bot. Il à été ajouté au groupe "**Invités**"`);
 
                 }
             }
