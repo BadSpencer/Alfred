@@ -1441,23 +1441,38 @@ module.exports = class {
             MOD_NOTIF_MEMBER_NOTIFIED_GAME_EXIST: (member, game) => {
                 return `⚠️ **<@${member.id}>** joue à ${game.name} mais n'est pas dans le groupe. Il à été notifié par message privé de l'existence du groupe.`;
             },
-            MOD_NOTIF_SERVER_JOIN: (member) => {
-                return `<@${member.id}> à rejoint le serveur`;
+            MOD_NOTIF_SERVER_JOIN: (member, invite) => {
+                let details = '';
+                switch (invite.channel.type) {
+                    case 'voice':
+                        details += `Il a utilisé l'invitation créée par <@${invite.inviter.id}>\n\n`;
+                        details += `Il a été ajouté au groupe "**Invités**" (contrôle anti-bot inutile)`;
+                    case 'text':
+                        details += `Il a utilisé le lien public.\n\n`;
+                        details += `Cet utilisateur n'est pas vérifié. Envoi du contrôle anti-bot`;
+                }
+                return `<@${member.id}> à rejoint le serveur\n\n${details}`;
             },
-            MOD_NOTIF_SERVER_JOIN_AGAIN: (member, userdata, log) => {
+            MOD_NOTIF_SERVER_JOIN_AGAIN: (member, userdata, log, invite, verifyBot) => {
                 let dateNow = +new Date;
                 let details = '';
+                switch (invite.channel.type) {
+                    case 'voice':
+                        details += `Il a utilisé l'invitation créée par <@${invite.inviter.id}>\nIl est automatiquement affecté au groupe "Invités"\n\n`;
+                    case 'text':
+                        details += `Il a utilisé le lien public.\nEnigme anti-bot envoyée\n\n`;
+                }
                 switch (log.type) {
                     case 'SERVERQUIT':
-                        details = `Il nous avait quitté le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})`
+                        details += `Il nous avait quitté le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})`
                         break;
                     case 'SERVERKICK':
-                        details = `Il avait été expulsé par <@${log.partyMemberID}> le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})
+                        details += `Il avait été expulsé par <@${log.partyMemberID}> le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})
                         
                         **Raison**: ${log.note}`;
                         break;
                     case 'SERVERBAN':
-                        details = `Il avait été banni par <@${log.partyMemberID}> le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})
+                        details += `Il avait été banni par <@${log.partyMemberID}> le **${moment(log.createdAt).format('DD.MM.YYYY')}** à **${moment(log.createdAt).format('HH:mm')}** (${moment.duration(log.createdAt - dateNow).locale("fr").humanize(true)})
                         
                         **Raison**: ${log.note}`;
                         break;

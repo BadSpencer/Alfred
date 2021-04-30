@@ -35,10 +35,11 @@ class MessageInvalidListener extends Listener {
         };
 
         if (message.channel.type === 'dm') {
+            let userdata = client.userdataGet(message.author.id);
+            client.log(`MP envoyé par ${message.author.username}: ${message.cleanContent}`);
+
             if (message.content.toUpperCase().includes(`MARIO`)) {
                 let embed = new Discord.MessageEmbed();
-
-                let userdata = client.userdataGet(message.author.id);
 
                 if (!userdata.verified) {
                     let member = client.memberGet(userdata.id);
@@ -58,6 +59,8 @@ class MessageInvalidListener extends Listener {
 
                     let verifiedRole = guild.roles.cache.find(c => c.name === message.settings.verifiedRole);
                     member.roles.add(verifiedRole);
+
+                    client.modLogEmbed(`<@${member.id} à correctement répondu à l'énigme anti-bot. Il à été ajouté au groupe "**Invités**"`);
 
                 }
             }

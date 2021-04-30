@@ -30,15 +30,10 @@ class guildMemberAddListener extends Listener {
         const invite = invites.find(i => client.db_invites.get(i.code).uses < i.uses);
 
         if (invite) {
-            this.client.modLogEmbed(client.textes.get(`<@${member.id}> à utilisé l'invitation créée par <@${invite.inviter.id}>`));
             if (invite.channel.type === 'voice') {
                 verifyBot = false;
-            }
+            } 
         }
-
-
-
-
 
         let userdata = this.client.userdataGet(member.id);
         if (userdata) {
@@ -51,23 +46,18 @@ class guildMemberAddListener extends Listener {
             memberLogs.sort(function (a, b) {
                 return a.createdAt - b.createdAt;
             }).reverse();
-
-            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0]), 'REJOIN');
-
-            // Réinitialisation du statut vérifié pour les membres qui reviennent
-            if (verifyBot) {
-                userdata.verified = false;
-                this.client.userdataSet(userdata);
+            if (userdata.verified) {
+                // Ne pas re-contrôler des membre qui l'ont déjà été par le passé
+                verifyBot = false;
             }
-
+            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0], invite, verifyBot), 'REJOIN');
         } else {
             userdata = this.client.userdataCreate(member);
             if (!verifyBot) {
                 userdata.verified = true;
                 this.client.userdataSet(userdata);
             }
-
-            client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member), 'JOIN');
+            client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member, invite), 'JOIN');
         }
 
         if (verifyBot) {
