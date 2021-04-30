@@ -44,13 +44,14 @@ class MessageInvalidListener extends Listener {
                 if (!userdata.verified) {
                     let member = client.memberGet(userdata.id);
                     const guild = client.getGuild();
+                    let description = "";
 
                     embed.setTitle('Casual Effect');
-                    embed.setDescription(`Félicitations ! Vous avez correctement répondu à la question.
-                    Vous êtes désormais au grade '**Invité**'
-
-                    [**Retourner sur Casual Effect**](https://discord.com/channels/554806950437584917/836348694906667068/836607506422693928)
-                    `);
+                    description += `Félicitations ! Vous avez correctement répondu à la question.`;
+                    if (settings.welcomeChannelUrl != "") {
+                        description += `\n\n[**Retourner sur Casual Effect**](https://discord.com/channels/554806950437584917/836348694906667068/836607506422693928)`;
+                    }
+                    embed.setDescription(description);
                     member.send(embed);
 
 

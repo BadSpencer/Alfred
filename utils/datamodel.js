@@ -12,6 +12,7 @@ exports.tables = {
         "verifiedRole": "Invités",
         "playRole": "En jeu", 
         "modNotifChannel": "notifications-modération" ,
+        "welcomeChannelUrl": "",
         "welcomeChannel": "accueil",
         "welcomeEnabled": true,
         "welcomeMemberChannel": "💬général",
