@@ -1458,9 +1458,14 @@ module.exports = class {
                 let details = '';
                 switch (invite.channel.type) {
                     case 'voice':
-                        details += `Il a utilisé l'invitation créée par <@${invite.inviter.id}>\nIl est automatiquement affecté au groupe "Invités"\n\n`;
+                        details += `Il a utilisé l'invitation créée par <@${invite.inviter.id}>\n\n`;
                     case 'text':
-                        details += `Il a utilisé le lien public.\nEnigme anti-bot envoyée\n\n`;
+                        details += `Il a utilisé le lien public.\n\n`;
+                }
+                if (verifyBot) {
+                    details += `Cet utilisateur n'est pas vérifié. Envoi du contrôle anti-bot\n\n`;
+                } else {
+                    details += `Il a été ajouté au groupe "**Invités**" (contrôle anti-bot inutile)\n\n`;
                 }
                 switch (log.type) {
                     case 'SERVERQUIT':
