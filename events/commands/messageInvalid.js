@@ -49,7 +49,7 @@ class MessageInvalidListener extends Listener {
                     embed.setTitle('Casual Effect');
                     description += `Félicitations ! Vous avez correctement répondu à la question.`;
                     if (settings.welcomeChannelUrl != "") {
-                        description += `\n\n[**Retourner sur Casual Effect**](https://discord.com/channels/554806950437584917/836348694906667068/836607506422693928)`;
+                        description += `\n\n[**Retourner sur Casual Effect**](${settings.welcomeChannelUrl})`;
                     }
                     embed.setDescription(description);
                     member.send(embed);
