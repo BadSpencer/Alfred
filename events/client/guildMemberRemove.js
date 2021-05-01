@@ -16,8 +16,8 @@ class guildMemberRemoveListener extends Listener {
     async exec(member) {
         let client = this.client;
         const guild = client.getGuild();
-        client.log(`EVENT: ${this.emitter}/${this.event}`, "debug");
-
+        const settings = client.getSettings(guild);
+        const roleMembers = guild.roles.cache.find(r => r.name === settings.memberRole);
         client.log(client.textes.get("LOG_EVENT_USER_QUIT_SERVER", member.user));
 
 
@@ -52,13 +52,13 @@ class guildMemberRemoveListener extends Listener {
                     let memberLog = client.db_memberLog.filterArray(memberLog =>
                         memberLog.memberID === member.id &&
                         memberLog.type === "SERVERBAN");
-    
-                        memberLog.sort(function (a, b) {
-                            return a.createdAt - b.createdAt;
-                        }).reverse();
-                        executor = guild.members.cache.get(memberLog[0].partyMemberID);
-                        reason = memberLog[0].note;
-                } 
+
+                    memberLog.sort(function (a, b) {
+                        return a.createdAt - b.createdAt;
+                    }).reverse();
+                    executor = guild.members.cache.get(memberLog[0].partyMemberID);
+                    reason = memberLog[0].note;
+                }
 
 
                 client.serverBanNotification(banLog.target, executor, reason);
@@ -83,12 +83,12 @@ class guildMemberRemoveListener extends Listener {
                     let memberLog = client.db_memberLog.filterArray(memberLog =>
                         memberLog.memberID === member.id &&
                         memberLog.type === "SERVERKICK");
-    
-                        memberLog.sort(function (a, b) {
-                            return a.createdAt - b.createdAt;
-                        }).reverse();
-                        executor = guild.members.cache.get(memberLog[0].partyMemberID);
-                        reason = memberLog[0].note;
+
+                    memberLog.sort(function (a, b) {
+                        return a.createdAt - b.createdAt;
+                    }).reverse();
+                    executor = guild.members.cache.get(memberLog[0].partyMemberID);
+                    reason = memberLog[0].note;
                 }
 
 
@@ -99,7 +99,10 @@ class guildMemberRemoveListener extends Listener {
             }
         }
         client.memberLogServerQuit(member.id);
-        client.serverQuitNotification(member.user);
+        if (member.roles.cache.has(roleMembers.id)) {
+            client.serverQuitNotification(member.user);
+        }
+
         client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_QUIT", member), 'QUIT');
     }
 

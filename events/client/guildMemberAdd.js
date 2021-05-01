@@ -33,6 +33,9 @@ class guildMemberAddListener extends Listener {
             if (invite.channel.type === 'voice') {
                 verifyBot = false;
             } 
+            let dbinvite = client.db_invites.get(invite.code);
+            dbinvite.uses += 1;
+            client.db_invites.set(invite.code, dbinvite);
         }
 
         let userdata = this.client.userdataGet(member.id);
