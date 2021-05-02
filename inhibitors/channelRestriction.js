@@ -20,7 +20,9 @@ exec(message, command) {
         if (message.channel.name === message.settings.suggChannel) return false;
 
         if (command.id === "purge") return false;
+        if (command.id === "echo") return false;
         if (command.id === "embedpost") return false;
+        if (command.id === "dé") return false;
 
         if (command.category.id === "Auto") return false;
 
