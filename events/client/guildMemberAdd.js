@@ -50,12 +50,12 @@ class guildMemberAddListener extends Listener {
                 return a.createdAt - b.createdAt;
             }).reverse();
             if (userdata.verified) {
-                // Ne pas re-contrôler des membre qui l'ont déjà été par le passé
+                // Ne pas re-contrôler des membres qui l'ont déjà été par le passé
                 verifyBot = false;
             }
             this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0], invite, verifyBot), 'REJOIN');
         } else {
-            userdata = this.client.userdataCreate(member);
+            userdata = await this.client.userdataCreate(member);
             if (!verifyBot) {
                 userdata.verified = true;
                 this.client.userdataSet(userdata);

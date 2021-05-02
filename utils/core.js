@@ -166,7 +166,7 @@ module.exports = (client) => {
                 await freeVoiceChannel.setParent(voiceChannelsCategory);
                 await client.sleep(500);
                 await freeVoiceChannel.createOverwrite(roleEveryone, {
-                    VIEW_CHANNEL: true,
+                    VIEW_CHANNEL: false,
                     CONNECT: false,
                 })
                     .then(freeVoiceChannel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
@@ -188,42 +188,6 @@ module.exports = (client) => {
 
             })
             .catch(console.error);
-
-
-        // await client.sleep(500);
-        // if (freeVoiceChannel) {
-        //     client.log(`freeVoiceChannel correctement créé`, "debug");
-        //     if (roleEveryone) {
-        //         freeVoiceChannel.createOverwrite(roleEveryone, {
-        //             VIEW_CHANNEL: true,
-        //             CONNECT: false,
-        //         })
-        //         .then(channel => client.log(`freeVoiceChannel permissions @everyone`, "debug"))
-        //         .catch(console.error);
-
-        //     } else {
-        //         client.log(`roleEveryone non disponible`, "error");
-        //     };
-
-        //     await client.sleep(500);
-
-        //     if (roleMembers) {
-        //         freeVoiceChannel.createOverwrite(roleMembers, {
-        //             VIEW_CHANNEL: true,
-        //             CONNECT: true,
-        //         })
-        //         .then(channel => client.log(`freeVoiceChannel permissions @membres`, "debug"))
-        //         .catch(console.error);
-        //     } else {
-        //         client.log(`roleMembers non disponible`, "error");
-        //     }
-
-        //     await client.sleep(500);
-
-        //     await freeVoiceChannel.setParent(voiceChannelsCategory);
-        // } else {
-        //     client.log(`freeVoiceChannel non disponible`, "error");
-        // }
     };
 
     client.renameFreeVoiceChannel = async (member) => {

@@ -21,6 +21,8 @@ class inviteCreateListener extends Listener {
         const verifiedRole = guild.roles.cache.find(c => c.name === settings.verifiedRole);
         const roleEveryone = guild.roles.cache.find(r => r.name === "@everyone");
 
+        const serverInvites = await guild.fetchInvites();
+
         if (invite.channel.type === 'voice') {
             await invite.channel.createOverwrite(verifiedRole, {
                 VIEW_CHANNEL: true,
@@ -31,12 +33,21 @@ class inviteCreateListener extends Listener {
             await invite.channel.createOverwrite(roleEveryone, {
                 VIEW_CHANNEL: true,
                 CONNECT: true,
+                SPEAK: true,
+                USE_VAD: true
             });
         }
-        let newinvite = Object.assign({}, datamodel.tables.invites);
-        newinvite.id = invite.code;
-        newinvite.uses = invite.uses;
-        this.client.db_invites.set(newinvite.id, newinvite);
+
+        this.client.db_invites.clear();
+
+        for (const serverInvite of serverInvites) {
+            let newinvite = Object.assign({}, datamodel.tables.invites);
+            newinvite.id = serverInvite[1].code;
+            newinvite.uses = serverInvite[1].uses;
+            this.client.db_invites.set(newinvite.id, newinvite);
+        }
+        
+
     }
 }
 

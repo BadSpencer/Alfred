@@ -1447,9 +1447,11 @@ module.exports = class {
                     case 'voice':
                         details += `Il a utilisé l'invitation créée par <@${invite.inviter.id}>\n\n`;
                         details += `Il a été ajouté au groupe "**Invités**" (contrôle anti-bot inutile)`;
+                        break;
                     case 'text':
                         details += `Il a utilisé le lien public.\n\n`;
                         details += `Cet utilisateur n'est pas vérifié. Envoi du contrôle anti-bot`;
+                        break;
                 }
                 return `<@${member.id}> à rejoint le serveur\n\n${details}`;
             },
@@ -1459,8 +1461,10 @@ module.exports = class {
                 switch (invite.channel.type) {
                     case 'voice':
                         details += `Il a utilisé l'invitation créée par <@${invite.inviter.id}>\n\n`;
+                        break;
                     case 'text':
                         details += `Il a utilisé le lien public.\n\n`;
+                        break;
                 }
                 if (verifyBot) {
                     details += `Cet utilisateur n'est pas vérifié. Envoi du contrôle anti-bot\n\n`;
