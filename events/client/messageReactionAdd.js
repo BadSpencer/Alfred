@@ -213,11 +213,9 @@ class MessageReactionAddListener extends Listener {
 
             }
 
-            if (emojis.rulesValidation.includes(messageReaction.emoji.name)) {
+            if (emojis.rulesValidation.includes(messageReaction.emoji.name) && messageReaction.message.id === settings.rulesMessageID) {
                 let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
-                await joinChannel.createOverwrite(member, {
-                    SEND_MESSAGES: true
-                });
+                joinChannel.permissionOverwrites.get(member.id).delete();
             }
 
         }
