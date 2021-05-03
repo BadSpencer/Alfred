@@ -17,7 +17,11 @@ class guildMemberUpdateListener extends Listener {
 
         const guild = client.guilds.cache.get(client.config.guildID);
         const settings = client.getSettings();
-        const roleMembers = newMember.guild.roles.cache.find(r => r.name == settings.memberRole);
+        const memberRole = newMember.guild.roles.cache.find(r => r.name == settings.memberRole);
+        const applyRole = newMember.guild.roles.cache.find(r => r.name == settings.applyRole);
+        const verifiedRole = guild.roles.cache.find(c => c.name === settings.verifiedRole);
+
+        const joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
 
         client.log(client.textes.get("DEBUG_EVENT_GUILD_MEMBER_UPDATE", newMember), "debug");
         let userdata = client.db_userdata.get(newMember.id);
@@ -34,17 +38,27 @@ class guildMemberUpdateListener extends Listener {
         // Role ajouté
         if (newMember.roles.cache.size > oldMember.roles.cache.size) {
 
-            newMember.roles.cache.forEach( async newRole => {
+            newMember.roles.cache.forEach(async newRole => {
                 if (!oldMember.roles.cache.has(newRole.id)) {
                     if (!newRole.name.startsWith("Joue à")) {
-                    client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
+                        client.log(client.textes.get("LOG_EVENT_USER_ADD_ROLE", newMember, newRole));
                     }
 
+                    if (newRole === verifiedRole) {
+                        joinChannel.createOverwrite(newMember, {
+                            SEND_MESSAGES: false
+                        });
+
+                    }
+                    if (newRole === applyRole) {
+                        newMember.roles.remove(verifiedRole);
+                    };
+
                     // Gestion de l'annonce spécifique lorsqu'on rejoint le groupe "Membres"
-                    if (newRole.id == roleMembers.id) {
+                    if (newRole === memberRole) {
                         client.memberLogMember(newMember.id);
                     }
-                    if (newRole.id == roleMembers.id && settings.welcomeMemberEnabled === true) {
+                    if (newRole.id == memberRole.id && settings.welcomeMemberEnabled === true) {
                         client.newMemberNotification(newMember);
                         client.newMemberWelcome(newMember);
                     }
@@ -61,7 +75,7 @@ class guildMemberUpdateListener extends Listener {
 
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {
-                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,"debug");
+                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`, "debug");
 
                             let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
 
@@ -77,16 +91,16 @@ class guildMemberUpdateListener extends Listener {
 
         // Role retiré
         if (newMember.roles.cache.size < oldMember.roles.cache.size) {
-            oldMember.roles.cache.forEach( async oldRole => {
+            oldMember.roles.cache.forEach(async oldRole => {
                 if (!newMember.roles.cache.has(oldRole.id)) {
                     if (!oldRole.name.startsWith("Joue à")) {
-                    client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
+                        client.log(client.textes.get("LOG_EVENT_USER_REMOVE_ROLE", newMember, oldRole));
                     }
 
                     const game = client.gamesGetByRole(oldRole);
                     if (game) {
 
-                        client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`,"debug");
+                        client.log(`Membre ${newMember.displayName} à quitté le jeu ${game.id}`, "debug");
 
                         client.gamesJoinListPost();
                         client.gamePlayerQuitNotification(game, newMember);
@@ -94,7 +108,7 @@ class guildMemberUpdateListener extends Listener {
 
                         let player = client.db_gameserversPlayers.find(rec => rec.memberID == newMember.id);
                         if (player) {
-                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`,"debug");
+                            client.log(`ID ${player.id} trouvé pour membre ${newMember.displayName}`, "debug");
 
                             let servers = client.db_gameservers.filterArray(rec => rec.gamename == game.id);
 
