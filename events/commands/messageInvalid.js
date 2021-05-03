@@ -16,10 +16,18 @@ class MessageInvalidListener extends Listener {
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
+        let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
+
         if (message.author.bot) return;
         if (message.channel.name === settings.commandsChannel) return;
         // if (message.channel.name === settings.commandsTestChannel) return;
 
+        if (message.channel === joinChannel) {
+            await joinChannel.createOverwrite(message.member, {
+                SEND_MESSAGES: false
+            });
+
+        };
         if (message.channel.type === 'text') {
             await client.messageLog(message);
             client.memberLogText(message.author.id, message);

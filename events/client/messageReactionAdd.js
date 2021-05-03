@@ -213,6 +213,13 @@ class MessageReactionAddListener extends Listener {
 
             }
 
+            if (emojis.rulesValidation.includes(messageReaction.emoji.name)) {
+                let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
+                await joinChannel.createOverwrite(member, {
+                    SEND_MESSAGES: true
+                });
+            }
+
         }
 
     }

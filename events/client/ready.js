@@ -48,6 +48,16 @@ class ReadyListener extends Listener {
 
         client.gamesJoinListPost(true);
 
+        // On charge le message de règlement pour détection réactions
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
+        if (settings.rulesMessageID != "") {
+            let rulesChannel = guild.channels.cache.get(guild.rulesChannelID);
+            if (rulesChannel) {
+                rulesChannel.messages.fetch(settings.rulesMessageID);
+            }
+        }
+
     }
 }
 
