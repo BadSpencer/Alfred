@@ -54,7 +54,8 @@ class ReadyListener extends Listener {
         if (settings.rulesMessageID != "") {
             let rulesChannel = guild.channels.cache.get(guild.rulesChannelID);
             if (rulesChannel) {
-                rulesChannel.messages.fetch(settings.rulesMessageID);
+                client.log(`Salon des règles correctement trouvé`);
+                rulesChannel.messages.fetch(settings.rulesMessageID).then(() =>{client.log(`Règlement correctement chargé`);});
             }
         }
 
