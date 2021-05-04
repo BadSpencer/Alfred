@@ -214,8 +214,12 @@ class MessageReactionAddListener extends Listener {
             }
 
             if (emojis.rulesValidation.includes(messageReaction.emoji.name) && messageReaction.message.id === settings.rulesMessageID) {
+                client.log(`${member.displayName} à validé règlement`);
                 let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
-                joinChannel.permissionOverwrites.get(member.id).delete();
+                let permissions = joinChannel.permissionOverwrites.get(member.id);
+                if (permissions) {
+                    permissions.delete();
+                }
             }
 
         }
