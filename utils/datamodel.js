@@ -12,6 +12,7 @@ exports.tables = {
         "applyRole": "Postulants",
         "verifiedRole": "Invités",
         "joinChannel": "🤚présentations",
+        "inviteCode": "",
         "playRole": "En jeu", 
         "modNotifChannel": "notifications-modération" ,
         "welcomeChannelUrl": "",
