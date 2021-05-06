@@ -447,7 +447,10 @@ module.exports = (client) => {
         }
 
         if (score > 0) {
-            credit = Math.round(score / 10);
+            credit = Math.round(score / 100);
+            if (credit > 5) {
+                credit = 5;
+            }
         } else {
             credit = -1;
         }
