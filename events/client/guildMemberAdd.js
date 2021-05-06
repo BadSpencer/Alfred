@@ -24,18 +24,23 @@ class guildMemberAddListener extends Listener {
         let imageUrl = 'https://i.imgur.com/vgxCFJ3.png';
 
         let verifyBot = true;
+        let invitedBy = "";
 
 
         const invites = await member.guild.fetchInvites();
         const invite = invites.find(i => client.db_invites.get(i.code).uses < i.uses);
 
         if (invite) {
-            if (invite.channel.type === 'voice') {
-                verifyBot = false;
-            } 
             let dbinvite = client.db_invites.get(invite.code);
             dbinvite.uses += 1;
             client.db_invites.set(invite.code, dbinvite);
+
+            if (invite.channel.code === settings.inviteCode) {
+                invitedBy = "public";
+            } else {
+                verifyBot = false;
+                invitedBy = invite.inviter.id;
+            }
         }
 
         let userdata = this.client.userdataGet(member.id);
@@ -53,14 +58,17 @@ class guildMemberAddListener extends Listener {
                 // Ne pas re-contrôler des membres qui l'ont déjà été par le passé
                 verifyBot = false;
             }
+            userdata.invitedBy = invitedBy;
+            this.client.userdataSet(userdata);
             this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0], invite, verifyBot), 'REJOIN');
         } else {
             userdata = await this.client.userdataCreate(member);
             if (!verifyBot) {
                 userdata.verified = true;
-                this.client.userdataSet(userdata);
             }
-            client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member, invite), 'JOIN');
+            userdata.invitedBy = invitedBy;
+            this.client.userdataSet(userdata);
+            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member, invite), 'JOIN');
         }
 
         if (verifyBot) {

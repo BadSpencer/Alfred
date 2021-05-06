@@ -157,6 +157,7 @@ exports.tables = {
         "joinedAt": "",
         "joinedDate": "",
         "joinedTime": "",
+        "invitedBy": "",
         "verified": false,
         "warn": 0,
         "level": 0,

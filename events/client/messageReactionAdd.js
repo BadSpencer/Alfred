@@ -108,9 +108,6 @@ class MessageReactionAddListener extends Listener {
 
         if (messageReaction.message.member !== member && !messageReaction.message.author.bot) {
 
-
-
-
             client.memberLogReactOut(member.id, messageReaction.message.author.id, messageReaction.message, messageReaction.emoji.name);
 
             if (emojis.positive.includes(messageReaction.emoji.name)) {
@@ -192,7 +189,6 @@ class MessageReactionAddListener extends Listener {
                     Le message à été supprimé.
                     
                     **Contenu**: ${messageReaction.message.cleanContent.substring(0, 200)}`, 'MODWARN');
-
                     messageReaction.message.delete();
                 } else {
                     if (messageReaction.count > 2) {
@@ -202,15 +198,12 @@ class MessageReactionAddListener extends Listener {
                         C'est la troisième notification de membre sur ce message. Le message à été supprimé.
                         
                         **Contenu**: ${messageReaction.message.cleanContent.substring(0, 200)}`, 'MODWARN');
-
                     } else {
                         client.modLogEmbed(`<@${member.id}> à signalé le message de <@${messageReaction.message.author.id}>
                         
                         **Lien**: ${messageReaction.message.url}`, 'MODWARN');
                     }
                 }
-
-
             }
 
             if (emojis.rulesValidation.includes(messageReaction.emoji.name) && messageReaction.message.id === settings.rulesMessageID) {
