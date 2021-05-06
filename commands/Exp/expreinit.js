@@ -37,6 +37,7 @@ class expReinitCommand extends Command {
         for (const userdata of userdatas) {
             userdata.xp = 0;
             userdata.level = 1;
+            userdata.credit = 0;
             client.userdataSet(userdata);
             client.log(`Expérience réinitialisée pour ${userdata.displayName}`);
         }
