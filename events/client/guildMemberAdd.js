@@ -60,7 +60,7 @@ class guildMemberAddListener extends Listener {
             }
             userdata.invitedBy = invitedBy;
             this.client.userdataSet(userdata);
-            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0], invite, verifyBot), 'REJOIN');
+            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN_AGAIN", member, userdata, memberLogs[0], invite, invitedBy, verifyBot), 'REJOIN');
         } else {
             userdata = await this.client.userdataCreate(member);
             if (!verifyBot) {
@@ -68,7 +68,7 @@ class guildMemberAddListener extends Listener {
             }
             userdata.invitedBy = invitedBy;
             this.client.userdataSet(userdata);
-            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member, invite), 'JOIN');
+            this.client.modLogEmbed(client.textes.get("MOD_NOTIF_SERVER_JOIN", member, invite, invitedBy), 'JOIN');
         }
 
         if (verifyBot) {
