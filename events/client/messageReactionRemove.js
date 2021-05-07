@@ -27,11 +27,19 @@ class MessageReactionRemoveListener extends Listener {
         const settings = client.getSettings(guild);
         const member = guild.members.cache.get(user.id);
 
-        if (!messageReaction.message.author.bot) {
+        let message;
+        if (messageReaction.message.channel.type === 'text') {
+            let messageChannel = guild.channels.cache.get(messageReaction.message.channel.id);
+            message = await messageChannel.messages.fetch(messageReaction.message.id);
+        } else {
+            message = messageReaction.message;
+        }
+
+        if (!message.author.bot) {
             client.log(client.textes.get("LOG_EVENT_REACTION_REMOVE", messageReaction, member));
         }
 
-        let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
+        let postedEmbed = client.db_postedEmbeds.get(message.id);
         if (postedEmbed) {
             switch (messageReaction.emoji.name) {
                 case '▶️': {
@@ -40,11 +48,11 @@ class MessageReactionRemoveListener extends Listener {
                     if (indexNewPage == totalPages) return;
 
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
-                    messageReaction.message.edit(newEmbed);
+                    message.edit(newEmbed);
 
 
                     postedEmbed.currentPage = indexNewPage + 1;
-                    this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
+                    this.client.db_postedEmbeds.set(message.id, postedEmbed);
                     break;
                 }
                 case '◀️': {
@@ -52,18 +60,18 @@ class MessageReactionRemoveListener extends Listener {
                     if (postedEmbed.currentPage == 1) return;
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
-                    messageReaction.message.edit(newEmbed);
+                    message.edit(newEmbed);
 
 
                     postedEmbed.currentPage = indexNewPage + 1;
-                    this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
+                    this.client.db_postedEmbeds.set(message.id, postedEmbed);
                     break;
                 }
             }
 
         }
 
-        if (messageReaction.message.id == settings.gameJoinMessage) {
+        if (message.id == settings.gameJoinMessage) {
             const game = this.client.db_games.find(game => game.emoji == messageReaction.emoji.name);
             if (game) {
                 const gameRole = guild.roles.cache.get(game.roleID);

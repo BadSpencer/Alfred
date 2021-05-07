@@ -30,12 +30,21 @@ class MessageReactionAddListener extends Listener {
 
         const modRole = client.roleModGet(guild, settings);
 
-        if (!messageReaction.message.author.bot) {
+        let message;
+        if (messageReaction.message.channel.type === 'text') {
+            let messageChannel = guild.channels.cache.get(messageReaction.message.channel.id);
+            message = await messageChannel.messages.fetch(messageReaction.message.id);
+        } else {
+            message = messageReaction.message;
+        }
+
+
+        if (!message.author.bot) {
             client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
         }
 
 
-        let postedEmbed = client.db_postedEmbeds.get(messageReaction.message.id);
+        let postedEmbed = client.db_postedEmbeds.get(message.id);
         if (postedEmbed) {
             switch (messageReaction.emoji.name) {
                 case '▶️': {
@@ -44,22 +53,22 @@ class MessageReactionAddListener extends Listener {
                     if (indexNewPage == totalPages) return;
 
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
-                    await messageReaction.message.edit(newEmbed);
+                    await message.edit(newEmbed);
 
-                    if (messageReaction.message.channel.type === "text") {
-                        await messageReaction.message.reactions.removeAll();
+                    if (message.channel.type === "text") {
+                        await message.reactions.removeAll();
                         if (postedEmbed.currentPage !== totalPages) {
-                            await messageReaction.message.react(`◀️`);
-                            await messageReaction.message.react(`▶️`);
+                            await message.react(`◀️`);
+                            await message.react(`▶️`);
                         } else {
-                            await messageReaction.message.react(`◀️`);
-                            await messageReaction.message.react(`⏹`);
+                            await message.react(`◀️`);
+                            await message.react(`⏹`);
                         }
                     }
 
 
                     postedEmbed.currentPage = indexNewPage + 1;
-                    this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
+                    this.client.db_postedEmbeds.set(message.id, postedEmbed);
                     break;
                 }
                 case '◀️': {
@@ -67,27 +76,27 @@ class MessageReactionAddListener extends Listener {
                     if (postedEmbed.currentPage == 1) return;
                     let indexNewPage = postedEmbed.currentPage - 2;
                     let newEmbed = postedEmbed.pages[indexNewPage].embed;
-                    await messageReaction.message.edit(newEmbed);
+                    await message.edit(newEmbed);
 
-                    if (messageReaction.message.channel.type === "text") {
-                        await messageReaction.message.reactions.removeAll();
+                    if (message.channel.type === "text") {
+                        await message.reactions.removeAll();
                         if (postedEmbed.currentPage !== 1) {
-                            await messageReaction.message.react(`◀️`);
-                            await messageReaction.message.react(`▶️`);
+                            await message.react(`◀️`);
+                            await message.react(`▶️`);
                         } else {
-                            await messageReaction.message.react(`⏹`);
-                            await messageReaction.message.react(`▶️`);
+                            await message.react(`⏹`);
+                            await message.react(`▶️`);
                         }
                     }
                     postedEmbed.currentPage = indexNewPage + 1;
-                    this.client.db_postedEmbeds.set(messageReaction.message.id, postedEmbed);
+                    this.client.db_postedEmbeds.set(message.id, postedEmbed);
                     break;
                 }
             }
 
         }
 
-        if (messageReaction.message.id == settings.gameJoinMessage) {
+        if (message.id == settings.gameJoinMessage) {
             const game = client.db_games.find(game => game.emoji == messageReaction.emoji.name);
             if (game) {
                 const gameRole = guild.roles.cache.get(game.roleID);
@@ -106,76 +115,76 @@ class MessageReactionAddListener extends Listener {
         }
 
 
-        if (messageReaction.message.member !== member && !messageReaction.message.author.bot) {
+        if (message.author.id != member.id && !message.author.bot) {
 
-            client.memberLogReactOut(member.id, messageReaction.message.author.id, messageReaction.message, messageReaction.emoji.name);
+            client.memberLogReactOut(member.id, message.author.id, message, messageReaction.emoji.name);
 
             if (emojis.positive.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 20);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 20);
             };
             if (emojis.positiveHand.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 20);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 20);
             };
             if (emojis.positivePlus.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 30);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 30);
             };
             if (emojis.neutral.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.neutralHand.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.bad.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 5);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 5);
             };
             if (emojis.badHand.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 5);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 5);
             };
             if (emojis.sad.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.love.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 50);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 50);
             };
             if (emojis.sweet.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 25);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 25);
             };
             if (emojis.drink.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 15);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 15);
             };
             if (emojis.flower.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 20);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 20);
             };
             if (emojis.event.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 10);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 10);
             };
             if (emojis.medal.includes(messageReaction.emoji.name)) {
-                client.memberLogReactIn(messageReaction.message.author.id, member.id, messageReaction.message, messageReaction.emoji.name, null, 100);
+                client.memberLogReactIn(message.author.id, member.id, message, messageReaction.emoji.name, null, 100);
             };
 
 
             if (emojis.modwarn.includes(messageReaction.emoji.name)) {
                 if (member.roles.cache.has(modRole.id)) {
-                    client.memberLogWarn(messageReaction.message.author.id, member.id, `Message dans <#${messageReaction.message.channel.id}`);
+                    client.memberLogWarn(message.author.id, member.id, `Message dans <#${message.channel.id}`);
                     let embed = new Discord.MessageEmbed();
 
-                    let userdata = client.userdataGet(messageReaction.message.author.id);
+                    let userdata = client.userdataGet(message.author.id);
                     userdata.warn += 1;
                     client.userdataSet(userdata);
 
-                    embed.setDescription(`Vous avez reçu un avertissement de la part de <@${member.id}>\n\nPour votre message dans <#${messageReaction.message.channel.id}>
-                    **Contenu**: ${messageReaction.message.cleanContent.substring(0, 200)}`);
+                    embed.setDescription(`Vous avez reçu un avertissement de la part de <@${member.id}>\n\nPour votre message dans <#${message.channel.id}>
+                    **Contenu**: ${message.cleanContent.substring(0, 200)}`);
                     embed.setFooter(`Nombre total d'avertissement: ${userdata.warn}`);
                     embed.setAuthor('Avertissement', 'https://cdn.discordapp.com/attachments/552008545231568897/824653538495955004/26A0.png');
-                    messageReaction.message.member.send(embed);
+                    message.author.send(embed);
 
-                    client.modLogEmbed(`<@${member.id}> à donnée un avertissment à <@${messageReaction.message.author.id}> pour son message
+                    client.modLogEmbed(`<@${member.id}> à donnée un avertissment à <@${message.author.id}> pour son message
 
                     Le message à été supprimé.
                     
-                    **Contenu**: ${messageReaction.message.cleanContent.substring(0, 200)}`);
+                    **Contenu**: ${message.cleanContent.substring(0, 200)}`);
 
-                    messageReaction.message.delete();
+                    message.delete();
                 } else {
                     messageReaction.remove();
                 }
@@ -183,21 +192,21 @@ class MessageReactionAddListener extends Listener {
 
             if (emojis.userwarn.includes(messageReaction.emoji.name)) {
                 if (member.roles.cache.has(modRole.id)) {
-                    messageReaction.message.delete();
-                    client.modLogEmbed(`<@${member.id}> est intervenu sur le message de <@${messageReaction.message.author.id}>
+                    client.modLogEmbed(`<@${member.id}> est intervenu sur le message de <@${message.author.id}>
 
                     Le message à été supprimé.
                     
-                    **Contenu**: ${messageReaction.message.cleanContent.substring(0, 200)}`, 'MODWARN');
-                    messageReaction.message.delete();
+                    **Contenu**: ${message.cleanContent.substring(0, 200)}`, 'MODWARN');
+                    message.delete();
                 } else {
                     if (messageReaction.count > 2) {
-                        messageReaction.message.delete();
+                        
                         client.modLogEmbed(`<@${member.id}> à signalé ce message de <@${messageReaction.message.author.id}>
 
                         C'est la troisième notification de membre sur ce message. Le message à été supprimé.
                         
                         **Contenu**: ${messageReaction.message.cleanContent.substring(0, 200)}`, 'MODWARN');
+                        message.delete();
                     } else {
                         client.modLogEmbed(`<@${member.id}> à signalé le message de <@${messageReaction.message.author.id}>
                         
@@ -206,7 +215,7 @@ class MessageReactionAddListener extends Listener {
                 }
             }
 
-            if (emojis.rulesValidation.includes(messageReaction.emoji.name) && messageReaction.message.id === settings.rulesMessageID) {
+            if (emojis.rulesValidation.includes(messageReaction.emoji.name) && message.id === settings.rulesMessageID) {
                 client.log(`${member.displayName} à validé règlement`);
                 let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
                 let permissions = joinChannel.permissionOverwrites.get(member.id);
