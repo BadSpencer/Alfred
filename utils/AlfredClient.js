@@ -10,7 +10,7 @@ class AlfredClient extends AkairoClient {
 			messageSweepInterval: 21600,
 			disableEveryone: true,
 			disabledEvents: ['TYPING_START'],
-			partials: ['MESSAGE']
+			partials: ['MESSAGE', 'REACTION']
 		});
 
 		this.commandHandler = new CommandHandler(this, {
