@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const colors = require("../../utils/colors");
+const datamodel = require("../../utils/datamodel");
 const {
     successMessage,
     errorMessage,
@@ -76,7 +77,8 @@ class AideCommand extends Command {
         }
 
         if (!args.command) {
-            let postedEmbeds = client.db_postedEmbeds.get("default");
+            let postedEmbeds = Object.assign({}, datamodel.tables.postedEmbeds);
+
             let embeds = [];
             let pagesArray = [];
 
