@@ -35,12 +35,8 @@ class MessageReactionAddListener extends Listener {
         if (messageReaction.message.channel.type === 'text') {
             let messageChannel = guild.channels.cache.get(messageReaction.message.channel.id);
             message = await messageChannel.messages.fetch(messageReaction.message.id);
-            if (message) {
-                client.log(`Message correctement fetché`, "debug");
-            }
         } else {
             message = messageReaction.message;
-            client.log(`Utilisation de messageReaction.message`, "debug");
         }
 
 
@@ -51,7 +47,6 @@ class MessageReactionAddListener extends Listener {
 
         let postedEmbed = client.db_postedEmbeds.get(message.id);
         if (postedEmbed) {
-            client.log(`C'est un 'postedembed'`, "debug");
             switch (messageReaction.emoji.name) {
                 case '▶️': {
                     let totalPages = postedEmbed.pages.length;
@@ -119,7 +114,6 @@ class MessageReactionAddListener extends Listener {
                 // Jeu non trouvé avec emoji
             }
         }
-
 
         if (message.author.id != member.id && !message.author.bot) {
             client.log(`Message valide pour analyse emoji`, "debug");
@@ -207,7 +201,7 @@ class MessageReactionAddListener extends Listener {
                     message.delete();
                 } else {
                     if (messageReaction.count > 2) {
-                        
+
                         client.modLogEmbed(`<@${member.id}> à signalé ce message de <@${messageReaction.message.author.id}>
 
                         C'est la troisième notification de membre sur ce message. Le message à été supprimé.
@@ -221,17 +215,18 @@ class MessageReactionAddListener extends Listener {
                     }
                 }
             }
-
-            if (emojis.rulesValidation.includes(messageReaction.emoji.name) && message.id === settings.rulesMessageID) {
-                client.log(`${member.displayName} à validé règlement`);
-                let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
-                let permissions = joinChannel.permissionOverwrites.get(member.id);
-                if (permissions) {
-                    permissions.delete();
-                }
-            }
-
         }
+
+        if (emojis.rulesValidation.includes(messageReaction.emoji.name) && message.id === settings.rulesMessageID) {
+            client.log(`${member.displayName} à validé règlement`);
+            let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
+            let permissions = joinChannel.permissionOverwrites.get(member.id);
+            if (permissions) {
+                permissions.delete();
+            }
+        }
+
+
 
     }
 }
