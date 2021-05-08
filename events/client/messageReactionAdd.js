@@ -35,8 +35,12 @@ class MessageReactionAddListener extends Listener {
         if (messageReaction.message.channel.type === 'text') {
             let messageChannel = guild.channels.cache.get(messageReaction.message.channel.id);
             message = await messageChannel.messages.fetch(messageReaction.message.id);
+            if (message) {
+                client.log(`Message correctement fetché`, "debug");
+            }
         } else {
             message = messageReaction.message;
+            client.log(`Utilisation de messageReaction.message`, "debug");
         }
 
 
@@ -47,6 +51,7 @@ class MessageReactionAddListener extends Listener {
 
         let postedEmbed = client.db_postedEmbeds.get(message.id);
         if (postedEmbed) {
+            client.log(`C'est un 'postedembed'`, "debug");
             switch (messageReaction.emoji.name) {
                 case '▶️': {
                     let totalPages = postedEmbed.pages.length;
@@ -117,6 +122,7 @@ class MessageReactionAddListener extends Listener {
 
 
         if (message.author.id != member.id && !message.author.bot) {
+            client.log(`Message valide pour analyse emoji`, "debug");
 
             client.memberLogReactOut(member.id, message.author.id, message, messageReaction.emoji.name);
 
