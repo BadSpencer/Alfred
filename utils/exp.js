@@ -25,36 +25,30 @@ module.exports = (client) => {
         if (!games) return;
 
         guild.members.cache.forEach(member => {
-            client.log(`Analyse de l'activité pour ${member.displayName}`, "debug");
+            
             if (member.roles.cache.has(roleMembers.id)) {
-                client.log(`${member.displayName} est dans le groupe des membres`, "debug");
+                
                 let presenceGame = client.presenceGetGameName(member.presence);
                 if (presenceGame) {
-                    client.log(`${member.displayName}joue à ${presenceGame}`, "debug");
+                    
                     const game = client.gamesGet(presenceGame);
                     if (game) {
-                        client.log(`${presenceGame} à bien été trouvé`, "debug");
+                        
                         client.usergameUpdateLastPlayed(game, member);
                         client.usergameAddXP(member, game);
                         if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel && member.voice.channel.name !== settings.quietChannel) {
-                            client.log(`${member.displayName} est dans un salon vocal -> gain d'XP`, "debug");
                             client.memberLogPlay(member, game, null, 1);
                         } else {
-                            client.log(`${member.displayName} n'est pas en vocal -> aucun gain d'XP`, "debug");
                             client.memberLogPlay(member, game, null, 0);
                         }
                     } else {
-                        client.log(`${presenceGame} non trouvé`, "debug");
                     }
                 } else {
-                    client.log(`${member.displayName} ne joue à aucun jeu`, "debug");
                 }
                 if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel && member.voice.channel.name !== settings.quietChannel) {
-                    client.log(`${member.displayName} est dans un salon vocal -> gain d'XP`, "debug");
                     client.memberLogVoice(member.id);
                 };
             } else {
-                client.log(`${member.displayName} n'est pas membre -> analyse annulée`, "debug");
             }
         });
 
