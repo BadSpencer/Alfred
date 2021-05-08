@@ -13,7 +13,7 @@ exec(message, command) {
 
         if (message.channel.type == 'dm') return false;
 
-        if (message.channel.name === message.settings.modNotifChannel) return false;
+        // if (message.channel.name === message.settings.modNotifChannel) return false;
         if (message.channel.name === message.settings.commandsChannel) return false;
         if (message.channel.name === message.settings.commandsTestChannel) return false;
         if (message.channel.name === message.settings.gameJoinChannel) return false;
