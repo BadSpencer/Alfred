@@ -14,7 +14,7 @@ const {
 module.exports = (client) => {
 
     client.activityCheck = async () => {
-        client.log(`Méthode: exp/activityCheck`, "debug");
+        // client.log(`Méthode: exp/activityCheck`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
