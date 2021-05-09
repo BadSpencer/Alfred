@@ -11,7 +11,7 @@ class MessageListener extends Listener {
     }
 
     async exec(message) {
-        client.log(`EVENT: message`, "debug");
+        this.client.log(`EVENT: message`, "debug");
         if (message.author.bot) return;
         message.settings = this.client.getSettings();
     }
