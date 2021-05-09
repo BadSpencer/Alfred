@@ -366,6 +366,7 @@ module.exports = (client) => {
             XP += memberLog.xpGained;
         }
 
+        client.log(`${memberID} calcul d'XP pour le type ${type}: ${XP}`);
         return XP;
     };
 
