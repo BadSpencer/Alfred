@@ -205,6 +205,8 @@ module.exports = (client) => {
 
         let maxTypeXPperDay = 1000;
 
+        client.log(`${memberID} à gagné ${xpGained} (${type})`, 'debug');
+
 
         let memberLogAdd = Object.assign({}, datamodel.tables.memberLog);
         switch (type) {
