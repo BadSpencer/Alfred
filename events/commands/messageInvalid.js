@@ -22,10 +22,6 @@ class MessageInvalidListener extends Listener {
 
 
         if (message.channel.type === 'text') {
-            await client.messageLog(message);
-            client.memberLogText(message.author.id, message);
-
-
             let games = client.db_games.filterArray((game) => game.textChannelID == message.channel.id);
             for (const game of games) {
                 if (message.member.roles.cache.has(game.roleID)) {

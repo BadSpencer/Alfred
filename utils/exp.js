@@ -83,7 +83,7 @@ module.exports = (client) => {
             timestamp = +new Date;
         };
 
-        if (!message.content.startsWith("https://tenor.com") && !message.content.startsWith("https://media.tenor.com")) {
+        if (!message.content.startsWith("https://tenor.com") && !message.content.startsWith("https://media.tenor.com") && !message.content.startsWith("!")) {
             if (message.content.length > 150) {
                 client.memberLog(timestamp, memberID, "TEXT", `Messages de ${client.memberGetDisplayNameByID(memberID)}`, null, null, null, null, null, null, null, 100);
             } else {

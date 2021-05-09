@@ -14,6 +14,11 @@ class MessageListener extends Listener {
         this.client.log(`EVENT: message`, "debug");
         if (message.author.bot) return;
         message.settings = this.client.getSettings();
+
+        if (message.channel.type === 'text') {
+            await client.messageLog(message);
+            client.memberLogText(message.author.id, message);
+        };
     }
 }
 
