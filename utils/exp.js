@@ -205,7 +205,7 @@ module.exports = (client) => {
 
         let maxTypeXPperDay = 1000;
 
-        client.log(`${memberID} à gagné ${xpGained} (${type})`, 'debug');
+     
 
 
         let memberLogAdd = Object.assign({}, datamodel.tables.memberLog);
@@ -316,7 +316,7 @@ module.exports = (client) => {
                     client.userLevelUp(member, newLevel);
                 };
                 client.userdataSet(userdata);
-                client.log(`XP pour ${member.displayName}: ${amount}`, "debug");
+                client.log(`Gain d'XP pour ${member.displayName}: ${amount}`, "debug");
             }
         }
     };
