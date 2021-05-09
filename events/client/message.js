@@ -16,8 +16,8 @@ class MessageListener extends Listener {
         message.settings = this.client.getSettings();
 
         if (message.channel.type === 'text') {
-            await client.messageLog(message);
-            client.memberLogText(message.author.id, message);
+            await this.client.messageLog(message);
+            this.client.memberLogText(message.author.id, message);
         };
     }
 }
