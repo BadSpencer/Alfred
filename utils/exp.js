@@ -290,6 +290,9 @@ module.exports = (client) => {
             memberLogAdd.xpMaxReached = true;
             memberLogAdd.xpGained += 0;
         } else {
+            if (currentTypeXP + xpGained > maxTypeXPperDay) {
+                xpGained = maxTypeXPperDay - currentTypeXP;
+            }
             memberLogAdd.xpMaxReached = false;
             memberLogAdd.xpGained += xpGained;
             if (xpGained > 0) {
