@@ -33,6 +33,8 @@ class MessageInvalidListener extends Listener {
 
         if (message.channel.type === 'dm') {
             let userdata = client.userdataGet(message.author.id);
+            let member = client.memberGet(userdata.id);
+            const guild = client.getGuild();
 
             if (!userdata.verified) {
                 let embed = new Discord.MessageEmbed();
@@ -40,8 +42,7 @@ class MessageInvalidListener extends Listener {
                 if (message.content.toUpperCase().includes(`MARIO`)) {
                     
 
-                    let member = client.memberGet(userdata.id);
-                    const guild = client.getGuild();
+
                     
 
                     embed.setTitle('Casual Effect');
