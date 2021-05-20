@@ -27,6 +27,7 @@ exports.tables = {
         "freeVoiceChan": "➕ Créer salon",
         "createdVoiceChan": "🔊 Salon vocal",
         "voiceChansCategory": "🔷Salons vocaux",
+        "contactChannel": "📍contact-alfred",
         "accueilCategory": "🔷Espace Public",
         "contactCategory": "🟪Contact Staff",
         "contactChannelFree": "👋contact",

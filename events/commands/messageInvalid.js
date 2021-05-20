@@ -33,15 +33,16 @@ class MessageInvalidListener extends Listener {
 
         if (message.channel.type === 'dm') {
             let userdata = client.userdataGet(message.author.id);
-            client.log(`MP envoyé par ${message.author.username}: ${message.cleanContent}`);
 
-            if (message.content.toUpperCase().includes(`MARIO`)) {
+            if (!userdata.verified) {
                 let embed = new Discord.MessageEmbed();
+                let description = "";
+                if (message.content.toUpperCase().includes(`MARIO`)) {
+                    
 
-                if (!userdata.verified) {
                     let member = client.memberGet(userdata.id);
                     const guild = client.getGuild();
-                    let description = "";
+                    
 
                     embed.setTitle('Casual Effect');
                     description += `Félicitations ! Vous avez correctement répondu à la question.`;
@@ -60,6 +61,20 @@ class MessageInvalidListener extends Listener {
 
                     client.modLogEmbed(`<@${member.id}> à correctement répondu à l'énigme anti-bot. Il à été ajouté au groupe "**Invités**"`);
 
+
+                } else {
+                    embed.setTitle('Casual Effect');
+                    embed.setDescription(`Ce n'est pas vraiment la réponse que j'attendais...`);
+                    member.send(embed);
+                }
+            } else {
+                let contactChannel = guild.channels.cache.find(c => c.name === message.settings.contactChannel);
+                client.log(`MP envoyé par ${message.author.username}: ${message.cleanContent}`);
+
+                if (contactChannel) {
+                    contactChannel.send(`<@${message.author.id}> ${message.cleanContent}`);
+                } else {
+                    client.log(`Salon "Contact Alfred" non trouvé`, "error");
                 }
             }
 
