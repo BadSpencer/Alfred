@@ -35,8 +35,9 @@ class MessageInvalidListener extends Listener {
             let userdata = client.userdataGet(message.author.id);
             let member = client.memberGet(userdata.id);
             const guild = client.getGuild();
+            const roleMembers = guild.roles.cache.find(r => r.name === message.settings.memberRole);
 
-            if (!userdata.verified) {
+            if (!userdata.verified && !member.roles.cache.has(roleMembers.id)) {
                 let embed = new Discord.MessageEmbed();
                 let description = "";
                 if (message.content.toUpperCase().includes(`MARIO`)) {
