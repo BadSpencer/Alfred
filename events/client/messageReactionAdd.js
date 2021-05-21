@@ -219,6 +219,7 @@ class MessageReactionAddListener extends Listener {
 
         if (emojis.rulesValidation.includes(messageReaction.emoji.name) && message.id === settings.rulesMessageID) {
             client.log(`${member.displayName} à validé règlement`);
+            client.modLogEmbed(`<@${member.id}> à validé le règlement`, 'MODWARN');
             let joinChannel = guild.channels.cache.find(c => c.name === settings.joinChannel);
             let permissions = joinChannel.permissionOverwrites.get(member.id);
             if (permissions) {
