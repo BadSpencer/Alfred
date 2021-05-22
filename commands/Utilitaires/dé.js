@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { Command } = require("discord-akairo");
+const { Command, Argument } = require('discord-akairo');
 const { Permissions } = require("discord.js");
 const { successMessage, errorMessage, warnMessage, questionMessage, promptMessage } = require('../../utils/messages');
 const textes = new (require("../../utils/textes.js"));
@@ -20,6 +20,8 @@ class KickCommand extends Command {
             }
         });
     }
+
+
 
     *args(message) {
         const numTirages = yield {
