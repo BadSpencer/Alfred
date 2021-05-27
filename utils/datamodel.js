@@ -15,6 +15,7 @@ exports.tables = {
         "inviteCode": "",
         "playRole": "En jeu", 
         "modNotifChannel": "notifications-modération" ,
+        "admNotifChannel": "notifications-admin",
         "welcomeChannelUrl": "",
         "welcomeChannel": "accueil",
         "welcomeEnabled": true,
