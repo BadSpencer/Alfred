@@ -26,8 +26,7 @@ class ModerationCheck extends Inhibitor {
             '🟪 Serveurs',
             '🟪 Joueurs',
             '🟪 Levels/Expérience',
-            '🟪 News/embeds',
-            '🟪 Admin'
+            '🟪 News/embeds'
         ];
 
 
