@@ -534,7 +534,6 @@ module.exports = (client) => {
 
     };
     client.modLog = async (content) => {
-        client.log(`Méthode: modLog`, "debug");
         const guild = client.getGuild();
         const settings = client.getSettings(guild);
 
@@ -542,6 +541,17 @@ module.exports = (client) => {
 
         if (modNotifChannel) {
             modNotifChannel.send(content);
+        }
+    };
+
+    client.admLog = async (content) => {
+        const guild = client.getGuild();
+        const settings = client.getSettings(guild);
+
+        let admNotifChannel = guild.channels.cache.find(c => c.name === settings.admNotifChannel);
+
+        if (admNotifChannel) {
+            admNotifChannel.send(content);
         }
     };
 
