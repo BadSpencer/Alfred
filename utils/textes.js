@@ -367,14 +367,6 @@ module.exports = class {
 
             ],
 
-            ASTUCES: [
-                `Si vous avez besoin d'aide ou que vous êtes perdus, lancez la commande \`!aide\``,
-                `Lorsque vous créez un salon vocal, vous (et vous seul) pouvez modifier son nom. Faite un clic droit sur le salon puis "Modifier le salon".`,
-                `Si vous jouez à un jeu lorsque vous créez un salon vocal, le salon sera nommé avec le nom du jeu.`,
-                `Votre jeu préféré n'a pas encore sa place sur le Discord ? Proposez le ! Vous aurez ainsi une section dédiée pour partager des informations.`,
-                `Vous pouvez m'envoyer vos commandes par message privé, comme ça, ça restera entre nous !`,
-                `Si le salon "+ Créer salon" est absent ou inacessible, lancez la commande **!vocal** pour en créer un autre`
-            ],
 
             COM_USERS_INITMESSLOGS_RESULT: (messageCount) => {
                 return `${messageCount} messages loggués dans la base`;
@@ -1137,12 +1129,29 @@ module.exports = class {
 
             CMD_NOTE_PROMPT: `Quel est l'ID de la note ?`,
             CMD_NOTE_RETRY: `Je ne trouve aucune note avec cet ID. Vérifiez votre saisie`,
+            CMD_ASTUCE_PROMPT: `Quel est l'ID de l'astuce ?`,
+            CMD_ASTUCE_RETRY: `Je ne trouve aucune astuce avec cet ID. Vérifiez votre saisie`,
+            CMD_ASTUCE_CONFIRM_PROMPT: (astuce) => {
+                return `**${astuce.id}** \`${astuce.texte}\`
+                
+                Êtes-vous sûr de vouloir supprimer cette astuce ? (**oui**/**non**)`;
+            },
 
             CMD_OUINON_RETRY: `Veuillez répondre par 'oui' ou par 'non`,
 
 
 
+            CMD_ASTUCELIST_CONTENT: `Affiche la liste des astuces`,
+            CMD_ASTUCELIST_USAGE: `Lancer la commande sans paramètre`,
+            CMD_ASTUCEDEL_CONTENT: `Supprimer une astuce`,
+            CMD_ASTUCEDEL_USAGE: `Lancer la commande sans paramètre`,
+            CMD_ASTUCEADD_CONTENT: `Ajouter une astuce`,
+            CMD_ASTUCEADD_USAGE: `Lancer la commande sans paramètre`,
+            CMD_ASTUCEEDIT_CONTENT: `Editer une astuce`,
+            CMD_ASTUCEEDIT_USAGE: `Lancer la commande sans paramètre`,
 
+            CMD_ASTUCEADD_ASTUCETEXT_PROMPT: `Quel est le texte de l'astuce ?`,
+            CMD_ASTUCEEDIT_ASTUCETEXT_PROMPT: `Quel est le nouvceau texte de l'astuce ?`,
 
             AIDE_AIDE_DESCRIPTION_CONTENT: `Affiche ce message d'aide et une aide détaillée pour chaque commande`,
             AIDE_AIDE_DESCRIPTION_USAGE: `\`!aide [commande ou alias]\` Les crochets \`[...]\` signifient que le paramètre est optionnel
@@ -1619,9 +1628,6 @@ module.exports = class {
         return this.textes["CITATIONS"];
     }
 
-    getAstuces() {
-        return this.textes["ASTUCES"];
-    }
 
 
 

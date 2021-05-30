@@ -234,7 +234,8 @@ exports.tables = {
     astuce: {
         "id": "",
         "texte": "",
-        "count": 0
+        "lastDisplayedAt": 0,
+        "displayCount": 0
     },
     citation: {
         "id": "",

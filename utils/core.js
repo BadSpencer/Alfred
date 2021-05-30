@@ -116,17 +116,7 @@ module.exports = (client) => {
     };
 
     client.textesCheck = () => {
-        let astuces = client.textes.getAstuces(client);
-        astuces.forEach(astuce => {
-            let currAst = client.db_astuces.find(ast => ast.texte == astuce);
-            if (!currAst) {
-                let newAstuce = Object.assign({}, datamodel.tables.astuce);
-                newAstuce.id = client.db_astuces.autonum;
-                newAstuce.texte = astuce;
-                newAstuce.count = 0;
-                client.db_astuces.set(newAstuce.id, newAstuce);
-            }
-        });
+
 
         let citations = client.textes.getCitations(client);
         citations.forEach(citation => {
@@ -416,10 +406,11 @@ module.exports = (client) => {
 
         let astuces = client.db_astuces.array();
         astuces.sort(function (a, b) {
-            return a.count - b.count;
+            return a.lastDisplayedAt - b.lastDisplayedAt;
         });
         let astuce = client.db_astuces.get(astuces[0].id);
-        astuce.count += 1;
+        astuce.displayCount += 1;
+        astuce.lastDisplayedAt = +new Date;
         client.db_astuces.set(astuces[0].id, astuce);
 
 

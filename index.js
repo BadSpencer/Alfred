@@ -205,6 +205,16 @@ client.commandHandler.resolver.addType('note', (message, phrase) => {
     return null;
 });
 
+client.commandHandler.resolver.addType('astuce', (message, phrase) => {
+    if (!phrase) return null;
+
+    let astuce = client.db_astuces.get(phrase)
+    if (astuce) {
+        return astuce;
+    }
+    return null;
+});
+
 client.commandHandler.resolver.addType('steamID', (message, phrase) => {
     if (!phrase) return null;
     if (phrase.length == 17 && phrase.startsWith('7656')) {
