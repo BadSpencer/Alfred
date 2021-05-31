@@ -473,4 +473,51 @@ module.exports = (client) => {
         return true;
     };
 
+    client.memberGetKarma = (memberID) => {
+        let karma = 0;
+        let score = 0;
+        let now = +new Date;
+        let fromTimestamp = +new Date(moment(now).subtract(1, 'days').startOf('day'));
+        let toTimestamp = +new Date(moment(now).subtract(1, 'days').endOf('day'));
+
+        let memberLogs = client.db_memberLog.filterArray(memberLog =>
+            memberLog.memberID === memberID &&
+            memberLog.createdAt > fromTimestamp &&
+            memberLog.createdAt < toTimestamp);
+
+        if (memberLogs) {
+            for (const memberLog of memberLogs) {
+                score += memberLog.xpGained;
+            }
+        }
+
+        if (score > 0) {
+            karma = Math.round(score / 100);
+            if (karma > 5) {
+                karma = 5;
+            }
+        } else {
+            karma = -1;
+        }
+        client.log(`Score: ${score} -> ${karma}`, "debug");
+        return karma;
+    };    
+
+    client.setKarma = () => {
+        const guild = client.getGuild();
+        guild.members.cache.forEach(member => {
+            let userdata = client.userdataGet(member.id);
+            if (userdata) {
+                let credit = client.memberGetCredit(member.id);
+                userdata.credit += credit;
+                if (userdata.credit < 0) {
+                    userdata.credit = 0;
+                }
+                client.userdataSet(userdata);
+                client.log(`${member.displayName} à gagné ${credit}cr -> ${userdata.credit}cr au total`);
+            }
+        });
+        return true;
+    };
+
 }
