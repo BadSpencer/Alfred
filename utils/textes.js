@@ -1037,8 +1037,12 @@ module.exports = class {
             },
 
             GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
-                return `Mot de passe: Donné par <@291545597205544971> par MP (⚠️ à ne pas divulguer)
-                Redémarrage automatique tous les jours à **5h30**`;
+                return `L'accès aux serveurs est protégé par mot de passe. 
+                Il est donné par <@291545597205544971> par MP (à ne pas divulguer)
+
+                ◽️[Règlement](https://www.casual-effect.fr/communaute/reglement)
+                ◽️Redémarrage automatique tous les jours à **5h30**
+                `;
             },
             // GAMESERVER_ARK_MODS: () => {
             //     return `**Super Structure** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1999447172)
