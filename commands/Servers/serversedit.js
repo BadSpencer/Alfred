@@ -52,7 +52,7 @@ class ServerEditCommand extends Command {
     async exec(message, args) {
         let client = this.client;
 
-        if (!args.server[args.field]) return errorMessage(textes.get('ERROR_FIELD_NOT_FOUND', args.field), message.channel);
+        if (args.server[args.field] === undefined) return errorMessage(textes.get('ERROR_FIELD_NOT_FOUND', args.field), message.channel);
 
         if (args.field == "portrcon" || args.field == "portftp") {
             args.server[args.field] = parseInt(args.value);

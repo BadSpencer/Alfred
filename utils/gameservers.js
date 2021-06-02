@@ -356,6 +356,7 @@ module.exports = (client) => {
   };
 
   client.gameServersStatus = async () => {
+    client.log(`Méthode: gameservers/gameServersStatus`, "debug");
     const guild = client.guilds.cache.get(client.config.guildID);
 
     let servers = await client.db_gameservers.filterArray(server => server.isActive == true);
@@ -481,6 +482,7 @@ module.exports = (client) => {
   };
 
   client.gameServersPostStatusMessage = async () => {
+    client.log(`Méthode: gameservers/gameServersPostStatusMessage`, "debug");
     const guild = client.getGuild();
     const settings = client.getSettings(guild);
 

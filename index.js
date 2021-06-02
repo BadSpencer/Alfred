@@ -124,10 +124,15 @@ client.db_invites = new Enmap({
 // });
 
 client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes les minutes
-    client.activityCheck();
+    client.activityCheck().then(()=>{
+        client.gameServersStatus().then(()=>{
+            client.gameServersPostStatusMessage();
+        })
+    })
+    
 });
 client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
-    client.gameServersStatus();
+    // client.gameServersStatus();
 });
 
 client.cron_serverMaintenanceOn = new cron.CronJob('00 25 05 * * *', () => { // Tous les jours à 5h25
@@ -143,7 +148,7 @@ client.cron_serverUpdateInfos = new cron.CronJob('00 50 05 * * *', () => { // To
 });
 
 client.cron_serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
-    client.gameServersPostStatusMessage();
+    //  client.gameServersPostStatusMessage();
 });
 client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
     client.messageOfTheDay();

@@ -1037,19 +1037,21 @@ module.exports = class {
             },
 
             GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
-                return `Mot de passe: **Pirates**
-                Redémarrage automatique tous les jours à **5h30**
-                Réinitialisation dinos dans **${timeDwD}**`;
+                return `Mot de passe: Donné par <@291545597205544971> par MP (⚠️ à ne pas divulguer)
+                Redémarrage automatique tous les jours à **5h30**`;
             },
+            // GAMESERVER_ARK_MODS: () => {
+            //     return `**Super Structure** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1999447172)
+            //     **Awesome Spyglass** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1404697612)
+            //     **Genesis Grinder** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=2010338386)
+            //     **Ebenus Astrum** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=916417001)`;
+            // },
             GAMESERVER_ARK_MODS: () => {
-                return `**Super Structure** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1999447172)
-                **Awesome Spyglass** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=1404697612)
-                **Genesis Grinder** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=2010338386)
-                **Ebenus Astrum** [🔗](https://steamcommunity.com/sharedfiles/filedetails/?id=916417001)`;
+                return `Aucun mod`;
             },
             GAMESERVER_ARK_RATES: () => {
                 return `Exp: **2**x
-                Récolte: **3**x
+                Récolte: **2**x
                 Appriv.: **6**x
                 Int. repro: **0.05**x
                 Eclosion: **4**x
