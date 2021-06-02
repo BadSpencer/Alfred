@@ -131,9 +131,9 @@ client.cron_activityCheck = new cron.CronJob('00 * * * * *', () => { // Toutes l
     })
     
 });
-client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
-    // client.gameServersStatus();
-});
+// client.cron_serversStatus = new cron.CronJob('5 * * * * *', () => { // Toutes les minutes après 5sec
+//     // client.gameServersStatus();
+// });
 
 client.cron_serverMaintenanceOn = new cron.CronJob('00 25 05 * * *', () => { // Tous les jours à 5h25
     client.gameServersSetMaintenanceOn("*");
@@ -147,9 +147,9 @@ client.cron_serverUpdateInfos = new cron.CronJob('00 50 05 * * *', () => { // To
     client.gameserverUpdateInfos();
 });
 
-client.cron_serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
-    //  client.gameServersPostStatusMessage();
-});
+// client.cron_serversInfos = new cron.CronJob('10 * * * * *', () => { // Toutes les minutes après 10sec
+//     //  client.gameServersPostStatusMessage();
+// });
 client.cron_messageOfTheDay = new cron.CronJob('00 00 09 * * *', () => { // Tous les jours à 9h
     client.messageOfTheDay();
 });
