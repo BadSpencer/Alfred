@@ -7,7 +7,7 @@ exports.tables = {
         "debug": true,
         "rulesMessageID": "",
         "modRole": "Officiers",
-        "adminRole": "Admins",
+        "adminRole": "Fondateur",
         "memberRole": "Membres",
         "applyRole": "Postulants",
         "verifiedRole": "Invités",
