@@ -10,7 +10,7 @@ const {
   promptMessage
 } = require("./messages");
 const fetch = require("node-fetch");
-const textes = new(require("./textes.js"));
+const textes = new (require("./textes.js"));
 const steamServerStatus = require("steam-server-status");
 const ftpClient = require("ftp");
 
@@ -497,7 +497,12 @@ module.exports = (client) => {
 
       if (servers.length == 0) continue;
 
-      let dateNextDwD = +new Date(client.cron_ArkDWD.nextDate());
+      let dateNextDwD;
+      if (client.cron_ArkDWD) {
+        dateNextDwD = +new Date(client.cron_ArkDWD.nextDate());
+      } else {
+        dateNextDwD = +new Date();
+      }
       let dateNow = +new Date();
 
       let timeDwD = client.msToHours(dateNextDwD - dateNow);
