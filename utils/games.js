@@ -973,7 +973,7 @@ module.exports = (client) => {
     channel.send(embed)
   };
 
-  // Poste un message d'information pour un jeu si un salon information lié au jeu existe
+  // Poste un message d'information pour un jeu si un salon status lié au jeu existe
   client.gamesInfosPost = async () => {
     const guild = client.getGuild();
     let games = client.gamesGetActive(true);
@@ -982,23 +982,23 @@ module.exports = (client) => {
       let embed = new Discord.MessageEmbed(client.gamesGetGameInfosEmbed(game));
 
       if (game.infosChannelID !== "") {
-        let gameInfosChannel = guild.channels.cache.get(game.infosChannelID);
+        let gameStatusChannel = guild.channels.cache.get(game.statusChannelID);
 
-        let gameInfosMessage = undefined;
+        let gameStatusMessage = undefined;
         if (game.infosMessageID) {
-          await gameInfosChannel.messages.fetch(game.infosMessageID).then(message => {
-            gameInfosMessage = message;
+          await gameStatusChannel.messages.fetch(game.infosMessageID).then(message => {
+            gameStatusMessage = message;
           }).catch(error => {
-            gameInfosMessage = undefined;
-            client.log(`Message infos jeu "${game.name}" non trouvé dans ${gameInfosChannel.name}`, "warn");
+            gameStatusMessage = undefined;
+            client.log(`Message infos jeu "${game.name}" non trouvé dans ${gameStatusChannel.name}`, "warn");
           });
         }
 
-        if (gameInfosMessage !== undefined) {
-          gameInfosMessage.edit(embed);
+        if (gameStatusMessage !== undefined) {
+          gameStatusMessage.edit(embed);
           client.log(`Message infos jeu "${game.name}" mis à jour`);
         } else {
-          gameInfosChannel.send(embed).then(
+          gameStatusChannel.send(embed).then(
             message => {
               game.infosMessageID = message.id;
               client.db_games.set(game.id, game);
@@ -1008,7 +1008,7 @@ module.exports = (client) => {
         }
 
       } else {
-        client.log(`Salon information pour "${game.name}" non trouvé`, 'warn');
+        client.log(`Salon statut pour "${game.name}" non trouvé`, 'warn');
       }
     }
   };
