@@ -1038,9 +1038,9 @@ module.exports = class {
 
             GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
                 return `
-                [Règlement](https://www.casual-effect.fr/communaute/reglement)
+                \nResponsable:<@291545597205544971> 
 
-                Responsable:<@291545597205544971> 
+                [Règlement](https://www.casual-effect.fr/communaute/reglement)
 
                 L'accès aux serveurs est protégé par mot de passe. Contactez le responsable pour l'obtenir
 
