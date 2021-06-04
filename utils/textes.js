@@ -1038,10 +1038,11 @@ module.exports = class {
 
             GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
                 return `L'accès aux serveurs est protégé par mot de passe. 
-                Il est donné par <@291545597205544971> par MP (à ne pas divulguer)
+                Contacter <@291545597205544971> pour l'obtenir
 
-                ◽️[Règlement](https://www.casual-effect.fr/communaute/reglement)
-                ◽️Redémarrage automatique tous les jours à **5h30**
+                Veuillez lire le [règlement](https://www.casual-effect.fr/communaute/reglement) avant de rejoindre le cserveur
+
+                Un redémarrage automatique est plannifié tous les jours à **5h30**
                 `;
             },
             // GAMESERVER_ARK_MODS: () => {
@@ -1055,7 +1056,7 @@ module.exports = class {
             },
             GAMESERVER_ARK_RATES: () => {
                 return `Exp: **2**x
-                Récolte: **2**x
+                Récolte: **3**x
                 Appriv.: **6**x
                 Int. repro: **0.05**x
                 Eclosion: **4**x
