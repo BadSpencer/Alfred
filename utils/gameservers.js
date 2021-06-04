@@ -552,7 +552,7 @@ module.exports = (client) => {
         }
 
         fieldDescription += '〰️〰️〰️〰️〰️〰️〰️〰️';
-        fieldServerAdressesDescription += `[**${server.servername}**](${server.steamlink}): ${server.ip}:${server.portrcon} - ${server.version} \n`;
+        fieldServerAdressesDescription += `[**${server.servername}**](${server.steamlink}): ${server.ip}:${server.portrcon} - v**${server.version}** \n`;
 
         embed.addField(fieldTitle, fieldDescription, true);
 
