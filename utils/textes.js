@@ -1037,10 +1037,12 @@ module.exports = class {
             },
 
             GAMESERVER_ARK_INFORMATIONS: (timeDwD) => {
-                return `L'accès aux serveurs est protégé par mot de passe. 
-                Contacter <@291545597205544971> pour l'obtenir
+                return `
+                [Règlement](https://www.casual-effect.fr/communaute/reglement)
 
-                Veuillez lire le [règlement](https://www.casual-effect.fr/communaute/reglement) avant de rejoindre le cserveur
+                Responsable:<@291545597205544971> 
+
+                L'accès aux serveurs est protégé par mot de passe. Contactez le responsable pour l'obtenir
 
                 Un redémarrage automatique est plannifié tous les jours à **5h30**
                 `;
