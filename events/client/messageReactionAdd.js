@@ -35,14 +35,16 @@ class MessageReactionAddListener extends Listener {
         if (messageReaction.message.channel.type === 'text') {
             let messageChannel = guild.channels.cache.get(messageReaction.message.channel.id);
             message = await messageChannel.messages.fetch(messageReaction.message.id);
+            if (!message.author.bot) {
+                client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
+            }
         } else {
             message = messageReaction.message;
-        }
-
-
-        if (!message.author.bot) {
             client.log(client.textes.get("LOG_EVENT_REACTION_ADD", messageReaction, member));
         }
+
+
+
 
 
         let postedEmbed = client.db_postedEmbeds.get(message.id);
