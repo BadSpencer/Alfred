@@ -445,12 +445,12 @@ module.exports = (client) => {
         }
 
         if (score > 0) {
-            credit = Math.round(score / 100);
-            if (credit > 5) {
-                credit = 5;
+            credit = Math.round(score / 10);
+            if (credit > 100) {
+                credit = 100;
             }
         } else {
-            credit = -1;
+            credit = 0;
         }
         client.log(`Score: ${score} -> ${credit}`, "debug");
         return credit;
@@ -508,13 +508,13 @@ module.exports = (client) => {
         guild.members.cache.forEach(member => {
             let userdata = client.userdataGet(member.id);
             if (userdata) {
-                let credit = client.memberGetCredit(member.id);
-                userdata.credit += credit;
-                if (userdata.credit < 0) {
-                    userdata.credit = 0;
+                let karma = client.memberGetCredit(member.id);
+                userdata.karma += karma;
+                if (userdata.karma < 0) {
+                    userdata.karma = 0;
                 }
                 client.userdataSet(userdata);
-                client.log(`${member.displayName} à gagné ${credit}cr -> ${userdata.credit}cr au total`);
+                client.log(`${member.displayName} à gagné ${karma} K -> ${userdata.karma} K au total`);
             }
         });
         return true;
