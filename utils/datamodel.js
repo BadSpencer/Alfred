@@ -165,7 +165,7 @@ exports.tables = {
         "level": 0,
         "xp": 0,
         "credit": 0,
-        "karma": 0,
+        "karma": 100,
         "logs": []
     },
     userdataLogs: {

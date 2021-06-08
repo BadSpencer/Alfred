@@ -38,7 +38,7 @@ class expReinitCommand extends Command {
             userdata.xp = 0;
             userdata.level = 1;
             userdata.credit = 0;
-            userdata.karma = 0;
+            userdata.karma = 100;
             client.userdataSet(userdata);
             client.log(`Expérience réinitialisée pour ${userdata.displayName}`);
         }
