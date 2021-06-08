@@ -508,7 +508,7 @@ module.exports = (client) => {
         guild.members.cache.forEach(member => {
             let userdata = client.userdataGet(member.id);
             if (userdata) {
-                let karma = client.memberGetCredit(member.id);
+                let karma = client.memberGetKarma(member.id);
                 userdata.karma += karma;
                 if (userdata.karma < 0) {
                     userdata.karma = 0;
