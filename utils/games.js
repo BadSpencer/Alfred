@@ -981,7 +981,7 @@ module.exports = (client) => {
     for (const game of games) {
       let embed = new Discord.MessageEmbed(client.gamesGetGameInfosEmbed(game));
 
-      if (game.infosChannelID !== "") {
+      if (game.statusChannelID !== "") {
         let gameStatusChannel = guild.channels.cache.get(game.statusChannelID);
 
         let gameStatusMessage = undefined;
