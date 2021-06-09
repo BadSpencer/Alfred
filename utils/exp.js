@@ -533,7 +533,7 @@ module.exports = (client) => {
         }
 
         if (score > 0) {
-            karma = Math.round(score / 50);
+            karma = Math.round(score / 100);
             if (karma > 5) {
                 karma = 5;
             }
