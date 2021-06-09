@@ -537,7 +537,7 @@ module.exports = (client) => {
             if (karma > 5) {
                 karma = 5;
             }
-            if (karma = 0) {
+            if (karma < 1) {
                 karma = 1;
             }
         } else {
