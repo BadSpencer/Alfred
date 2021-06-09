@@ -25,15 +25,15 @@ module.exports = (client) => {
         if (!games) return;
 
         guild.members.cache.forEach(member => {
-            
+
             if (member.roles.cache.has(roleMembers.id)) {
-                
+
                 let presenceGame = client.presenceGetGameName(member.presence);
                 if (presenceGame) {
-                    
+
                     const game = client.gamesGet(presenceGame);
                     if (game) {
-                        
+
                         client.usergameUpdateLastPlayed(game, member);
                         client.usergameAddXP(member, game);
                         if (member.voice.channel && member.voice.channel.name !== settings.AFKChannel && member.voice.channel.name !== settings.quietChannel) {
@@ -205,7 +205,7 @@ module.exports = (client) => {
 
         let maxTypeXPperDay = 1000;
 
-     
+
 
 
         let memberLogAdd = Object.assign({}, datamodel.tables.memberLog);
@@ -440,7 +440,25 @@ module.exports = (client) => {
 
         if (memberLogs) {
             for (const memberLog of memberLogs) {
-                score += memberLog.xpGained;
+                switch (memberLog.type) {
+                    case "PLAY":
+                        score += (memberLog.xpGained / 2);
+                        break;
+                    case "TEXT":
+                        score += (memberLog.xpGained * 2);
+                        break;
+                    case "VOICE":
+                        score += (memberLog.xpGained * 2);
+                        break;
+                    case "REACTIN":
+                        score += memberLog.xpGained;
+                        break;
+                    case "REACTOUT":
+                        score += memberLog.xpGained;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -452,7 +470,7 @@ module.exports = (client) => {
         } else {
             credit = 0;
         }
-        client.log(`Score: ${score} -> ${credit}`, "debug");
+        client.log(`CrScore: ${score} -> ${credit}Cr`, "debug");
         return credit;
     };
 
@@ -462,12 +480,14 @@ module.exports = (client) => {
             let userdata = client.userdataGet(member.id);
             if (userdata) {
                 let credit = client.memberGetCredit(member.id);
+                let karma = client.memberGetKarma(member.id);
                 userdata.credit += credit;
-                if (userdata.credit < 0) {
-                    userdata.credit = 0;
+                userdata.karma += karma;
+                if (userdata.karma < 0) {
+                    userdata.karma = 0;
                 }
                 client.userdataSet(userdata);
-                client.log(`${member.displayName} à gagné ${credit}cr -> ${userdata.credit}cr au total`);
+                client.log(`${member.displayName} +${credit}cr -> ${userdata.credit}cr / +${karma}K -> ${userdata.karma}K`);
             }
         });
         return true;
@@ -487,7 +507,28 @@ module.exports = (client) => {
 
         if (memberLogs) {
             for (const memberLog of memberLogs) {
-                score += memberLog.xpGained;
+
+                switch (memberLog.type) {
+                    case "PLAY":
+                        score += (memberLog.xpGained / 2);
+                        break;
+                    case "TEXT":
+                        score += (memberLog.xpGained / 2);
+                        break;
+                    case "VOICE":
+                        score += (memberLog.xpGained / 2);
+                        break;
+                    case "REACTIN":
+                        score += (memberLog.xpGained * 2);
+                        break;
+                    case "REACTOUT":
+                        score += (memberLog.xpGained * 2);
+                        break;
+                    default:
+                        break;
+                }
+
+
             }
         }
 
@@ -499,25 +540,8 @@ module.exports = (client) => {
         } else {
             karma = -1;
         }
-        client.log(`Score: ${score} -> ${karma}`, "debug");
+        client.log(`KScore: ${score} -> ${karma}K`, "debug");
         return karma;
-    };    
-
-    client.setKarma = () => {
-        const guild = client.getGuild();
-        guild.members.cache.forEach(member => {
-            let userdata = client.userdataGet(member.id);
-            if (userdata) {
-                let karma = client.memberGetKarma(member.id);
-                userdata.karma += karma;
-                if (userdata.karma < 0) {
-                    userdata.karma = 0;
-                }
-                client.userdataSet(userdata);
-                client.log(`${member.displayName} à gagné ${karma} K -> ${userdata.karma} K au total`);
-            }
-        });
-        return true;
     };
 
 }
