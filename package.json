@@ -22,7 +22,7 @@
     "node-superfetch": "^0.1.11",
     "opusscript": "0.0.8",
     "path": "^0.12.7",
-    "sequelize": "^6.5.0",
+    "sequelize": "^6.29.0",
     "sodium": "^3.0.2",
     "source-rcon-client": "0.0.10",
     "steam-server-status": "^1.0.2",
